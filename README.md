@@ -2,7 +2,8 @@
 
 A Flask-based web application for browsing and managing video archives over a local area network (LAN). Designed for easy access to your video library with features like collections, favorites, explore functionality, and folder-based navigation.
 
-![image](https://github.com/user-attachments/assets/50faec37-53d7-46ec-804e-38afe5740b98)
+![image](https://github.com/user-attachments/assets/bc088b9b-3423-45cf-8eee-867539c4cff0)
+
 
 
 ---
