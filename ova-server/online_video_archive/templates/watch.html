@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="black" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Watch Video</title>
+
+  <!-- Tailwind & DaisyUI v5 -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="min-h-screen flex flex-col bg-base-100 text-base-content">
+
+  <!-- Header -->
+  <header class="p-4 border-b border-base-content flex justify-between items-center">
+    <h1 class="text-2xl font-semibold">Streaming Video</h1>
+    <div class="flex gap-3">
+      <a href="{{ url_for('video.video_list') }}" id="back-btn" class="btn btn-outline">Back</a>
+      <a href="{{ url_for('auth.login_route') }}" class="btn btn-error">Logout</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow flex flex-col items-center p-4 space-y-6">
+
+    <!-- Title and Controls -->
+    <div class="w-full max-w-5xl">
+      <div class="flex justify-between items-center flex-wrap gap-4">
+        <h2 class="text-2xl font-bold break-all flex-1">{{ cliptitle }}</h2>
+
+        <div class="flex items-center gap-4">
+          <!-- Rating Stars -->
+          <div class="rating" id="rating-stars">
+            {% for i in range(1, 6) %}
+              <input type="radio" name="rating" id="rating-{{ i }}" value="{{ i }}" class="mask mask-star cursor-pointer"
+                {% if metadata.get('rating') == i %}checked{% endif %} />
+            {% endfor %}
+          </div>
+
+
+        
+<!-- Favorite Button -->
+<button
+  id="favorite-btn"
+  class="btn btn-outline flex items-center gap-2"
+  aria-pressed="false"
+  disabled
+  aria-label="Toggle favorite"
+>
+  <svg xmlns="http://www.w3.org/2000/svg"
+       viewBox="0 0 24 24"
+       stroke="currentColor"
+       class="w-5 h-5">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+          d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+          fill="none" />
+  </svg>
+  <span id="favorite-btn-text">Loading...</span>
+</button>
+
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- Video Player -->
+    <video controls autoplay class="max-w-5xl rounded-lg w-full bg-black shadow-lg">
+      <source src="{{ url_for('video.stream_video', video_id=video_id) }}" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+
+    <!-- Tabs for Tags and Collections -->
+    <div class="w-full max-w-5xl">
+      <div class="tabs tabs-lift tabs-lg w-full">
+
+        <!-- Tags Tab -->
+        <input type="radio" name="video_tabs" class="tab" aria-label="Tags" checked />
+        <div class="tab-content border border-base-300 rounded-box p-6">
+          <h2 class="text-xl font-semibold mb-4">Tags</h2>
+          <div id="tags-list" class="flex flex-wrap gap-3 mb-4">
+            <!-- tags with delete buttons rendered here -->
+          </div>
+          <form id="tag-form" class="flex gap-3">
+            <input id="tag-input" type="text" placeholder="Add a tag" class="input input-bordered flex-grow" />
+            <button type="submit" class="btn btn-primary">Add Tag</button>
+          </form>
+        </div>
+
+        <!-- Collections Tab -->
+        <input type="radio" name="video_tabs" class="tab" aria-label="Collections" />
+        <div class="tab-content border border-base-300 rounded-box p-6">
+          <h2 class="text-xl font-semibold mb-4">Collections</h2>
+
+          <div id="collections-badges" class="flex flex-wrap gap-3 mb-4">
+            <!-- badges with delete button rendered here -->
+          </div>
+
+          <!-- New Add to Collection Dropdown + Button -->
+          <div class="flex gap-3 items-center">
+            <select id="collection-select" class="select select-bordered flex-grow" aria-label="Select collection to add video">
+              <option disabled selected>Select a collection</option>
+            </select>
+            <button id="add-to-collection-btn" class="btn btn-primary">Add to Collection</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- JavaScript Logic -->
+  <script>
+    const videoId = {{ video_id|tojson }};
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "";
+
+    // Fetch Tags and render badges with delete buttons
+    async function fetchTags() {
+      try {
+        const res = await fetch(`/tags/${videoId}`);
+        if (!res.ok) throw new Error("Failed to fetch tags");
+        const tags = await res.json();
+        const container = document.getElementById("tags-list");
+        container.innerHTML = "";
+        tags.forEach(tag => {
+          const badge = document.createElement("span");
+          badge.className = "badge flex items-center gap-2 rounded-full px-3 py-1 shadow-md hover:scale-105 hover:bg-primary/80 transition-transform cursor-default";
+
+          const span = document.createElement("span");
+          span.textContent = tag;
+          badge.appendChild(span);
+
+          // Delete button with icon
+          const delBtn = document.createElement("button");
+          delBtn.className = "btn btn-xs btn-error btn-circle btn-outline flex items-center justify-center p-0 w-5 h-5 ml-1";
+          delBtn.title = "Remove tag";
+
+          delBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          `;
+
+          delBtn.addEventListener("click", async () => {
+            try {
+              const res = await fetch(`/tags/${videoId}`, {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": csrfToken
+                },
+                body: JSON.stringify({ tag })
+              });
+              if (!res.ok) throw new Error("Failed to remove tag");
+              fetchTags();
+            } catch (err) {
+              alert(err.message);
+            }
+          });
+
+          badge.appendChild(delBtn);
+          container.appendChild(badge);
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    document.getElementById("tag-form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const input = document.getElementById("tag-input");
+      const newTag = input.value.trim();
+      if (!newTag) return;
+      try {
+        const res = await fetch(`/tags/${videoId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken
+          },
+          body: JSON.stringify({ tag: newTag })
+        });
+        if (!res.ok) throw new Error("Failed to add tag");
+        input.value = "";
+        fetchTags();
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+
+    fetchTags();
+
+    // Favorite Button
+    document.getElementById("favorite-btn").addEventListener("click", async function () {
+      const btn = this;
+      const isFavorited = btn.dataset.favorited === "true";
+      const url = isFavorited ? "{{ url_for('favorites.remove_favorite') }}" : "{{ url_for('favorites.add_favorite') }}";
+
+      const formData = new URLSearchParams();
+      formData.append("video_id", videoId);
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": csrfToken
+        },
+        body: formData.toString()
+      });
+
+      if (res.ok) {
+        btn.dataset.favorited = (!isFavorited).toString();
+        btn.setAttribute("aria-pressed", (!isFavorited).toString());
+        btn.querySelector("path").setAttribute("fill", isFavorited ? "none" : "currentColor");
+        btn.querySelector("#favorite-btn-text").textContent = isFavorited ? "Favorite" : "Unfavorite";
+      } else {
+        alert("Failed to update favorite status.");
+      }
+    });
+
+    // Rating
+    document.querySelectorAll("#rating-stars input").forEach(input => {
+      input.addEventListener("change", async (e) => {
+        const ratingValue = e.target.value;
+        const res = await fetch("/rating", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken
+          },
+          body: JSON.stringify({ video_id: videoId, rating: ratingValue })
+        });
+        if (!res.ok) alert("Failed to update rating.");
+      });
+    });
+
+    // --- Collections code here (assuming you already have code for collections) ---
+    // You would want to do the same: fetch collections, show badges with delete buttons,
+    // and populate the select dropdown with available collections for adding.
+// Collections Management
+
+async function fetchCollections() {
+  try {
+    // Fetch collections the video belongs to
+    const res = await fetch(`/api/collections_for_video/${encodeURIComponent(videoId)}`);
+    if (!res.ok) throw new Error("Failed to fetch collections");
+    const videoCollections = await res.json(); // array of {id, title}
+
+    const container = document.getElementById("collections-badges");
+    container.innerHTML = "";
+
+    videoCollections.forEach(coll => {
+      const badge = document.createElement("span");
+      badge.className = "badge flex items-center gap-2 rounded-full px-3 py-1 shadow-md hover:scale-105 hover:bg-secondary/80 transition-transform cursor-default";
+
+      const span = document.createElement("span");
+      span.textContent = coll.title;
+      badge.appendChild(span);
+
+      // Delete button to remove video from collection
+      const delBtn = document.createElement("button");
+      delBtn.className = "btn btn-xs btn-error btn-circle btn-outline flex items-center justify-center p-0 w-5 h-5 ml-1";
+      delBtn.title = "Remove from collection";
+
+      delBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      `;
+
+      delBtn.addEventListener("click", async () => {
+        try {
+          const res = await fetch(`/api/remove_video_from_collection/${encodeURIComponent(coll.id)}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify({ video_id: videoId })
+          });
+          if (!res.ok) throw new Error("Failed to remove from collection");
+          await fetchCollections();
+          await fetchAvailableCollections();
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+
+      badge.appendChild(delBtn);
+      container.appendChild(badge);
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function fetchAvailableCollections() {
+  try {
+    const res = await fetch("/api/collections");
+    if (!res.ok) throw new Error("Failed to fetch all collections");
+    const allCollections = await res.json(); // array of {id, title}
+
+    // Also fetch collections video already belongs to, to exclude from select options
+    const resVideoColls = await fetch(`/api/collections_for_video/${encodeURIComponent(videoId)}`);
+    const videoCollections = resVideoColls.ok ? await resVideoColls.json() : [];
+
+    const select = document.getElementById("collection-select");
+    select.innerHTML = `<option disabled selected>Select a collection</option>`;
+
+    // Filter out collections video already belongs to
+    const videoCollectionIds = new Set(videoCollections.map(c => c.id));
+
+    allCollections.forEach(coll => {
+      if (!videoCollectionIds.has(coll.id)) {
+        const option = document.createElement("option");
+        option.value = coll.id;
+        option.textContent = coll.title;
+        select.appendChild(option);
+      }
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Add video to selected collection
+document.getElementById("add-to-collection-btn").addEventListener("click", async () => {
+  const select = document.getElementById("collection-select");
+  const collectionId = select.value;
+  if (!collectionId || collectionId === "Select a collection") {
+    alert("Please select a collection to add.");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/add_to_collection", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken
+      },
+      body: JSON.stringify({ collection_id: collectionId, video_id: videoId })
+    });
+    if (!res.ok) throw new Error("Failed to add video to collection");
+    await fetchCollections();
+    await fetchAvailableCollections();
+  } catch (err) {
+    alert(err.message);
+  }
+});
+
+// Initial load
+fetchCollections();
+fetchAvailableCollections();
+
+const favoriteBtn = document.getElementById("favorite-btn");
+const favoriteIconPath = favoriteBtn.querySelector("path");
+const favoriteBtnText = document.getElementById("favorite-btn-text");
+
+// Initially disable button while loading favorite status
+favoriteBtn.disabled = true;
+
+async function updateFavoriteUI(isFavorited) {
+  favoriteBtn.dataset.favorited = isFavorited.toString();
+  favoriteBtn.setAttribute("aria-pressed", isFavorited.toString());
+  favoriteIconPath.setAttribute("fill", isFavorited ? "currentColor" : "none");
+  favoriteBtnText.textContent = isFavorited ? "Unfavorite" : "Favorite";
+  favoriteBtn.disabled = false;
+}
+
+// Fetch initial favorite status from your /favorites/check API
+async function fetchFavoriteStatus() {
+  try {
+    const res = await fetch(`/favorites/check?video_id=${encodeURIComponent(videoId)}`);
+    if (!res.ok) throw new Error("Failed to fetch favorite status");
+    const data = await res.json();
+    await updateFavoriteUI(data.is_favorite);
+  } catch (err) {
+    console.error(err);
+    favoriteBtnText.textContent = "Error";
+  }
+}
+
+// Toggle favorite status on button click
+favoriteBtn.addEventListener("click", async () => {
+  favoriteBtn.disabled = true; // disable during request
+  const isFavorited = favoriteBtn.dataset.favorited === "true";
+  const url = isFavorited ? "{{ url_for('favorites.remove_favorite') }}" : "{{ url_for('favorites.add_favorite') }}";
+
+  const formData = new URLSearchParams();
+  formData.append("video_id", videoId);
+
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": csrfToken
+      },
+      body: formData.toString()
+    });
+    if (!res.ok) throw new Error("Failed to update favorite status");
+
+    // Flip the state
+    await updateFavoriteUI(!isFavorited);
+  } catch (err) {
+    alert(err.message);
+    favoriteBtn.disabled = false;
+  }
+});
+
+async function fetchRating() {
+  try {
+    const res = await fetch(`/rating/${videoId}`); // Assuming this endpoint returns { rating: 3 }
+    if (!res.ok) throw new Error("Failed to fetch rating");
+    const data = await res.json();
+    const currentRating = data.rating;
+
+    if (currentRating) {
+      // Update the rating stars UI
+      document.querySelectorAll("#rating-stars input").forEach(input => {
+        input.checked = (parseInt(input.value) === currentRating);
+      });
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+
+    // Update back button based on ?from= URL parameter
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const from = urlParams.get('from');
+      const backBtn = document.getElementById('back-btn');
+
+      // Define allowed destinations
+      const allowedPaths = {
+        explore: '/explore',
+        videos: '/videos',
+        favorites: '/favorites'
+      };
+
+      if (from && allowedPaths[from]) {
+        backBtn.setAttribute('href', allowedPaths[from]);
+      }
+    });
+
+// Run on page load
+fetchFavoriteStatus();
+fetchRating();
+
+  </script>
+</body>
+</html>

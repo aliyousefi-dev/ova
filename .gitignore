@@ -1,0 +1,103 @@
+# Root-level ignores
+*.log
+.DS_Store
+*.pyc
+__pycache__/
+*.swp
+
+# Ignore OS-specific junk
+Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
+
+# ============================
+# ova-client (Flutter app)
+# ============================
+/ova-client/.dart_tool/
+/ova-client/.idea/
+/ova-client/.packages
+/ova-client/.flutter-plugins
+/ova-client/.flutter-plugins-dependencies
+/ova-client/.metadata
+/ova-client/build/
+/ova-client/ios/Flutter/Flutter.framework
+/ova-client/ios/Flutter/Flutter.podspec
+/ova-client/ios/.symlinks/
+/ova-client/ios/Pods/
+/ova-client/ios/Runner.xcworkspace/
+/ova-client/ios/build/
+/ova-client/ios/Flutter/App.framework
+/ova-client/ios/Flutter/engine/
+/ova-client/macos/Flutter/ephemeral/
+/ova-client/linux/flutter/
+/ova-client/windows/flutter/
+/ova-client/web/.dart_tool/
+/ova-client/pubspec.lock
+/ova-client/ova_mobile.iml
+
+# Android
+/ova-client/android/.gradle/
+/ova-client/android/captures/
+/ova-client/android/.idea/
+/ova-client/android/local.properties
+/ova-client/android/.DS_Store
+/ova-client/android/build/
+/ova-client/android/app/build/
+
+# Xcode
+/ova-client/ios/Pods/
+/ova-client/ios/Podfile.lock
+/ova-client/ios/Flutter/Generated.xcconfig
+/ova-client/ios/Flutter/ephemeral/
+
+# IntelliJ/VSCode
+/ova-client/.vscode/
+/ova-client/.idea/
+/ova-client/*.iml
+
+# ============================
+# ova-server (Flask + embedded Python)
+# ============================
+
+# Python artifacts
+/ova-server/__pycache__/
+/ova-server/*.pyc
+/ova-server/*.pyo
+/ova-server/*.pyd
+/ova-server/env/
+/ova-server/.env
+/ova-server/.venv
+
+# Byte-compiled and caches
+/ova-server/**/*.pyc
+/ova-server/**/*.pyo
+/ova-server/**/*.pyd
+/ova-server/**/__pycache__/
+
+# Embedded Python distribution (keep local)
+/ova-server/python-3.13.3-embed-amd64/
+
+# Local or test data
+/ova-server/sample-archive/
+
+# Virtual environments
+/ova-server/.env/
+/ova-server/.venv/
+
+# ============================
+# Node/npm (in case of web frontend later)
+/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ============================
+# Docs or local metadata
+/docs/_build/
+/docs/.DS_Store
+
+# Backup files
+*~
+*.bak
+*.tmp

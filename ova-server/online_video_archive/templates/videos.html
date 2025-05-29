@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="black" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Video Browser</title>
+
+  <!-- Tailwind + DaisyUI -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" />
+
+  <style>
+    ::-webkit-scrollbar { width:8px; height:8px; }
+    ::-webkit-scrollbar-thumb { background:#555; border-radius:10px; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-base-100 text-base-content">
+
+  <!-- ░░ Header ░░ -->
+  <header class="p-4 border-b border-base-content flex justify-between items-center">
+    <h1 class="text-2xl font-semibold">Video Browser</h1>
+    <div class="flex gap-3">
+      <a href="{{ url_for('home') }}" class="btn btn-outline">Home</a>
+      <a href="{{ url_for('auth.login_route') }}" class="btn btn-soft btn-error">Logout</a>
+    </div>
+  </header>
+
+  <main class="flex-grow p-6 max-w-7xl w-full mx-auto">
+
+    <!-- ░░ Folder sidebar ░░ -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Folders</h2>
+
+      <ul class="menu menu-sm rounded-box w-full">
+        {% if current %}
+          {% if '/' in current %}
+            <li><a href="{{ url_for('video.video_list', subpath=current.rsplit('/',1)[0]) }}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-move-left-icon lucide-move-left"><path d="M6 8L2 12L6 16"/><path d="M2 12H22"/></svg>
+              Back</a></li>
+          {% else %}
+            <li><a href="{{ url_for('video.video_list') }}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-move-left-icon lucide-move-left"><path d="M6 8L2 12L6 16"/><path d="M2 12H22"/></svg>
+              Back</a></li>
+          {% endif %}
+        {% endif %}
+
+        <li>
+          <details open>
+            <summary>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"/></svg>
+              Folder Tree
+            </summary>
+            <ul>
+              {% for folder in folders %}
+              <li>
+                <a href="{{ url_for('video.video_list', subpath=folder) }}">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+                  {{ folder.rsplit('/')[-1] }}
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </details>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ░░ Search + filter ░░ -->
+    <section class="mt-10 mb-4">
+
+      <!-- Search bar -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-box p-4 mb-6">
+  
+    
+        <!-- Search bar -->
+        <label class="input input-bordered flex items-center gap-2 w-full sm:max-w-xs">
+          <svg class="w-4 h-4 opacity-60" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </g>
+          </svg>
+          <input id="videoSearch" type="search" placeholder="Search videos..." class="grow" />
+        </label>
+    
+      </div>
+
+      <!-- Video grid -->
+      <h2 class="text-2xl font-semibold mb-4">Videos</h2>
+      {% if videos|length == 0 %}
+        <p class="italic text-gray-400">No videos found.</p>
+      {% endif %}
+
+      <div id="videosGrid" class="grid gap-6 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {% for video in videos %}
+        <a href="{{ video.watch_url or '#' }}?from=videos"
+           class="card bg-base-100 shadow-sm group video-item"
+           data-name="{{ video.path.rsplit('/')[-1] | lower }}"
+           data-tags="{{ ' '.join(video.tags) | lower }}">
+          <figure class="relative">
+  <!-- Favorite Star Icon -->
+  <div class="absolute top-2 left-2 z-20">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star-icon lucide-star"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+  </div>
+            {% if video.thumbnail_url %}
+            <img src="{{ video.thumbnail_url }}" alt="thumb" class="object-cover w-full h-40 brightness-90 group-hover:brightness-110 duration-300"/>
+            {% else %}
+            <div class="flex items-center justify-center w-full h-40 bg-gray-200 text-gray-400">
+              No Thumbnail
+            </div>
+            {% endif %}
+            <div class="absolute top-2 right-2 bg-black/70 text-white text-xs font-semibold px-2 py-0.5 rounded">
+              {% if video.length_seconds >= 60 %}
+              {{ (video.length_seconds // 60) | int }} min
+            {% else %}
+              {{ video.length_seconds | int }} sec
+            {% endif %}
+            </div>
+          </figure>
+          <div class="card-body p-4">
+            <h3 class="card-title line-clamp-2 break-words">
+              {{ video.path.rsplit('/')[-1] }}
+            </h3>
+            <p class="text-sm truncate">
+              {% for tag in video.tags %}
+                <span class="badge">#{{ tag }}</span>
+              {% endfor %}
+            </p>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /* --- plain-text search --- */
+    const searchInput = document.getElementById('videoSearch');
+    const videos = document.querySelectorAll('.video-item');
+
+    searchInput.addEventListener('input', () => filterVideos());
+
+    /* --- tag filter buttons --- */
+    document.querySelectorAll('input[name="tagFilter"]').forEach(radio => {
+      radio.addEventListener('change', () => filterVideos());
+    });
+
+    function filterVideos() {
+  const term = searchInput.value.toLowerCase();
+  const active = document.querySelector('input[name="tagFilter"]:checked')?.id.replace('filter-', '') || 'all';
+
+  videos.forEach(card => {
+    const name = card.dataset.name;
+    const tags = card.dataset.tags;
+    
+    const tagOk = (active === 'all') || tags.includes(active);
+    const textOk = name.includes(term) || tags.includes(term); // <-- Check term against both name and tags
+
+    card.style.display = tagOk && textOk ? '' : 'none';
+  });
+}
+
+  </script>
+</body>
+</html>

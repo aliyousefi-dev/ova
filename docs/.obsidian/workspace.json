@@ -1,0 +1,254 @@
+{
+  "main": {
+    "id": "18c114edc2418813",
+    "type": "split",
+    "children": [
+      {
+        "id": "6b8c1e026f4e4b19",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "46b41f27a85ba334",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          },
+          {
+            "id": "a8780875162aa2f4",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          },
+          {
+            "id": "1d91b7863acc0c03",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Backend/Authentication.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Authentication"
+            }
+          },
+          {
+            "id": "4c56c1063ddb51dd",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "OVA Overview.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "OVA Overview"
+            }
+          },
+          {
+            "id": "eb5e7cc1aed1bf02",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Backend/Endpoints.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Endpoints"
+            }
+          }
+        ],
+        "currentTab": 4
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "96b9966b63547a4c",
+    "type": "split",
+    "children": [
+      {
+        "id": "eb34b58e6c4f38de",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "96681e3bd422afa1",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "436583ef10e15dd9",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "7b808da2b077aacd",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "50c42c2682bed7a4",
+    "type": "split",
+    "children": [
+      {
+        "id": "fd3e5c04ba025f30",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "986116166cf081ec",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "d8c2b481a77071c5",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "bc2086dc5667a1f4",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "13b21cf7154b892e",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "eb5e7cc1aed1bf02",
+  "lastOpenFiles": [
+    "Backend/Authentication.md",
+    "Backend/RESTful API/Collection API.md",
+    "Backend/Endpoints.md",
+    "Backend/Resource API/Thumbnail API.md",
+    "Backend/Resource API/Stream API.md",
+    "Backend/RESTful API/Video API.md",
+    "Backend/RESTful API/Savelist API.md",
+    "Backend/RESTful API/Search API.md",
+    "Backend/RESTful API/Login API.md",
+    "OVA Overview.md",
+    "Software Versioning.md",
+    "Backend",
+    "Frontend",
+    "Getting Started.md",
+    "Framework Guide/Client Application.md",
+    "Framework Guide/Server Backend.md",
+    "Framework Guide",
+    "Data Models/Collection Data.md",
+    "Frontend/Web Pages/watch-html.md",
+    "Frontend/Web Pages/videos-html.md",
+    "Frontend/Web Pages/Login-html.md",
+    "Frontend/Web Pages/SaveLists-html.md",
+    "Frontend/App Views/Folders.md",
+    "Frontend/Web Pages/explore-html.md",
+    "Frontend/App Views/Explore Page.md",
+    "Backend/Resource API",
+    "Frontend/App Views/Login Page.md",
+    "Data Models/User Data.md",
+    "Data Models/Videos Data.md",
+    "Frontend/Web Pages/CollectionView-html.md",
+    "Data Models",
+    "Frontend/App Views",
+    "Frontend/Web Pages",
+    "Backend/RESTful API"
+  ]
+}
