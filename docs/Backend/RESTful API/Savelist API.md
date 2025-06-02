@@ -1,6 +1,6 @@
 
 ```
-GET /api/v1/users/{userId}/favorites
-POST /api/v1/users/{userId}/favorites
+GET /api/v1/users/{userId}/savelist
+POST /api/v1/users/{userId}/savelist
 
 ```
