@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { VideoCardComponent } from '../components/video-card/video-card.component';
-import { SearchBarComponent } from '../components/search-bar/search-bar';
-import { FolderTreeComponent } from '../components/folder-tree/folder-tree.component';
-import { TopNavBarComponent } from '../components/top-nav-bar/top-nav-bar.component';
-import { APIService } from '../services/api.service';
+import { VideoCardComponent } from '../../components/video-card/video-card.component';
+import { SearchBarComponent } from '../../components/search-bar/search-bar';
+import { FolderTreeComponent } from '../../components/folder-tree/folder-tree.component';
+import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
+import { APIService } from '../../services/api.service';
 
 @Component({
   selector: 'app-video',

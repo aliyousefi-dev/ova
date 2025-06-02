@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { TopNavBarComponent } from '../components/top-nav-bar/top-nav-bar.component';
-import { VideoData } from '../models/video-data.model';
-import { APIService } from '../services/api.service';
+import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
+import { VideoData } from '../../data-types/video-data.model';
+import { APIService } from '../../services/api.service';
 
 @Component({
   selector: 'app-watch',

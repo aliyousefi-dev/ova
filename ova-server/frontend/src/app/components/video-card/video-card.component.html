@@ -1,10 +1,11 @@
-<a [routerLink]="['/watch', videoId]" class="block h-full w-full">
-  <div
-    class="h-full flex flex-col bg-base-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer rounded-lg overflow-hidden"
-    (mouseenter)="hovering = true"
-    (mouseleave)="hovering = false"
-  >
-    <figure class="relative w-full h-40 bg-gray-200">
+<div
+  class="h-full flex flex-col shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-visible relative rounded-lg"
+  (mouseenter)="hovering = true"
+  (mouseleave)="hovering = false"
+>
+  <!-- Wrap only figure inside routerLink -->
+  <a [routerLink]="['/watch', videoId]" class="block w-full h-40 rounded-lg overflow-hidden relative">
+    <figure class="relative w-full h-40 rounded-lg overflow-hidden bg-transparent">
       <img
         [src]="thumbnailUrl"
         [alt]="title"
@@ -21,20 +22,53 @@
         class="w-full h-full object-cover absolute top-0 left-0 transition-opacity duration-200"
         [class.opacity-100]="hovering"
         [class.opacity-0]="!hovering"
+        style="pointer-events: none;"
       ></video>
 
-      <div class="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
+      <!-- Duration badge bottom-right -->
+      <div class="absolute bottom-2 right-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
         {{ formatDuration(duration) }}
       </div>
     </figure>
+  </a>
 
-    <div class="flex flex-col justify-between flex-grow p-4">
-      <h2 class="text-base font-semibold line-clamp-2 leading-snug">{{ title }}</h2>
-      <div class="flex flex-wrap gap-1 mt-2">
-        <span *ngFor="let tag of tags" class="badge badge-outline badge-sm">
-          {{ tag }}
-        </span>
+  <!-- Transparent title/tag area outside link -->
+  <div
+    class="flex flex-col gap-2 p-4 bg-white/5 mt-2 rounded-lg backdrop-blur-sm relative z-20"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="flex items-start justify-between">
+      <div class="flex-1">
+        <h2 class="text-base font-semibold line-clamp-2 leading-snug text-white/90">
+          {{ title }}
+        </h2>
+        <p class="text-xs text-white/60 mt-1">
+          {{ timeSinceAdded }}
+        </p>
+      </div>
+
+      <!-- 3-dot dropdown -->
+      <div class="dropdown dropdown-end" (click)="$event.stopPropagation()">
+        <div tabindex="0" role="button" class="btn btn-xs btn-ghost text-white z-30">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M6 12h.01M12 12h.01M18 12h.01" />
+          </svg>
+        </div>
+        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-44 z-40">
+          <li><a (click)="download($event)">Download</a></li>
+          <li><a (click)="addToPlaylist($event)">Save to Playlist</a></li>
+          <li><a (click)="addToFavorites($event)">Add to Favorites</a></li>
+        </ul>
       </div>
     </div>
+
+    <!-- Tags -->
+    <div class="flex flex-wrap gap-1">
+      <span *ngFor="let tag of tags" class="badge badge-outline badge-sm text-white bg-transparent border-white/30">
+        #{{ tag }}
+      </span>
+    </div>
   </div>
-</a>
+</div>

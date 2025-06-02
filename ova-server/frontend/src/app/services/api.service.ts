@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { VideoData } from '../models/video-data.model';
+import { VideoData } from '../data-types/video-data.model';
 import { ConfigService } from './config.service';
 
 @Injectable({
@@ -31,6 +31,10 @@ export class APIService {
 
   getStreamUrl(videoId: string): string {
     return `${this.baseUrl}/stream/${videoId}`;
+  }
+
+  getDownloadUrl(videoId: string): string {
+    return `${this.baseUrl}/download/${videoId}`;
   }
 
   getThumbnailUrl(videoId: string): string {

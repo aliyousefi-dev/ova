@@ -49,6 +49,7 @@ func (s *BackendServer) initRoutes() {
 		api.RegisterVideoRatingRoutes(v1, s.StorageManager, s.SessionManager)
 
 		api.RegisterStreamRoutes(v1, s.StorageManager, s.SessionManager)
+		api.RegisterDownloadRoutes(v1, s.StorageManager, s.SessionManager)
 		api.RegisterThumbnailRoutes(v1, s.StorageManager, s.SessionManager)
 		api.RegisterPreviewRoutes(v1, s.StorageManager, s.SessionManager)
 	}
