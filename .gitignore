@@ -11,6 +11,8 @@ ehthumbs.db
 Icon?
 desktop.ini
 
+/ova-server/builds
+
 # ============================
 # ova-client (Flutter app)
 # ============================

@@ -1,0 +1,107 @@
+package api
+
+import (
+	"log"
+	"net/http"
+	"path/filepath"
+	"strings"
+
+	"ova-server/source-code/storage"
+	"ova-server/source-code/storage/datamodels"
+
+	"github.com/gin-gonic/gin"
+)
+
+// RegisterVideoRoutes adds video-related endpoints including folder listing.
+func RegisterVideoRoutes(rg *gin.RouterGroup, manager *storage.StorageManager, sm *SessionManager, baseDir string) {
+	videos := rg.Group("/videos", sm.AuthRequired())
+	{
+		videos.GET("/:videoId", getVideoByID(manager))      // GET /api/v1/videos/{videoId}
+		videos.GET("", getVideosByFolder(manager, baseDir)) // ✅ GET /api/v1/videos?folder=...
+	}
+
+	// New folder route
+	rg.GET("/folders", sm.AuthRequired(), getFolderList(manager))
+}
+
+// getVideoByID returns details of a single video by ID.
+func getVideoByID(manager *storage.StorageManager) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		videoId := c.Param("videoId")
+
+		video, err := manager.Videos.FindVideo(videoId)
+		if err != nil {
+			respondError(c, http.StatusNotFound, "Video not found")
+			return
+		}
+		respondSuccess(c, http.StatusOK, video, "Video retrieved successfully")
+	}
+}
+
+// getVideosByFolder returns a list of videos inside the given folder path.
+func getVideosByFolder(manager *storage.StorageManager, baseDir string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		folderQuery := c.Query("folder")
+		requestedPath := filepath.ToSlash(strings.Trim(folderQuery, "/"))
+
+		videosMap, err := manager.Videos.LoadVideos()
+		if err != nil {
+			respondError(c, http.StatusInternalServerError, "Failed to load videos")
+			return
+		}
+
+		var videosInFolder []datamodels.VideoData
+		for _, video := range videosMap {
+			relPath := filepath.ToSlash(video.FilePath)
+			videoFolder := strings.Trim(filepath.ToSlash(filepath.Dir(relPath)), "/")
+			if videoFolder == "." {
+				videoFolder = ""
+			}
+
+			log.Printf("Video: %s | FilePath: %s | Folder: %s", video.Title, relPath, videoFolder)
+			log.Printf("Comparing with requested: %s", requestedPath)
+
+			if requestedPath == "" {
+				if videoFolder == "" {
+					videosInFolder = append(videosInFolder, video)
+				}
+			} else {
+				if videoFolder == requestedPath {
+					videosInFolder = append(videosInFolder, video)
+				}
+			}
+		}
+
+		respondSuccess(c, http.StatusOK, videosInFolder, "Videos in folder retrieved")
+	}
+}
+
+// getFolderList returns a list of unique folder paths containing videos.
+func getFolderList(manager *storage.StorageManager) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		videosMap, err := manager.Videos.LoadVideos()
+		if err != nil {
+			respondError(c, http.StatusInternalServerError, "Failed to load videos")
+			return
+		}
+
+		folderSet := make(map[string]struct{})
+
+		for _, video := range videosMap {
+			relPath := filepath.ToSlash(video.FilePath)
+			folder := strings.Trim(filepath.ToSlash(filepath.Dir(relPath)), "/")
+			if folder == "." {
+				folder = ""
+			}
+			folderSet[folder] = struct{}{}
+		}
+
+		// Convert set keys to slice
+		folders := make([]string, 0, len(folderSet))
+		for folder := range folderSet {
+			folders = append(folders, folder)
+		}
+
+		respondSuccess(c, http.StatusOK, folders, "Folders retrieved successfully")
+	}
+}

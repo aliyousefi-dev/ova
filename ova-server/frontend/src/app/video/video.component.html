@@ -1,0 +1,40 @@
+<app-top-nav-bar
+  [title]="'Videos'"
+  (logout)="handleLogout()"
+></app-top-nav-bar>
+
+<app-search-bar [(value)]="searchTerm" placeholder="Search videos..."></app-search-bar>
+
+<!-- Folder Tree block aligned left + empty space -->
+<div class="max-w-7xl mx-auto px-4 flex items-center" style="height: 10rem;">
+  <div class="w-64">
+    <app-folder-tree
+      [folders]="folders"
+      [currentFolder]="currentFolder"
+      (folderSelected)="onFolderSelected($event)"
+    ></app-folder-tree>
+  </div>
+  <div class="flex-1">
+    <!-- Empty space to the right of folder tree -->
+  </div>
+</div>
+
+<!-- Videos block full width -->
+<div class="max-w-7xl mx-auto px-4 mt-6">
+  <p class="mb-4 text-gray-700 font-semibold text-center">
+    Total videos: {{ filteredVideos.length }}
+  </p>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
+    <app-video-card
+      *ngFor="let video of filteredVideos"
+      [videoId]="video.videoId"
+      [title]="video.title"
+      [thumbnailUrl]="getThumbnailUrl(video.videoId)"
+      [previewUrl]="getPreviewUrl(video.videoId)"
+      [duration]="video.durationSeconds"
+      [tags]="video.tags"
+      class="h-[20rem]"
+    ></app-video-card>
+  </div>
+</div>

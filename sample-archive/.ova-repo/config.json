@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "defaultUser": "user",
+  "defaultPassword": "pass",
+  "serverHost": "127.0.0.1",
+  "serverPort": 5050,
+  "repoPath": "H:\\OnlineVideoArchive\\sample-archive",
+  "createdAt": "0001-01-01T00:00:00Z"
+}

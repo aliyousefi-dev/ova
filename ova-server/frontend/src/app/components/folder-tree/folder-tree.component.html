@@ -1,0 +1,37 @@
+<ul class="menu menu-sm rounded bg-base-100 w-full max-w-4xl">
+    <ng-container *ngIf="folderTree">
+      <ng-template
+        [ngTemplateOutlet]="renderNode"
+        [ngTemplateOutletContext]="{ $implicit: folderTree }"
+      />
+    </ng-container>
+  </ul>
+  
+  <ng-template #renderNode let-node>
+    <ng-container *ngIf="node">
+      <li>
+        <a
+          href="#"
+          (click)="onSelect(node.path); $event.preventDefault()"
+          [ngClass]="{ 'font-bold text-primary': isActive(node.path) }"
+          class="flex items-center gap-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+          </svg>
+          {{ node.name }}
+        </a>
+        <ul *ngIf="node.children?.length" class="ml-4">
+          <ng-container *ngFor="let child of node.children">
+            <ng-template
+              [ngTemplateOutlet]="renderNode"
+              [ngTemplateOutletContext]="{ $implicit: child }"
+            />
+          </ng-container>
+        </ul>
+      </li>
+    </ng-container>
+  </ng-template>
+  

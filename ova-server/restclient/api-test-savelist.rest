@@ -1,0 +1,16 @@
+###
+# Get user save list (existing user)
+GET http://127.0.0.1:8080/api/v1/users/admin/savelist HTTP/1.1
+Host: 127.0.0.1:8080
+Accept: application/json
+
+###
+# Update user save list (replace with valid video IDs)
+POST http://127.0.0.1:8080/api/v1/users/admin/savelist HTTP/1.1
+Host: 127.0.0.1:8080
+Content-Type: application/json
+Accept: application/json
+
+{
+  "saved": ["087be485e0acad6fb1ba026e75542fed5f52e073496c649bc4a3ce345a63f48f"]
+}

@@ -1,0 +1,55 @@
+
+<app-top-nav-bar
+[title]="'Watch'"
+(logout)="handleLogout()"
+></app-top-nav-bar>
+
+<div class="min-h-screen bg-base-100 flex flex-col items-center p-6 w-full">
+  <ng-container *ngIf="loading">
+    <p class="text-gray-500">Loading video...</p>
+  </ng-container>
+
+  <ng-container *ngIf="error">
+    <p class="text-red-500">Failed to load video</p>
+  </ng-container>
+
+
+
+  <ng-container *ngIf="!loading && !error && video">
+
+    
+    <div class="w-full max-w-5xl mx-auto px-4 py-6 space-y-6">
+
+      <h1 class="text-3xl font-semibold truncate w-full overflow-hidden whitespace-nowrap">
+        {{ video.title }}
+      </h1>
+    
+
+      <div class="aspect-video bg-black rounded-lg overflow-hidden">
+        <video
+        [src]="videoUrl"
+          controls
+          poster="{{ thumbnailUrl }}"
+          class="w-full h-full"
+        ></video>
+      </div>
+
+
+      <div class="flex flex-wrap gap-3 text-sm">
+        <span class="badge badge-outline">⏱ {{ formatDuration(video.durationSeconds) }}</span>
+        <span class="badge badge-outline">⭐ {{ video.rating.toFixed(1) }} Rating</span>
+        <span class="badge badge-outline">👁 {{ video.views }} Views</span>
+        <span class="badge badge-outline">
+          📅 {{ video.uploadedAt | date }}
+        </span>
+      </div>
+
+      <div *ngIf="video.tags && video.tags.length > 0">
+        <h2 class="text-sm font-semibold mt-4 mb-2">Tags:</h2>
+        <div class="flex flex-wrap gap-2">
+          <span *ngFor="let tag of video.tags" class="badge badge-primary">#{{ tag }}</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

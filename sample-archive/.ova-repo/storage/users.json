@@ -1,0 +1,12 @@
+{
+  "user": {
+    "username": "user",
+    "passwordHash": "$2a$10$X1M4mcEhZavDvXRsDYy5o./YbaRBURhx4B..P6pTXlR/1bNN.V/oe",
+    "roles": [
+      "admin"
+    ],
+    "createdAt": "2025-05-31T20:58:52.3248832Z",
+    "lastLoginAt": "0001-01-01T00:00:00Z",
+    "saved": []
+  }
+}

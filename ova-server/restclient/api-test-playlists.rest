@@ -1,0 +1,28 @@
+### 
+# Get all playlists
+GET http://127.0.0.1:5050/api/v1/playlists HTTP/1.1
+Accept: application/json
+Cookie: session_id=ba97f4aa-3a1f-45d6-9f08-35b09ad90436
+
+### 
+# Create a new playlist
+POST http://127.0.0.1:5050/api/v1/playlists HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+Cookie: session_id=767a0837-31f3-4f30-ac42-bac32edf70b5
+
+{
+  "title": "My Playlist",
+  "description": "This is a test playlist",
+  "videoIds": ["video1", "video2"]
+}
+
+### 
+# Get a playlist by Slug
+GET http://127.0.0.1:5050/api/v1/playlists/my-playlist HTTP/1.1
+Accept: application/json
+
+### 
+# Delete a playlist by Slug
+DELETE http://127.0.0.1:5050/api/v1/playlists/My%20Playlist HTTP/1.1
+Accept: application/json
