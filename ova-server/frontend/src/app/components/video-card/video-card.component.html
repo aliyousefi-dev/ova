@@ -58,17 +58,24 @@
         </div>
         <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-44 z-40">
           <li><a (click)="download($event)">Download</a></li>
+          <li><a (click)="addToFavorites($event)">Save to Favorites</a></li>
           <li><a (click)="addToPlaylist($event)">Save to Playlist</a></li>
-          <li><a (click)="addToFavorites($event)">Add to Favorites</a></li>
         </ul>
       </div>
     </div>
 
-    <!-- Tags -->
-    <div class="flex flex-wrap gap-1">
-      <span *ngFor="let tag of tags" class="badge badge-outline badge-sm text-white bg-transparent border-white/30">
-        #{{ tag }}
-      </span>
-    </div>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1 mt-2">
+  <span
+    *ngFor="let tag of tags"
+    class="px-2 py-0.5 text-xs text-white rounded-md bg-base-100 hover:bg-base-200 transition-colors"
+  >
+    #{{ tag }}
+  </span>
+</div>
+
+
+
+
   </div>
 </div>

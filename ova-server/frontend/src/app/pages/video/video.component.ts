@@ -5,12 +5,14 @@ import { SearchBarComponent } from '../../components/search-bar/search-bar';
 import { FolderTreeComponent } from '../../components/folder-tree/folder-tree.component';
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
 import { APIService } from '../../services/api.service';
+import { FormsModule } from '@angular/forms'; // Add this for ngModel
 
 @Component({
   selector: 'app-video',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     VideoCardComponent,
     SearchBarComponent,
     FolderTreeComponent,
@@ -24,6 +26,7 @@ export class VideoComponent implements OnInit {
   protected loading = true;
   protected searchTerm = '';
   protected currentFolder = '';
+  protected sortOption: string = 'titleAsc'; // default sort
 
   constructor(private apiservice: APIService) {}
 
@@ -71,8 +74,25 @@ export class VideoComponent implements OnInit {
   }
 
   get filteredVideos() {
-    return this.videos.filter((v) =>
+    const filtered = this.videos.filter((v) =>
       v.title.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
+
+    return this.sortVideos(filtered);
+  }
+
+  sortVideos(videos: any[]) {
+    switch (this.sortOption) {
+      case 'titleAsc':
+        return videos.sort((a, b) => a.title.localeCompare(b.title));
+      case 'titleDesc':
+        return videos.sort((a, b) => b.title.localeCompare(a.title));
+      case 'durationAsc':
+        return videos.sort((a, b) => a.durationSeconds - b.durationSeconds);
+      case 'durationDesc':
+        return videos.sort((a, b) => b.durationSeconds - a.durationSeconds);
+      default:
+        return videos;
+    }
   }
 }
