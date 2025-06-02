@@ -1,27 +1,19 @@
-# Online Video Archive
+# Online Video Archive (OVA)
 
-A Flask-based web application for browsing and managing video archives over a local area network (LAN). Designed for easy access to your video library with features like collections, favorites, explore functionality, and folder-based navigation.
-
+Online Video Archive is a web application for browsing and managing video libraries over a local area network (LAN). The project uses a **Golang backend** and an **Angular frontend**, designed for fast, modular, and maintainable media library access.
 
 ---
 
 ## Features
 
-- **Explore:** Browse videos by categories or tags.
-- **Collections:** Group videos into user-defined collections.
-- **Favorites:** Mark and quickly access your favorite videos.
-- **Folder Structure:** Navigate videos organized in folders on disk.
-- **User Authentication:** Secure login system to restrict access.
-- **Modular Blueprints:** Clean separation of features for maintainability.
-- **Metadata Management:** Automatic metadata generation and caching.
-- **Responsive UI:** User-friendly interface powered by Jinja2 templates.
-
----
-
-## Usage
-For Windows users, start the application by simply running the included run.bat file:
-
-Double-click run.bat to launch the Flask server.
-
-The server will be accessible at:
-http://<your-lan-ip>:8080
+- **Explore:** Browse videos by categories, folders, or tags.
+- **Folder-Based Navigation:** Automatically reflects the physical folder structure from disk.
+- **Favorites:** Mark and quickly access favorite videos.
+- **Collections:** Organize videos into custom user-defined collections.
+- **User Authentication:** Secure login system using JWT-based authentication.
+- **Metadata Management:** Automatically generates and caches video metadata.
+- **Modular Architecture:**
+  - Backend written in Go with structured services, handlers, and routing.
+  - Frontend built with Angular using components and services.
+- **REST API:** Clean, versioned API for frontend-backend communication.
+- **Static Frontend Hosting:** Angular app is prebuilt and served via the Go backend.
