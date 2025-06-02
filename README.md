@@ -1,4 +1,4 @@
-# Online Video Archive (v1.0)
+# Online Video Archive
 
 A Flask-based web application for browsing and managing video archives over a local area network (LAN). Designed for easy access to your video library with features like collections, favorites, explore functionality, and folder-based navigation.
 
