@@ -1,28 +1,47 @@
-### 
-# Get all playlists
-GET http://localhost:4041/api/v1/playlists HTTP/1.1
+###
+# Get all playlists for user "user"
+GET http://localhost:4041/api/v1/users/user/playlists HTTP/1.1
 Accept: application/json
-Cookie: session_id=ba97f4aa-3a1f-45d6-9f08-35b09ad90436
+Cookie: session_id=723984b9-8860-4e6e-b1b9-9c729d6e1e39
 
-### 
-# Create a new playlist
-POST http://localhost:4041/api/v1/playlists HTTP/1.1
+###
+# Create a new playlist for user "user"
+POST http://localhost:4041/api/v1/users/user/playlists HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Cookie: session_id=767a0837-31f3-4f30-ac42-bac32edf70b5
+Cookie: session_id=723984b9-8860-4e6e-b1b9-9c729d6e1e39
 
 {
-  "title": "My Playlist",
+  "title": "asdasd asddd",
   "description": "This is a test playlist",
   "videoIds": ["video1", "video2"]
 }
 
-### 
-# Get a playlist by Slug
-GET http://localhost:4041/api/v1/playlists/my-playlist HTTP/1.1
+###
+# Get a playlist by slug for user "user"
+GET http://localhost:4041/api/v1/users/user/playlists/my-playlist HTTP/1.1
 Accept: application/json
+Cookie: session_id=723984b9-8860-4e6e-b1b9-9c729d6e1e39
 
-### 
-# Delete a playlist by Slug
-DELETE http://localhost:4041/api/v1/playlists/My%20Playlist HTTP/1.1
+###
+# Delete a playlist by slug for user "user"
+DELETE http://localhost:4041/api/v1/users/user/playlists/my-playlist HTTP/1.1
 Accept: application/json
+Cookie: session_id=723984b9-8860-4e6e-b1b9-9c729d6e1e39
+
+###
+# Add a video to a playlist by slug for user "user"
+POST http://localhost:4041/api/v1/users/user/playlists/my-playlist/videos HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+Cookie: session_id=723984b9-8860-4e6e-b1b9-9c729d6e1e39
+
+{
+  "videoId": "video3"
+}
+
+###
+# Delete a video from a playlist by slug for user "user"
+DELETE http://localhost:4041/api/v1/users/user/playlists/my-playlist/videos HTTP/1.1
+Accept: application/json
+Cookie: session_id=723984b9-8860-4e6e-b1b9-9c729d6e1e39

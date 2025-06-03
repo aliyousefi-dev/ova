@@ -2,11 +2,13 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { APIService } from '../../services/api.service';
+import { FormsModule } from '@angular/forms';
+import { PlaylistModalComponent } from '../playlist-modal/playlist-modal.component';
 
 @Component({
   selector: 'app-video-card',
   templateUrl: './video-card.component.html',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule, PlaylistModalComponent],
   standalone: true,
 })
 export class VideoCardComponent {
@@ -22,7 +24,71 @@ export class VideoCardComponent {
   hovering = false;
   savingFavorite = false;
 
+  playlistModalVisible = false;
+
+  playlists: { title: string; slug: string; checked: boolean }[] = [];
+  originalPlaylists: { title: string; slug: string; checked: boolean }[] = [];
+
   constructor(public apiService: APIService) {}
+
+  // Open modal, load playlists and set checked states
+  addToPlaylist(event: MouseEvent) {
+    event.stopPropagation();
+    if (!this.username) return;
+
+    this.apiService.getUserPlaylists(this.username).subscribe((pls) => {
+      // Create a fresh playlist array with checked = false initially
+      const checkList = pls.map((p) => ({ ...p, checked: false }));
+
+      // Fetch each playlist's videos to determine if video is inside
+      Promise.all(
+        checkList.map(
+          (playlist) =>
+            new Promise<void>((resolve) => {
+              this.apiService
+                .getUserPlaylistBySlug(this.username, playlist.slug)
+                .subscribe((plData) => {
+                  playlist.checked = plData.videoIds.includes(this.videoId);
+                  resolve();
+                });
+            })
+        )
+      ).then(() => {
+        this.playlists = checkList;
+        // Make a deep copy for original state to compare later
+        this.originalPlaylists = checkList.map((p) => ({ ...p }));
+        this.playlistModalVisible = true;
+      });
+    });
+  }
+
+  // Handle modal close and apply playlist changes (add/remove video)
+  closePlaylistModal(
+    updatedPlaylists: { title: string; slug: string; checked: boolean }[]
+  ) {
+    this.playlistModalVisible = false;
+    if (!this.username) return;
+
+    updatedPlaylists.forEach((playlist) => {
+      // Find original checked state from originalPlaylists, not current playlists
+      const original = this.originalPlaylists.find(
+        (p) => p.slug === playlist.slug
+      );
+      if (!original) return;
+
+      if (playlist.checked && !original.checked) {
+        // Video was not in playlist, now should be added
+        this.apiService
+          .addVideoToPlaylist(this.username, playlist.slug, this.videoId)
+          .subscribe();
+      } else if (!playlist.checked && original.checked) {
+        // Video was in playlist, now should be removed
+        this.apiService
+          .deleteVideoFromPlaylist(this.username, playlist.slug, this.videoId)
+          .subscribe();
+      }
+    });
+  }
 
   toggleFavorite(event: MouseEvent) {
     event.stopPropagation();
@@ -59,12 +125,6 @@ export class VideoCardComponent {
     document.body.removeChild(anchor);
   }
 
-  addToPlaylist(event: MouseEvent) {
-    event.stopPropagation();
-    console.log('Add to Playlist', this.title);
-    // TODO
-  }
-
   formatDuration(seconds: number): string {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
@@ -77,7 +137,7 @@ export class VideoCardComponent {
   }
 
   get timeSinceAdded(): string {
-    const addedDate = new Date(Date.now()); // TODO: use real addedAt timestamp
+    const addedDate = new Date(Date.now()); // TODO: replace with real addedAt timestamp
     const now = new Date();
     const diffMs = now.getTime() - addedDate.getTime();
     const seconds = Math.floor(diffMs / 1000);
@@ -88,6 +148,6 @@ export class VideoCardComponent {
     if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
     if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
     if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-    return `just now`;
+    return 'just now';
   }
 }

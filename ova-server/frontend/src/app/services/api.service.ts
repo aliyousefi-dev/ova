@@ -1,18 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { VideoData } from '../data-types/video-data.model';
 import { map } from 'rxjs/operators';
 
-interface FavoritesResponse {
-  username: string;
-  favorites: string[];
-}
-
-interface AuthStatusResponse {
-  authenticated: boolean;
-  username?: string;
-}
+import { VideoData } from '../data-types/video-data.model';
+import { AuthStatusResponse } from '../data-types/auth-status-response';
+import { FavoritesResponse } from '../data-types/favorite-response';
+import { PlaylistData, PlaylistResponse } from '../data-types/playlist-data';
 
 @Injectable({
   providedIn: 'root',
@@ -42,9 +36,7 @@ export class APIService {
       .get<{ status: string; data: AuthStatusResponse; message: string }>(
         `${this.baseUrl}/auth/status`
       )
-      .pipe(
-        map((response) => response.data) // unwrap the data property
-      );
+      .pipe(map((response) => response.data));
   }
 
   getFolders(): Observable<any> {
@@ -97,5 +89,76 @@ export class APIService {
         { favorites }
       )
       .pipe(map((response) => response.data));
+  }
+
+  // Playlists
+
+  // Get all playlists for a user
+  getUserPlaylists(username: string): Observable<PlaylistData[]> {
+    return this.http
+      .get<PlaylistResponse>(`${this.baseUrl}/users/${username}/playlists`)
+      .pipe(map((res) => (res.data as any).playlists || []));
+  }
+
+  // Create a new playlist for a user
+  createUserPlaylist(
+    username: string,
+    playlist: { title: string; description?: string; videoIds: string[] }
+  ): Observable<PlaylistData> {
+    return this.http
+      .post<PlaylistResponse>(
+        `${this.baseUrl}/users/${username}/playlists`,
+        playlist
+      )
+      .pipe(map((res) => res.data as PlaylistData));
+  }
+
+  // Get playlist by slug for a user
+  getUserPlaylistBySlug(
+    username: string,
+    slug: string
+  ): Observable<PlaylistData> {
+    return this.http
+      .get<PlaylistResponse>(
+        `${this.baseUrl}/users/${username}/playlists/${slug}`
+      )
+      .pipe(map((res) => res.data as PlaylistData));
+  }
+
+  // Delete playlist by slug for a user
+  deleteUserPlaylistBySlug(username: string, slug: string): Observable<void> {
+    return this.http
+      .delete<PlaylistResponse>(
+        `${this.baseUrl}/users/${username}/playlists/${slug}`
+      )
+      .pipe(map(() => void 0));
+  }
+
+  // Add a video to a playlist
+  addVideoToPlaylist(
+    username: string,
+    slug: string,
+    videoId: string
+  ): Observable<PlaylistData> {
+    console.log(`${this.baseUrl}/users/${username}/playlists/${slug}/videos`);
+    return this.http
+      .post<PlaylistResponse>(
+        `${this.baseUrl}/users/${username}/playlists/${slug}/videos`,
+        { videoId }
+      )
+      .pipe(map((res) => res.data as PlaylistData));
+  }
+
+  // Remove a video from a playlist
+  deleteVideoFromPlaylist(
+    username: string,
+    slug: string,
+    videoId: string
+  ): Observable<PlaylistData> {
+    return this.http
+      .delete<PlaylistResponse>(
+        `${this.baseUrl}/users/${username}/playlists/${slug}/videos/${videoId}`
+      )
+      .pipe(map((res) => res.data as PlaylistData));
   }
 }

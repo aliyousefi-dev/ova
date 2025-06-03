@@ -16,6 +16,6 @@ func GeneratePlaylistJSON(title string) PlaylistData {
 		Title:       title,
 		Description: "A new sample playlist",
 		VideoIDs:    []string{},
-		Slug:        utils.ToSlug(title), // default empty, to be filled when added
+		Slug:        utils.ToSlug(title),
 	}
 }

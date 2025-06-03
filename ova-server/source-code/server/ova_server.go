@@ -44,8 +44,8 @@ func (s *OvaServer) initRoutes() {
 
 	v1 := s.router.Group("/api/v1")
 	{
-		api.RegisterPlaylistsRoutes(v1, s.StorageManager, s.SessionManager)
-		api.RegisterUserRoutes(v1, s.StorageManager, s.SessionManager)
+		api.RegisterUserPlaylistRoutes(v1, s.StorageManager, s.SessionManager)
+		api.RegisterUserFavoritesRoutes(v1, s.StorageManager, s.SessionManager)
 		api.RegisterVideoRoutes(v1, s.StorageManager, s.SessionManager, s.BaseDir)
 		api.RegisterSearchRoutes(v1, s.StorageManager, s.SessionManager)
 		api.RegisterAuthRoutes(v1, s.StorageManager, s.SessionManager)

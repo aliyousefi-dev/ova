@@ -34,6 +34,28 @@
   </select>
 </div>
 
+<!-- Collections Dropdown -->
+<div class="max-w-7xl mx-auto px-4 mt-4 flex justify-end relative">
+
+  <ul
+    *ngIf="isCollectionsDropdownOpen"
+    class="absolute right-0 mt-12 w-64 bg-white border rounded shadow z-50 max-h-80 overflow-auto"
+  >
+    <li
+      *ngFor="let playlist of playlists"
+      (click)="selectPlaylist(playlist)"
+      class="p-2 hover:bg-gray-100 cursor-pointer"
+    >
+      <div class="font-medium">{{ playlist.title }}</div>
+      <div class="text-sm text-gray-500">{{ playlist.description }}</div>
+    </li>
+    <li *ngIf="playlists.length === 0" class="p-2 text-gray-500">
+      No collections found.
+    </li>
+  </ul>
+</div>
+
+
 <!-- Videos Block -->
 <div class="max-w-7xl mx-auto px-4 mt-6">
   <p *ngIf="loading" class="text-gray-700 font-medium text-center">Loading videos...</p>

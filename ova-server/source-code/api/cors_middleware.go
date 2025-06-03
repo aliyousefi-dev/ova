@@ -12,7 +12,7 @@ import (
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		debug := true
+		debug := false
 		if !debug {
 			// Debug disabled: skip CORS processing
 			c.Next()

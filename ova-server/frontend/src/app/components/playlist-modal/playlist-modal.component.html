@@ -1,0 +1,22 @@
+<dialog *ngIf="visible" class="modal" open>
+    <div class="modal-box bg-base-200 text-white">
+      <h3 class="font-bold text-lg mb-4">Add to Playlist</h3>
+      <form>
+        <div class="form-control" *ngFor="let playlist of playlists">
+          <label class="label cursor-pointer">
+            <input
+              type="checkbox"
+              class="checkbox checkbox-sm mr-2"
+              [(ngModel)]="playlist.checked"
+              name="{{ playlist.slug }}"
+            />
+            <span class="label-text text-white">{{ playlist.title }}</span>
+          </label>
+        </div>
+      </form>
+      <div class="modal-action mt-4">
+        <button class="btn btn-sm" (click)="closeModal()">Close</button>
+      </div>
+    </div>
+  </dialog>
+  

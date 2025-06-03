@@ -10,6 +10,8 @@ import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.com
 import { APIService } from '../../services/api.service';
 import { VideoGridComponent } from '../../components/video-grid/video-grid.component';
 
+import { PlaylistData } from '../../data-types/playlist-data';
+
 @Component({
   selector: 'app-video',
   standalone: true,
@@ -31,11 +33,30 @@ export class VideoComponent implements OnInit {
   protected currentFolder = '';
   protected sortOption: string = 'titleAsc';
 
+  // New properties for collections modal
+  isCollectionsDropdownOpen = false;
+  playlists: PlaylistData[] = [];
+  username: string | null = null;
+
   constructor(private apiservice: APIService, private router: Router) {}
 
   ngOnInit() {
     this.fetchFolders();
     this.fetchVideos();
+    this.loadUsername();
+  }
+
+  loadUsername() {
+    this.apiservice.checkAuth().subscribe({
+      next: (auth) => {
+        if (auth.authenticated && auth.username) {
+          this.username = auth.username;
+        }
+      },
+      error: () => {
+        this.username = null;
+      },
+    });
   }
 
   getThumbnailUrl(videoId: string): string {
@@ -107,5 +128,24 @@ export class VideoComponent implements OnInit {
       default:
         return videos;
     }
+  }
+
+  loadPlaylists() {
+    if (!this.username) return;
+    this.apiservice.getUserPlaylists(this.username).subscribe({
+      next: (res) => {
+        this.playlists = res || [];
+      },
+      error: (err) => {
+        console.error('Failed to load playlists', err);
+        this.playlists = [];
+      },
+    });
+  }
+
+  selectPlaylist(playlist: PlaylistData) {
+    this.isCollectionsDropdownOpen = false;
+    console.log('Selected playlist:', playlist);
+    // You can navigate or filter videos here
   }
 }

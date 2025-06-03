@@ -5,12 +5,13 @@ import (
 )
 
 type UserData struct {
-	Username     string    `json:"username"`
-	PasswordHash string    `json:"passwordHash"`
-	Roles        []string  `json:"roles"`
-	CreatedAt    time.Time `json:"createdAt"`
-	LastLoginAt  time.Time `json:"lastLoginAt,omitempty"`
-	Favorites    []string  `json:"favorites"`
+	Username     string         `json:"username"`
+	PasswordHash string         `json:"passwordHash"`
+	Roles        []string       `json:"roles"`
+	CreatedAt    time.Time      `json:"createdAt"`
+	LastLoginAt  time.Time      `json:"lastLoginAt,omitempty"`
+	Favorites    []string       `json:"favorites"`
+	Playlists    []PlaylistData `json:"playlists"`
 }
 
 func GenerateUserJSON(username string, passwordHashed string) UserData {
@@ -21,5 +22,6 @@ func GenerateUserJSON(username string, passwordHashed string) UserData {
 		CreatedAt:    time.Now().UTC(),
 		LastLoginAt:  time.Time{},
 		Favorites:    []string{},
+		Playlists:    []PlaylistData{},
 	}
 }
