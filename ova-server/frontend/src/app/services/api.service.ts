@@ -2,6 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { VideoData } from '../data-types/video-data.model';
+import { map } from 'rxjs/operators';
+
+interface FavoritesResponse {
+  username: string;
+  favorites: string[];
+}
+
+interface AuthStatusResponse {
+  authenticated: boolean;
+  username?: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -26,8 +37,14 @@ export class APIService {
     );
   }
 
-  checkAuth(): Observable<{ authenticated: boolean }> {
-    return this.http.get<{ authenticated: boolean }>('/api/v1/auth/status');
+  checkAuth(): Observable<AuthStatusResponse> {
+    return this.http
+      .get<{ status: string; data: AuthStatusResponse; message: string }>(
+        `${this.baseUrl}/auth/status`
+      )
+      .pipe(
+        map((response) => response.data) // unwrap the data property
+      );
   }
 
   getFolders(): Observable<any> {
@@ -60,5 +77,25 @@ export class APIService {
 
   getPreviewUrl(videoId: string): string {
     return `${this.baseUrl}/preview/${videoId}`;
+  }
+
+  getUserFavorites(username: string): Observable<FavoritesResponse> {
+    return this.http
+      .get<{ data: FavoritesResponse; message: string; status: string }>(
+        `${this.baseUrl}/users/${username}/favorites`
+      )
+      .pipe(map((response) => response.data));
+  }
+
+  updateUserFavorites(
+    username: string,
+    favorites: string[]
+  ): Observable<FavoritesResponse> {
+    return this.http
+      .post<{ data: FavoritesResponse; message: string; status: string }>(
+        `${this.baseUrl}/users/${username}/favorites`,
+        { favorites }
+      )
+      .pipe(map((response) => response.data));
   }
 }

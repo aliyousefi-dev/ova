@@ -8,8 +8,17 @@ import (
 )
 
 // CORSMiddleware allows all origins dynamically and supports credentials
+// If debug is false, middleware does nothing (passes through).
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
+		debug := true
+		if !debug {
+			// Debug disabled: skip CORS processing
+			c.Next()
+			return
+		}
+
 		origin := c.Request.Header.Get("Origin")
 
 		if origin != "" {

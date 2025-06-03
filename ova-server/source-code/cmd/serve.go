@@ -47,10 +47,6 @@ var serveCmd = &cobra.Command{
 		if !serveBackendOnly {
 			if _, err := os.Stat(frontendPath); err == nil {
 				serveFrontend = true
-				if err := repository.WriteRuntimeConfig(addr, exeDir); err != nil {
-					serveLogger.Error("Failed to write frontend config: %v", err)
-					os.Exit(1)
-				}
 				serveLogger.Info("Serving frontend from %s", frontendPath)
 			} else {
 				serveLogger.Warn("Frontend build not found at %s. Only backend will be served.", frontendPath)

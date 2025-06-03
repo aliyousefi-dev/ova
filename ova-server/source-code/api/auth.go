@@ -99,13 +99,17 @@ func (sm *SessionManager) logoutHandler(c *gin.Context) {
 func (sm *SessionManager) authStatusHandler(c *gin.Context) {
 	sessionID, err := c.Cookie("session_id")
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"authenticated": false})
+		respondSuccess(c, http.StatusOK, gin.H{"authenticated": false}, "Not authenticated")
 		return
 	}
 
-	if _, exists := sm.sessions[sessionID]; exists {
-		c.JSON(http.StatusOK, gin.H{"authenticated": true})
+	username, exists := sm.sessions[sessionID]
+	if exists {
+		respondSuccess(c, http.StatusOK, gin.H{
+			"authenticated": true,
+			"username":      username,
+		}, "Status check successful")
 	} else {
-		c.JSON(http.StatusOK, gin.H{"authenticated": false})
+		respondSuccess(c, http.StatusOK, gin.H{"authenticated": false}, "Not authenticated")
 	}
 }
