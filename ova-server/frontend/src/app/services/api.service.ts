@@ -8,6 +8,12 @@ import { AuthStatusResponse } from '../data-types/auth-status-response';
 import { FavoritesResponse } from '../data-types/favorite-response';
 import { PlaylistData, PlaylistResponse } from '../data-types/playlist-data';
 
+interface ApiResponse<T> {
+  data: T;
+  message: string;
+  status: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -160,5 +166,11 @@ export class APIService {
         `${this.baseUrl}/users/${username}/playlists/${slug}/videos/${videoId}`
       )
       .pipe(map((res) => res.data as PlaylistData));
+  }
+
+  getVideosByIds(ids: string[]): Observable<ApiResponse<VideoData[]>> {
+    return this.http.post<ApiResponse<VideoData[]>>('/api/v1/videos/batch', {
+      ids,
+    });
   }
 }

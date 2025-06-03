@@ -1,12 +1,14 @@
 ### Get Video Details by ID (replace videoId and session_id accordingly)
 GET http://localhost:4041/api/v1/videos/3e73d4d3a2758baa59b6b8928bd6c3406c65582c99b24ff3474ae60f5e55c461
 Accept: application/json
+Cookie: session_id=4271d0c7-4ce7-49f9-a850-512495bd9a6b
 
 ###
 
 ### Get Videos by Folder (replace folder path and session_id accordingly)
 GET http://localhost:4041/api/v1/videos?folder=
 Accept: application/json
+Cookie: session_id=4271d0c7-4ce7-49f9-a850-512495bd9a6b
 
 ### Get Folder List (replace session_id if needed)
 GET http://localhost:4041/api/v1/folders

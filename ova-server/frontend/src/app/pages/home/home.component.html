@@ -1,7 +1,18 @@
 <div class="flex flex-col items-center justify-center min-h-screen p-6">
     <h1 class="text-4xl font-bold mb-4">Welcome to OVA Video App</h1>
     <p class="mb-6 text-lg text-gray-700">Browse and watch amazing videos!</p>
-    <a routerLink="/videos" class="btn btn-primary px-6 py-3 rounded"
-      >Go to Videos</a
-    >
+
+    <div class="flex flex-col sm:flex-row gap-4 mt-6">
+      <a
+        routerLink="/videos"
+        class="btn btn-primary px-8 py-3 rounded-md text-lg text-white transition-transform hover:scale-105"
+        >Go to Videos</a
+      >
+      <a
+        routerLink="/favorites"
+        class="btn btn-secondary px-8 py-3 rounded-md text-lg text-white transition-transform hover:scale-105"
+        >Go to Favorites</a
+      >
+    </div>
+
   </div>

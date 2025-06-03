@@ -1,7 +1,21 @@
-<nav class="w-full bg-base-300 text-white px-6 py-5 flex items-center justify-between">
-  <div class="text-xl font-bold">{{ title }}</div>
-  <div class="flex-gap gap-3">
-    <a routerLink="/" class="btn btn-outline px-3 py-1 rounded">Home</a>
-    <button class="btn btn-soft btn-error px-3 py-1 rounded" (click)="onLogout()">Logout</button>
+<nav class="w-full bg-base-300 text-white px-6 py-4 flex items-center justify-between shadow-md">
+  <div class="text-xl font-semibold tracking-wide">
+    {{ title }}
+  </div>
+  <div class="flex items-center space-x-4">
+    <a
+      routerLink="/"
+      class="btn btn-ghost px-4 py-2 rounded hover:bg-primary-focus transition"
+      aria-label="Go to Home"
+    >
+      Home
+    </a>
+    <button
+      class="btn btn-ghost px-4 py-2 rounded hover:bg-error-focus transition"
+      (click)="onLogout()"
+      aria-label="Logout"
+    >
+      Logout
+    </button>
   </div>
 </nav>

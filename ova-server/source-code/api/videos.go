@@ -18,6 +18,7 @@ func RegisterVideoRoutes(rg *gin.RouterGroup, manager *storage.StorageManager, s
 	{
 		videos.GET("/:videoId", getVideoByID(manager))      // GET /api/v1/videos/{videoId}
 		videos.GET("", getVideosByFolder(manager, baseDir)) // ✅ GET /api/v1/videos?folder=...
+		videos.POST("/batch", getVideosByIds(manager))
 	}
 
 	// New folder route
@@ -103,5 +104,33 @@ func getFolderList(manager *storage.StorageManager) gin.HandlerFunc {
 		}
 
 		respondSuccess(c, http.StatusOK, folders, "Folders retrieved successfully")
+	}
+}
+
+func getVideosByIds(manager *storage.StorageManager) gin.HandlerFunc {
+	type requestBody struct {
+		IDs []string `json:"ids"`
+	}
+	return func(c *gin.Context) {
+		var body requestBody
+		if err := c.ShouldBindJSON(&body); err != nil {
+			respondError(c, http.StatusBadRequest, "Invalid request")
+			return
+		}
+
+		videosMap, err := manager.Videos.LoadVideos()
+		if err != nil {
+			respondError(c, http.StatusInternalServerError, "Failed to load videos")
+			return
+		}
+
+		var matched []datatypes.VideoData
+		for _, id := range body.IDs {
+			if video, ok := videosMap[id]; ok {
+				matched = append(matched, video)
+			}
+		}
+
+		respondSuccess(c, http.StatusOK, matched, "Videos retrieved successfully")
 	}
 }

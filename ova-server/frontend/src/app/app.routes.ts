@@ -5,6 +5,7 @@ import { NotFoundComponent } from './pages/NotFoundComponent/NotFoundComponent';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AuthGuard } from './services/auth.guard';
+import { FavoritesComponent } from './pages/favorites/favorites.component';
 
 export const routes: Routes = [
   {
@@ -20,6 +21,11 @@ export const routes: Routes = [
   {
     path: 'watch/:videoId',
     component: WatchComponent,
+    canActivate: [AuthGuard], // ⬅️ protected
+  },
+  {
+    path: 'favorites',
+    component: FavoritesComponent,
     canActivate: [AuthGuard], // ⬅️ protected
   },
   {
