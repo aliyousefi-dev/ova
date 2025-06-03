@@ -1,4 +1,4 @@
-package datamodels
+package datatypes
 
 import "ova-server/source-code/utils"
 

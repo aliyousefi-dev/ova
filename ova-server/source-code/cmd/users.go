@@ -7,7 +7,7 @@ import (
 
 	"ova-server/source-code/logs"
 	"ova-server/source-code/storage"
-	"ova-server/source-code/storage/datamodels"
+	datatypes "ova-server/source-code/storage/datatypes"
 
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/bcrypt"
@@ -69,7 +69,7 @@ var userAddCmd = &cobra.Command{
 		storageDir := filepath.Join(".", ".ova-repo", "storage")
 		st := storage.NewStorageManager(storageDir)
 
-		newUser := datamodels.GenerateUserJSON(username, hashPassword)
+		newUser := datatypes.GenerateUserJSON(username, hashPassword)
 		newUser.Username = username
 
 		if err := st.Users.AddUser(newUser); err != nil {

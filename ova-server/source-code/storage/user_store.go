@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"ova-server/source-code/storage/datamodels"
+	"ova-server/source-code/storage/datatypes"
 )
 
 type UserStore struct {
@@ -23,11 +23,11 @@ func (s *UserStore) filePath() string {
 }
 
 // LoadUsers loads all users as a map[username]UserData
-func (s *UserStore) LoadUsers() (map[string]datamodels.UserData, error) {
+func (s *UserStore) LoadUsers() (map[string]datatypes.UserData, error) {
 	path := s.filePath()
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return make(map[string]datamodels.UserData), nil
+		return make(map[string]datatypes.UserData), nil
 	}
 
 	data, err := os.ReadFile(path)
@@ -35,7 +35,7 @@ func (s *UserStore) LoadUsers() (map[string]datamodels.UserData, error) {
 		return nil, err
 	}
 
-	var users map[string]datamodels.UserData
+	var users map[string]datatypes.UserData
 	if err := json.Unmarshal(data, &users); err != nil {
 		return nil, err
 	}
@@ -43,7 +43,7 @@ func (s *UserStore) LoadUsers() (map[string]datamodels.UserData, error) {
 }
 
 // SaveUsers saves all users to disk
-func (s *UserStore) SaveUsers(users map[string]datamodels.UserData) error {
+func (s *UserStore) SaveUsers(users map[string]datatypes.UserData) error {
 	data, err := json.MarshalIndent(users, "", "  ")
 	if err != nil {
 		return err
@@ -52,7 +52,7 @@ func (s *UserStore) SaveUsers(users map[string]datamodels.UserData) error {
 }
 
 // AddUser adds a new user to the storage
-func (s *UserStore) AddUser(user datamodels.UserData) error {
+func (s *UserStore) AddUser(user datatypes.UserData) error {
 	users, err := s.LoadUsers()
 	if err != nil {
 		return err
@@ -82,7 +82,7 @@ func (s *UserStore) RemoveUser(username string) error {
 }
 
 // FindUser retrieves a single user by username
-func (s *UserStore) FindUser(username string) (*datamodels.UserData, error) {
+func (s *UserStore) FindUser(username string) (*datatypes.UserData, error) {
 	users, err := s.LoadUsers()
 	if err != nil {
 		return nil, err
@@ -98,7 +98,7 @@ func (s *UserStore) FindUser(username string) (*datamodels.UserData, error) {
 
 // UpdateUser updates an existing user.
 // Returns an error if the user does not exist.
-func (s *UserStore) UpdateUser(u datamodels.UserData) error {
+func (s *UserStore) UpdateUser(u datatypes.UserData) error {
 	users, err := s.LoadUsers()
 	if err != nil {
 		return err

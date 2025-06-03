@@ -4,10 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"ova-server/source-code/storage/datatypes"
 	"path/filepath"
 	"time"
-
-	"ova-server/source-code/storage/datamodels"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -53,11 +52,9 @@ func (r *Repository) Init() error {
 	}
 
 	// Config
-	config := datamodels.GenerateEmptyConfigJson()
+	config := datatypes.GenerateEmptyConfigJson()
 	config.ServerHost = "127.0.0.1"
 	config.ServerPort = 8080
-	config.FrontendHost = "127.0.0.1"
-	config.FrontendPort = 8081
 	config.DefaultUser = "user"
 	config.DefaultPassword = "pass"
 	config.RepositoryPath = r.RepositoryPath
@@ -74,7 +71,7 @@ func (r *Repository) Init() error {
 		return fmt.Errorf("failed to hash password: %w", err)
 	}
 
-	user := datamodels.UserData{
+	user := datatypes.UserData{
 		Username:     config.DefaultUser,
 		PasswordHash: string(hashedPass),
 		Roles:        []string{"admin"},
@@ -82,7 +79,7 @@ func (r *Repository) Init() error {
 		Favorites:    []string{},
 	}
 
-	usersMap := map[string]datamodels.UserData{
+	usersMap := map[string]datatypes.UserData{
 		user.Username: user,
 	}
 

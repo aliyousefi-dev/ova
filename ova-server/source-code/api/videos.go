@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"ova-server/source-code/storage"
-	"ova-server/source-code/storage/datamodels"
+	"ova-server/source-code/storage/datatypes"
 
 	"github.com/gin-gonic/gin"
 )
@@ -50,7 +50,7 @@ func getVideosByFolder(manager *storage.StorageManager, baseDir string) gin.Hand
 			return
 		}
 
-		var videosInFolder []datamodels.VideoData
+		var videosInFolder []datatypes.VideoData
 		for _, video := range videosMap {
 			relPath := filepath.ToSlash(video.FilePath)
 			videoFolder := strings.Trim(filepath.ToSlash(filepath.Dir(relPath)), "/")

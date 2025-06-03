@@ -1,6 +1,7 @@
 ###
-# Login (POST /api/v1/auth/login)
-POST http://192.168.164.100:4041/api/v1/auth/login HTTP/1.1
+### Login Request
+POST http://192.168.164.100:4041/api/v1/auth/login
+Origin: http://localhost:4200
 Content-Type: application/json
 Accept: application/json
 
@@ -8,6 +9,7 @@ Accept: application/json
   "username": "user",
   "password": "pass"
 }
+
 
 ###
 # Logout (POST /api/v1/auth/logout)

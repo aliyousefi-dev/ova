@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 	"ova-server/source-code/storage"
-	"ova-server/source-code/storage/datamodels"
+	"ova-server/source-code/storage/datatypes"
 	"ova-server/source-code/utils"
 
 	"github.com/gin-gonic/gin"
@@ -38,7 +38,7 @@ func getPlaylists(manager *storage.StorageManager) gin.HandlerFunc {
 // POST /playlists — create a new playlist
 func createPlaylist(manager *storage.StorageManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var newPl datamodels.PlaylistData
+		var newPl datatypes.PlaylistData
 		if err := c.ShouldBindJSON(&newPl); err != nil {
 			respondError(c, http.StatusBadRequest, "Invalid JSON: "+err.Error())
 			return

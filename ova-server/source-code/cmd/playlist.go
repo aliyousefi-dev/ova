@@ -5,7 +5,7 @@ import (
 
 	"ova-server/source-code/logs"
 	"ova-server/source-code/storage"
-	"ova-server/source-code/storage/datamodels"
+	datatypes "ova-server/source-code/storage/datatypes"
 
 	"github.com/spf13/cobra"
 )
@@ -52,7 +52,7 @@ var playlistAddCmd = &cobra.Command{
 		storageDir := filepath.Join(".", ".ova-repo", "storage")
 		st := storage.NewStorageManager(storageDir)
 
-		newPlaylist := datamodels.GeneratePlaylistJSON(playlistName)
+		newPlaylist := datatypes.GeneratePlaylistJSON(playlistName)
 		if err := st.Playlists.AddPlaylist(newPlaylist); err != nil {
 			playlistLogger.Error("Error adding playlist: %v", err)
 			return

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"ova-server/source-code/storage/datamodels"
+	"ova-server/source-code/storage/datatypes"
 	"path/filepath"
 	"strings"
 )
@@ -22,18 +22,18 @@ func (s *VideoStore) filePath() string {
 }
 
 // Load all videos (assuming videos stored in a map, if you want map change metadata accordingly)
-func (s *VideoStore) LoadVideos() (map[string]datamodels.VideoData, error) {
+func (s *VideoStore) LoadVideos() (map[string]datatypes.VideoData, error) {
 	path := s.filePath()
 	file, err := os.Open(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return make(map[string]datamodels.VideoData), nil
+			return make(map[string]datatypes.VideoData), nil
 		}
 		return nil, err
 	}
 	defer file.Close()
 
-	var videos map[string]datamodels.VideoData
+	var videos map[string]datatypes.VideoData
 	decoder := json.NewDecoder(file)
 	if err := decoder.Decode(&videos); err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func (s *VideoStore) LoadVideos() (map[string]datamodels.VideoData, error) {
 }
 
 // Save all videos
-func (s *VideoStore) SaveVideos(videos map[string]datamodels.VideoData) error {
+func (s *VideoStore) SaveVideos(videos map[string]datatypes.VideoData) error {
 	data, err := json.MarshalIndent(videos, "", "  ")
 	if err != nil {
 		return err
@@ -51,7 +51,7 @@ func (s *VideoStore) SaveVideos(videos map[string]datamodels.VideoData) error {
 }
 
 // Add or update a video — but do NOT overwrite if video exists; return error instead
-func (s *VideoStore) AddVideo(video datamodels.VideoData) error {
+func (s *VideoStore) AddVideo(video datatypes.VideoData) error {
 	videos, err := s.LoadVideos()
 	if err != nil {
 		return err
@@ -76,7 +76,7 @@ func (s *VideoStore) RemoveVideo(id string) error {
 }
 
 // Find a video by ID
-func (s *VideoStore) FindVideo(id string) (*datamodels.VideoData, error) {
+func (s *VideoStore) FindVideo(id string) (*datatypes.VideoData, error) {
 	videos, err := s.LoadVideos()
 	if err != nil {
 		return nil, err
@@ -90,7 +90,7 @@ func (s *VideoStore) FindVideo(id string) (*datamodels.VideoData, error) {
 
 // UpdateVideo replaces the existing video with the new one.
 // Returns error if the video does not exist.
-func (s *VideoStore) UpdateVideo(newVideo datamodels.VideoData) error {
+func (s *VideoStore) UpdateVideo(newVideo datatypes.VideoData) error {
 	videos, err := s.LoadVideos()
 	if err != nil {
 		return err
@@ -105,7 +105,7 @@ func (s *VideoStore) UpdateVideo(newVideo datamodels.VideoData) error {
 }
 
 // SearchVideos returns a list of videos whose title contains the query (case-insensitive).
-func (s *VideoStore) SearchVideos(query string) ([]datamodels.VideoData, error) {
+func (s *VideoStore) SearchVideos(query string) ([]datatypes.VideoData, error) {
 	query = strings.ToLower(strings.TrimSpace(query))
 
 	if query == "" {
@@ -117,7 +117,7 @@ func (s *VideoStore) SearchVideos(query string) ([]datamodels.VideoData, error) 
 		return nil, err
 	}
 
-	var results []datamodels.VideoData
+	var results []datatypes.VideoData
 	for _, video := range videos {
 		if strings.Contains(strings.ToLower(video.Title), query) {
 			results = append(results, video)

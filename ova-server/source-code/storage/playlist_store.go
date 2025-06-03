@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"ova-server/source-code/storage/datamodels"
+	"ova-server/source-code/storage/datatypes"
 	"ova-server/source-code/utils"
 )
 
@@ -23,18 +23,18 @@ func (s *PlaylistStore) filePath() string {
 }
 
 // Load all playlists
-func (s *PlaylistStore) LoadPlaylists() (map[string]datamodels.PlaylistData, error) {
+func (s *PlaylistStore) LoadPlaylists() (map[string]datatypes.PlaylistData, error) {
 	path := s.filePath()
 	file, err := os.Open(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return map[string]datamodels.PlaylistData{}, nil
+			return map[string]datatypes.PlaylistData{}, nil
 		}
 		return nil, err
 	}
 	defer file.Close()
 
-	var playlists map[string]datamodels.PlaylistData
+	var playlists map[string]datatypes.PlaylistData
 	decoder := json.NewDecoder(file)
 	if err := decoder.Decode(&playlists); err != nil {
 		return nil, err
@@ -43,7 +43,7 @@ func (s *PlaylistStore) LoadPlaylists() (map[string]datamodels.PlaylistData, err
 }
 
 // Save all playlists
-func (s *PlaylistStore) SavePlaylists(playlists map[string]datamodels.PlaylistData) error {
+func (s *PlaylistStore) SavePlaylists(playlists map[string]datatypes.PlaylistData) error {
 	data, err := json.MarshalIndent(playlists, "", "  ")
 	if err != nil {
 		return err
@@ -52,7 +52,7 @@ func (s *PlaylistStore) SavePlaylists(playlists map[string]datamodels.PlaylistDa
 }
 
 // Add or update playlist
-func (s *PlaylistStore) AddPlaylist(p datamodels.PlaylistData) error {
+func (s *PlaylistStore) AddPlaylist(p datatypes.PlaylistData) error {
 	playlists, err := s.LoadPlaylists()
 	if err != nil {
 		return err
@@ -84,7 +84,7 @@ func (s *PlaylistStore) RemovePlaylist(id string) error {
 }
 
 // Find playlist by ID
-func (s *PlaylistStore) FindPlaylistBySlug(slug string) (*datamodels.PlaylistData, error) {
+func (s *PlaylistStore) FindPlaylistBySlug(slug string) (*datatypes.PlaylistData, error) {
 	playlists, err := s.LoadPlaylists()
 	if err != nil {
 		return nil, err
@@ -97,7 +97,7 @@ func (s *PlaylistStore) FindPlaylistBySlug(slug string) (*datamodels.PlaylistDat
 }
 
 // Update playlist by slug
-func (s *PlaylistStore) UpdatePlaylist(p datamodels.PlaylistData) error {
+func (s *PlaylistStore) UpdatePlaylist(p datatypes.PlaylistData) error {
 	playlists, err := s.LoadPlaylists()
 	if err != nil {
 		return err

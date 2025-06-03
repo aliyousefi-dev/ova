@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"ova-server/source-code/storage"
-	"ova-server/source-code/storage/datamodels"
+	datatypes "ova-server/source-code/storage/datatypes"
 
 	"github.com/gin-gonic/gin"
 )
@@ -71,7 +71,7 @@ func updateUserFavorites(manager *storage.StorageManager) gin.HandlerFunc {
 		user, err := manager.Users.FindUser(username)
 		if err != nil {
 			// User doesn't exist, create new one
-			user = &datamodels.UserData{
+			user = &datatypes.UserData{
 				Username:  username,
 				CreatedAt: time.Now().UTC(),
 				Favorites: validFavorites,

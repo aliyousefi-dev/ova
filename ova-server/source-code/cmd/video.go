@@ -10,7 +10,7 @@ import (
 	"ova-server/source-code/logs"
 	"ova-server/source-code/repository"
 	"ova-server/source-code/storage"
-	"ova-server/source-code/storage/datamodels"
+	"ova-server/source-code/storage/datatypes"
 	"ova-server/source-code/utils"
 	"ova-server/source-code/videotools"
 
@@ -133,7 +133,7 @@ var videoAddCmd = &cobra.Command{
 				continue
 			}
 
-			video := datamodels.GenerateVideoJSON(videoID, title, int(duration), relVideoPath, &relThumbPath, &previewPath, resolution.Width, resolution.Height)
+			video := datatypes.GenerateVideoJSON(videoID, title, int(duration), relVideoPath, &relThumbPath, &previewPath, resolution.Width, resolution.Height)
 			err = st.Videos.AddVideo(video)
 			if err != nil {
 				videoLogger.Error("  Error saving video: %v", err)
@@ -204,7 +204,7 @@ var videoPurgeCmd = &cobra.Command{
 		storageDir := filepath.Join(".", ".ova-repo", "storage")
 		st := storage.NewStorageManager(storageDir)
 
-		err := st.Videos.SaveVideos(make(map[string]datamodels.VideoData))
+		err := st.Videos.SaveVideos(make(map[string]datatypes.VideoData))
 		if err != nil {
 			videoLogger.Error("Error purging videos: %v", err)
 			return

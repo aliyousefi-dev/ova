@@ -13,7 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type BackendServer struct {
+type OvaServer struct {
 	Addr           string
 	StorageManager *storage.StorageManager
 	SessionManager *api.SessionManager
@@ -24,11 +24,11 @@ type BackendServer struct {
 }
 
 // NewBackendServer creates and configures the unified server.
-func NewBackendServer(addr string, storageDir string, basedir string, serveFrontend bool, frontendPath string) *BackendServer {
+func NewBackendServer(addr string, storageDir string, basedir string, serveFrontend bool, frontendPath string) *OvaServer {
 	manager := storage.NewStorageManager(storageDir)
 	sessionManager := api.NewSessionManager()
 
-	return &BackendServer{
+	return &OvaServer{
 		Addr:           addr,
 		StorageManager: manager,
 		SessionManager: sessionManager,
@@ -39,7 +39,7 @@ func NewBackendServer(addr string, storageDir string, basedir string, serveFront
 	}
 }
 
-func (s *BackendServer) initRoutes() {
+func (s *OvaServer) initRoutes() {
 	s.router.Use(api.CORSMiddleware())
 
 	v1 := s.router.Group("/api/v1")
@@ -62,7 +62,7 @@ func (s *BackendServer) initRoutes() {
 	}
 }
 
-func (s *BackendServer) serveFrontendStatic() {
+func (s *OvaServer) serveFrontendStatic() {
 	fs := http.FileServer(http.Dir(s.FrontendPath))
 	s.router.NoRoute(func(c *gin.Context) {
 		path := filepath.Join(s.FrontendPath, c.Request.URL.Path)
@@ -76,7 +76,7 @@ func (s *BackendServer) serveFrontendStatic() {
 }
 
 // Run starts the unified HTTP server.
-func (s *BackendServer) Run() {
+func (s *OvaServer) Run() {
 	s.initRoutes()
 	fmt.Println("Server is running at", s.Addr)
 	if err := s.router.Run(s.Addr); err != nil {
