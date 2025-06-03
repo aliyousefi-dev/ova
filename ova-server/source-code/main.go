@@ -23,7 +23,6 @@ Ideal for efficiently hosting online video libraries.`,
 
 	// server commands
 	cmd.InitCommandServe(rootCmd)
-	cmd.InitCommandWatch(rootCmd)
 
 	// storage commands
 	cmd.InitCommandVideo(rootCmd)

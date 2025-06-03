@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"ova-server/source-code/storage"
 	"time"
@@ -64,7 +65,11 @@ func loginHandler(c *gin.Context, sm *SessionManager, manager *storage.StorageMa
 	sessionID := uuid.NewString()
 	sm.sessions[sessionID] = req.Username
 
-	c.SetCookie("session_id", sessionID, int(24*time.Hour.Seconds()), "/", "", false, true)
+	// Set cookie manually with SameSite=None and Secure for cross-origin cookies
+	cookieValue := fmt.Sprintf("session_id=%s; Path=/; Max-Age=%d; HttpOnly; SameSite=None;",
+		sessionID, int(24*time.Hour.Seconds()))
+	c.Writer.Header().Add("Set-Cookie", cookieValue)
+
 	respondSuccess(c, http.StatusOK, LoginResponse{SessionID: sessionID}, "Login successful")
 }
 
@@ -82,6 +87,10 @@ func (sm *SessionManager) logoutHandler(c *gin.Context) {
 	}
 
 	delete(sm.sessions, sessionID)
-	c.SetCookie("session_id", "", -1, "/", "", false, true)
+
+	// Clear cookie by setting expired cookie with SameSite=None and Secure
+	clearCookie := "session_id=; Path=/; Max-Age=0; HttpOnly; SameSite=None;"
+	c.Writer.Header().Add("Set-Cookie", clearCookie)
+
 	respondSuccess(c, http.StatusOK, gin.H{}, "Logged out successfully")
 }

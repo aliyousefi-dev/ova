@@ -6,6 +6,21 @@
   <!-- Wrap only figure inside routerLink -->
   <a [routerLink]="['/watch', videoId]" class="block w-full h-40 rounded-lg overflow-hidden relative">
     <figure class="relative w-full h-40 rounded-lg overflow-hidden bg-transparent">
+
+      <!-- ⭐ Star icon top-left -->
+      <div class="absolute bottom-2 left-2 z-30">
+        <button
+          class="btn btn-xs btn-circle bg-black/60 hover:bg-black text-yellow-500 border-none"
+          title="Add to Favorites"
+          (click)="$event.preventDefault(); $event.stopPropagation()"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.959a1 1 0 00.95.69h4.164c.969 0 1.371 1.24.588 1.81l-3.37 2.45a1 1 0 00-.364 1.118l1.287 3.96c.3.92-.755 1.688-1.54 1.118l-3.37-2.45a1 1 0 00-1.176 0l-3.37 2.45c-.784.57-1.838-.197-1.539-1.118l1.286-3.96a1 1 0 00-.364-1.118L2.06 9.386c-.783-.57-.38-1.81.588-1.81h4.165a1 1 0 00.95-.69l1.286-3.96z"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Thumbnail and preview -->
       <img
         [src]="thumbnailUrl"
         [alt]="title"
@@ -64,18 +79,14 @@
       </div>
     </div>
 
-<!-- Tags -->
-<div class="flex flex-wrap gap-1 mt-2">
-  <span
-    *ngFor="let tag of tags"
-    class="px-2 py-0.5 text-xs text-white rounded-md bg-base-100 hover:bg-base-200 transition-colors"
-  >
-    #{{ tag }}
-  </span>
-</div>
-
-
-
-
+    <!-- Tags -->
+    <div class="flex flex-wrap gap-1 mt-2">
+      <span
+        *ngFor="let tag of tags"
+        class="px-2 py-0.5 text-xs text-white rounded-md bg-base-100 hover:bg-base-200 transition-colors"
+      >
+        #{{ tag }}
+      </span>
+    </div>
   </div>
 </div>
