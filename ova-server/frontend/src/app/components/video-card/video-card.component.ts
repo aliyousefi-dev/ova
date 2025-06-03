@@ -20,6 +20,7 @@ export class VideoCardComponent {
   @Input() tags: string[] = [];
   @Input() isFavorite: boolean = false;
   @Input() username: string = '';
+  @Input() uploadedAt!: string;
 
   hovering = false;
   savingFavorite = false;
@@ -137,9 +138,14 @@ export class VideoCardComponent {
   }
 
   get timeSinceAdded(): string {
-    const addedDate = new Date(Date.now()); // TODO: replace with real addedAt timestamp
+    if (!this.uploadedAt) return 'unknown';
+
+    const addedDate = new Date(this.uploadedAt);
     const now = new Date();
     const diffMs = now.getTime() - addedDate.getTime();
+
+    if (diffMs < 0) return 'just now'; // In case uploadedAt is future date
+
     const seconds = Math.floor(diffMs / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
