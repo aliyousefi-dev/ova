@@ -16,40 +16,29 @@ export class APIService {
       data: { sessionId: string };
       message: string;
       status: string;
-    }>(
-      `${this.baseUrl}/auth/login`,
-      { username, password },
-      {
-        withCredentials: true,
-      }
-    );
+    }>(`${this.baseUrl}/auth/login`, { username, password });
   }
 
   logout() {
     return this.http.post<{ message: string; status: string }>(
       `${this.baseUrl}/auth/logout`,
-      null,
-      { withCredentials: true }
+      null
     );
   }
 
   getFolders(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/folders`, {
-      withCredentials: true,
-    });
+    return this.http.get(`${this.baseUrl}/folders`);
   }
 
   getVideos(folder: string): Observable<any> {
     return this.http.get(
-      `${this.baseUrl}/videos?folder=${encodeURIComponent(folder)}`,
-      { withCredentials: true }
+      `${this.baseUrl}/videos?folder=${encodeURIComponent(folder)}`
     );
   }
 
   getVideoById(videoId: string): Observable<{ data: VideoData }> {
     return this.http.get<{ data: VideoData }>(
-      `${this.baseUrl}/videos/${videoId}`,
-      { withCredentials: true }
+      `${this.baseUrl}/videos/${videoId}`
     );
   }
 

@@ -66,7 +66,7 @@ func loginHandler(c *gin.Context, sm *SessionManager, manager *storage.StorageMa
 	sm.sessions[sessionID] = req.Username
 
 	// Set cookie manually with SameSite=None and Secure for cross-origin cookies
-	cookieValue := fmt.Sprintf("session_id=%s; Path=/; Max-Age=%d; HttpOnly; SameSite=None;",
+	cookieValue := fmt.Sprintf("session_id=%s; Path=/; Max-Age=%d; HttpOnly;",
 		sessionID, int(24*time.Hour.Seconds()))
 	c.Writer.Header().Add("Set-Cookie", cookieValue)
 

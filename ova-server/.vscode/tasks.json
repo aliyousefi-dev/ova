@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Build Frontend",
+        "type": "shell",
+        "command": "npm run build",
+        "options": {
+          "cwd": "${workspaceFolder}/frontend"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Build Go Server",
+        "type": "shell",
+        "command": "${workspaceFolder}/scripts/build.bat",
+        "windows": {
+          "command": "${workspaceFolder}\\scripts\\build.bat"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Build All",
+        "dependsOn": ["Build Frontend", "Build Go Server"],
+        "dependsOrder": "sequence"
+      }
+    ]
+  }
+  

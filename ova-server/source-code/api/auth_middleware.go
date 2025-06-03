@@ -10,7 +10,7 @@ import (
 func (sm *SessionManager) AuthRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		DebugMode := true // Set this to true to enable debug mode
+		DebugMode := false // Set this to true to enable debug mode
 		if DebugMode {
 			// Bypass auth check in debug mode
 			c.Set("username", "debug-user")

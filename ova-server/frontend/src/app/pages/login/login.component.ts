@@ -11,7 +11,7 @@ import { LoginResponse } from '../../data-types/login-response';
   templateUrl: './login.component.html',
 })
 export class LoginComponent {
-  email: string = '';
+  username: string = '';
   password: string = '';
   error: string | null = null;
   sessionId: string | null = null;
@@ -20,12 +20,12 @@ export class LoginComponent {
 
   onSubmit() {
     this.error = null;
-    if (!this.email || !this.password) {
+    if (!this.username || !this.password) {
       this.error = 'Both fields are required.';
       return;
     }
 
-    this.apiService.login(this.email, this.password).subscribe({
+    this.apiService.login(this.username, this.password).subscribe({
       next: (res: LoginResponse) => {
         if (res.status === 'success') {
           this.sessionId = res.data.sessionId;
