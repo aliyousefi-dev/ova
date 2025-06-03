@@ -35,19 +35,13 @@ export class FavoritesComponent implements OnInit {
   }
 
   loadUsername() {
-    this.apiservice.checkAuth().subscribe({
-      next: (auth) => {
-        if (auth.authenticated && auth.username) {
-          this.username = auth.username;
-          this.fetchFavorites(auth.username);
-        } else {
-          this.router.navigate(['/login']);
-        }
-      },
-      error: () => {
-        this.router.navigate(['/login']);
-      },
-    });
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      this.username = storedUsername;
+      this.fetchFavorites(storedUsername);
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
 
   fetchFavorites(username: string) {

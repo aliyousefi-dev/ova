@@ -11,6 +11,8 @@ import { APIService } from '../../services/api.service';
 export class TopNavBarComponent {
   @Input() title = '';
 
+  username = 'hello';
+
   constructor(private apiService: APIService, private router: Router) {}
 
   onLogout() {

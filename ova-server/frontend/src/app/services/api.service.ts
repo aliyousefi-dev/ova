@@ -38,11 +38,13 @@ export class APIService {
   }
 
   checkAuth(): Observable<AuthStatusResponse> {
-    return this.http
-      .get<{ status: string; data: AuthStatusResponse; message: string }>(
-        `${this.baseUrl}/auth/status`
-      )
-      .pipe(map((response) => response.data));
+    return this.getAuthStatusFull().pipe(map((res) => res.data));
+  }
+
+  getAuthStatusFull(): Observable<ApiResponse<AuthStatusResponse>> {
+    return this.http.get<ApiResponse<AuthStatusResponse>>(
+      `${this.baseUrl}/auth/status`
+    );
   }
 
   getFolders(): Observable<any> {

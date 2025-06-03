@@ -20,14 +20,13 @@ export class VideoGridComponent implements OnInit {
   constructor(private apiService: APIService) {}
 
   ngOnInit() {
-    this.apiService.checkAuth().subscribe((auth) => {
-      if (auth.authenticated && auth.username) {
-        this.username = auth.username;
-        this.apiService.getUserFavorites(auth.username).subscribe((favData) => {
-          this.favoriteIds = new Set(favData.favorites);
-        });
-      }
-    });
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      this.username = storedUsername;
+      this.apiService.getUserFavorites(storedUsername).subscribe((favData) => {
+        this.favoriteIds = new Set(favData.favorites);
+      });
+    }
   }
 
   isFavorite(videoId: string): boolean {

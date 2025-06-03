@@ -47,16 +47,13 @@ export class VideoComponent implements OnInit {
   }
 
   loadUsername() {
-    this.apiservice.checkAuth().subscribe({
-      next: (auth) => {
-        if (auth.authenticated && auth.username) {
-          this.username = auth.username;
-        }
-      },
-      error: () => {
-        this.username = null;
-      },
-    });
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      this.username = storedUsername;
+      this.loadPlaylists();
+    } else {
+      this.username = null;
+    }
   }
 
   getThumbnailUrl(videoId: string): string {

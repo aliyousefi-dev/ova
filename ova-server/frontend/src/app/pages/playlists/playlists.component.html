@@ -1,0 +1,18 @@
+<app-top-nav-bar [title]="'Playlists'"></app-top-nav-bar>
+
+<div *ngIf="loading" class="p-6 text-center text-white/70">Loading playlists...</div>
+
+<div *ngIf="!loading && playlists.length === 0" class="p-6 text-center text-white/70">
+  No playlists found.
+</div>
+
+<div
+  *ngIf="!loading && playlists.length > 0"
+  class="px-8 py-10 grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+>
+  <app-playlist-card
+    *ngFor="let playlist of playlists"
+    [playlist]="playlist"
+    (select)="onSelectPlaylist(playlist)"
+  ></app-playlist-card>
+</div>

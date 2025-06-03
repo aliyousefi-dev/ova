@@ -1,0 +1,14 @@
+<app-top-nav-bar [title]="playlistTitle"></app-top-nav-bar>
+
+<div class="max-w-7xl mx-auto px-4 mt-6">
+  <p *ngIf="loading" class="text-gray-700 font-medium text-center">
+    Loading videos...
+  </p>
+
+  <app-video-grid
+    *ngIf="!loading"
+    [videos]="videos"
+    [getThumbnailUrl]="getThumbnailUrl.bind(this)"
+    [getPreviewUrl]="getPreviewUrl.bind(this)"
+  ></app-video-grid>
+</div>
