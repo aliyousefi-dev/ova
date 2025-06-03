@@ -14,17 +14,15 @@ import { routes } from './app.routes';
 import { ConfigService } from './services/config.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './services/auth.interceptor';
+import { ErrorInterceptor } from './services/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-
-    provideHttpClient(withInterceptorsFromDi()), // Enables DI interceptors
-
+    provideHttpClient(withInterceptorsFromDi()),
     provideRouter(routes),
     ConfigService,
-
     {
       provide: APP_INITIALIZER,
       useFactory: (configService: ConfigService) => () =>
@@ -33,10 +31,15 @@ export const appConfig: ApplicationConfig = {
       multi: true,
     },
 
-    // Register interceptor globally
+    // Register interceptors globally
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
       multi: true,
     },
   ],

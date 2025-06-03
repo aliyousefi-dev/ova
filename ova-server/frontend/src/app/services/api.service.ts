@@ -26,6 +26,10 @@ export class APIService {
     );
   }
 
+  checkAuth(): Observable<{ authenticated: boolean }> {
+    return this.http.get<{ authenticated: boolean }>('/api/v1/auth/status');
+  }
+
   getFolders(): Observable<any> {
     return this.http.get(`${this.baseUrl}/folders`);
   }

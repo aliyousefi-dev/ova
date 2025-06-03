@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
 
+import { RouterModule } from '@angular/router';
+
 @Component({
   selector: 'app-not-found',
   standalone: true,
+  imports: [RouterModule],
   template: `
     <div class="flex flex-col items-center justify-center min-h-screen p-6">
       <h1 class="text-5xl font-bold mb-4">404</h1>

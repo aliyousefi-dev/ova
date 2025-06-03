@@ -40,6 +40,7 @@ func RegisterAuthRoutes(rg *gin.RouterGroup, manager *storage.StorageManager, sm
 	{
 		auth.POST("/login", func(c *gin.Context) { loginHandler(c, sm, manager) })
 		auth.POST("/logout", sm.logoutHandler)
+		auth.GET("/status", sm.authStatusHandler)
 	}
 }
 
@@ -93,4 +94,18 @@ func (sm *SessionManager) logoutHandler(c *gin.Context) {
 	c.Writer.Header().Add("Set-Cookie", clearCookie)
 
 	respondSuccess(c, http.StatusOK, gin.H{}, "Logged out successfully")
+}
+
+func (sm *SessionManager) authStatusHandler(c *gin.Context) {
+	sessionID, err := c.Cookie("session_id")
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"authenticated": false})
+		return
+	}
+
+	if _, exists := sm.sessions[sessionID]; exists {
+		c.JSON(http.StatusOK, gin.H{"authenticated": true})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"authenticated": false})
+	}
 }

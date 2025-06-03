@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
 import { VideoCardComponent } from '../../components/video-card/video-card.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar';
 import { FolderTreeComponent } from '../../components/folder-tree/folder-tree.component';
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
 import { APIService } from '../../services/api.service';
-import { FormsModule } from '@angular/forms'; // Add this for ngModel
 
 @Component({
   selector: 'app-video',
@@ -26,13 +28,31 @@ export class VideoComponent implements OnInit {
   protected loading = true;
   protected searchTerm = '';
   protected currentFolder = '';
-  protected sortOption: string = 'titleAsc'; // default sort
+  protected sortOption: string = 'titleAsc';
 
-  constructor(private apiservice: APIService) {}
+  protected isAuthenticated = true;
+  protected serverAvailable = true;
+
+  @ViewChild('loginModal') loginModalRef!: ElementRef<HTMLDialogElement>;
+
+  constructor(private apiservice: APIService, private router: Router) {}
 
   ngOnInit() {
-    this.fetchFolders();
-    this.fetchVideos();
+    this.apiservice.checkAuth().subscribe({
+      next: (res) => {
+        this.isAuthenticated = res.authenticated;
+        if (this.isAuthenticated) {
+          this.fetchFolders();
+          this.fetchVideos();
+        } else {
+          setTimeout(() => this.openLoginModal(), 0);
+        }
+      },
+      error: () => {
+        this.isAuthenticated = false;
+        setTimeout(() => this.openLoginModal(), 0);
+      },
+    });
   }
 
   getThumbnailUrl(videoId: string): string {
@@ -45,8 +65,13 @@ export class VideoComponent implements OnInit {
 
   fetchFolders() {
     this.apiservice.getFolders().subscribe({
-      next: (res) => (this.folders = res.data || []),
-      error: (err) => console.error('Failed to fetch folders', err),
+      next: (res) => {
+        this.folders = res.data || [];
+        this.serverAvailable = true;
+      },
+      error: () => {
+        this.serverAvailable = false;
+      },
     });
   }
 
@@ -56,10 +81,11 @@ export class VideoComponent implements OnInit {
       next: (res) => {
         this.videos = res.data || [];
         this.loading = false;
+        this.serverAvailable = true;
       },
-      error: (err) => {
-        console.error('Failed to fetch videos', err);
+      error: () => {
         this.loading = false;
+        this.serverAvailable = false;
       },
     });
   }
@@ -73,11 +99,22 @@ export class VideoComponent implements OnInit {
     console.log('Logging out...');
   }
 
+  openLoginModal() {
+    const dialog = this.loginModalRef?.nativeElement;
+    if (dialog && !dialog.open) {
+      dialog.showModal();
+    }
+  }
+
+  goToLogin() {
+    this.loginModalRef?.nativeElement.close();
+    this.router.navigate(['/login']);
+  }
+
   get filteredVideos() {
     const filtered = this.videos.filter((v) =>
       v.title.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
-
     return this.sortVideos(filtered);
   }
 
