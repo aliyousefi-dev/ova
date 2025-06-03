@@ -8,6 +8,7 @@ import { SearchBarComponent } from '../../components/search-bar/search-bar';
 import { FolderTreeComponent } from '../../components/folder-tree/folder-tree.component';
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
 import { APIService } from '../../services/api.service';
+import { VideoGridComponent } from '../../components/video-grid/video-grid.component';
 
 @Component({
   selector: 'app-video',
@@ -15,8 +16,8 @@ import { APIService } from '../../services/api.service';
   imports: [
     CommonModule,
     FormsModule,
-    VideoCardComponent,
     SearchBarComponent,
+    VideoGridComponent,
     FolderTreeComponent,
     TopNavBarComponent,
   ],

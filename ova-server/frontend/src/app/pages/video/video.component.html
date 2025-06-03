@@ -38,23 +38,10 @@
 <div class="max-w-7xl mx-auto px-4 mt-6">
   <p *ngIf="loading" class="text-gray-700 font-medium text-center">Loading videos...</p>
 
-  <p *ngIf="!loading && filteredVideos.length === 0" class="text-gray-500 text-center">
-    No videos found.
-  </p>
-
-  <div
-    *ngIf="!loading && filteredVideos.length > 0"
-    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full"
-  >
-    <app-video-card
-      *ngFor="let video of filteredVideos"
-      [videoId]="video.videoId"
-      [title]="video.title"
-      [thumbnailUrl]="getThumbnailUrl(video.videoId)"
-      [previewUrl]="getPreviewUrl(video.videoId)"
-      [duration]="video.durationSeconds"
-      [tags]="video.tags"
-      class="h-[20rem]"
-    ></app-video-card>
-  </div>
+  <app-video-grid
+    *ngIf="!loading"
+    [videos]="filteredVideos"
+    [getThumbnailUrl]="getThumbnailUrl.bind(this)"
+    [getPreviewUrl]="getPreviewUrl.bind(this)"
+  ></app-video-grid>
 </div>

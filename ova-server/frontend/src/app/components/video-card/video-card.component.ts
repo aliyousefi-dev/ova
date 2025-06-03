@@ -16,24 +16,44 @@ export class VideoCardComponent {
   @Input() previewUrl!: string;
   @Input() duration!: number;
   @Input() tags: string[] = [];
+  @Input() isFavorite: boolean = false;
+  @Input() username: string = '';
 
   hovering = false;
+  savingFavorite = false;
 
   constructor(public apiService: APIService) {}
 
-  addToFavorites(event: MouseEvent) {
-    event.stopPropagation(); // prevent card click
-    console.log('Add to Favorites', this.title);
-    // TODO: call backend or emit event
+  toggleFavorite(event: MouseEvent) {
+    event.stopPropagation();
+
+    if (!this.username) return;
+
+    this.savingFavorite = true;
+    this.apiService.getUserFavorites(this.username).subscribe((favData) => {
+      let updatedFavorites = new Set(favData.favorites);
+
+      if (this.isFavorite) {
+        updatedFavorites.delete(this.videoId);
+      } else {
+        updatedFavorites.add(this.videoId);
+      }
+
+      this.apiService
+        .updateUserFavorites(this.username, Array.from(updatedFavorites))
+        .subscribe((newData) => {
+          this.isFavorite = newData.favorites.includes(this.videoId);
+          this.savingFavorite = false;
+        });
+    });
   }
 
   download(event: MouseEvent) {
-    event.stopPropagation(); // prevent card click
-
+    event.stopPropagation();
     const streamUrl = this.apiService.getDownloadUrl(this.videoId);
     const anchor = document.createElement('a');
     anchor.href = streamUrl;
-    anchor.download = `${this.title}.mp4`; // Adjust the extension as needed
+    anchor.download = `${this.title}.mp4`;
     document.body.appendChild(anchor);
     anchor.click();
     document.body.removeChild(anchor);
@@ -42,7 +62,7 @@ export class VideoCardComponent {
   addToPlaylist(event: MouseEvent) {
     event.stopPropagation();
     console.log('Add to Playlist', this.title);
-    // TODO: call backend or emit event
+    // TODO
   }
 
   formatDuration(seconds: number): string {
@@ -57,7 +77,7 @@ export class VideoCardComponent {
   }
 
   get timeSinceAdded(): string {
-    const addedDate = new Date(Date.now()); // assuming you have videoAddedAt
+    const addedDate = new Date(Date.now()); // TODO: use real addedAt timestamp
     const now = new Date();
     const diffMs = now.getTime() - addedDate.getTime();
     const seconds = Math.floor(diffMs / 1000);
