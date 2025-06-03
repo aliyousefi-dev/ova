@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, Input } from '@angular/core';
+import { RouterModule, Router } from '@angular/router';
+import { APIService } from '../../services/api.service';
 
 @Component({
   selector: 'app-top-nav-bar',
@@ -10,9 +11,16 @@ import { RouterModule } from '@angular/router';
 export class TopNavBarComponent {
   @Input() title = '';
 
-  @Output() logout = new EventEmitter<void>();
+  constructor(private apiService: APIService, private router: Router) {}
 
   onLogout() {
-    this.logout.emit();
+    this.apiService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        this.router.navigate(['/login']);
+      },
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -30,29 +30,11 @@ export class VideoComponent implements OnInit {
   protected currentFolder = '';
   protected sortOption: string = 'titleAsc';
 
-  protected isAuthenticated = true;
-  protected serverAvailable = true;
-
-  @ViewChild('loginModal') loginModalRef!: ElementRef<HTMLDialogElement>;
-
   constructor(private apiservice: APIService, private router: Router) {}
 
   ngOnInit() {
-    this.apiservice.checkAuth().subscribe({
-      next: (res) => {
-        this.isAuthenticated = res.authenticated;
-        if (this.isAuthenticated) {
-          this.fetchFolders();
-          this.fetchVideos();
-        } else {
-          setTimeout(() => this.openLoginModal(), 0);
-        }
-      },
-      error: () => {
-        this.isAuthenticated = false;
-        setTimeout(() => this.openLoginModal(), 0);
-      },
-    });
+    this.fetchFolders();
+    this.fetchVideos();
   }
 
   getThumbnailUrl(videoId: string): string {
@@ -67,10 +49,9 @@ export class VideoComponent implements OnInit {
     this.apiservice.getFolders().subscribe({
       next: (res) => {
         this.folders = res.data || [];
-        this.serverAvailable = true;
       },
       error: () => {
-        this.serverAvailable = false;
+        this.folders = [];
       },
     });
   }
@@ -81,11 +62,10 @@ export class VideoComponent implements OnInit {
       next: (res) => {
         this.videos = res.data || [];
         this.loading = false;
-        this.serverAvailable = true;
       },
       error: () => {
+        this.videos = [];
         this.loading = false;
-        this.serverAvailable = false;
       },
     });
   }
@@ -96,19 +76,14 @@ export class VideoComponent implements OnInit {
   }
 
   handleLogout() {
-    console.log('Logging out...');
-  }
-
-  openLoginModal() {
-    const dialog = this.loginModalRef?.nativeElement;
-    if (dialog && !dialog.open) {
-      dialog.showModal();
-    }
-  }
-
-  goToLogin() {
-    this.loginModalRef?.nativeElement.close();
-    this.router.navigate(['/login']);
+    this.apiservice.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        this.router.navigate(['/login']);
+      },
+    });
   }
 
   get filteredVideos() {

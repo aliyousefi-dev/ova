@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router'; // Import Router for navigation
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { APIService } from '../../services/api.service';
@@ -16,7 +17,7 @@ export class LoginComponent {
   error: string | null = null;
   sessionId: string | null = null;
 
-  constructor(private apiService: APIService) {}
+  constructor(private apiService: APIService, private router: Router) {}
 
   onSubmit() {
     this.error = null;
@@ -28,33 +29,14 @@ export class LoginComponent {
     this.apiService.login(this.username, this.password).subscribe({
       next: (res: LoginResponse) => {
         if (res.status === 'success') {
-          this.sessionId = res.data.sessionId;
-          this.error = null;
-          alert('Login successful');
-          console.log('Session ID:', this.sessionId);
-          // No need to set cookie manually; backend should set it!
+          // Navigate to /home after successful login
+          this.router.navigate(['/']);
         } else {
           this.error = res.message || 'Login failed';
         }
       },
       error: (err) => {
         this.error = err.error?.message || 'An error occurred during login.';
-      },
-    });
-  }
-
-  logout() {
-    if (!this.sessionId) {
-      alert('No active session');
-      return;
-    }
-    this.apiService.logout().subscribe({
-      next: (res) => {
-        alert(res.message || 'Logged out');
-        this.sessionId = null;
-      },
-      error: () => {
-        alert('Logout failed');
       },
     });
   }

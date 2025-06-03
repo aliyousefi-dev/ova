@@ -1,6 +1,5 @@
 <app-top-nav-bar
   [title]="'Videos'"
-  (logout)="handleLogout()"
 ></app-top-nav-bar>
 
 <app-search-bar
@@ -8,81 +7,54 @@
   placeholder="Search videos..."
 ></app-search-bar>
 
-<!-- Unauthenticated user message -->
-<dialog #loginModal class="modal" [open]="!isAuthenticated">
-  <div class="modal-box">
-    <h3 class="text-xl font-bold text-error">You are not logged in</h3>
-    <p class="py-4 text-gray-700">
-      Please sign in to access the videos and features.
-    </p>
-    <div class="modal-action">
-      <button class="btn btn-primary" (click)="goToLogin()">Go to Login</button>
-    </div>
+<!-- Folder Tree -->
+<div class="max-w-7xl mx-auto px-4 flex items-center mt-4" style="height: 10rem;">
+  <div class="w-64">
+    <app-folder-tree
+      [folders]="folders"
+      [currentFolder]="currentFolder"
+      (folderSelected)="onFolderSelected($event)"
+    ></app-folder-tree>
   </div>
-</dialog>
-
-
-<!-- Server unavailable message -->
-<div *ngIf="isAuthenticated && !serverAvailable" class="max-w-7xl mx-auto px-4 mt-4">
-  <div class="alert alert-warning shadow-lg">
-    <span>Server is currently unavailable. Please try again later.</span>
-  </div>
+  <div class="flex-1"></div>
 </div>
 
-<!-- Main content -->
-<div *ngIf="isAuthenticated && serverAvailable">
-  <!-- Folder Tree -->
-  <div class="max-w-7xl mx-auto px-4 flex items-center mt-4" style="height: 10rem;">
-    <div class="w-64">
-      <app-folder-tree
-        [folders]="folders"
-        [currentFolder]="currentFolder"
-        (folderSelected)="onFolderSelected($event)"
-      ></app-folder-tree>
-    </div>
-    <div class="flex-1"></div>
-  </div>
+<!-- Sort Menu -->
+<div class="max-w-7xl mx-auto px-4 mt-2 flex justify-end items-center gap-2">
+  <label for="sort" class="text-sm text-gray-700 font-medium">Sort by:</label>
+  <select
+    id="sort"
+    [(ngModel)]="sortOption"
+    class="select select-sm select-bordered w-40"
+  >
+    <option value="titleAsc">Title (A–Z)</option>
+    <option value="titleDesc">Title (Z–A)</option>
+    <option value="durationAsc">Duration (Short → Long)</option>
+    <option value="durationDesc">Duration (Long → Short)</option>
+  </select>
+</div>
 
-  <!-- Sort Menu -->
-  <div class="max-w-7xl mx-auto px-4 mt-2 flex justify-end items-center gap-2">
-    <label for="sort" class="text-sm text-gray-700 font-medium">Sort by:</label>
-    <select
-      id="sort"
-      [(ngModel)]="sortOption"
-      class="select select-sm select-bordered w-40"
-    >
-      <option value="titleAsc">Title (A–Z)</option>
-      <option value="titleDesc">Title (Z–A)</option>
-      <option value="durationAsc">Duration (Short → Long)</option>
-      <option value="durationDesc">Duration (Long → Short)</option>
-    </select>
-  </div>
+<!-- Videos Block -->
+<div class="max-w-7xl mx-auto px-4 mt-6">
+  <p *ngIf="loading" class="text-gray-700 font-medium text-center">Loading videos...</p>
 
-  <!-- Videos Block -->
-  <div class="max-w-7xl mx-auto px-4 mt-6">
-    <!-- Loading -->
-    <p *ngIf="loading" class="text-gray-700 font-medium text-center">Loading videos...</p>
+  <p *ngIf="!loading && filteredVideos.length === 0" class="text-gray-500 text-center">
+    No videos found.
+  </p>
 
-    <!-- No videos found -->
-    <p *ngIf="!loading && filteredVideos.length === 0" class="text-gray-500 text-center">
-      No videos found.
-    </p>
-
-    <!-- Videos grid -->
-    <div
-      *ngIf="!loading && filteredVideos.length > 0"
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full"
-    >
-      <app-video-card
-        *ngFor="let video of filteredVideos"
-        [videoId]="video.videoId"
-        [title]="video.title"
-        [thumbnailUrl]="getThumbnailUrl(video.videoId)"
-        [previewUrl]="getPreviewUrl(video.videoId)"
-        [duration]="video.durationSeconds"
-        [tags]="video.tags"
-        class="h-[20rem]"
-      ></app-video-card>
-    </div>
+  <div
+    *ngIf="!loading && filteredVideos.length > 0"
+    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full"
+  >
+    <app-video-card
+      *ngFor="let video of filteredVideos"
+      [videoId]="video.videoId"
+      [title]="video.title"
+      [thumbnailUrl]="getThumbnailUrl(video.videoId)"
+      [previewUrl]="getPreviewUrl(video.videoId)"
+      [duration]="video.durationSeconds"
+      [tags]="video.tags"
+      class="h-[20rem]"
+    ></app-video-card>
   </div>
 </div>
