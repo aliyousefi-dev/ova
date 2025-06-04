@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:4041
+@baseUrl = http://localhost:4040
 @session_id = 29eb95aa-a7f7-4ede-b830-f29ba83d28b9
 @username = user
 

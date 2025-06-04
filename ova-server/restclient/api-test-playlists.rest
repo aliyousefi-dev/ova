@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:4041
+@baseUrl = http://localhost:4040
 @session_id = 723984b9-8860-4e6e-b1b9-9c729d6e1e39
 @username = user
 @playlistSlug = my-playlist

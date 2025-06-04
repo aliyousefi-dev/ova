@@ -5,12 +5,6 @@ export interface PlaylistData {
   slug: string;
 }
 
-export interface PlaylistResponse {
-  data: PlaylistData | { playlists: PlaylistData[]; username: string };
-  message: string;
-  status: string;
-}
-
 export interface PlaylistCardModel extends PlaylistData {
   id: string; // unique id or slug for convenience
   thumbnailUrls: string[]; // exactly 4 thumbnails
