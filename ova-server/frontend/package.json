@@ -18,7 +18,6 @@
     "@angular/router": "^20.0.0",
     "@tailwindcss/postcss": "^4.1.8",
     "daisyui": "^5.0.43",
-    "plyr": "^3.7.8",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
