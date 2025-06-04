@@ -4,6 +4,14 @@
   Loading playlists...
 </div>
 
+<!-- Create New Playlist button always visible -->
+<div
+  class="mb-8 flex items-center justify-center cursor-pointer rounded-lg border border-white/20 bg-white/5 hover:bg-white/10 transition p-6 text-white"
+  (click)="openCreateModal()"
+>
+  <span class="text-lg font-semibold">Create New Playlist</span>
+</div>
+
 <div
   *ngIf="!loading && playlists.length === 0"
   class="flex flex-col items-center justify-center p-12 text-white/70"
@@ -31,13 +39,6 @@
 
 <div *ngIf="!loading && playlists.length > 0" class="px-8 py-10">
   <div
-    class="mb-8 flex items-center justify-center cursor-pointer rounded-lg border border-white/20 bg-white/5 hover:bg-white/10 transition p-6 text-white"
-    (click)="createNewPlaylist()"
-  >
-    <span class="text-lg font-semibold">Create New Playlist</span>
-  </div>
-
-  <div
     *ngIf="creationError"
     class="mb-4 px-6 py-3 rounded bg-red-600 text-white text-center"
   >
@@ -47,5 +48,12 @@
   <app-playlist-grid
     [playlists]="playlists"
     (select)="onSelectPlaylist($event)"
+    (delete)="onDeletePlaylists($event)"
   ></app-playlist-grid>
 </div>
+
+<app-playlist-create-modal
+  [visible]="showCreateModal"
+  (close)="onModalClose()"
+  (create)="onModalCreate($event)"
+></app-playlist-create-modal>

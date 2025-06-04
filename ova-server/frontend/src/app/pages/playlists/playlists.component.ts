@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
+import { PlaylistCreateModalComponent } from '../../components/playlist-create-modal/playlist-create-modal.component';
 
 import { PlaylistAPIService } from '../../services/playlist-api.service';
 import { PlaylistData } from '../../data-types/playlist-data';
@@ -11,7 +12,12 @@ import { PlaylistGridComponent } from '../../components/playlist-grid/playlist-g
 @Component({
   selector: 'app-playlists',
   standalone: true,
-  imports: [CommonModule, TopNavBarComponent, PlaylistGridComponent],
+  imports: [
+    CommonModule,
+    TopNavBarComponent,
+    PlaylistGridComponent,
+    PlaylistCreateModalComponent,
+  ],
   templateUrl: './playlists.component.html',
 })
 export class PlaylistsComponent implements OnInit {
@@ -81,11 +87,72 @@ export class PlaylistsComponent implements OnInit {
           }
         },
         error: (err) => {
-          // Try to extract meaningful error message from the backend response
-          if (err.error && err.error.error && err.error.error.message) {
+          if (err.error?.error?.message) {
             this.creationError = err.error.error.message;
           } else if (err.message) {
-            // fallback to generic error message from HttpErrorResponse
+            this.creationError = err.message;
+          } else {
+            this.creationError = 'Failed to create playlist. Please try again.';
+          }
+        },
+      });
+  }
+
+  onDeletePlaylists(titles: string[]): void {
+    if (!titles.length) return;
+
+    if (!confirm(`Delete ${titles.length} playlist(s)?`)) return;
+
+    // Track deletions and update UI after all succeed
+    const deleteObservables = titles.map((title) =>
+      this.playlistapi.deleteUserPlaylistBySlug(this.username!, title)
+    );
+
+    // Simple approach: subscribe to each separately and update playlists array
+    // You could improve with forkJoin to wait all complete if preferred
+    titles.forEach((title) => {
+      this.playlistapi
+        .deleteUserPlaylistBySlug(this.username!, title)
+        .subscribe({
+          next: () => {
+            this.playlists = this.playlists.filter((p) => p.title !== title);
+          },
+          error: (err) => {
+            console.error(`Failed to delete playlist "${title}":`, err);
+            alert(`Failed to delete playlist "${title}".`);
+          },
+        });
+    });
+  }
+
+  showCreateModal = false;
+
+  openCreateModal(): void {
+    this.creationError = null;
+    this.showCreateModal = true;
+  }
+
+  onModalClose(): void {
+    this.showCreateModal = false;
+  }
+
+  onModalCreate(title: string): void {
+    this.showCreateModal = false;
+    this.playlistapi
+      .createUserPlaylist(this.username!, { title, videoIds: [] })
+      .subscribe({
+        next: (res) => {
+          if (res.status === 'success' && res.data) {
+            this.playlists.push(res.data);
+            this.sortPlaylists();
+          } else {
+            this.creationError = res.message;
+          }
+        },
+        error: (err) => {
+          if (err.error?.error?.message) {
+            this.creationError = err.error.error.message;
+          } else if (err.message) {
             this.creationError = err.message;
           } else {
             this.creationError = 'Failed to create playlist. Please try again.';
