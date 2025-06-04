@@ -39,36 +39,68 @@
       <h2 class="text-2xl font-semibold border-b border-base-300 pb-2 mb-4">User Settings</h2>
       <p class="mb-4 text-sm text-base-content/70">Update your profile details below.</p>
 
-      <div class="form-control mb-4">
-        <label class="label" for="username">
-          <span class="label-text">Username</span>
-        </label>
-        <input
-          id="username"
-          type="text"
-          placeholder="Enter username"
-          class="input input-bordered"
-          [(ngModel)]="username"
-        />
-      </div>
+      <!-- Change Username Section -->
+      <section class="mb-8">
+        <h3 class="text-lg font-semibold mb-2">Change Username</h3>
+        <div class="form-control mb-4">
+          <label class="label" for="username">
+            <span class="label-text">Username</span>
+          </label>
+          <input
+            id="username"
+            type="text"
+            placeholder="Enter username"
+            class="input input-bordered"
+            [(ngModel)]="username"
+          />
+        </div>
 
-      <div class="form-control mb-4">
-        <label class="label" for="email">
-          <span class="label-text">Email</span>
-        </label>
-        <input
-          id="email"
-          type="email"
-          placeholder="Enter email"
-          class="input input-bordered"
-          [(ngModel)]="email"
-        />
-      </div>
+        <button class="btn btn-primary" (click)="onSaveProfile()">Save Username</button>
+      </section>
 
-      <button class="btn btn-primary" (click)="onSaveProfile()">Save Profile</button>
+      <!-- Change Password Section -->
+      <section>
+        <h3 class="text-lg font-semibold mb-2">Change Password</h3>
+        <div class="form-control mb-4">
+          <label class="label" for="currentPassword">
+            <span class="label-text">Current Password</span>
+          </label>
+          <input
+            id="currentPassword"
+            type="password"
+            placeholder="Enter current password"
+            class="input input-bordered"
+            [(ngModel)]="currentPassword"
+          />
+        </div>
 
-      <section class="pt-4 border-t border-base-300">
-        <button class="btn btn-error" (click)="onLogout()">Logout</button>
+        <div class="form-control mb-4">
+          <label class="label" for="newPassword">
+            <span class="label-text">New Password</span>
+          </label>
+          <input
+            id="newPassword"
+            type="password"
+            placeholder="Enter new password"
+            class="input input-bordered"
+            [(ngModel)]="newPassword"
+          />
+        </div>
+
+        <div class="form-control mb-6">
+          <label class="label" for="confirmPassword">
+            <span class="label-text">Confirm New Password</span>
+          </label>
+          <input
+            id="confirmPassword"
+            type="password"
+            placeholder="Confirm new password"
+            class="input input-bordered"
+            [(ngModel)]="confirmPassword"
+          />
+        </div>
+
+        <button class="btn btn-primary" (click)="onChangePassword()">Change Password</button>
       </section>
     </div>
   </section>

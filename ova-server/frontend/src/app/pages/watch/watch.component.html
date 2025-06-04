@@ -1,7 +1,7 @@
 <app-top-nav-bar [title]="'Watch'"></app-top-nav-bar>
 
-<main class="min-h-screen bg-base-100 flex flex-col items-center w-full p-0 m-0">
-  <section *ngIf="loading" class="text-center text-gray-500 py-10 w-full">
+<main class="flex flex-col items-center justify-start min-h-screen">
+  <section *ngIf="loading" class="text-center text-gray-500 py-5 w-full">
     <p>Loading video...</p>
   </section>
 
@@ -9,19 +9,20 @@
     <p>Failed to load video</p>
   </section>
 
-  <section *ngIf="!loading && !error && video" class="w-full space-y-6">
-
-    <!-- Full-width Video -->
-    <div class="w-screen aspect-video bg-black overflow-hidden">
+  <section *ngIf="!loading && !error && video" class="w-full max-w-4xl flex flex-col items-center">
+    
+    <!-- Responsive Video -->
+    <div class="w-full aspect-video">
       <video
         [src]="videoUrl"
         controls
         [poster]="thumbnailUrl"
-        class="w-full h-full"
+        class="w-full h-full object-contain bg-black"
       ></video>
     </div>
 
-    <div class="w-full max-w-5xl px-4 mx-auto space-y-4">
+    <!-- Info below video -->
+    <div class="w-full mt-4 px-4 space-y-4">
       <h1 
         class="text-2xl font-semibold truncate overflow-hidden whitespace-nowrap"
         [title]="video.title"
@@ -36,12 +37,13 @@
         <span class="badge badge-outline flex items-center gap-1">📅 {{ video.uploadedAt | date:'mediumDate' }}</span>
       </div>
 
-      <section *ngIf="video.tags?.length" class="mt-6">
+      <div *ngIf="video.tags?.length" class="mt-4">
         <h2 class="text-sm font-semibold mb-2">Tags:</h2>
         <div class="flex flex-wrap gap-2">
           <span *ngFor="let tag of video.tags" class="badge badge-primary cursor-default">#{{ tag }}</span>
         </div>
-      </section>
+      </div>
     </div>
+
   </section>
 </main>

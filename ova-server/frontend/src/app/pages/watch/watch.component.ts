@@ -1,9 +1,17 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
 import { VideoData } from '../../data-types/video-data';
 import { VideoApiService } from '../../services/video-api.service';
+
+import Plyr from 'plyr';
 
 @Component({
   selector: 'app-watch',
@@ -11,11 +19,14 @@ import { VideoApiService } from '../../services/video-api.service';
   imports: [CommonModule, TopNavBarComponent],
   templateUrl: './watch.component.html',
 })
-export class WatchComponent {
+export class WatchComponent implements AfterViewInit, OnDestroy {
   loading = true;
   error = false;
   videoId: string | null = null;
   video!: VideoData;
+
+  @ViewChild('videoPlayer') videoPlayer!: ElementRef<HTMLVideoElement>;
+  private player?: Plyr;
 
   constructor(
     private route: ActivatedRoute,
@@ -37,6 +48,10 @@ export class WatchComponent {
       next: (response) => {
         this.video = response.data;
         this.loading = false;
+        // Plyr needs to be initialized after video loads
+        setTimeout(() => {
+          this.initPlyr();
+        }, 0);
       },
       error: () => {
         this.error = true;
@@ -45,16 +60,40 @@ export class WatchComponent {
     });
   }
 
+  ngAfterViewInit() {
+    if (this.video) {
+      this.initPlyr();
+    }
+  }
+
+  ngOnDestroy() {
+    this.player?.destroy();
+  }
+
+  initPlyr() {
+    if (this.player) {
+      this.player.destroy();
+    }
+    if (this.videoPlayer) {
+      this.player = new Plyr(this.videoPlayer.nativeElement, {
+        controls: [
+          'play',
+          'progress',
+          'current-time',
+          'mute',
+          'volume',
+          'fullscreen',
+        ],
+      });
+    }
+  }
+
   get videoUrl(): string {
     return this.videoapi.getStreamUrl(this.video.videoId);
   }
 
   get thumbnailUrl(): string {
     return this.videoapi.getThumbnailUrl(this.video.videoId);
-  }
-
-  handleLogout() {
-    console.log('Logging out...');
   }
 
   formatDuration(seconds: number): string {

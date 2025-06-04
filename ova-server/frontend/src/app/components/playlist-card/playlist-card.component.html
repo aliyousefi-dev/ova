@@ -1,10 +1,10 @@
 <div
-  class="flex bg-base-200 shadow hover:shadow-lg transition cursor-pointer overflow-visible rounded-md relative"
+  class="flex bg-base-200 shadow hover:shadow-lg transition cursor-pointer overflow-visible rounded-selector relative"
   (click)="onSelect()"
   style="height: 100px;"
 >
   <!-- Thumbnail or Empty Message -->
-  <div class="relative w-1/3 h-full flex-shrink-0 overflow-hidden group rounded-l-md">
+  <div class="relative w-1/3 h-full flex-shrink-0 overflow-hidden group rounded-selector">
     <ng-container *ngIf="hasHeaderVideo; else emptyState">
       <img
         [src]="getThumbnailUrl()"
@@ -19,7 +19,7 @@
     </ng-container>
 
     <ng-template #emptyState>
-      <div class="w-full h-full flex items-center justify-center bg-base-300">
+      <div class="w-full h-full flex items-center justify-center base">
         <span class="/60 text-sm font-medium">No videos yet</span>
       </div>
     </ng-template>

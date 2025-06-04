@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -29,7 +29,8 @@ export class VideoCardComponent {
   constructor(
     private playlistapi: PlaylistAPIService,
     private favoriteapi: FavoriteApiService,
-    private videoapi: VideoApiService
+    private videoapi: VideoApiService,
+    private cd: ChangeDetectorRef // <-- Inject ChangeDetectorRef here
   ) {}
 
   getThumbnailUrl(): string {
@@ -66,6 +67,8 @@ export class VideoCardComponent {
         this.playlists = checkList;
         this.originalPlaylists = checkList.map((p) => ({ ...p }));
         this.playlistModalVisible = true;
+
+        this.cd.detectChanges(); // <-- Force Angular to detect changes immediately
       });
     });
   }

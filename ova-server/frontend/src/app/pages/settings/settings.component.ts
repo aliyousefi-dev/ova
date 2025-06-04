@@ -4,18 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
-import { ThemeCardComponent } from '../../components/theme-card/theme-card.component'; // updated import
+import { ThemeCardComponent } from '../../components/theme-card/theme-card.component';
 import { AuthApiService } from '../../services/auth-api.service';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    TopNavBarComponent,
-    ThemeCardComponent, // updated here
-  ],
+  imports: [CommonModule, FormsModule, TopNavBarComponent, ThemeCardComponent],
   templateUrl: './settings.component.html',
   styles: [``],
 })
@@ -65,6 +60,11 @@ export class SettingsComponent implements OnInit {
 
   activeTab: 'theme' | 'profile' = 'theme';
 
+  // Password change fields
+  currentPassword = '';
+  newPassword = '';
+  confirmPassword = '';
+
   constructor(private authapi: AuthApiService, private router: Router) {}
 
   ngOnInit() {
@@ -89,6 +89,27 @@ export class SettingsComponent implements OnInit {
   onSaveProfile() {
     localStorage.setItem('username', this.username);
     alert('Profile saved!');
+  }
+
+  onChangePassword() {
+    if (!this.currentPassword || !this.newPassword || !this.confirmPassword) {
+      alert('Please fill in all password fields.');
+      return;
+    }
+    if (this.newPassword !== this.confirmPassword) {
+      alert('New passwords do not match.');
+      return;
+    }
+
+    // TODO: Call API to change password, example:
+    // this.authapi.changePassword(this.currentPassword, this.newPassword).subscribe({...})
+
+    alert('Password change requested (not implemented).');
+
+    // Clear fields after submission
+    this.currentPassword = '';
+    this.newPassword = '';
+    this.confirmPassword = '';
   }
 
   onLogout() {
