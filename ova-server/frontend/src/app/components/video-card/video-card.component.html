@@ -3,7 +3,7 @@
   (mouseenter)="hovering = true"
   (mouseleave)="hovering = false"
 >
-  <a [routerLink]="['/watch', videoId]" class="block w-full h-40 rounded-lg overflow-hidden relative">
+  <a [routerLink]="['/watch', video.videoId]" class="block w-full h-40 rounded-lg overflow-hidden relative">
     <figure class="relative w-full h-40 rounded-lg overflow-hidden bg-transparent">
       <div *ngIf="isFavorite" class="absolute bottom-2 left-2 z-30">
         <button
@@ -20,14 +20,14 @@
       </div>
 
       <img
-        [src]="thumbnailUrl"
-        [alt]="title"
+        [src]="getThumbnailUrl()"
+        [alt]="video.title"
         class="w-full h-full object-cover absolute top-0 left-0 transition-opacity duration-200"
         [class.opacity-0]="hovering"
         [class.opacity-100]="!hovering"
       />
       <video
-        [src]="previewUrl"
+        [src]="getPreviewUrl()"
         autoplay
         muted
         loop
@@ -39,7 +39,7 @@
       ></video>
 
       <div class="absolute bottom-2 right-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
-        {{ formatDuration(duration) }}
+        {{ formatDuration(video.durationSeconds) }}
       </div>
     </figure>
   </a>
@@ -51,7 +51,7 @@
     <div class="flex items-start justify-between">
       <div class="flex-1">
         <h2 class="text-base font-semibold line-clamp-2 leading-snug text-white/90">
-          {{ title }}
+          {{ video.title }}
         </h2>
         <p class="text-xs text-white/60 mt-1">
           {{ timeSinceAdded }}
@@ -74,7 +74,7 @@
 
     <div class="flex flex-wrap gap-1 mt-2">
       <span
-        *ngFor="let tag of tags"
+        *ngFor="let tag of video.tags"
         class="px-2 py-0.5 text-xs text-white rounded-md bg-base-100 hover:bg-base-200 transition-colors"
       >
         #{{ tag }}
@@ -87,6 +87,5 @@
 <app-playlist-modal
   [visible]="playlistModalVisible"
   [playlists]="playlists"
-  (close)="closePlaylistModal($event)"
-></app-playlist-modal>
-
+  (close)="closePlaylistModal($event)">
+</app-playlist-modal>

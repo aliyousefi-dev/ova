@@ -60,14 +60,6 @@ export class VideoComponent implements OnInit {
     }
   }
 
-  getThumbnailUrl(videoId: string): string {
-    return this.videoapi.getThumbnailUrl(videoId);
-  }
-
-  getPreviewUrl(videoId: string): string {
-    return this.videoapi.getPreviewUrl(videoId);
-  }
-
   fetchFolders() {
     this.videoapi.getFolderLists().subscribe({
       next: (res) => {

@@ -6,6 +6,7 @@ import { PlaylistModalComponent } from '../playlist-modal/playlist-modal.compone
 import { PlaylistAPIService } from '../../services/playlist-api.service';
 import { VideoApiService } from '../../services/video-api.service';
 import { FavoriteApiService } from '../../services/favorite-api.service';
+import { VideoData } from '../../data-types/video-data';
 
 @Component({
   selector: 'app-video-card',
@@ -14,21 +15,14 @@ import { FavoriteApiService } from '../../services/favorite-api.service';
   standalone: true,
 })
 export class VideoCardComponent {
-  @Input() videoId!: string;
-  @Input() title!: string;
-  @Input() thumbnailUrl!: string;
-  @Input() previewUrl!: string;
-  @Input() duration!: number;
-  @Input() tags: string[] = [];
+  @Input() video!: VideoData;
   @Input() isFavorite: boolean = false;
   @Input() username: string = '';
-  @Input() uploadedAt!: string;
 
   hovering = false;
   savingFavorite = false;
 
   playlistModalVisible = false;
-
   playlists: { title: string; slug: string; checked: boolean }[] = [];
   originalPlaylists: { title: string; slug: string; checked: boolean }[] = [];
 
@@ -38,14 +32,20 @@ export class VideoCardComponent {
     private videoapi: VideoApiService
   ) {}
 
-  // Open modal, load  playlistsand set checked states
+  getThumbnailUrl(): string {
+    return this.videoapi.getThumbnailUrl(this.video.videoId);
+  }
+
+  getPreviewUrl(): string {
+    return this.videoapi.getPreviewUrl(this.video.videoId);
+  }
+
   addToPlaylist(event: MouseEvent) {
     event.stopPropagation();
     if (!this.username) return;
 
     this.playlistapi.getUserPlaylists(this.username).subscribe((response) => {
       const pls = response.data.playlists;
-
       const checkList = pls.map((p) => ({ ...p, checked: false }));
 
       Promise.all(
@@ -56,7 +56,7 @@ export class VideoCardComponent {
                 .getUserPlaylistBySlug(this.username, playlist.slug)
                 .subscribe((plData) => {
                   playlist.checked = plData.data.videoIds.includes(
-                    this.videoId
+                    this.video.videoId
                   );
                   resolve();
                 });
@@ -70,7 +70,6 @@ export class VideoCardComponent {
     });
   }
 
-  // Handle modal close and apply playlist changes (add/remove video)
   closePlaylistModal(
     updatedPlaylists: { title: string; slug: string; checked: boolean }[]
   ) {
@@ -78,21 +77,22 @@ export class VideoCardComponent {
     if (!this.username) return;
 
     updatedPlaylists.forEach((playlist) => {
-      // Find original checked state from originalPlaylists, not current playlists
       const original = this.originalPlaylists.find(
         (p) => p.slug === playlist.slug
       );
       if (!original) return;
 
       if (playlist.checked && !original.checked) {
-        // Video was not in playlist, now should be added
         this.playlistapi
-          .addVideoToPlaylist(this.username, playlist.slug, this.videoId)
+          .addVideoToPlaylist(this.username, playlist.slug, this.video.videoId)
           .subscribe();
       } else if (!playlist.checked && original.checked) {
-        // Video was in playlist, now should be removed
         this.playlistapi
-          .deleteVideoFromPlaylist(this.username, playlist.slug, this.videoId)
+          .deleteVideoFromPlaylist(
+            this.username,
+            playlist.slug,
+            this.video.videoId
+          )
           .subscribe();
       }
     });
@@ -100,7 +100,6 @@ export class VideoCardComponent {
 
   toggleFavorite(event: MouseEvent) {
     event.stopPropagation();
-
     if (!this.username) return;
 
     this.savingFavorite = true;
@@ -108,15 +107,15 @@ export class VideoCardComponent {
       let updatedFavorites = new Set(favData.favorites);
 
       if (this.isFavorite) {
-        updatedFavorites.delete(this.videoId);
+        updatedFavorites.delete(this.video.videoId);
       } else {
-        updatedFavorites.add(this.videoId);
+        updatedFavorites.add(this.video.videoId);
       }
 
       this.favoriteapi
         .updateUserFavorites(this.username, Array.from(updatedFavorites))
         .subscribe((newData) => {
-          this.isFavorite = newData.favorites.includes(this.videoId);
+          this.isFavorite = newData.favorites.includes(this.video.videoId);
           this.savingFavorite = false;
         });
     });
@@ -124,10 +123,10 @@ export class VideoCardComponent {
 
   download(event: MouseEvent) {
     event.stopPropagation();
-    const streamUrl = this.videoapi.getDownloadUrl(this.videoId);
+    const streamUrl = this.videoapi.getDownloadUrl(this.video.videoId);
     const anchor = document.createElement('a');
     anchor.href = streamUrl;
-    anchor.download = `${this.title}.mp4`;
+    anchor.download = `${this.video.title}.mp4`;
     document.body.appendChild(anchor);
     anchor.click();
     document.body.removeChild(anchor);
@@ -145,13 +144,12 @@ export class VideoCardComponent {
   }
 
   get timeSinceAdded(): string {
-    if (!this.uploadedAt) return 'unknown';
+    if (!this.video.uploadedAt) return 'unknown';
 
-    const addedDate = new Date(this.uploadedAt);
+    const addedDate = new Date(this.video.uploadedAt);
     const now = new Date();
     const diffMs = now.getTime() - addedDate.getTime();
-
-    if (diffMs < 0) return 'just now'; // In case uploadedAt is future date
+    if (diffMs < 0) return 'just now';
 
     const seconds = Math.floor(diffMs / 1000);
     const minutes = Math.floor(seconds / 60);

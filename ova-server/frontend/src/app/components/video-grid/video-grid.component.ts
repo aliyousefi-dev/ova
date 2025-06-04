@@ -12,8 +12,6 @@ import { FavoriteApiService } from '../../services/favorite-api.service';
 })
 export class VideoGridComponent implements OnInit {
   @Input() videos: VideoData[] = [];
-  @Input() getThumbnailUrl!: (videoId: string) => string;
-  @Input() getPreviewUrl!: (videoId: string) => string;
 
   favoriteIds = new Set<string>();
   username: string | null = null;
