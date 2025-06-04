@@ -28,8 +28,6 @@
   <app-video-grid
     *ngIf="!loading && filteredVideos.length > 0"
     [videos]="filteredVideos"
-    [getThumbnailUrl]="getThumbnailUrl.bind(this)"
-    [getPreviewUrl]="getPreviewUrl.bind(this)"
   ></app-video-grid>
 
 <!-- Show prompt when search box is empty -->

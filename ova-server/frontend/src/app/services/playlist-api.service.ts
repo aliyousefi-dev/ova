@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../data-types/responses';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, map, throwError } from 'rxjs';
+
 import {
   PlaylistData,
   PlaylistDataResponse,
@@ -27,10 +29,27 @@ export class PlaylistAPIService {
     username: string,
     playlist: { title: string; description?: string; videoIds: string[] }
   ): Observable<ApiResponse<PlaylistData>> {
-    return this.http.post<ApiResponse<PlaylistData>>(
-      `${this.baseUrl}/users/${username}/playlists`,
-      playlist
-    );
+    return this.http
+      .post<ApiResponse<PlaylistData>>(
+        `${this.baseUrl}/users/${username}/playlists`,
+        playlist
+      )
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          // Here, parse your error JSON and throw a user-friendly error object
+          let userFriendlyError = 'An unknown error occurred';
+
+          if (
+            error.error &&
+            error.error.status === 'error' &&
+            error.error.error?.message
+          ) {
+            userFriendlyError = error.error.error.message;
+          }
+
+          return throwError(() => new Error(userFriendlyError));
+        })
+      );
   }
 
   getUserPlaylistBySlug(

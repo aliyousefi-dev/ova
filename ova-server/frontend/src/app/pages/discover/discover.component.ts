@@ -26,9 +26,9 @@ import { SearchApiService } from '../../services/search-api.service';
     SearchBarComponent,
     VideoGridComponent,
   ],
-  templateUrl: './explore.component.html',
+  templateUrl: './discover.component.html',
 })
-export class ExploreComponent implements OnDestroy {
+export class DiscoverComponent implements OnDestroy {
   searchTerm: string = '';
   sortOption: string = 'titleAsc';
   loading: boolean = false;
@@ -95,14 +95,6 @@ export class ExploreComponent implements OnDestroy {
       default:
         return videos;
     }
-  }
-
-  getThumbnailUrl(videoId: string): string {
-    return this.videoapi.getThumbnailUrl(videoId);
-  }
-
-  getPreviewUrl(videoId: string): string {
-    return this.videoapi.getPreviewUrl(videoId);
   }
 
   ngOnDestroy() {

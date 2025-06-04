@@ -35,7 +35,6 @@ func NewRepository(base string) *Repository {
 		StoragePath:    storage,
 		ThumbnailPath:  thumbs,
 		ConfigFile:     filepath.Join(repo, "config.json"),
-		PlaylistsDB:    filepath.Join(storage, "playlists.json"),
 		VideosDB:       filepath.Join(storage, "videos.json"),
 		UsersDB:        filepath.Join(storage, "users.json"),
 	}
@@ -90,10 +89,9 @@ func (r *Repository) Init() error {
 
 	// Files to write
 	filesToCreate := map[string][]byte{
-		r.ConfigFile:  configContent,
-		r.PlaylistsDB: []byte("{}"),
-		r.VideosDB:    []byte("{}"),
-		r.UsersDB:     usersContent,
+		r.ConfigFile: configContent,
+		r.VideosDB:   []byte("{}"),
+		r.UsersDB:    usersContent,
 	}
 
 	for path, content := range filesToCreate {

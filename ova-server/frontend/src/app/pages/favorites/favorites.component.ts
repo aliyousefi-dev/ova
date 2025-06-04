@@ -78,14 +78,6 @@ export class FavoritesComponent implements OnInit {
     });
   }
 
-  getThumbnailUrl(videoId: string): string {
-    return this.videoapi.getThumbnailUrl(videoId);
-  }
-
-  getPreviewUrl(videoId: string): string {
-    return this.videoapi.getPreviewUrl(videoId);
-  }
-
   get filteredVideos() {
     const filtered = this.videos.filter((v) =>
       v.title.toLowerCase().includes(this.searchTerm.toLowerCase())
