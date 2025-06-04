@@ -1,23 +1,30 @@
+@baseUrl = http://localhost:4040
+@session_id = 4271d0c7-4ce7-49f9-a850-512495bd9a6b
+@username = user
+@password = pass
+
 ###
-### Login Request
-POST http://localhost:4041/api/v1/auth/login
+
+# Login Request
+POST {{baseUrl}}/api/v1/auth/login
 Content-Type: application/json
 Accept: application/json
 
 {
-  "username": "user",
-  "password": "pass"
+  "username": "{{username}}",
+  "password": "{{password}}"
 }
 
-
 ###
-# Logout (POST /api/v1/auth/logout)
-POST http://localhost:4041/api/v1/auth/logout HTTP/1.1
+
+# Logout
+POST {{baseUrl}}/api/v1/auth/logout
 Accept: application/json
-Cookie: session_id=4271d0c7-4ce7-49f9-a850-512495bd9a6b
+Cookie: session_id={{session_id}}
 
 ###
+
 # Check authentication status
-GET http://localhost:4041/api/v1/auth/status HTTP/1.1
+GET {{baseUrl}}/api/v1/auth/status
 Accept: application/json
-Cookie: session_id=2fca4edf-f124-48f7-8ffd-26b382da7554
+Cookie: session_id={{session_id}}

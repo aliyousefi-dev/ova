@@ -1,13 +1,16 @@
+@baseUrl = http://localhost:4041
+@tagVideoId = 087be485e0acad6fb1ba026e75542fed5f52e073496c649bc4a3ce345a63f48f
+
 ###
+
 # Get tags for a specific video
-GET http://localhost:4041/api/v1/videos/tags/087be485e0acad6fb1ba026e75542fed5f52e073496c649bc4a3ce345a63f48f HTTP/1.1
-Host: localhost:4041
+GET {{baseUrl}}/api/v1/videos/tags/{{tagVideoId}}
 Accept: application/json
 
 ###
+
 # Update tags for a specific video
-POST http://localhost:4041/api/v1/videos/tags/087be485e0acad6fb1ba026e75542fed5f52e073496c649bc4a3ce345a63f48f HTTP/1.1
-Host: localhost:4041
+POST {{baseUrl}}/api/v1/videos/tags/{{tagVideoId}}
 Content-Type: application/json
 Accept: application/json
 
@@ -16,9 +19,9 @@ Accept: application/json
 }
 
 ###
+
 # Invalid update (empty tags)
-POST http://localhost:4041/api/v1/videos/tags/video123 HTTP/1.1
-Host: localhost:4041
+POST {{baseUrl}}/api/v1/videos/tags/video123
 Content-Type: application/json
 Accept: application/json
 

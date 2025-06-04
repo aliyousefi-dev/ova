@@ -1,16 +1,22 @@
+@baseUrl = http://localhost:4040
+@session_id = 27f6f1a4-68a6-41c7-b50e-b98ecb59908d
+
 ###
+
 # POST /search with a valid query
-POST http://localhost:4041/api/v1/search HTTP/1.1
+POST {{baseUrl}}/api/v1/search
 Content-Type: application/json
 Accept: application/json
+Cookie: session_id={{session_id}}
 
 {
-  "query": "pexels"
+  "query": "hard"
 }
 
 ###
+
 # POST /search with empty query (should fail)
-POST http://localhost:4041/api/v1/search HTTP/1.1
+POST {{baseUrl}}/api/v1/search
 Content-Type: application/json
 Accept: application/json
 
@@ -19,8 +25,9 @@ Accept: application/json
 }
 
 ###
+
 # POST /search with malformed JSON (should fail)
-POST http://localhost:4041/api/v1/search HTTP/1.1
+POST {{baseUrl}}/api/v1/search
 Content-Type: application/json
 Accept: application/json
 

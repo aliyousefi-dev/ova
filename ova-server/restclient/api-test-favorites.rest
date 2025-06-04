@@ -1,17 +1,21 @@
-### Get user favorites
-GET http://localhost:4041/api/v1/users/user/favorites HTTP/1.1
-Host: localhost:4041
-Accept: application/json
-Cookie: session_id=29eb95aa-a7f7-4ede-b830-f29ba83d28b9
+@baseUrl = http://localhost:4041
+@session_id = 29eb95aa-a7f7-4ede-b830-f29ba83d28b9
+@username = user
 
 ###
 
-### Update user favorites (replace with valid video IDs)
-POST http://localhost:4041/api/v1/users/user/favorites HTTP/1.1
-Host: localhost:4041
+# Get user favorites
+GET {{baseUrl}}/api/v1/users/{{username}}/favorites
+Accept: application/json
+Cookie: session_id={{session_id}}
+
+###
+
+# Update user favorites (replace with valid video IDs)
+POST {{baseUrl}}/api/v1/users/{{username}}/favorites
 Content-Type: application/json
 Accept: application/json
-Cookie: session_id=29eb95aa-a7f7-4ede-b830-f29ba83d28b9
+Cookie: session_id={{session_id}}
 
 {
   "favorites": [
