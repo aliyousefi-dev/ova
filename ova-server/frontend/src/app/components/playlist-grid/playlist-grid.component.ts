@@ -13,9 +13,9 @@ export class PlaylistGridComponent {
   @Input() playlists: PlaylistData[] = [];
 
   @Output() select = new EventEmitter<string>();
-  @Output() delete = new EventEmitter<string[]>(); // Emit selected playlist titles for deletion
+  @Output() delete = new EventEmitter<string[]>(); // Now emits slugs, not titles
 
-  selectedPlaylists = new Set<string>();
+  selectedPlaylists = new Set<string>(); // slugs
 
   get allSelected(): boolean {
     return (
@@ -26,19 +26,18 @@ export class PlaylistGridComponent {
 
   toggleSelectAll(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
+    this.selectedPlaylists.clear();
     if (checked) {
-      this.playlists.forEach((p) => this.selectedPlaylists.add(p.title));
-    } else {
-      this.selectedPlaylists.clear();
+      this.playlists.forEach((p) => this.selectedPlaylists.add(p.slug));
     }
   }
 
-  toggleSelection(title: string, event: Event): void {
+  toggleSelection(slug: string, event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
     if (checked) {
-      this.selectedPlaylists.add(title);
+      this.selectedPlaylists.add(slug);
     } else {
-      this.selectedPlaylists.delete(title);
+      this.selectedPlaylists.delete(slug);
     }
   }
 
@@ -47,9 +46,11 @@ export class PlaylistGridComponent {
   }
 
   deleteSelected(): void {
-    // Emit the array of selected playlist titles for deletion
-    this.delete.emit(Array.from(this.selectedPlaylists));
-    // Clear selection after emitting delete event
+    this.delete.emit(Array.from(this.selectedPlaylists)); // Emit slugs
     this.selectedPlaylists.clear();
+  }
+
+  isChecked(slug: string): boolean {
+    return this.selectedPlaylists.has(slug);
   }
 }

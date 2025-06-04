@@ -98,19 +98,19 @@ export class PlaylistsComponent implements OnInit {
       });
   }
 
-  onDeletePlaylists(titles: string[]): void {
-    if (!titles.length) return;
+  onDeletePlaylists(sluges: string[]): void {
+    if (!sluges.length) return;
 
-    if (!confirm(`Delete ${titles.length} playlist(s)?`)) return;
+    if (!confirm(`Delete ${sluges.length} playlist(s)?`)) return;
 
     // Track deletions and update UI after all succeed
-    const deleteObservables = titles.map((title) =>
+    const deleteObservables = sluges.map((title) =>
       this.playlistapi.deleteUserPlaylistBySlug(this.username!, title)
     );
 
     // Simple approach: subscribe to each separately and update playlists array
     // You could improve with forkJoin to wait all complete if preferred
-    titles.forEach((title) => {
+    sluges.forEach((title) => {
       this.playlistapi
         .deleteUserPlaylistBySlug(this.username!, title)
         .subscribe({
