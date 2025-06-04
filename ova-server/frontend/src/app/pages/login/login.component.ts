@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router'; // Import Router for navigation
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { APIService } from '../../services/api.service';
 import { LoginResponse } from '../../data-types/responses';
+import { AuthApiService } from '../../services/auth-api.service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +17,7 @@ export class LoginComponent {
   error: string | null = null;
   sessionId: string | null = null;
 
-  constructor(private apiService: APIService, private router: Router) {}
+  constructor(private authapi: AuthApiService, private router: Router) {}
 
   onSubmit() {
     this.error = null;
@@ -26,7 +26,7 @@ export class LoginComponent {
       return;
     }
 
-    this.apiService.login(this.username, this.password).subscribe({
+    this.authapi.login(this.username, this.password).subscribe({
       next: (res: LoginResponse) => {
         if (res.status === 'success') {
           // Navigate to /home after successful login

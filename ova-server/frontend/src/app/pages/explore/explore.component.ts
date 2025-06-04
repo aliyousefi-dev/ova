@@ -10,10 +10,11 @@ import {
   of,
 } from 'rxjs';
 
-import { APIService } from '../../services/api.service';
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar';
 import { VideoGridComponent } from '../../components/video-grid/video-grid.component';
+import { VideoApiService } from '../../services/video-api.service';
+import { SearchApiService } from '../../services/search-api.service';
 
 @Component({
   selector: 'app-explore',
@@ -36,7 +37,10 @@ export class ExploreComponent implements OnDestroy {
   private searchSubject = new Subject<string>();
   private searchSubscription: Subscription;
 
-  constructor(private apiService: APIService) {
+  constructor(
+    private searchapi: SearchApiService,
+    private videoapi: VideoApiService
+  ) {
     // Subscribe to searchTerm changes with debounce
     this.searchSubscription = this.searchSubject
       .pipe(
@@ -50,7 +54,7 @@ export class ExploreComponent implements OnDestroy {
             return of(null); // Emit null so subscriber fires
           }
           this.loading = true;
-          return this.apiService.searchVideos(query);
+          return this.searchapi.searchVideos(query);
         })
       )
       .subscribe({
@@ -94,11 +98,11 @@ export class ExploreComponent implements OnDestroy {
   }
 
   getThumbnailUrl(videoId: string): string {
-    return this.apiService.getThumbnailUrl(videoId);
+    return this.videoapi.getThumbnailUrl(videoId);
   }
 
   getPreviewUrl(videoId: string): string {
-    return this.apiService.getPreviewUrl(videoId);
+    return this.videoapi.getPreviewUrl(videoId);
   }
 
   ngOnDestroy() {

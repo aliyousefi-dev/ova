@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
 import { VideoData } from '../../data-types/video-data';
-import { APIService } from '../../services/api.service';
+import { VideoApiService } from '../../services/video-api.service';
 
 @Component({
   selector: 'app-watch',
@@ -15,18 +15,12 @@ export class WatchComponent {
   loading = true;
   error = false;
   videoId: string | null = null;
-  video: VideoData = {
-    videoId: '',
-    title: '',
-    rating: 0,
-    durationSeconds: 0,
-    thumbnailPath: '',
-    tags: [],
-    uploadedAt: '',
-    views: 0,
-  };
+  video!: VideoData;
 
-  constructor(private route: ActivatedRoute, private apiService: APIService) {
+  constructor(
+    private route: ActivatedRoute,
+    private videoapi: VideoApiService
+  ) {
     this.videoId = this.route.snapshot.paramMap.get('videoId');
 
     if (this.videoId) {
@@ -39,7 +33,7 @@ export class WatchComponent {
 
   fetchVideo(videoId: string) {
     this.loading = true;
-    this.apiService.getVideoById(videoId).subscribe({
+    this.videoapi.getVideoById(videoId).subscribe({
       next: (response) => {
         this.video = response.data;
         this.loading = false;
@@ -52,11 +46,11 @@ export class WatchComponent {
   }
 
   get videoUrl(): string {
-    return this.apiService.getStreamUrl(this.video.videoId);
+    return this.videoapi.getStreamUrl(this.video.videoId);
   }
 
   get thumbnailUrl(): string {
-    return this.apiService.getThumbnailUrl(this.video.videoId);
+    return this.videoapi.getThumbnailUrl(this.video.videoId);
   }
 
   handleLogout() {

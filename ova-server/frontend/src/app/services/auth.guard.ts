@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 import { Router, UrlTree } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { APIService } from '../services/api.service';
+import { AuthApiService } from './auth-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard {
-  constructor(private apiService: APIService, private router: Router) {}
+  constructor(private authapi: AuthApiService, private router: Router) {}
 
   canActivate(): Observable<boolean | UrlTree> {
-    return this.apiService.getAuthStatusFull().pipe(
+    return this.authapi.getAuthStatusFull().pipe(
       map((res) => {
         if (res.status === 'success' && res.data.authenticated) {
           localStorage.setItem('username', res.data.username ?? '');

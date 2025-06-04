@@ -5,12 +5,7 @@ export interface PlaylistData {
   slug: string;
 }
 
-export interface PlaylistCardModel extends PlaylistData {
-  id: string; // unique id or slug for convenience
-  thumbnailUrls: string[]; // exactly 4 thumbnails
-  previewUrls: string[]; // exactly 4 preview videos
-  isFavorite: boolean;
-  timeSinceAdded: string;
-  totalDurationSeconds: number;
-  tags: string[];
+export interface PlaylistDataResponse {
+  playlists: PlaylistData[];
+  username: string;
 }

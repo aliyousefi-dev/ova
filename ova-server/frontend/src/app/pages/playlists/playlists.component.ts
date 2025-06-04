@@ -8,9 +8,10 @@ import {
   PlaylistInput,
 } from '../../components/playlist-card/playlist-card.component';
 
-import { APIService } from '../../services/api.service';
+import { PlaylistAPIService } from '../../services/playlist-api.service';
 import { PlaylistData } from '../../data-types/playlist-data';
 import { VideoData } from '../../data-types/video-data';
+import { VideoApiService } from '../../services/video-api.service';
 
 @Component({
   selector: 'app-playlists',
@@ -26,7 +27,11 @@ export class PlaylistsComponent implements OnInit {
   // Map videoId -> VideoData for quick lookup
   private videoMap = new Map<string, VideoData>();
 
-  constructor(private api: APIService, private router: Router) {}
+  constructor(
+    private playlistapi: PlaylistAPIService,
+    private videoapi: VideoApiService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.username = localStorage.getItem('username');
@@ -39,8 +44,10 @@ export class PlaylistsComponent implements OnInit {
   }
 
   loadPlaylists() {
-    this.api.getUserPlaylists(this.username!).subscribe({
-      next: (playlists: PlaylistData[]) => {
+    this.playlistapi.getUserPlaylists(this.username!).subscribe({
+      next: (response) => {
+        const playlists = response.data.playlists;
+
         if (!playlists.length) {
           this.playlists = [];
           this.loading = false;
@@ -55,7 +62,7 @@ export class PlaylistsComponent implements OnInit {
           .filter((id): id is string => id !== null);
 
         // Fetch video info for those first videos in batch
-        this.api.getVideosByIds(firstVideoIds).subscribe({
+        this.videoapi.getVideosByIds(firstVideoIds).subscribe({
           next: (res) => {
             if (res.status === 'success' && res.data) {
               // Fill videoMap with video data by id
@@ -89,7 +96,7 @@ export class PlaylistsComponent implements OnInit {
 
       if (firstVideoId && this.videoMap.has(firstVideoId)) {
         // Use thumbnail from video metadata
-        thumbnailUrls = [this.api.getThumbnailUrl(firstVideoId)];
+        thumbnailUrls = [this.videoapi.getThumbnailUrl(firstVideoId)];
       } else {
         // Use placeholder if no thumbnail available
         thumbnailUrls = [

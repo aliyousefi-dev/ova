@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
-import { APIService } from '../../services/api.service';
+import { AuthApiService } from '../../services/auth-api.service';
 
 @Component({
   selector: 'app-top-nav-bar',
@@ -13,7 +13,7 @@ export class TopNavBarComponent implements OnInit {
 
   username = '';
 
-  constructor(private apiService: APIService, private router: Router) {}
+  constructor(private authapi: AuthApiService, private router: Router) {}
 
   ngOnInit() {
     const storedUsername = localStorage.getItem('username');
@@ -25,7 +25,7 @@ export class TopNavBarComponent implements OnInit {
   }
 
   onLogout() {
-    this.apiService.logout().subscribe({
+    this.authapi.logout().subscribe({
       next: () => {
         // Optionally clear username from localStorage on logout
         localStorage.removeItem('username');

@@ -3,14 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { VideoCardComponent } from '../../components/video-card/video-card.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar';
 import { FolderTreeComponent } from '../../components/folder-tree/folder-tree.component';
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
-import { APIService } from '../../services/api.service';
 import { VideoGridComponent } from '../../components/video-grid/video-grid.component';
 
 import { PlaylistData } from '../../data-types/playlist-data';
+import { VideoData } from '../../data-types/video-data';
+import { AuthApiService } from '../../services/auth-api.service';
+import { VideoApiService } from '../../services/video-api.service';
 
 @Component({
   selector: 'app-video',
@@ -38,7 +39,11 @@ export class VideoComponent implements OnInit {
   playlists: PlaylistData[] = [];
   username: string | null = null;
 
-  constructor(private apiservice: APIService, private router: Router) {}
+  constructor(
+    private authapi: AuthApiService,
+    private videoapi: VideoApiService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.fetchFolders();
@@ -50,22 +55,21 @@ export class VideoComponent implements OnInit {
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
       this.username = storedUsername;
-      this.loadPlaylists();
     } else {
       this.username = null;
     }
   }
 
   getThumbnailUrl(videoId: string): string {
-    return this.apiservice.getThumbnailUrl(videoId);
+    return this.videoapi.getThumbnailUrl(videoId);
   }
 
   getPreviewUrl(videoId: string): string {
-    return this.apiservice.getPreviewUrl(videoId);
+    return this.videoapi.getPreviewUrl(videoId);
   }
 
   fetchFolders() {
-    this.apiservice.getFolders().subscribe({
+    this.videoapi.getFolderLists().subscribe({
       next: (res) => {
         this.folders = res.data || [];
       },
@@ -77,7 +81,7 @@ export class VideoComponent implements OnInit {
 
   fetchVideos() {
     this.loading = true;
-    this.apiservice.getVideos(this.currentFolder).subscribe({
+    this.videoapi.getVideosByFolder(this.currentFolder).subscribe({
       next: (res) => {
         this.videos = res.data || [];
         this.loading = false;
@@ -94,17 +98,6 @@ export class VideoComponent implements OnInit {
     this.fetchVideos();
   }
 
-  handleLogout() {
-    this.apiservice.logout().subscribe({
-      next: () => {
-        this.router.navigate(['/login']);
-      },
-      error: () => {
-        this.router.navigate(['/login']);
-      },
-    });
-  }
-
   get filteredVideos() {
     const filtered = this.videos.filter((v) =>
       v.title.toLowerCase().includes(this.searchTerm.toLowerCase())
@@ -112,7 +105,7 @@ export class VideoComponent implements OnInit {
     return this.sortVideos(filtered);
   }
 
-  sortVideos(videos: any[]) {
+  sortVideos(videos: VideoData[]) {
     switch (this.sortOption) {
       case 'titleAsc':
         return videos.sort((a, b) => a.title.localeCompare(b.title));
@@ -125,24 +118,5 @@ export class VideoComponent implements OnInit {
       default:
         return videos;
     }
-  }
-
-  loadPlaylists() {
-    if (!this.username) return;
-    this.apiservice.getUserPlaylists(this.username).subscribe({
-      next: (res) => {
-        this.playlists = res || [];
-      },
-      error: (err) => {
-        console.error('Failed to load playlists', err);
-        this.playlists = [];
-      },
-    });
-  }
-
-  selectPlaylist(playlist: PlaylistData) {
-    this.isCollectionsDropdownOpen = false;
-    console.log('Selected playlist:', playlist);
-    // You can navigate or filter videos here
   }
 }

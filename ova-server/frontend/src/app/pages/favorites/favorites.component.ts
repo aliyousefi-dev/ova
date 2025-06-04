@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { APIService } from '../../services/api.service';
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar';
 import { VideoGridComponent } from '../../components/video-grid/video-grid.component';
+import { AuthApiService } from '../../services/auth-api.service';
+import { VideoApiService } from '../../services/video-api.service';
+import { FavoriteApiService } from '../../services/favorite-api.service';
 
 @Component({
   selector: 'app-favorites',
@@ -27,7 +29,11 @@ export class FavoritesComponent implements OnInit {
   protected sortOption: string = 'titleAsc';
   protected username: string | null = null;
 
-  constructor(private apiservice: APIService, private router: Router) {}
+  constructor(
+    private videoapi: VideoApiService,
+    private favoriteapi: FavoriteApiService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.loadUsername();
@@ -45,7 +51,7 @@ export class FavoritesComponent implements OnInit {
 
   fetchFavorites(username: string) {
     this.loading = true;
-    this.apiservice.getUserFavorites(username).subscribe({
+    this.favoriteapi.getUserFavorites(username).subscribe({
       next: (res) => {
         const ids = res.favorites || [];
         if (ids.length === 0) {
@@ -54,7 +60,7 @@ export class FavoritesComponent implements OnInit {
           return;
         }
 
-        this.apiservice.getVideosByIds(ids).subscribe({
+        this.videoapi.getVideosByIds(ids).subscribe({
           next: (res) => {
             this.videos = res.data || [];
             this.loading = false;
@@ -73,11 +79,11 @@ export class FavoritesComponent implements OnInit {
   }
 
   getThumbnailUrl(videoId: string): string {
-    return this.apiservice.getThumbnailUrl(videoId);
+    return this.videoapi.getThumbnailUrl(videoId);
   }
 
   getPreviewUrl(videoId: string): string {
-    return this.apiservice.getPreviewUrl(videoId);
+    return this.videoapi.getPreviewUrl(videoId);
   }
 
   get filteredVideos() {
@@ -100,12 +106,5 @@ export class FavoritesComponent implements OnInit {
       default:
         return videos;
     }
-  }
-
-  handleLogout() {
-    this.apiservice.logout().subscribe({
-      next: () => this.router.navigate(['/login']),
-      error: () => this.router.navigate(['/login']),
-    });
   }
 }

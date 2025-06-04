@@ -1,9 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { APIService } from '../../services/api.service';
 import { FormsModule } from '@angular/forms';
 import { PlaylistModalComponent } from '../playlist-modal/playlist-modal.component';
+import { PlaylistAPIService } from '../../services/playlist-api.service';
+import { VideoApiService } from '../../services/video-api.service';
+import { FavoriteApiService } from '../../services/favorite-api.service';
 
 @Component({
   selector: 'app-video-card',
@@ -30,33 +32,38 @@ export class VideoCardComponent {
   playlists: { title: string; slug: string; checked: boolean }[] = [];
   originalPlaylists: { title: string; slug: string; checked: boolean }[] = [];
 
-  constructor(public apiService: APIService) {}
+  constructor(
+    private playlistapi: PlaylistAPIService,
+    private favoriteapi: FavoriteApiService,
+    private videoapi: VideoApiService
+  ) {}
 
-  // Open modal, load playlists and set checked states
+  // Open modal, load  playlistsand set checked states
   addToPlaylist(event: MouseEvent) {
     event.stopPropagation();
     if (!this.username) return;
 
-    this.apiService.getUserPlaylists(this.username).subscribe((pls) => {
-      // Create a fresh playlist array with checked = false initially
+    this.playlistapi.getUserPlaylists(this.username).subscribe((response) => {
+      const pls = response.data.playlists;
+
       const checkList = pls.map((p) => ({ ...p, checked: false }));
 
-      // Fetch each playlist's videos to determine if video is inside
       Promise.all(
         checkList.map(
           (playlist) =>
             new Promise<void>((resolve) => {
-              this.apiService
+              this.playlistapi
                 .getUserPlaylistBySlug(this.username, playlist.slug)
                 .subscribe((plData) => {
-                  playlist.checked = plData.videoIds.includes(this.videoId);
+                  playlist.checked = plData.data.videoIds.includes(
+                    this.videoId
+                  );
                   resolve();
                 });
             })
         )
       ).then(() => {
         this.playlists = checkList;
-        // Make a deep copy for original state to compare later
         this.originalPlaylists = checkList.map((p) => ({ ...p }));
         this.playlistModalVisible = true;
       });
@@ -79,12 +86,12 @@ export class VideoCardComponent {
 
       if (playlist.checked && !original.checked) {
         // Video was not in playlist, now should be added
-        this.apiService
+        this.playlistapi
           .addVideoToPlaylist(this.username, playlist.slug, this.videoId)
           .subscribe();
       } else if (!playlist.checked && original.checked) {
         // Video was in playlist, now should be removed
-        this.apiService
+        this.playlistapi
           .deleteVideoFromPlaylist(this.username, playlist.slug, this.videoId)
           .subscribe();
       }
@@ -97,7 +104,7 @@ export class VideoCardComponent {
     if (!this.username) return;
 
     this.savingFavorite = true;
-    this.apiService.getUserFavorites(this.username).subscribe((favData) => {
+    this.favoriteapi.getUserFavorites(this.username).subscribe((favData) => {
       let updatedFavorites = new Set(favData.favorites);
 
       if (this.isFavorite) {
@@ -106,7 +113,7 @@ export class VideoCardComponent {
         updatedFavorites.add(this.videoId);
       }
 
-      this.apiService
+      this.favoriteapi
         .updateUserFavorites(this.username, Array.from(updatedFavorites))
         .subscribe((newData) => {
           this.isFavorite = newData.favorites.includes(this.videoId);
@@ -117,7 +124,7 @@ export class VideoCardComponent {
 
   download(event: MouseEvent) {
     event.stopPropagation();
-    const streamUrl = this.apiService.getDownloadUrl(this.videoId);
+    const streamUrl = this.videoapi.getDownloadUrl(this.videoId);
     const anchor = document.createElement('a');
     anchor.href = streamUrl;
     anchor.download = `${this.title}.mp4`;

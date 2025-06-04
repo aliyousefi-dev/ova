@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { VideoGridComponent } from '../../components/video-grid/video-grid.component';
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
-import { APIService } from '../../services/api.service';
+import { PlaylistAPIService } from '../../services/playlist-api.service';
+import { VideoApiService } from '../../services/video-api.service';
 
 @Component({
   selector: 'app-playlist-detail',
@@ -19,7 +20,8 @@ export class PlaylistDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private api: APIService,
+    private playlistapi: PlaylistAPIService,
+    private videoapi: VideoApiService,
     private router: Router
   ) {}
 
@@ -44,9 +46,11 @@ export class PlaylistDetailComponent implements OnInit {
 
   loadPlaylistVideos(title: string) {
     this.loading = true;
-    this.api.getUserPlaylists(this.username!).subscribe({
-      next: (playlists) => {
+    this.playlistapi.getUserPlaylists(this.username!).subscribe({
+      next: (response) => {
+        const playlists = response.data.playlists;
         const playlist = playlists.find((p) => p.title === title);
+
         if (!playlist) {
           this.router.navigate(['/playlists']);
           return;
@@ -58,7 +62,7 @@ export class PlaylistDetailComponent implements OnInit {
           return;
         }
 
-        this.api.getVideosByIds(playlist.videoIds).subscribe({
+        this.videoapi.getVideosByIds(playlist.videoIds).subscribe({
           next: (res) => {
             this.videos = res.data || [];
             this.loading = false;
@@ -77,10 +81,10 @@ export class PlaylistDetailComponent implements OnInit {
   }
 
   getThumbnailUrl(videoId: string): string {
-    return this.api.getThumbnailUrl(videoId);
+    return this.videoapi.getThumbnailUrl(videoId);
   }
 
   getPreviewUrl(videoId: string): string {
-    return this.api.getPreviewUrl(videoId);
+    return this.videoapi.getPreviewUrl(videoId);
   }
 }
