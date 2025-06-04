@@ -9,6 +9,8 @@ import { PlaylistAPIService } from '../../services/playlist-api.service';
 import { PlaylistData } from '../../data-types/playlist-data';
 import { PlaylistGridComponent } from '../../components/playlist-grid/playlist-grid.component';
 
+import { ToastComponent } from '../../components/toast/toast.component';
+
 @Component({
   selector: 'app-playlists',
   standalone: true,
@@ -17,12 +19,14 @@ import { PlaylistGridComponent } from '../../components/playlist-grid/playlist-g
     TopNavBarComponent,
     PlaylistGridComponent,
     PlaylistCreateModalComponent,
+    ToastComponent,
   ],
   templateUrl: './playlists.component.html',
 })
 export class PlaylistsComponent implements OnInit {
   playlists: PlaylistData[] = [];
   loading = true;
+  manageMode = false; // NEW
   private username: string | null = null;
   creationError: string | null = null;
 
@@ -62,64 +66,29 @@ export class PlaylistsComponent implements OnInit {
   }
 
   onSelectPlaylist(title: string): void {
-    this.router.navigate(['/playlists', title]);
+    if (!this.manageMode) {
+      this.router.navigate(['/playlists', title]);
+    }
   }
 
-  createNewPlaylist(): void {
-    this.creationError = null; // reset previous error
-    const title = prompt('Enter playlist name:');
-    if (!title || !title.trim()) return;
-
-    const trimmedTitle = title.trim();
-
-    this.playlistapi
-      .createUserPlaylist(this.username!, {
-        title: trimmedTitle,
-        videoIds: [],
-      })
-      .subscribe({
-        next: (res) => {
-          if (res.status === 'success' && res.data) {
-            this.playlists.push(res.data);
-            this.sortPlaylists();
-          } else {
-            this.creationError = res.message;
-          }
-        },
-        error: (err) => {
-          if (err.error?.error?.message) {
-            this.creationError = err.error.error.message;
-          } else if (err.message) {
-            this.creationError = err.message;
-          } else {
-            this.creationError = 'Failed to create playlist. Please try again.';
-          }
-        },
-      });
+  toggleManageMode(): void {
+    this.manageMode = !this.manageMode;
   }
 
-  onDeletePlaylists(sluges: string[]): void {
-    if (!sluges.length) return;
+  onDeletePlaylists(slugs: string[]): void {
+    if (!slugs.length) return;
+    if (!confirm(`Delete ${slugs.length} playlist(s)?`)) return;
 
-    if (!confirm(`Delete ${sluges.length} playlist(s)?`)) return;
-
-    // Track deletions and update UI after all succeed
-    const deleteObservables = sluges.map((title) =>
-      this.playlistapi.deleteUserPlaylistBySlug(this.username!, title)
-    );
-
-    // Simple approach: subscribe to each separately and update playlists array
-    // You could improve with forkJoin to wait all complete if preferred
-    sluges.forEach((title) => {
+    slugs.forEach((slug) => {
       this.playlistapi
-        .deleteUserPlaylistBySlug(this.username!, title)
+        .deleteUserPlaylistBySlug(this.username!, slug)
         .subscribe({
           next: () => {
-            this.playlists = this.playlists.filter((p) => p.title !== title);
+            this.playlists = this.playlists.filter((p) => p.slug !== slug);
           },
           error: (err) => {
-            console.error(`Failed to delete playlist "${title}":`, err);
-            alert(`Failed to delete playlist "${title}".`);
+            console.error(`Failed to delete playlist "${slug}":`, err);
+            alert(`Failed to delete playlist "${slug}".`);
           },
         });
     });

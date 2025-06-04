@@ -1,27 +1,54 @@
 <app-top-nav-bar title="Playlists"></app-top-nav-bar>
 
+<!-- Loading State -->
 <div *ngIf="loading" class="p-6 text-center text-white/70">
   Loading playlists...
 </div>
 
-<!-- Create New Playlist button always visible -->
-<div
-  class="mb-8 flex items-center justify-center cursor-pointer rounded-lg border border-white/20 bg-white/5 hover:bg-white/10 transition p-6 text-white"
-  (click)="openCreateModal()"
+<!-- Controls Row -->
+<div class="my-8 flex flex-wrap justify-center gap-4 px-4">
+  <button
+    class="btn text-sm px-6 py-2 rounded transition hover:bg-primary-focus min-w-[160px]"
+    (click)="openCreateModal()"
+    aria-label="Create New Playlist"
+  >
+    + Create New Playlist
+  </button>
+
+  <button
+  (click)="toggleManageMode()"
+  class="btn text-sm px-6 py-2 rounded transition hover:bg-primary/10 min-w-[160px]"
+  [attr.aria-pressed]="manageMode"
 >
-  <span class="text-lg font-semibold">Create New Playlist</span>
+  {{ manageMode ? 'Done' : 'Manage' }}
+</button>
+
 </div>
 
+<!-- Error Toast -->
+<app-toast
+  *ngIf="creationError"
+  [message]="creationError"
+  type="error"
+  (close)="creationError = null"
+></app-toast>
+
+
+
+
+<!-- Empty State -->
 <div
   *ngIf="!loading && playlists.length === 0"
-  class="flex flex-col items-center justify-center p-12 text-white/70"
+  class="flex flex-col items-center justify-center p-10 text-white/70 max-w-md mx-auto text-center"
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    class="w-16 h-16 text-white/20 mb-4"
+    class="w-16 h-16 text-white/20 mb-3"
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
+    aria-hidden="true"
+    focusable="false"
   >
     <path
       stroke-linecap="round"
@@ -30,28 +57,23 @@
       d="M9 19V6h13M9 6L3 12l6 6"
     />
   </svg>
-  <h2 class="text-lg font-semibold text-white/80">No playlists yet</h2>
-  <p class="mt-2 text-sm text-white/50">
-    You haven't created any playlists. Start building one to organize your
-    favorite videos!
+  <h2 class="text-xl font-semibold text-white/80 mb-1">No playlists yet</h2>
+  <p class="text-sm text-white/50 max-w-xs">
+    You haven't created any playlists. Start building one to organize your favorite videos!
   </p>
 </div>
 
-<div *ngIf="!loading && playlists.length > 0" class="px-8 py-10">
-  <div
-    *ngIf="creationError"
-    class="mb-4 px-6 py-3 rounded bg-red-600 text-white text-center"
-  >
-    {{ creationError }}
-  </div>
-
+<!-- Playlist Grid -->
+<div *ngIf="!loading && playlists.length > 0" class="px-6 py-10 max-w-7xl mx-auto">
   <app-playlist-grid
     [playlists]="playlists"
+    [manageMode]="manageMode"
     (select)="onSelectPlaylist($event)"
     (delete)="onDeletePlaylists($event)"
   ></app-playlist-grid>
 </div>
 
+<!-- Create Playlist Modal -->
 <app-playlist-create-modal
   [visible]="showCreateModal"
   (close)="onModalClose()"

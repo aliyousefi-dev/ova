@@ -11,6 +11,7 @@ import { PlaylistCardComponent } from '../playlist-card/playlist-card.component'
 })
 export class PlaylistGridComponent {
   @Input() playlists: PlaylistData[] = [];
+  @Input() manageMode = false; // NEW input
 
   @Output() select = new EventEmitter<string>();
   @Output() delete = new EventEmitter<string[]>(); // Now emits slugs, not titles
@@ -41,8 +42,11 @@ export class PlaylistGridComponent {
     }
   }
 
+  // In onSelect(), only emit if not in manage mode
   onSelect(title: string): void {
-    this.select.emit(title);
+    if (!this.manageMode) {
+      this.select.emit(title);
+    }
   }
 
   deleteSelected(): void {
@@ -52,5 +56,13 @@ export class PlaylistGridComponent {
 
   isChecked(slug: string): boolean {
     return this.selectedPlaylists.has(slug);
+  }
+
+  toggleSelectionManual(slug: string): void {
+    if (this.selectedPlaylists.has(slug)) {
+      this.selectedPlaylists.delete(slug);
+    } else {
+      this.selectedPlaylists.add(slug);
+    }
   }
 }

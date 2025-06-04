@@ -22,13 +22,17 @@ export class PlaylistCreateModalComponent implements OnChanges {
   @Output() close = new EventEmitter<void>();
   @Output() create = new EventEmitter<string>();
   @ViewChild('dialogRef') dialogRef!: ElementRef<HTMLDialogElement>;
+  @ViewChild('playlistInput') playlistInput!: ElementRef<HTMLInputElement>;
 
   playlistName = '';
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['visible']) {
       if (this.visible) {
-        setTimeout(() => this.dialogRef?.nativeElement?.showModal?.(), 0);
+        setTimeout(() => {
+          this.dialogRef?.nativeElement?.showModal?.();
+          this.playlistInput?.nativeElement?.focus(); // 👈 Focus input
+        }, 0);
       } else {
         this.dialogRef?.nativeElement?.close?.();
       }

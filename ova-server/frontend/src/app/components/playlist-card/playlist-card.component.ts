@@ -1,4 +1,11 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  HostListener,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PlaylistData } from '../../data-types/playlist-data';
 import { VideoData } from '../../data-types/video-data';
@@ -15,6 +22,8 @@ export class PlaylistCardComponent implements OnInit {
   @Output() select = new EventEmitter<void>();
 
   headerVideo?: VideoData;
+
+  menuOpen = false; // Default closed
 
   constructor(private videoapi: VideoApiService) {}
 
@@ -46,5 +55,25 @@ export class PlaylistCardComponent implements OnInit {
 
   onSelect() {
     this.select.emit();
+  }
+
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  onEdit() {
+    // Implement edit functionality here
+    console.log('Edit clicked for', this.playlist.title);
+  }
+
+  onDelete() {
+    // Implement delete functionality here
+    console.log('Delete clicked for', this.playlist.title);
+  }
+
+  // Close menu when clicking outside component
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    this.menuOpen = false;
   }
 }

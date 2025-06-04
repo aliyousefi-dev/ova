@@ -1,18 +1,55 @@
-<dialog id="playlist_modal" class="modal" [open]="visible">
-  <div class="modal-box bg-base-200 text-base-content">
-    <h3 class="font-bold text-lg">Create New Playlist</h3>
+<dialog
+  id="playlist_modal"
+  class="modal bg-black/40 backdrop-blur-sm"
+  [open]="visible"
+  (keydown.escape)="onCancel()"
+  (keydown.enter)="playlistName.trim() && submit()"
+  aria-labelledby="playlist_modal_title"
+  role="dialog"
+  aria-modal="true"
+>
+  <div
+    class="modal-box bg-base-200 text-base-content max-w-md mx-auto rounded-lg shadow-lg p-6"
+    tabindex="0"
+  >
+    <h3 id="playlist_modal_title" class="font-bold text-xl mb-4">
+      Create New Playlist
+    </h3>
+
+    <label for="playlistNameInput" class="sr-only">Playlist Name</label>
     <input
+      id="playlistNameInput"
+      #playlistInput
       type="text"
       [(ngModel)]="playlistName"
       placeholder="Enter playlist name"
-      class="input input-bordered w-full mt-4"
+      class="input input-bordered w-full"
+      aria-required="true"
+      autofocus
+      autocomplete="off"
     />
 
-    <div class="modal-action">
+    <div class="modal-action mt-6 flex justify-end space-x-3">
       <!-- Close Button -->
-      <button class="btn" (click)="onCancel()">Cancel</button>
+      <button
+        type="button"
+        class="btn btn-ghost"
+        (click)="onCancel()"
+        aria-label="Cancel creating playlist"
+      >
+        Cancel
+      </button>
+
       <!-- Create Button -->
-      <button class="btn btn-primary" (click)="submit()">Create</button>
+      <button
+      type="button"
+      class="btn btn-primary"
+      (click)="submit()"
+      [disabled]="!playlistName.trim()"
+      [attr.aria-disabled]="!playlistName.trim()"
+    >
+      Create
+    </button>
     </div>
   </div>
 </dialog>
