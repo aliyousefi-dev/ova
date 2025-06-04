@@ -2,6 +2,8 @@
 
 Online Video Archive is a web application for browsing and managing video libraries over a local area network (LAN). The project uses a **Golang backend** and an **Angular frontend**, designed for fast, modular, and maintainable media library access.
 
+![image](https://github.com/user-attachments/assets/bd403829-e89a-465e-a965-14b7a9e70477)
+
 ---
 
 ## Features
