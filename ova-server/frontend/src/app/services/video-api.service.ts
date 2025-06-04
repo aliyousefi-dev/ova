@@ -13,12 +13,12 @@ export class VideoApiService {
 
   constructor(private http: HttpClient) {}
 
-  getFolderLists(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/folders`);
+  getFolderLists(): Observable<ApiResponse<string[]>> {
+    return this.http.get<ApiResponse<string[]>>(`${this.baseUrl}/folders`);
   }
 
-  getVideosByFolder(folder: string): Observable<any> {
-    return this.http.get(
+  getVideosByFolder(folder: string): Observable<ApiResponse<VideoData[]>> {
+    return this.http.get<ApiResponse<VideoData[]>>(
       `${this.baseUrl}/videos?folder=${encodeURIComponent(folder)}`
     );
   }

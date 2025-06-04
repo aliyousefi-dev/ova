@@ -27,7 +27,7 @@ import { VideoApiService } from '../../services/video-api.service';
   templateUrl: './video.component.html',
 })
 export class VideoComponent implements OnInit {
-  protected videos: any[] = [];
+  protected videos: VideoData[] = [];
   protected folders: string[] = [];
   protected loading = true;
   protected searchTerm = '';
