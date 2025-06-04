@@ -12,12 +12,20 @@ export class PlaylistModalComponent {
   @Input() visible = false;
   @Input() playlists: { title: string; slug: string; checked: boolean }[] = [];
 
-  // Emit updated playlists when modal closes
   @Output() close = new EventEmitter<
     { title: string; slug: string; checked: boolean }[]
   >();
 
   closeModal() {
+    this.close.emit(this.playlists); // emit without saving changes explicitly
+  }
+
+  save() {
+    // emit playlists and close modal
     this.close.emit(this.playlists);
+  }
+
+  trackBySlug(index: number, playlist: { slug: string }) {
+    return playlist.slug;
   }
 }

@@ -1,0 +1,75 @@
+<app-top-nav-bar title="Settings"></app-top-nav-bar>
+
+<div class="max-w-5xl mx-auto p-6 flex space-x-6">
+
+  <!-- Sidebar with tabs -->
+  <nav class="w-48 flex flex-col space-y-2 border-r border-base-300 pr-4">
+    <button
+      class="btn btn-ghost justify-start"
+      [class.btn-primary]="activeTab === 'theme'"
+      (click)="setActiveTab('theme')"
+    >
+      Theme
+    </button>
+    <button
+      class="btn btn-ghost justify-start"
+      [class.btn-primary]="activeTab === 'profile'"
+      (click)="setActiveTab('profile')"
+    >
+      User Settings
+    </button>
+  </nav>
+
+  <!-- Content area -->
+  <section class="flex-1">
+    <!-- Theme tab -->
+    <div *ngIf="activeTab === 'theme'" class="space-y-4">
+      <h2 class="text-2xl font-semibold">Theme</h2>
+      <p class="text-sm text-base-content/70">Choose your preferred theme for the app.</p>
+
+      <app-theme-card
+        [themes]="themes"
+        [selectedTheme]="selectedTheme"
+        (themeChange)="selectTheme($event)"
+      ></app-theme-card>
+    </div>
+
+    <!-- User Settings tab -->
+    <div *ngIf="activeTab === 'profile'">
+      <h2 class="text-2xl font-semibold border-b border-base-300 pb-2 mb-4">User Settings</h2>
+      <p class="mb-4 text-sm text-base-content/70">Update your profile details below.</p>
+
+      <div class="form-control mb-4">
+        <label class="label" for="username">
+          <span class="label-text">Username</span>
+        </label>
+        <input
+          id="username"
+          type="text"
+          placeholder="Enter username"
+          class="input input-bordered"
+          [(ngModel)]="username"
+        />
+      </div>
+
+      <div class="form-control mb-4">
+        <label class="label" for="email">
+          <span class="label-text">Email</span>
+        </label>
+        <input
+          id="email"
+          type="email"
+          placeholder="Enter email"
+          class="input input-bordered"
+          [(ngModel)]="email"
+        />
+      </div>
+
+      <button class="btn btn-primary" (click)="onSaveProfile()">Save Profile</button>
+
+      <section class="pt-4 border-t border-base-300">
+        <button class="btn btn-error" (click)="onLogout()">Logout</button>
+      </section>
+    </div>
+  </section>
+</div>

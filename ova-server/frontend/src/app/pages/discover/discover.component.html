@@ -1,4 +1,4 @@
-<app-top-nav-bar [title]="'Explore'"></app-top-nav-bar>
+<app-top-nav-bar [title]="'Discover'"></app-top-nav-bar>
 
 <app-search-bar
   [value]="searchTerm"
@@ -29,6 +29,8 @@
     *ngIf="!loading && filteredVideos.length > 0"
     [videos]="filteredVideos"
   ></app-video-grid>
+
+  
 
 <!-- Show prompt when search box is empty -->
 <p *ngIf="!loading && !searchTerm" class="text-gray-700 text-center mt-4">

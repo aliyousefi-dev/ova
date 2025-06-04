@@ -36,7 +36,7 @@
   <div class="flex flex-col gap-2 px-6 pt-5 max-w-4xl mx-auto">
     <ng-container *ngFor="let playlist of playlists">
       <div
-        class="flex items-center gap-4 rounded-lg hover:bg-white/10 transition duration-200 cursor-pointer select-none p-2"
+        class="flex items-center gap-4 rounded-lg hover:bg-white/10 transition duration-200 cursor-pointer select-none"
         (click)="manageMode ? toggleSelectionManual(playlist.slug) : null"
       >
         <!-- Checkbox on the left -->
@@ -50,7 +50,7 @@
         </div>
   
         <!-- Playlist Card takes rest of space -->
-        <div class="flex-1">
+        <div class="flex-1 ">
           <app-playlist-card
             [playlist]="playlist"
             (select)="onSelect(playlist.title)"

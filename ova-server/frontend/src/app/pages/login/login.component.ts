@@ -10,6 +10,7 @@ import { AuthApiService } from '../../services/auth-api.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
+  styleUrl: 'login.component.css',
 })
 export class LoginComponent {
   username: string = '';

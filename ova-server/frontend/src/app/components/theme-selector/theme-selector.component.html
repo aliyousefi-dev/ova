@@ -1,0 +1,13 @@
+<div class="grid grid-cols-4 md:grid-cols-6 gap-6 max-w-xs">
+    <button
+      *ngFor="let theme of themes"
+      class="btn w-full text-center capitalize text-lg font-semibold p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 break-words min-h-[5rem]"
+      [class.btn-primary]="selectedTheme === theme"
+      [class.shadow-lg]="selectedTheme === theme"
+      (click)="select(theme)"
+      [style.color]="selectedTheme === theme ? 'white' : 'inherit'"
+    >
+      {{ theme }}
+    </button>
+  </div>
+  

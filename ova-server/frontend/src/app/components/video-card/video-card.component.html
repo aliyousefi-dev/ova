@@ -1,5 +1,5 @@
 <div
-  class="h-full flex flex-col shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-visible relative rounded-lg"
+  class="h-full flex flex-col cursor-pointer overflow-visible relative rounded-lg "
   (mouseenter)="hovering = true"
   (mouseleave)="hovering = false"
 >
@@ -38,35 +38,37 @@
         style="pointer-events: none;"
       ></video>
 
-      <div class="absolute bottom-2 right-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
+      <div class="absolute bottom-2 right-2 bg-black text-white bg-opacity-60 text-xs px-2 py-1 rounded">
         {{ formatDuration(video.durationSeconds) }}
       </div>
     </figure>
   </a>
 
   <div
-    class="flex flex-col gap-2 p-4 bg-white/5 mt-2 rounded-lg backdrop-blur-sm relative z-20"
+    class="flex flex-col gap-2 p-4 mt-2 rounded-lg  shadow-sm hover:shadow-md bg-base-200 z-20"
     (click)="$event.stopPropagation()"
   >
     <div class="flex items-start justify-between">
       <div class="flex-1">
-        <h2 class="text-base font-semibold line-clamp-2 leading-snug text-white/90">
+        <h2 class="font-semibold line-clamp-2 leading-snug ">
           {{ video.title }}
         </h2>
-        <p class="text-xs text-white/60 mt-1">
+        <p class="text-xs /60 mt-1">
           {{ timeSinceAdded }}
         </p>
       </div>
 
       <div class="dropdown dropdown-end" (click)="$event.stopPropagation()">
-        <div tabindex="0" role="button" class="btn btn-xs btn-ghost text-white z-30">
+        <div tabindex="0" role="button" class="btn btn-xs btn-ghost z-30">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12h.01M12 12h.01M18 12h.01" />
           </svg>
         </div>
         <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-44 z-40">
           <li><a (click)="download($event)">Download</a></li>
-          <li><a (click)="toggleFavorite($event)">{{ isFavorite ? 'Remove from Favorites' : 'Save to Favorites' }}</a></li>
+          <li><a (click)="toggleFavorite($event)">
+            {{ isFavorite ? 'Remove from Favorites' : 'Save to Favorites' }}
+          </a></li>
           <li><a (click)="addToPlaylist($event)">Save to Playlist</a></li>
         </ul>
       </div>
@@ -75,7 +77,7 @@
     <div class="flex flex-wrap gap-1 mt-2">
       <span
         *ngFor="let tag of video.tags"
-        class="px-2 py-0.5 text-xs text-white rounded-md bg-base-100 hover:bg-base-200 transition-colors"
+        class="px-2 py-0.5 text-xs rounded-md bg-base-200 hover:bg-base-200 transition-colors"
       >
         #{{ tag }}
       </span>
@@ -83,7 +85,7 @@
   </div>
 </div>
 
-<!-- Use PlaylistModalComponent -->
+<!-- Playlist Modal -->
 <app-playlist-modal
   [visible]="playlistModalVisible"
   [playlists]="playlists"

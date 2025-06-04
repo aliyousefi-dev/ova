@@ -1,11 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { AuthApiService } from '../../services/auth-api.service';
 
 @Component({
   selector: 'app-top-nav-bar',
   standalone: true,
-  imports: [RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './top-nav-bar.component.html',
 })
 export class TopNavBarComponent implements OnInit {
@@ -16,18 +17,12 @@ export class TopNavBarComponent implements OnInit {
   constructor(private authapi: AuthApiService, private router: Router) {}
 
   ngOnInit() {
-    const storedUsername = localStorage.getItem('username');
-    if (storedUsername) {
-      this.username = storedUsername;
-    } else {
-      this.username = 'Guest'; // or empty string or some fallback
-    }
+    this.username = localStorage.getItem('username') || 'Guest';
   }
 
   onLogout() {
     this.authapi.logout().subscribe({
       next: () => {
-        // Optionally clear username from localStorage on logout
         localStorage.removeItem('username');
         this.router.navigate(['/login']);
       },
@@ -35,5 +30,9 @@ export class TopNavBarComponent implements OnInit {
         this.router.navigate(['/login']);
       },
     });
+  }
+
+  get userInitial(): string {
+    return this.username ? this.username.charAt(0).toUpperCase() : '?';
   }
 }

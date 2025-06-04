@@ -9,6 +9,7 @@ import { FavoritesComponent } from './pages/favorites/favorites.component';
 import { PlaylistsComponent } from './pages/playlists/playlists.component';
 import { PlaylistDetailComponent } from './pages/playlists-detail/playlist-detail.component';
 import { DiscoverComponent } from './pages/discover/discover.component';
+import { SettingsComponent } from './pages/settings/settings.component';
 
 export const routes: Routes = [
   {
@@ -17,7 +18,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard], // ⬅️ protected
   },
   {
-    path: 'libraty',
+    path: 'library',
     component: VideoComponent,
     canActivate: [AuthGuard], // ⬅️ protected
   },
@@ -29,6 +30,11 @@ export const routes: Routes = [
   {
     path: 'favorites',
     component: FavoritesComponent,
+    canActivate: [AuthGuard], // ⬅️ protected
+  },
+  {
+    path: 'settings',
+    component: SettingsComponent,
     canActivate: [AuthGuard], // ⬅️ protected
   },
   {
