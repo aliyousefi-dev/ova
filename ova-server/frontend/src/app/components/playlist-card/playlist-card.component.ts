@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 export interface PlaylistInput {
   title: string;
   description: string;
-  thumbnailUrls: string[]; // one thumbnail URL expected now
+  thumbnailUrl?: string; // single thumbnail URL now
 }
 
 @Component({

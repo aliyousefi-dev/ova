@@ -3,16 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { VideoData } from '../data-types/video-data.model';
-import { AuthStatusResponse } from '../data-types/auth-status-response';
-import { FavoritesResponse } from '../data-types/favorite-response';
-import { PlaylistData, PlaylistResponse } from '../data-types/playlist-data';
-
-interface ApiResponse<T> {
-  data: T;
-  message: string;
-  status: string;
-}
+import { VideoData } from '../data-types/video-data';
+import { AuthStatusResponse } from '../data-types/responses';
+import { FavoritesResponse } from '../data-types/responses';
+import { PlaylistData } from '../data-types/playlist-data';
+import { PlaylistResponse } from '../data-types/responses';
+import { ApiResponse } from '../data-types/responses';
+import { SearchResponse } from '../data-types/responses';
 
 @Injectable({
   providedIn: 'root',
@@ -174,5 +171,14 @@ export class APIService {
     return this.http.post<ApiResponse<VideoData[]>>('/api/v1/videos/batch', {
       ids,
     });
+  }
+
+  searchVideos(query: string): Observable<ApiResponse<SearchResponse>> {
+    return this.http.post<ApiResponse<SearchResponse>>(
+      `${this.baseUrl}/search`,
+      {
+        query,
+      }
+    );
   }
 }

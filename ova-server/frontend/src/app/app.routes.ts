@@ -8,6 +8,7 @@ import { AuthGuard } from './services/auth.guard';
 import { FavoritesComponent } from './pages/favorites/favorites.component';
 import { PlaylistsComponent } from './pages/playlists/playlists.component';
 import { PlaylistDetailComponent } from './pages/playlists-detail/playlist-detail.component';
+import { ExploreComponent } from './pages/explore/explore.component';
 
 export const routes: Routes = [
   {
@@ -28,6 +29,11 @@ export const routes: Routes = [
   {
     path: 'favorites',
     component: FavoritesComponent,
+    canActivate: [AuthGuard], // ⬅️ protected
+  },
+  {
+    path: 'explore',
+    component: ExploreComponent,
     canActivate: [AuthGuard], // ⬅️ protected
   },
   {

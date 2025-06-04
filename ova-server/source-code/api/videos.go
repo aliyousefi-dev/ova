@@ -13,11 +13,11 @@ import (
 )
 
 // RegisterVideoRoutes adds video-related endpoints including folder listing.
-func RegisterVideoRoutes(rg *gin.RouterGroup, manager *storage.StorageManager, sm *SessionManager, baseDir string) {
+func RegisterVideoRoutes(rg *gin.RouterGroup, manager *storage.StorageManager, sm *SessionManager) {
 	videos := rg.Group("/videos", sm.AuthRequired())
 	{
-		videos.GET("/:videoId", getVideoByID(manager))      // GET /api/v1/videos/{videoId}
-		videos.GET("", getVideosByFolder(manager, baseDir)) // ✅ GET /api/v1/videos?folder=...
+		videos.GET("/:videoId", getVideoByID(manager)) // GET /api/v1/videos/{videoId}
+		videos.GET("", getVideosByFolder(manager))     // ✅ GET /api/v1/videos?folder=...
 		videos.POST("/batch", getVideosByIds(manager))
 	}
 
@@ -40,7 +40,7 @@ func getVideoByID(manager *storage.StorageManager) gin.HandlerFunc {
 }
 
 // getVideosByFolder returns a list of videos inside the given folder path.
-func getVideosByFolder(manager *storage.StorageManager, baseDir string) gin.HandlerFunc {
+func getVideosByFolder(manager *storage.StorageManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		folderQuery := c.Query("folder")
 		requestedPath := filepath.ToSlash(strings.Trim(folderQuery, "/"))

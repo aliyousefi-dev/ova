@@ -7,7 +7,6 @@ import { APIService } from '../../services/api.service';
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar';
 import { VideoGridComponent } from '../../components/video-grid/video-grid.component';
-import { FavoritesResponse } from '../../data-types/favorite-response';
 
 @Component({
   selector: 'app-favorites',

@@ -1,0 +1,43 @@
+<app-top-nav-bar [title]="'Explore'"></app-top-nav-bar>
+
+<app-search-bar
+  [value]="searchTerm"
+  (valueChange)="onSearchTermChange($event)"
+  placeholder="Search videos..."
+></app-search-bar>
+
+<!-- Sort Menu -->
+<div class="max-w-7xl mx-auto px-4 mt-4 flex justify-end items-center gap-2">
+  <label for="sort" class="text-sm text-gray-700 font-medium">Sort by:</label>
+  <select
+    id="sort"
+    [(ngModel)]="sortOption"
+    class="select select-sm select-bordered w-40"
+  >
+    <option value="titleAsc">Title (A–Z)</option>
+    <option value="titleDesc">Title (Z–A)</option>
+    <option value="durationAsc">Duration (Short → Long)</option>
+    <option value="durationDesc">Duration (Long → Short)</option>
+  </select>
+</div>
+
+<!-- Videos Block -->
+<div class="max-w-7xl mx-auto px-4 mt-6">
+  <p *ngIf="loading" class="text-gray-700 font-medium text-center">Loading videos...</p>
+
+  <app-video-grid
+    *ngIf="!loading && filteredVideos.length > 0"
+    [videos]="filteredVideos"
+    [getThumbnailUrl]="getThumbnailUrl.bind(this)"
+    [getPreviewUrl]="getPreviewUrl.bind(this)"
+  ></app-video-grid>
+
+<!-- Show prompt when search box is empty -->
+<p *ngIf="!loading && !searchTerm" class="text-gray-700 text-center mt-4">
+    Please enter a search term to find videos.
+  </p>
+
+  <p *ngIf="!loading && filteredVideos.length === 0 && searchTerm" class="text-gray-700 text-center mt-4">
+    No videos found for "{{ searchTerm }}"
+  </p>
+</div>

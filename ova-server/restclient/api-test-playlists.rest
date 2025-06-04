@@ -2,7 +2,7 @@
 # Get all playlists for user "user"
 GET http://localhost:4041/api/v1/users/user/playlists HTTP/1.1
 Accept: application/json
-Cookie: session_id=723984b9-8860-4e6e-b1b9-9c729d6e1e39
+Cookie: session_id=27f6f1a4-68a6-41c7-b50e-b98ecb59908d
 
 ###
 # Create a new playlist for user "user"
@@ -14,7 +14,7 @@ Cookie: session_id=723984b9-8860-4e6e-b1b9-9c729d6e1e39
 {
   "title": "asdasd asddd",
   "description": "This is a test playlist",
-  "videoIds": ["video1", "video2"]
+  "videoIds": ["fab4e66962f5a46c9463fab68405a129d0cbf7992244a4a", "81110d56b05a59d7df8dddd7d883c078bf8e14592c01a0e71e8076a3dd4a969e"]
 }
 
 ###

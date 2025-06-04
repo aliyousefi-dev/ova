@@ -3,7 +3,7 @@ import { Router } from '@angular/router'; // Import Router for navigation
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { APIService } from '../../services/api.service';
-import { LoginResponse } from '../../data-types/login-response';
+import { LoginResponse } from '../../data-types/responses';
 
 @Component({
   selector: 'app-login',

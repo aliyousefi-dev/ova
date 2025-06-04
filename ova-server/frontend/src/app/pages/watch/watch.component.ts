@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
-import { VideoData } from '../../data-types/video-data.model';
+import { VideoData } from '../../data-types/video-data';
 import { APIService } from '../../services/api.service';
 
 @Component({

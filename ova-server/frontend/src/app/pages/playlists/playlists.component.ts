@@ -10,7 +10,7 @@ import {
 
 import { APIService } from '../../services/api.service';
 import { PlaylistData } from '../../data-types/playlist-data';
-import { VideoData } from '../../data-types/video-data.model';
+import { VideoData } from '../../data-types/video-data';
 
 @Component({
   selector: 'app-playlists',
@@ -92,7 +92,9 @@ export class PlaylistsComponent implements OnInit {
         thumbnailUrls = [this.api.getThumbnailUrl(firstVideoId)];
       } else {
         // Use placeholder if no thumbnail available
-        thumbnailUrls = ['/assets/placeholder.jpg'];
+        thumbnailUrls = [
+          'http://localhost:4200/api/v1/thumbnail/5fe0c0f695bbb3e575b4ce215985c6982702b6d028e2d2db21ef72f4bcabe0df',
+        ];
       }
 
       return {
