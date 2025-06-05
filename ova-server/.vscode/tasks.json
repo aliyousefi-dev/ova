@@ -1,29 +1,42 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "Build Frontend",
-        "type": "shell",
-        "command": "npm run build",
-        "options": {
-          "cwd": "${workspaceFolder}/frontend"
-        },
-        "problemMatcher": []
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Frontend",
+      "type": "shell",
+      "command": "npm run build",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
       },
-      {
-        "label": "Build Go Server",
-        "type": "shell",
-        "command": "${workspaceFolder}/scripts/build.bat",
-        "windows": {
-          "command": "${workspaceFolder}\\scripts\\build.bat"
-        },
-        "problemMatcher": []
+      "problemMatcher": []
+    },
+    {
+      "label": "Build Go Server",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/build.bat",
+      "windows": {
+        "command": "${workspaceFolder}\\scripts\\build.bat"
       },
-      {
-        "label": "Build All",
-        "dependsOn": ["Build Frontend", "Build Go Server"],
-        "dependsOrder": "sequence"
-      }
-    ]
-  }
-  
+      "problemMatcher": []
+    },
+    {
+      "label": "Build All",
+      "dependsOn": ["Build Frontend", "Build Go Server"],
+      "dependsOrder": "sequence"
+    },
+    {
+      "label": "Open URL on Android device via ADB",
+      "type": "shell",
+      "command": "adb shell am start -a android.intent.action.VIEW -d \"http://${input:ipAddress}\"",
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "ipAddress",
+      "type": "promptString",
+      "description": "Enter the IP and port (e.g. 192.168.52.106:4040)",
+      "default": "192.168.52.106:4040"
+    }
+  ]
+}

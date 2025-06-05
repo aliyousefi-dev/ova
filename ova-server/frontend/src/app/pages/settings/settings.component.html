@@ -1,9 +1,10 @@
 <app-top-nav-bar title="Settings"></app-top-nav-bar>
 
-<div class="max-w-5xl mx-auto p-6 flex space-x-6">
-
+<div class="max-w-5xl mx-auto p-4 flex flex-col lg:flex-row lg:space-x-6 space-y-6 lg:space-y-0">
   <!-- Sidebar with tabs -->
-  <nav class="w-48 flex flex-col space-y-2 border-r border-base-300 pr-4">
+  <nav
+    class="lg:w-48 flex flex-col space-y-2 border-b lg:border-b-0 lg:border-r border-base-300 pb-4 lg:pb-0 lg:pr-4"
+  >
     <button
       class="btn btn-ghost justify-start"
       [class.btn-primary]="activeTab === 'theme'"
@@ -35,72 +36,79 @@
     </div>
 
     <!-- User Settings tab -->
-    <div *ngIf="activeTab === 'profile'">
-      <h2 class="text-2xl font-semibold border-b border-base-300 pb-2 mb-4">User Settings</h2>
-      <p class="mb-4 text-sm text-base-content/70">Update your profile details below.</p>
+    <div
+      *ngIf="activeTab === 'profile'"
+      class="w-full max-w-md mx-auto lg:mx-0 p-6 bg-base-200 rounded-lg shadow-md"
+    >
+      <h2 class="text-3xl font-semibold border-b border-base-300 pb-3 mb-6 text-center lg:text-left">
+        User Settings
+      </h2>
+      <p class="mb-8 text-center lg:text-left text-sm text-base-content/70">
+        Update your profile details below.
+      </p>
 
       <!-- Change Username Section -->
-      <section class="mb-8">
-        <h3 class="text-lg font-semibold mb-2">Change Username</h3>
-        <div class="form-control mb-4">
+      <section class="mb-12">
+        <h3 class="text-xl font-semibold mb-4">Change Username</h3>
+        <div class="form-control mb-6 w-full">
           <label class="label" for="username">
-            <span class="label-text">Username</span>
+            <span class="label-text font-medium">Username</span>
           </label>
           <input
             id="username"
             type="text"
             placeholder="Enter username"
-            class="input input-bordered"
+            class="input input-bordered w-full"
             [(ngModel)]="username"
           />
         </div>
-
-        <button class="btn btn-primary" (click)="onSaveProfile()">Save Username</button>
+        <button class="btn btn-primary w-full" (click)="onSaveProfile()">Save Username</button>
       </section>
 
       <!-- Change Password Section -->
       <section>
-        <h3 class="text-lg font-semibold mb-2">Change Password</h3>
-        <div class="form-control mb-4">
+        <h3 class="text-xl font-semibold mb-4">Change Password</h3>
+
+        <div class="form-control mb-5 w-full">
           <label class="label" for="currentPassword">
-            <span class="label-text">Current Password</span>
+            <span class="label-text font-medium">Current Password</span>
           </label>
           <input
             id="currentPassword"
             type="password"
             placeholder="Enter current password"
-            class="input input-bordered"
+            class="input input-bordered w-full"
             [(ngModel)]="currentPassword"
           />
         </div>
 
-        <div class="form-control mb-4">
+        <div class="form-control mb-5 w-full">
           <label class="label" for="newPassword">
-            <span class="label-text">New Password</span>
+            <span class="label-text font-medium">New Password</span>
           </label>
           <input
             id="newPassword"
             type="password"
             placeholder="Enter new password"
-            class="input input-bordered"
+            class="input input-bordered w-full"
             [(ngModel)]="newPassword"
           />
         </div>
 
-        <div class="form-control mb-6">
+        <div class="form-control mb-8 w-full">
           <label class="label" for="confirmPassword">
-            <span class="label-text">Confirm New Password</span>
+            <span class="label-text font-medium">Confirm New Password</span>
           </label>
           <input
             id="confirmPassword"
             type="password"
             placeholder="Confirm new password"
-            class="input input-bordered"
+            class="input input-bordered w-full"
             [(ngModel)]="confirmPassword"
           />
         </div>
 
-        <button class="btn btn-primary" (click)="onChangePassword()">Change Password</button>
+        <button class="btn btn-primary w-full" (click)="onChangePassword()">Change Password</button>
       </section>
     </div>
   </section>

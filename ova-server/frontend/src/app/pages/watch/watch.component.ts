@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
@@ -11,7 +11,7 @@ import { VideoApiService } from '../../services/video-api.service';
   imports: [CommonModule, TopNavBarComponent],
   templateUrl: './watch.component.html',
 })
-export class WatchComponent {
+export class WatchComponent implements AfterViewInit {
   loading = true;
   error = false;
   videoId: string | null = null;
@@ -29,6 +29,11 @@ export class WatchComponent {
       this.error = true;
       this.loading = false;
     }
+  }
+
+  ngAfterViewInit(): void {
+    // Scroll to top when the view initializes
+    window.scrollTo(0, 0);
   }
 
   fetchVideo(videoId: string) {
