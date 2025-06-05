@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterDownloadRoutes(rg *gin.RouterGroup, manager *storage.StorageManager, sm *SessionManager) {
-	rg.GET("/download/:videoId", downloadVideo(manager), sm.AuthRequired())
+func RegisterDownloadRoutes(rg *gin.RouterGroup, manager *storage.StorageManager) {
+	rg.GET("/download/:videoId", downloadVideo(manager))
 }
 
 func downloadVideo(manager *storage.StorageManager) gin.HandlerFunc {

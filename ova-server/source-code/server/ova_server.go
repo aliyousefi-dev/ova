@@ -21,12 +21,14 @@ type OvaServer struct {
 	BaseDir        string
 	ServeFrontend  bool
 	FrontendPath   string
+	// DisableAuth removed here since it's in SessionManager now
 }
 
 // NewBackendServer creates and configures the unified server.
-func NewBackendServer(addr string, storageDir string, basedir string, serveFrontend bool, frontendPath string) *OvaServer {
+func NewBackendServer(addr string, storageDir string, basedir string, serveFrontend bool, frontendPath string, disableAuth bool) *OvaServer {
 	manager := storage.NewStorageManager(storageDir)
 	sessionManager := api.NewSessionManager()
+	sessionManager.DisableAuth = disableAuth // set flag here
 
 	return &OvaServer{
 		Addr:           addr,
@@ -42,19 +44,28 @@ func NewBackendServer(addr string, storageDir string, basedir string, serveFront
 func (s *OvaServer) initRoutes() {
 	s.router.Use(api.CORSMiddleware())
 
+	publicPaths := map[string]bool{
+		"/api/v1/auth/login": true,
+	}
+	publicPrefixes := []string{
+		"/api/v1/download/",
+	}
+
 	v1 := s.router.Group("/api/v1")
+	v1.Use(api.AuthMiddleware(s.SessionManager, publicPaths, publicPrefixes))
+
 	{
-		api.RegisterUserPlaylistRoutes(v1, s.StorageManager, s.SessionManager)
-		api.RegisterUserFavoritesRoutes(v1, s.StorageManager, s.SessionManager)
-		api.RegisterVideoRoutes(v1, s.StorageManager, s.SessionManager)
-		api.RegisterSearchRoutes(v1, s.StorageManager, s.SessionManager)
 		api.RegisterAuthRoutes(v1, s.StorageManager, s.SessionManager)
-		api.RegisterVideoTagRoutes(v1, s.StorageManager, s.SessionManager)
-		api.RegisterVideoRatingRoutes(v1, s.StorageManager, s.SessionManager)
-		api.RegisterStreamRoutes(v1, s.StorageManager, s.SessionManager)
-		api.RegisterDownloadRoutes(v1, s.StorageManager, s.SessionManager)
-		api.RegisterThumbnailRoutes(v1, s.StorageManager, s.SessionManager)
-		api.RegisterPreviewRoutes(v1, s.StorageManager, s.SessionManager)
+		api.RegisterUserPlaylistRoutes(v1, s.StorageManager)
+		api.RegisterUserFavoritesRoutes(v1, s.StorageManager)
+		api.RegisterVideoRoutes(v1, s.StorageManager)
+		api.RegisterSearchRoutes(v1, s.StorageManager)
+		api.RegisterVideoTagRoutes(v1, s.StorageManager)
+		api.RegisterVideoRatingRoutes(v1, s.StorageManager)
+		api.RegisterStreamRoutes(v1, s.StorageManager)
+		api.RegisterDownloadRoutes(v1, s.StorageManager)
+		api.RegisterThumbnailRoutes(v1, s.StorageManager)
+		api.RegisterPreviewRoutes(v1, s.StorageManager)
 	}
 
 	if s.ServeFrontend {

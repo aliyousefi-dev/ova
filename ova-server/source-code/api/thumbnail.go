@@ -10,8 +10,8 @@ import (
 )
 
 // RegisterThumbnailRoutes registers the thumbnail endpoint using the provided StorageManager.
-func RegisterThumbnailRoutes(rg *gin.RouterGroup, manager *storage.StorageManager, sm *SessionManager) {
-	rg.GET("/thumbnail/:videoId", getThumbnail(manager), sm.AuthRequired())
+func RegisterThumbnailRoutes(rg *gin.RouterGroup, manager *storage.StorageManager) {
+	rg.GET("/thumbnail/:videoId", getThumbnail(manager))
 }
 
 // getThumbnail returns a handler function that serves a thumbnail image for a given video ID.

@@ -1,23 +1,37 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
-// AuthRequired returns middleware that enforces authentication.
-func (sm *SessionManager) AuthRequired() gin.HandlerFunc {
+func AuthMiddleware(sm *SessionManager, publicPaths map[string]bool, publicPrefixes []string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-
-		DebugMode := false // Set this to true to enable debug mode
-		if DebugMode {
-			// Bypass auth check in debug mode
-			c.Set("username", "debug-user")
+		if sm.DisableAuth {
+			fmt.Println("[AuthMiddleware] Auth disabled: skipping all auth checks")
+			// Skip all authentication checks
 			c.Next()
 			return
 		}
 
+		path := c.Request.URL.Path
+
+		if publicPaths[path] {
+			c.Next()
+			return
+		}
+
+		for _, prefix := range publicPrefixes {
+			if strings.HasPrefix(path, prefix) {
+				c.Next()
+				return
+			}
+		}
+
+		// Auth check
 		sessionID, err := c.Cookie("session_id")
 		if err != nil {
 			respondError(c, http.StatusUnauthorized, "Authentication required")
@@ -32,7 +46,6 @@ func (sm *SessionManager) AuthRequired() gin.HandlerFunc {
 			return
 		}
 
-		// Store username in context for use by handlers
 		c.Set("username", username)
 		c.Next()
 	}

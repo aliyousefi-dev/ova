@@ -11,8 +11,8 @@ import (
 )
 
 // RegisterUserPlaylistRoutes registers playlist routes under the user scope.
-func RegisterUserPlaylistRoutes(rg *gin.RouterGroup, manager *storage.StorageManager, sm *SessionManager) {
-	users := rg.Group("/users", sm.AuthRequired())
+func RegisterUserPlaylistRoutes(rg *gin.RouterGroup, manager *storage.StorageManager) {
+	users := rg.Group("/users")
 	{
 		users.GET("/:username/playlists", getUserPlaylists(manager))
 		users.POST("/:username/playlists", createUserPlaylist(manager))

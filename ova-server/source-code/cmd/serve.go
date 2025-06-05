@@ -14,6 +14,7 @@ import (
 
 var serveLogger = logs.Loggers("Serve")
 var serveBackendOnly bool // --backend flag
+var serveDisableAuth bool // --noauth flag to disable authentication
 
 var serveCmd = &cobra.Command{
 	Use:   "serve",
@@ -56,12 +57,13 @@ var serveCmd = &cobra.Command{
 		}
 
 		serveLogger.Info("Starting API server at %s", addr)
-		s := server.NewBackendServer(addr, metadataDir, cwd, serveFrontend, frontendPath)
+		s := server.NewBackendServer(addr, metadataDir, cwd, serveFrontend, frontendPath, serveDisableAuth)
 		s.Run()
 	},
 }
 
 func InitCommandServe(rootCmd *cobra.Command) {
 	serveCmd.Flags().BoolVarP(&serveBackendOnly, "backend", "b", false, "Serve backend API only (no frontend)")
+	serveCmd.Flags().BoolVar(&serveDisableAuth, "noauth", false, "Disable authentication (for testing only)")
 	rootCmd.AddCommand(serveCmd)
 }

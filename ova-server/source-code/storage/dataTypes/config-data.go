@@ -5,13 +5,14 @@ import (
 )
 
 type Config struct {
-	Version         string    `json:"version"`
-	DefaultUser     string    `json:"defaultUser"`
-	DefaultPassword string    `json:"defaultPassword"`
-	ServerHost      string    `json:"serverHost"` // backend API host
-	ServerPort      int       `json:"serverPort"` // backend API port
-	RepositoryPath  string    `json:"repoPath"`
-	CreatedAt       time.Time `json:"createdAt"`
+	Version              string    `json:"version"`
+	DefaultUser          string    `json:"defaultUser"`
+	DefaultPassword      string    `json:"defaultPassword"`
+	ServerHost           string    `json:"serverHost"` // backend API host
+	ServerPort           int       `json:"serverPort"` // backend API port
+	RepositoryPath       string    `json:"repoPath"`
+	EnableAuthentication bool      `json:"enableAuthentication"` // new field for auth toggle
+	CreatedAt            time.Time `json:"createdAt"`
 }
 
 func GenerateConfigJSON(

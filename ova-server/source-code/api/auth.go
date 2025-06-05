@@ -11,18 +11,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// SessionManager manages user sessions.
-type SessionManager struct {
-	sessions map[string]string // sessionID -> username
-}
-
-// NewSessionManager initializes a new session manager.
-func NewSessionManager() *SessionManager {
-	return &SessionManager{
-		sessions: make(map[string]string),
-	}
-}
-
 // LoginRequest represents the login request body.
 type LoginRequest struct {
 	Username string `json:"username"`

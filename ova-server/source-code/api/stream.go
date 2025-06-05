@@ -10,8 +10,8 @@ import (
 )
 
 // RegisterStreamRoutes registers the streaming endpoint using the provided StorageManager.
-func RegisterStreamRoutes(rg *gin.RouterGroup, manager *storage.StorageManager, sm *SessionManager) {
-	rg.GET("/stream/:videoId", streamVideo(manager), sm.AuthRequired())
+func RegisterStreamRoutes(rg *gin.RouterGroup, manager *storage.StorageManager) {
+	rg.GET("/stream/:videoId", streamVideo(manager))
 }
 
 // streamVideo returns a handler function that streams a video file by its ID.

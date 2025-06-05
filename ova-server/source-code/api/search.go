@@ -15,8 +15,8 @@ type SearchRequest struct {
 }
 
 // RegisterSearchRoutes adds the /search endpoint to the router group.
-func RegisterSearchRoutes(rg *gin.RouterGroup, manager *storage.StorageManager, sm *SessionManager) {
-	rg.POST("/search", searchVideos(manager), sm.AuthRequired())
+func RegisterSearchRoutes(rg *gin.RouterGroup, manager *storage.StorageManager) {
+	rg.POST("/search", searchVideos(manager))
 }
 
 // searchVideos handles POST /search with JSON body containing a search query.

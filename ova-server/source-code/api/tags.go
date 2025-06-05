@@ -15,8 +15,8 @@ type TagUpdateRequest struct {
 }
 
 // RegisterVideoTagRoutes registers routes to get or update video tags.
-func RegisterVideoTagRoutes(rg *gin.RouterGroup, manager *storage.StorageManager, sm *SessionManager) {
-	videos := rg.Group("/videos/tags", sm.AuthRequired())
+func RegisterVideoTagRoutes(rg *gin.RouterGroup, manager *storage.StorageManager) {
+	videos := rg.Group("/videos/tags")
 	{
 		videos.GET("/:videoID", getVideoTags(manager))
 		videos.POST("/:videoID", updateVideoTags(manager))

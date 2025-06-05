@@ -13,8 +13,8 @@ import (
 )
 
 // RegisterVideoRoutes adds video-related endpoints including folder listing.
-func RegisterVideoRoutes(rg *gin.RouterGroup, manager *storage.StorageManager, sm *SessionManager) {
-	videos := rg.Group("/videos", sm.AuthRequired())
+func RegisterVideoRoutes(rg *gin.RouterGroup, manager *storage.StorageManager) {
+	videos := rg.Group("/videos")
 	{
 		videos.GET("/:videoId", getVideoByID(manager)) // GET /api/v1/videos/{videoId}
 		videos.GET("", getVideosByFolder(manager))     // ✅ GET /api/v1/videos?folder=...
@@ -22,7 +22,7 @@ func RegisterVideoRoutes(rg *gin.RouterGroup, manager *storage.StorageManager, s
 	}
 
 	// New folder route
-	rg.GET("/folders", sm.AuthRequired(), getFolderList(manager))
+	rg.GET("/folders", getFolderList(manager))
 }
 
 // getVideoByID returns details of a single video by ID.

@@ -27,7 +27,7 @@
     {
       "label": "Open URL on Android device via ADB",
       "type": "shell",
-      "command": "adb shell am start -a android.intent.action.VIEW -d \"http://${input:ipAddress}\"",
+      "command": "adb shell am start -a android.intent.action.VIEW -d \"${input:ipAddress}\"",
       "problemMatcher": []
     }
   ],

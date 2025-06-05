@@ -16,8 +16,8 @@ type FavoritesUpdate struct {
 }
 
 // RegisterUserFavoritesRoutes adds user-related endpoints to the router group using the provided StorageManager.
-func RegisterUserFavoritesRoutes(rg *gin.RouterGroup, manager *storage.StorageManager, sm *SessionManager) {
-	users := rg.Group("/users", sm.AuthRequired())
+func RegisterUserFavoritesRoutes(rg *gin.RouterGroup, manager *storage.StorageManager) {
+	users := rg.Group("/users")
 	{
 		users.GET("/:username/favorites", getUserFavorites(manager))
 		users.POST("/:username/favorites", updateUserFavorites(manager))

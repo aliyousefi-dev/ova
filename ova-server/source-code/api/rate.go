@@ -13,9 +13,9 @@ type RatingRequest struct {
 }
 
 // RegisterVideoRatingRoutes adds rating-related endpoints to the router group.
-func RegisterVideoRatingRoutes(rg *gin.RouterGroup, manager *storage.StorageManager, sm *SessionManager) {
-	rg.POST("/rate/:videoId", postVideoRating(manager), sm.AuthRequired()) // POST /api/v1/videos/rate/{videoId}
-	rg.GET("/rate/:videoId", getVideoRating(manager), sm.AuthRequired())   // GET /api/v1/videos/rate/{videoId}
+func RegisterVideoRatingRoutes(rg *gin.RouterGroup, manager *storage.StorageManager) {
+	rg.POST("/rate/:videoId", postVideoRating(manager)) // POST /api/v1/videos/rate/{videoId}
+	rg.GET("/rate/:videoId", getVideoRating(manager))   // GET /api/v1/videos/rate/{videoId}
 }
 
 // postVideoRating updates only the rating of a given video using persistent storage.

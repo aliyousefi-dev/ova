@@ -9,8 +9,8 @@ import (
 )
 
 // RegisterPreviewRoutes registers the preview endpoint using the provided StorageManager.
-func RegisterPreviewRoutes(rg *gin.RouterGroup, manager *storage.StorageManager, sm *SessionManager) {
-	rg.GET("/preview/:videoId", getPreview(manager), sm.AuthRequired())
+func RegisterPreviewRoutes(rg *gin.RouterGroup, manager *storage.StorageManager) {
+	rg.GET("/preview/:videoId", getPreview(manager))
 }
 
 // getPreview returns a handler function that serves a preview video file for a given video ID.
