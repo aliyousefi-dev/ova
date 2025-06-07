@@ -1,0 +1,81 @@
+<app-top-nav-bar title="Playlists"></app-top-nav-bar>
+
+<!-- Loading State -->
+<div *ngIf="loading" class="p-6 text-center /70">
+  Loading playlists...
+</div>
+
+<!-- Controls Row -->
+<div class="my-8 flex flex-wrap justify-center gap-4 px-4">
+  <button
+    class="btn text-sm px-6 py-2 rounded transition hover:bg-primary-focus min-w-[160px]"
+    (click)="openCreateModal()"
+    aria-label="Create New Playlist"
+  >
+    + Create New Playlist
+  </button>
+
+  <button
+  (click)="toggleManageMode()"
+  class="btn text-sm px-6 py-2 rounded transition hover:bg-primary/10 min-w-[160px]"
+  [attr.aria-pressed]="manageMode"
+>
+  {{ manageMode ? 'Done' : 'Manage' }}
+</button>
+
+</div>
+
+<!-- Error Toast -->
+<app-toast
+  *ngIf="creationError"
+  [message]="creationError"
+  type="error"
+  (close)="creationError = null"
+></app-toast>
+
+
+
+
+<!-- Empty State -->
+<div
+  *ngIf="!loading && playlists.length === 0"
+  class="flex flex-col items-center justify-center p-10 /70 max-w-md mx-auto text-center"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="w-16 h-16 /20 mb-3"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M9 19V6h13M9 6L3 12l6 6"
+    />
+  </svg>
+  <h2 class="text-xl font-semibold /80 mb-1">No playlists yet</h2>
+  <p class="text-sm /50 max-w-xs">
+    You haven't created any playlists. Start building one to organize your favorite videos!
+  </p>
+</div>
+
+<!-- Playlist Grid -->
+<div *ngIf="!loading && playlists.length > 0" class="px-6 py-10 max-w-7xl mx-auto">
+  <app-playlist-grid
+    [playlists]="playlists"
+    [manageMode]="manageMode"
+    (select)="onSelectPlaylist($event)"
+    (delete)="onDeletePlaylists($event)"
+  ></app-playlist-grid>
+</div>
+
+<!-- Create Playlist Modal -->
+<app-playlist-create-modal
+  [visible]="showCreateModal"
+  (close)="onModalClose()"
+  (create)="onModalCreate($event)"
+></app-playlist-create-modal>

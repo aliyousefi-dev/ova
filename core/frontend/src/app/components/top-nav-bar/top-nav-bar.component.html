@@ -1,0 +1,53 @@
+<nav class="navbar bg-base-300 shadow-md px-4 ">
+  <!-- Navbar Start -->
+  <div class="navbar-start">
+    <div class="dropdown md:hidden">
+      <div tabindex="0" role="button" class="btn btn-ghost">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 12h8m-8 6h16" />
+        </svg>
+      </div>
+      <ul class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52">
+        <li><a routerLink="/">Home</a></li>
+        <li><a routerLink="/discover">Discover</a></li>
+        <li><a routerLink="/library">Library</a></li>
+        <li><a routerLink="/favorites">Favorites</a></li>
+        <li><a routerLink="/playlists">Playlists</a></li>
+      </ul>
+    </div>
+    <a class="btn btn-ghost normal-case text-xl">{{ title }}</a>
+  </div>
+
+  <!-- Navbar Center -->
+  <div class="navbar-center hidden md:flex">
+    <ul class="menu menu-horizontal px-1">
+      <li><a routerLink="/">Home</a></li>
+      <li><a routerLink="/discover">Discover</a></li>
+      <li><a routerLink="/library">Library</a></li>
+      <li><a routerLink="/favorites">Favorites</a></li>
+      <li><a routerLink="/playlists">Playlists</a></li>
+    </ul>
+  </div>
+
+  <!-- Navbar End -->
+  <div class="navbar-end flex items-center space-x-4">
+
+    <!-- User avatar dropdown -->
+    <div class="dropdown dropdown-end">
+      <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+        <div class="w-10 h-10 rounded-full bg-base-100 font-semibold text-lg flex items-center justify-center">
+          <span class="block leading-[2.5rem]">{{ userInitial }}</span>
+        </div>
+      </div>
+      <ul class="menu menu-sm dropdown-content bg-base-200 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+        <li><a>Profile</a></li>
+        <li><a routerLink="/settings">Settings</a></li>
+        <li>
+          <button (click)="onLogout()" class="text-left w-full">Logout</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,9 @@
+/* You can add global styles to this file, and also import other style files */
+@import "video.js/dist/video-js.css";
+@import '@videojs/themes/dist/sea/index.css';
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: all;
+}
+
+

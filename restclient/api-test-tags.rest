@@ -1,0 +1,30 @@
+@baseUrl = http://localhost:4040
+@tagVideoId = 087be485e0acad6fb1ba026e75542fed5f52e073496c649bc4a3ce345a63f48f
+
+###
+
+# Get tags for a specific video
+GET {{baseUrl}}/api/v1/videos/tags/{{tagVideoId}}
+Accept: application/json
+
+###
+
+# Update tags for a specific video
+POST {{baseUrl}}/api/v1/videos/tags/{{tagVideoId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "tags": ["action", "funny", "short"]
+}
+
+###
+
+# Invalid update (empty tags)
+POST {{baseUrl}}/api/v1/videos/tags/video123
+Content-Type: application/json
+Accept: application/json
+
+{
+  "tags": []
+}

@@ -1,0 +1,16 @@
+<div *ngIf="videos.length === 0" class="text-gray-500 text-center">
+  No videos found.
+</div>
+
+<div
+  *ngIf="videos.length > 0"
+  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full "
+>
+  <app-video-card
+    *ngFor="let video of videos"
+    [video]="video"
+    [isFavorite]="isFavorite(video.videoId)"
+    [username]="username!"
+    class="h-[20rem]"
+  ></app-video-card>
+</div>

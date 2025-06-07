@@ -1,0 +1,36 @@
+@baseUrl = http://localhost:4040
+@session_id = 27f6f1a4-68a6-41c7-b50e-b98ecb59908d
+
+###
+
+# POST /search with a valid query
+POST {{baseUrl}}/api/v1/search
+Content-Type: application/json
+Accept: application/json
+Cookie: session_id={{session_id}}
+
+{
+  "query": "hard"
+}
+
+###
+
+# POST /search with empty query (should fail)
+POST {{baseUrl}}/api/v1/search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": ""
+}
+
+###
+
+# POST /search with malformed JSON (should fail)
+POST {{baseUrl}}/api/v1/search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": 12345
+}

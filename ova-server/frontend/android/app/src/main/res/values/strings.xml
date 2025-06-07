@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">ovaplayer</string>
-    <string name="title_activity_main">ovaplayer</string>
-    <string name="package_name">com.ovaplayer</string>
-    <string name="custom_url_scheme">com.ovaplayer</string>
-</resources>
