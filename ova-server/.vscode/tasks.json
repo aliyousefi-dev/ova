@@ -25,6 +25,24 @@
       "dependsOrder": "sequence"
     },
     {
+      "label": "Capacitor Sync",
+      "type": "shell",
+      "command": "npx cap sync",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Open Android Project",
+      "type": "shell",
+      "command": "npx cap open android",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "Open URL on Android device via ADB",
       "type": "shell",
       "command": "adb shell am start -a android.intent.action.VIEW -d \"${input:ipAddress}\"",

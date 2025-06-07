@@ -4,6 +4,7 @@ REM Paths
 set BUILD_DIR=builds
 set FRONTEND_DIST=frontend\dist\frontend
 set FFMPEG_DIR=thirdparty\ffmpeg
+set SSL_DIR=thirdparty\ssl
 
 REM Clean the builds folder
 if exist "%BUILD_DIR%" (
@@ -31,6 +32,14 @@ if exist "%FFMPEG_DIR%" (
     xcopy "%FFMPEG_DIR%" "%BUILD_DIR%\ffmpeg" /E /I /Y > nul 2>&1
 ) else (
     echo WARNING: ffmpeg folder not found at %FFMPEG_DIR%, skipping copy.
+)
+
+REM Copy ssl folder to builds folder
+if exist "%SSL_DIR%" (
+    echo Copying ssl files...
+    xcopy "%SSL_DIR%" "%BUILD_DIR%\ssl" /E /I /Y > nul 2>&1
+) else (
+    echo WARNING: ssl folder not found at %SSL_DIR%, skipping copy.
 )
 
 REM Build the Go server

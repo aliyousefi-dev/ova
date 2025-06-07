@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:4040
-@session_id = 4271d0c7-4ce7-49f9-a850-512495bd9a6b
+@session_id = 3199f642-2f89-47fd-a955-90b93a9c0c39
 @username = user
 @password = pass
 

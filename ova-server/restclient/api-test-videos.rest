@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:4040
-@session_id = 953b7910-5f87-45ba-9244-df5dd98b28ba
-@videoId = 3e73d4d3a2758baa59b6b8928bd6c3406c65582c99b24ff3474ae60f5e55c461
+@session_id = e9ef61b2-17cf-45fc-9ab8-e6ef97aae213
+@videoId = 62222c0cfa7f8808be55821c5270309b19f5538725c859017fc32634e13badd2
 @folder = 
 
 ### Get Video Details by ID
@@ -21,3 +21,9 @@ Cookie: session_id={{session_id}}
 GET {{baseUrl}}/api/v1/folders
 Accept: application/json
 Cookie: session_id={{session_id}}
+
+### Stream Video by ID (with Range header to request partial content)
+GET {{baseUrl}}/api/v1/stream/{{videoId}}
+Accept: video/mp4
+Cookie: session_id={{session_id}}
+Range: bytes=5000-7000

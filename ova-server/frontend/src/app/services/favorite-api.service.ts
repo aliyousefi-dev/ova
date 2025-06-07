@@ -5,19 +5,21 @@ import { map } from 'rxjs/operators';
 
 import { FavoritesResponse } from '../data-types/responses';
 import { ApiResponse } from '../data-types/responses';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FavoriteApiService {
-  private baseUrl = '/api/v1';
+  private baseUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) {}
 
   getUserFavorites(username: string): Observable<FavoritesResponse> {
     return this.http
       .get<ApiResponse<FavoritesResponse>>(
-        `${this.baseUrl}/users/${username}/favorites`
+        `${this.baseUrl}/users/${username}/favorites`,
+        { withCredentials: true } // ✅ required for session cookie
       )
       .pipe(map((response) => response.data));
   }
@@ -29,7 +31,8 @@ export class FavoriteApiService {
     return this.http
       .post<ApiResponse<FavoritesResponse>>(
         `${this.baseUrl}/users/${username}/favorites`,
-        { favorites }
+        { favorites },
+        { withCredentials: true } // ✅ required for session cookie
       )
       .pipe(map((response) => response.data));
   }

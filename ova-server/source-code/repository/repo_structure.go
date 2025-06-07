@@ -10,7 +10,6 @@ func CheckRepoStructure(repoBasePath string) error {
 	expectedPaths := []string{
 		filepath.Join(repoBasePath, "config.json"),
 		filepath.Join(repoBasePath, "storage"),
-		filepath.Join(repoBasePath, "storage", "collections.json"),
 		filepath.Join(repoBasePath, "storage", "users.json"),
 		filepath.Join(repoBasePath, "storage", "videos.json"),
 		filepath.Join(repoBasePath, "thumbnails"),

@@ -1,6 +1,7 @@
 package logs
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"sync"
@@ -12,41 +13,53 @@ var (
 )
 
 type Logger struct {
+	name       string
 	infoLogger *log.Logger
 	warnLogger *log.Logger
 	errLogger  *log.Logger
 }
 
+// Info logs an informational message.
 func (l *Logger) Info(format string, v ...interface{}) {
-	l.infoLogger.Printf(format, v...)
+	l.infoLogger.Printf("[INFO] [%s] %s", l.name, fmt.Sprintf(format, v...))
 }
 
+// Warn logs a warning message.
 func (l *Logger) Warn(format string, v ...interface{}) {
-	l.warnLogger.Printf(format, v...)
+	l.warnLogger.Printf("[WARN] [%s] %s", l.name, fmt.Sprintf(format, v...))
 }
 
+// Error logs an error message.
 func (l *Logger) Error(format string, v ...interface{}) {
-	l.errLogger.Printf(format, v...)
+	l.errLogger.Printf("[ERROR] [%s] %s", l.name, fmt.Sprintf(format, v...))
 }
 
-func getLogger(LoggerName string) *Logger {
+// newLogger creates a logger with timestamp-first formatting.
+func newLogger(loggerName string) *Logger {
+	flags := log.LstdFlags // adds timestamp (date and time)
+	return &Logger{
+		name:       loggerName,
+		infoLogger: log.New(os.Stdout, "", flags),
+		warnLogger: log.New(os.Stdout, "", flags),
+		errLogger:  log.New(os.Stdout, "", flags),
+	}
+}
+
+// getLogger returns a singleton logger for the given name.
+func getLogger(loggerName string) *Logger {
 	mu.Lock()
 	defer mu.Unlock()
 
-	if logger, ok := loggers[LoggerName]; ok {
+	if logger, exists := loggers[loggerName]; exists {
 		return logger
 	}
 
-	logger := &Logger{
-		infoLogger: log.New(os.Stdout, "Log"+LoggerName+": ", 0),
-		warnLogger: log.New(os.Stdout, "[WARN] "+"Log"+LoggerName+": ", 0),
-		errLogger:  log.New(os.Stdout, "[ERROR] "+"Log"+LoggerName+": ", 0),
-	}
-
-	loggers[LoggerName] = logger
+	logger := newLogger(loggerName)
+	loggers[loggerName] = logger
 	return logger
 }
 
-func Loggers(LoggerName string) *Logger {
-	return getLogger(LoggerName)
+// Loggers returns a named logger instance (singleton per name).
+func Loggers(loggerName string) *Logger {
+	return getLogger(loggerName)
 }

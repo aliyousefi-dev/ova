@@ -13,8 +13,9 @@ import (
 )
 
 var serveLogger = logs.Loggers("Serve")
-var serveBackendOnly bool // --backend flag
-var serveDisableAuth bool // --noauth flag to disable authentication
+var serveBackendOnly bool
+var serveDisableAuth bool
+var serveUseHttps bool
 
 var serveCmd = &cobra.Command{
 	Use:   "serve",
@@ -48,7 +49,7 @@ var serveCmd = &cobra.Command{
 		if !serveBackendOnly {
 			if _, err := os.Stat(frontendPath); err == nil {
 				serveFrontend = true
-				serveLogger.Info("Serving frontend from %s", frontendPath)
+				serveLogger.Info("Serving frontend at %s", addr)
 			} else {
 				serveLogger.Warn("Frontend build not found at %s. Only backend will be served.", frontendPath)
 			}
@@ -56,14 +57,19 @@ var serveCmd = &cobra.Command{
 			serveLogger.Info("Backend only mode enabled. Frontend will not be served.")
 		}
 
-		serveLogger.Info("Starting API server at %s", addr)
-		s := server.NewBackendServer(addr, metadataDir, cwd, serveFrontend, frontendPath, serveDisableAuth)
-		s.Run()
+		serveLogger.Info("Serving api at %s/api/v1/", addr)
+		s := server.NewBackendServer(addr, exeDir, metadataDir, cwd, serveFrontend, frontendPath, serveDisableAuth, serveUseHttps)
+
+		if err := s.Run(); err != nil {
+			serveLogger.Error("Server failed to start: %v", err)
+			os.Exit(1)
+		}
 	},
 }
 
 func InitCommandServe(rootCmd *cobra.Command) {
 	serveCmd.Flags().BoolVarP(&serveBackendOnly, "backend", "b", false, "Serve backend API only (no frontend)")
 	serveCmd.Flags().BoolVar(&serveDisableAuth, "noauth", false, "Disable authentication (for testing only)")
+	serveCmd.Flags().BoolVar(&serveUseHttps, "https", false, "Enable HTTPS (default is HTTP)")
 	rootCmd.AddCommand(serveCmd)
 }

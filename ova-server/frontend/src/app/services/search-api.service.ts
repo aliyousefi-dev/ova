@@ -4,11 +4,13 @@ import { Observable } from 'rxjs';
 
 import { ApiResponse, SearchResponse } from '../data-types/responses';
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root',
 })
 export class SearchApiService {
-  private baseUrl = '/api/v1';
+  private baseUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) {}
 

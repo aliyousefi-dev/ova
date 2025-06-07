@@ -25,7 +25,7 @@ func ScanVideos(root string) ([]string, error) {
 			return nil
 		}
 		if info.IsDir() {
-			if info.Name() == ".metadata" {
+			if info.Name() == ".ova-server" {
 				return filepath.SkipDir
 			}
 			return nil

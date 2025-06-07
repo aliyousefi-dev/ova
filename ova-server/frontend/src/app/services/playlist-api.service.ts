@@ -1,19 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ApiResponse } from '../data-types/responses';
+import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
+import { environment } from '../../environments/environment';
 import {
   PlaylistData,
   PlaylistDataResponse,
 } from '../data-types/playlist-data';
+import { ApiResponse } from '../data-types/responses';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlaylistAPIService {
-  private baseUrl = '/api/v1'; // same-origin, relative path
+  private baseUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) {}
 
@@ -21,7 +22,8 @@ export class PlaylistAPIService {
     username: string
   ): Observable<ApiResponse<PlaylistDataResponse>> {
     return this.http.get<ApiResponse<PlaylistDataResponse>>(
-      `${this.baseUrl}/users/${username}/playlists`
+      `${this.baseUrl}/users/${username}/playlists`,
+      { withCredentials: true } // ✅ important
     );
   }
 
@@ -32,13 +34,12 @@ export class PlaylistAPIService {
     return this.http
       .post<ApiResponse<PlaylistData>>(
         `${this.baseUrl}/users/${username}/playlists`,
-        playlist
+        playlist,
+        { withCredentials: true } // ✅ important
       )
       .pipe(
         catchError((error: HttpErrorResponse) => {
-          // Here, parse your error JSON and throw a user-friendly error object
           let userFriendlyError = 'An unknown error occurred';
-
           if (
             error.error &&
             error.error.status === 'error' &&
@@ -46,7 +47,6 @@ export class PlaylistAPIService {
           ) {
             userFriendlyError = error.error.error.message;
           }
-
           return throwError(() => new Error(userFriendlyError));
         })
       );
@@ -57,7 +57,8 @@ export class PlaylistAPIService {
     slug: string
   ): Observable<ApiResponse<PlaylistData>> {
     return this.http.get<ApiResponse<PlaylistData>>(
-      `${this.baseUrl}/users/${username}/playlists/${slug}`
+      `${this.baseUrl}/users/${username}/playlists/${slug}`,
+      { withCredentials: true } // ✅ important
     );
   }
 
@@ -66,7 +67,8 @@ export class PlaylistAPIService {
     slug: string
   ): Observable<ApiResponse<null>> {
     return this.http.delete<ApiResponse<null>>(
-      `${this.baseUrl}/users/${username}/playlists/${slug}`
+      `${this.baseUrl}/users/${username}/playlists/${slug}`,
+      { withCredentials: true } // ✅ important
     );
   }
 
@@ -77,7 +79,8 @@ export class PlaylistAPIService {
   ): Observable<ApiResponse<PlaylistData>> {
     return this.http.post<ApiResponse<PlaylistData>>(
       `${this.baseUrl}/users/${username}/playlists/${slug}/videos`,
-      { videoId }
+      { videoId },
+      { withCredentials: true } // ✅ important
     );
   }
 
@@ -87,7 +90,8 @@ export class PlaylistAPIService {
     videoId: string
   ): Observable<ApiResponse<PlaylistData>> {
     return this.http.delete<ApiResponse<PlaylistData>>(
-      `${this.baseUrl}/users/${username}/playlists/${slug}/videos/${videoId}`
+      `${this.baseUrl}/users/${username}/playlists/${slug}/videos/${videoId}`,
+      { withCredentials: true } // ✅ important
     );
   }
 }

@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 	"ova-server/source-code/storage"
 	"time"
@@ -55,9 +54,15 @@ func loginHandler(c *gin.Context, sm *SessionManager, manager *storage.StorageMa
 	sm.sessions[sessionID] = req.Username
 
 	// Set cookie manually with SameSite=None and Secure for cross-origin cookies
-	cookieValue := fmt.Sprintf("session_id=%s; Path=/; Max-Age=%d; HttpOnly;",
-		sessionID, int(24*time.Hour.Seconds()))
-	c.Writer.Header().Add("Set-Cookie", cookieValue)
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     "session_id",
+		Value:    sessionID,
+		Path:     "/",
+		MaxAge:   int(24 * time.Hour.Seconds()),
+		HttpOnly: false,                // Allow JS access
+		Secure:   false,                // Must be false on HTTP
+		SameSite: http.SameSiteLaxMode, // Works on HTTP
+	})
 
 	respondSuccess(c, http.StatusOK, LoginResponse{SessionID: sessionID}, "Login successful")
 }
@@ -85,6 +90,15 @@ func (sm *SessionManager) logoutHandler(c *gin.Context) {
 }
 
 func (sm *SessionManager) authStatusHandler(c *gin.Context) {
+	if sm.DisableAuth {
+		// Auth is disabled, always respond successful
+		respondSuccess(c, http.StatusOK, gin.H{
+			"authenticated": true,
+			"username":      "guest",
+		}, "Auth disabled: automatic success")
+		return
+	}
+
 	sessionID, err := c.Cookie("session_id")
 	if err != nil {
 		respondSuccess(c, http.StatusOK, gin.H{"authenticated": false}, "Not authenticated")

@@ -1,8 +1,6 @@
 package server
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -21,14 +19,17 @@ type OvaServer struct {
 	BaseDir        string
 	ServeFrontend  bool
 	FrontendPath   string
-	// DisableAuth removed here since it's in SessionManager now
+	ExeDir         string
+	UseHttps       bool
 }
 
 // NewBackendServer creates and configures the unified server.
-func NewBackendServer(addr string, storageDir string, basedir string, serveFrontend bool, frontendPath string, disableAuth bool) *OvaServer {
+func NewBackendServer(addr string, exedir string, storageDir string, basedir string, serveFrontend bool, frontendPath string, disableAuth bool, useHttps bool) *OvaServer {
+	gin.SetMode(gin.ReleaseMode)
+
 	manager := storage.NewStorageManager(storageDir)
 	sessionManager := api.NewSessionManager()
-	sessionManager.DisableAuth = disableAuth // set flag here
+	sessionManager.DisableAuth = disableAuth
 
 	return &OvaServer{
 		Addr:           addr,
@@ -38,6 +39,8 @@ func NewBackendServer(addr string, storageDir string, basedir string, serveFront
 		BaseDir:        basedir,
 		ServeFrontend:  serveFrontend,
 		FrontendPath:   frontendPath,
+		ExeDir:         exedir,
+		UseHttps:       useHttps,
 	}
 }
 
@@ -81,16 +84,19 @@ func (s *OvaServer) serveFrontendStatic() {
 			fs.ServeHTTP(c.Writer, c.Request)
 			return
 		}
-		// Fallback to index.html
 		c.File(filepath.Join(s.FrontendPath, "index.html"))
 	})
 }
 
-// Run starts the unified HTTP server.
-func (s *OvaServer) Run() {
+// Run starts the unified HTTP or HTTPS server based on UseHttps flag.
+func (s *OvaServer) Run() error {
 	s.initRoutes()
-	fmt.Println("Server is running at", s.Addr)
-	if err := s.router.Run(s.Addr); err != nil {
-		log.Fatalf("Failed to start server: %v", err)
+
+	if s.UseHttps {
+		certFile := filepath.Join(s.ExeDir, "ssl", "cert.pem")
+		keyFile := filepath.Join(s.ExeDir, "ssl", "key.pem")
+		return s.router.RunTLS(s.Addr, certFile, keyFile)
 	}
+
+	return s.router.Run(s.Addr)
 }
