@@ -1,42 +1,52 @@
 {
-  // For more information, visit: https://go.microsoft.com/fwlink/?LinkId=733558
   "version": "2.0.0",
   "tasks": [
     {
-      "type": "npm",
-      "script": "start",
-      "isBackground": true,
-      "problemMatcher": {
-        "owner": "typescript",
-        "pattern": "$tsc",
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": {
-            "regexp": "(.*?)"
-          },
-          "endsPattern": {
-            "regexp": "bundle generation complete"
-          }
-        }
-      }
+      "label": "Build Frontend",
+      "type": "shell",
+      "command": "ng",
+      "args": ["build", "--configuration", "production"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
     },
     {
-      "type": "npm",
-      "script": "test",
+      "label": "Electron Dev",
+      "type": "shell",
+      "command": "npx",
+      "args": [
+        "concurrently",
+        "ng serve",
+        "wait-on http://localhost:4200 && electron ."
+      ],
       "isBackground": true,
-      "problemMatcher": {
-        "owner": "typescript",
-        "pattern": "$tsc",
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": {
-            "regexp": "(.*?)"
-          },
-          "endsPattern": {
-            "regexp": "bundle generation complete"
+      "problemMatcher": [
+        {
+          "pattern": [
+            {
+              "regexp": ".",
+              "file": 1,
+              "location": 2,
+              "message": 3
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".*",
+            "endsPattern": ".*"
           }
         }
-      }
+      ]
+    },    
+    {
+      "label": "Package Electron App",
+      "type": "shell",
+      "command": "npx",
+      "args": ["electron-builder"],
+      "group": "build",
+      "problemMatcher": []
     }
   ]
 }

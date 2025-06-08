@@ -1,17 +1,55 @@
-<div class="bg-red-500 text-white p-4">
-  If you see a red box, Tailwind is working!
-</div>
+<div class="flex h-screen">
 
-<button (click)="runCliCommand()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-  Run CLI Command
-</button>
+  <!-- Sidebar -->
+  <aside class="w-64 bg-gray-800 flex flex-col p-4">
+    <h2 class="text-xl font-bold mb-6 text-white">Sidebar</h2>
 
-<div class="mt-4 p-2 border rounded bg-gray-100 text-black whitespace-pre-wrap" *ngIf="cliOutput">
-  <strong>CLI Output:</strong>
-  <pre>{{ cliOutput }}</pre>
-</div>
+    <nav class="flex flex-col space-y-3 text-white">
+      <a href="#" class="hover:bg-gray-700 p-2 rounded">Home</a>
+      <a href="#" class="hover:bg-gray-700 p-2 rounded">New Repository</a>
+      <a href="#" class="hover:bg-gray-700 p-2 rounded">Settings</a>
+    </nav>
+  </aside>
 
-<div class="mt-4 p-2 border rounded bg-red-100 text-red-700" *ngIf="cliError">
-  <strong>Error:</strong>
-  <pre>{{ cliError }}</pre>
+  <!-- Main Content -->
+  <main class="flex-1 p-6 overflow-auto bg-gray-50">
+
+    <input
+      type="text"
+      [(ngModel)]="newRepoPath"
+      placeholder="Enter new repo path"
+      class="input mb-4 p-2 border rounded w-full"
+    />
+
+    <button
+      (click)="runNewRepo()"
+      class="mb-6 px-4 py-2 bg-green-600 rounded hover:bg-green-700 text-white"
+    >
+      New Repository
+    </button>
+
+    <!-- CLI Output -->
+    <div
+      class="p-4 border rounded bg-gray-100 text-black whitespace-pre-wrap mb-4"
+      *ngIf="cliOutput"
+    >
+      <strong>CLI Output:</strong>
+      <pre
+        class="whitespace-pre-wrap break-words max-w-full overflow-x-auto"
+      >{{ cliOutput }}</pre>
+    </div>
+
+    <!-- CLI Error -->
+    <div
+      class="p-4 border rounded bg-red-100 text-red-700 whitespace-pre-wrap mb-4"
+      *ngIf="cliError"
+    >
+      <strong>Error:</strong>
+      <pre
+        class="whitespace-pre-wrap break-words max-w-full overflow-x-auto"
+      >{{ cliError }}</pre>
+    </div>
+
+  </main>
+
 </div>
