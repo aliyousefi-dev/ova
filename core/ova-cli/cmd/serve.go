@@ -18,12 +18,15 @@ var serveDisableAuth bool
 var serveUseHttps bool
 
 var serveCmd = &cobra.Command{
-	Use:   "serve",
+	Use:   "serve <repo-path>",
 	Short: "Start the backend API server (optionally with frontend)",
+	Args:  cobra.ExactArgs(1), // Expect exactly one argument: the repo path
 	Run: func(cmd *cobra.Command, args []string) {
-		cfg, err := repository.LoadRepoConfig(".")
+		repoPath := args[0]
+
+		cfg, err := repository.LoadRepoConfig(repoPath)
 		if err != nil {
-			serveLogger.Error("Failed to load config: %v", err)
+			serveLogger.Error("Failed to load config from %s: %v", repoPath, err)
 			os.Exit(1)
 		}
 
@@ -40,7 +43,7 @@ var serveCmd = &cobra.Command{
 		}
 		exeDir := filepath.Dir(exePath)
 
-		metadataDir := filepath.Join(".", ".ova-repo", "storage")
+		metadataDir := filepath.Join(repoPath, ".ova-repo", "storage")
 		addr := fmt.Sprintf("%s:%d", cfg.ServerHost, cfg.ServerPort)
 
 		frontendPath := filepath.Join(exeDir, "frontend", "browser")
@@ -57,7 +60,7 @@ var serveCmd = &cobra.Command{
 			serveLogger.Info("Backend only mode enabled. Frontend will not be served.")
 		}
 
-		serveLogger.Info("Serving api at %s/api/v1/", addr)
+		serveLogger.Info("Serving API at %s/api/v1/", addr)
 		s := server.NewBackendServer(addr, exeDir, metadataDir, cwd, serveFrontend, frontendPath, serveDisableAuth, serveUseHttps)
 
 		if err := s.Run(); err != nil {

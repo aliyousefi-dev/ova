@@ -1,0 +1,106 @@
+    <nav
+    class="bg-base-200 flex items-center px-4 h-10 select-none text-base-content"
+    style="-webkit-app-region: drag"
+    >
+    <!-- Left: Title -->
+    <div class="bg-base-200 font-bold mr-6 flex-shrink-0">ova</div>
+
+    <!-- Middle: Menu bar -->
+    <nav class="flex space-x-1 flex-1">
+        <div class="relative" (click)="toggleMenu('file')">
+        <button
+            class="btn btn-ghost btn-sm normal-case menu-button"
+            style="-webkit-app-region: no-drag"
+            type="button"
+        >
+            File
+        </button>
+        <div
+            *ngIf="openMenu === 'file'"
+            class="absolute left-0 mt-1 w-40 bg-base-100 border border-base-300 rounded shadow-lg z-10 menu-content"
+        >
+            <a href="#" class="block px-4 py-2 hover:bg-base-300">New Repository</a>
+            <a href="#" class="block px-4 py-2 hover:bg-base-300">Add Repository</a>
+            <a href="#" class="block px-4 py-2 hover:bg-base-300">Save</a>
+            <a href="#" class="block px-4 py-2 hover:bg-base-300">Exit</a>
+        </div>
+        </div>
+
+        <div class="relative" (click)="toggleMenu('view')">
+        <button
+            class="btn btn-ghost btn-sm normal-case menu-button"
+            style="-webkit-app-region: no-drag"
+            type="button"
+        >
+            View
+        </button>
+        <div
+            *ngIf="openMenu === 'view'"
+            class="absolute left-0 mt-1 w-40 bg-base-100 border border-base-300 rounded shadow-lg z-10 menu-content"
+        >
+            <a href="#" class="block px-4 py-2 hover:bg-base-300">Zoom In</a>
+            <a href="#" class="block px-4 py-2 hover:bg-base-300">Zoom Out</a>
+            <a href="#" class="block px-4 py-2 hover:bg-base-300">Full Screen</a>
+        </div>
+        </div>
+
+        <div class="relative" (click)="toggleMenu('repository')">
+        <button
+            class="btn btn-ghost btn-sm normal-case menu-button"
+            style="-webkit-app-region: no-drag"
+            type="button"
+        >
+            Repository
+        </button>
+        <div
+            *ngIf="openMenu === 'repository'"
+            class="absolute left-0 mt-1 w-40 bg-base-100 border border-base-300 rounded shadow-lg z-10 menu-content"
+        >
+            <a href="#" class="block px-4 py-2 hover:bg-base-300">Add Video</a>
+            <a href="#" class="block px-4 py-2 hover:bg-base-300">Add User</a>
+        </div>
+        </div>
+
+        <div class="relative" (click)="toggleMenu('help')">
+        <button
+            class="btn btn-ghost btn-sm normal-case menu-button"
+            style="-webkit-app-region: no-drag"
+            type="button"
+        >
+            Help
+        </button>
+        <div
+            *ngIf="openMenu === 'help'"
+            class="absolute left-0 mt-1 w-40 bg-base-100 border border-base-300 rounded shadow-lg z-10 menu-content"
+        >
+            <a href="#" class="block px-4 py-2 hover:bg-base-300">Documentation</a>
+            <a href="#" class="block px-4 py-2 hover:bg-base-300">About</a>
+            <a href="#" class="block px-4 py-2 hover:bg-base-300">Check for Updates</a>
+        </div>
+        </div>
+    </nav>
+
+    <!-- Right: Window Controls -->
+    <div
+        class="window-controls flex space-x-2"
+        style="-webkit-app-region: no-drag"
+    >
+        <button
+        (click)="minimize()"
+        title="Minimize"
+        class="btn btn-sm btn-ghost"
+        >
+        <lucide-icon [img]="Minus" class="w-4 h-4"></lucide-icon>    
+        </button>
+        <button
+        (click)="maximize()"
+        title="Maximize"
+        class="btn btn-sm btn-ghost"
+        >
+        <lucide-icon [img]="Square" class="w-4 h-4"></lucide-icon>
+        </button>
+        <button (click)="close()" title="Close" class="btn btn-sm btn-soft btn-error">
+        <lucide-icon [img]="X" class="w-4 h-4"></lucide-icon>
+        </button>
+    </div>
+    </nav>

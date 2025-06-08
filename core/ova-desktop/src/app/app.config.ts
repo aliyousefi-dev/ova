@@ -5,6 +5,7 @@ import {
 } from '@angular/core';
 import { provideRouter, withHashLocation } from '@angular/router'; // <-- import withHashLocation
 import { routes } from './app.routes';
+import { LucideAngularModule, Minimize, Maximize2, X } from 'lucide-angular';
 
 export const appConfig: ApplicationConfig = {
   providers: [

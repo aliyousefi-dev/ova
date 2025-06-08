@@ -17,6 +17,7 @@
     "@angular/router": "^20.0.0",
     "@tailwindcss/postcss": "^4.1.8",
     "daisyui": "^5.0.43",
+    "lucide-angular": "^0.513.0",
     "postcss": "^8.5.4",
     "rxjs": "~7.8.0",
     "tailwindcss": "^4.1.8",
