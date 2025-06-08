@@ -139,4 +139,8 @@ export class App {
   setSelectedSection(section: 'home' | 'videos' | 'settings' | 'users') {
     this.selectedSection = section;
   }
+
+  openSettingsFromMenu() {
+    this.openSettings();
+  }
 }

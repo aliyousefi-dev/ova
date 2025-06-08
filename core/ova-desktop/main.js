@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, globalShortcut } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 
@@ -48,6 +48,12 @@ function createWindow() {
 // App ready
 app.whenReady().then(() => {
     createWindow();
+
+    // Register global shortcut
+    globalShortcut.register('CommandOrControl+E', () => {
+        const win = BrowserWindow.getFocusedWindow();
+        win?.webContents.send('log-shortcut', 'Ctrl+E pressed!');
+    });
 
     // Handle CLI command execution
     ipcMain.handle('run-cli', async (event, args) => {
@@ -114,6 +120,16 @@ app.whenReady().then(() => {
                 break;
         }
     });
+
+    ipcMain.on('settings-save', () => {
+        const win = BrowserWindow.getFocusedWindow();
+        win?.webContents.send('log-settings-save', 'Settings saved!');
+    });
+
+    ipcMain.on('serve-repo', () => {
+        const win = BrowserWindow.getFocusedWindow();
+        win?.webContents.send('log-serve-repo', 'Serve button clicked!');
+    });
 });
 
 // Handle window close on non-macOS
@@ -124,4 +140,8 @@ app.on('window-all-closed', () => {
 // Reopen app on macOS when dock icon is clicked
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
+});
+
+app.on('will-quit', () => {
+    globalShortcut.unregisterAll();
 });

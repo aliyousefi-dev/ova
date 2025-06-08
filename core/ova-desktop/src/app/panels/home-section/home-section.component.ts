@@ -29,6 +29,7 @@ export class HomeSectionComponent {
 
   async serveRepo() {
     this.isLoading = true;
+    (window as any).electronAPI.sendServeRepo();
     await this.delay(500); // Simulate a 2-second delay
     this.isServing = !this.isServing;
     this.isLoading = false;

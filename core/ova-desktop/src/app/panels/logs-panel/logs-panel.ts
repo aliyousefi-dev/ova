@@ -1,4 +1,10 @@
-import { Component, Input, ElementRef } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ChangeDetectorRef,
+  NgZone,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -7,24 +13,51 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   templateUrl: './logs-panel.html',
 })
-export class LogsPanelComponent {
-  @Input() cliOutput: string = '';
+export class LogsPanelComponent implements OnInit {
+  private logs: string[] = [];
   copied = false;
 
   get cliLines(): string[] {
-    const lines = this.cliOutput.split('\n');
-    if (lines.length && lines[lines.length - 1] === '') {
-      lines.pop();
-    }
-    return lines;
+    return this.logs;
   }
 
-  constructor(private el: ElementRef) {}
+  constructor(
+    private el: ElementRef,
+    private cdr: ChangeDetectorRef,
+    private zone: NgZone
+  ) {}
+
+  ngOnInit(): void {
+    (window as any).electronAPI.onLogShortcut((log: string) => {
+      console.log('Log shortcut received:', log); // Debugging line
+      this.zone.run(() => {
+        this.addLog(log);
+      });
+    });
+
+    (window as any).electronAPI.onSettingsSavedLog((log: string) => {
+      console.log('Settings saved log received:', log);
+      this.zone.run(() => {
+        this.addLog(log);
+      });
+    });
+
+    (window as any).electronAPI.onServeRepoLog((log: string) => {
+      console.log('Serve repo log received:', log);
+      this.zone.run(() => {
+        this.addLog(log);
+      });
+    });
+  }
+
+  addLog(log: string) {
+    this.logs.push(log);
+  }
 
   copyLogs() {
-    if (!this.cliOutput) return;
+    if (!this.logs.length) return;
 
-    navigator.clipboard.writeText(this.cliOutput).then(
+    navigator.clipboard.writeText(this.logs.join('\n')).then(
       () => {
         this.copied = true;
         setTimeout(() => {
@@ -54,6 +87,6 @@ export class LogsPanelComponent {
   }
 
   clearLogs() {
-    this.cliOutput = '';
+    this.logs = [];
   }
 }

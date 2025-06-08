@@ -16,5 +16,6 @@ export class SettingsSectionComponent {
 
   saveSettings() {
     this.saveSettingsEvent.emit();
+    (window as any).electronAPI.sendSettingsSave();
   }
 }

@@ -23,6 +23,16 @@ declare global {
        * @returns Promise that resolves when the folder is opened.
        */
       openInExplorer: (folderPath: string) => Promise<void>;
+
+      onLogShortcut: (callback: (log: string) => void) => void;
+
+      sendSettingsSave: () => void;
+
+      onSettingsSavedLog: (callback: (log: string) => void) => void;
+
+      sendServeRepo: () => void;
+
+      onServeRepoLog: (callback: (log: string) => void) => void;
     };
   }
 }

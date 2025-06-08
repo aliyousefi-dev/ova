@@ -1,4 +1,4 @@
-<app-navbar></app-navbar>
+<app-navbar (optionsClicked)="openSettingsFromMenu()"></app-navbar>
 
 <div class="flex flex-col h-[calc(100vh-2.5rem)] overflow-hidden">
   <!-- Main Content Area with Sidebar and Body -->
@@ -60,9 +60,7 @@
   ></div>
 
   <!-- Actual logs panel -->
-  <app-logs-panel
-    [cliOutput]="cliOutput"
-  ></app-logs-panel>
+  <app-logs-panel class="panel"></app-logs-panel>
 </section>
 
 <!-- Bottom navigation with logs toggle -->
