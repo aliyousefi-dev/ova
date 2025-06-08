@@ -5,7 +5,8 @@
   "scripts": {
     "ngserve": "ng serve",
     "build:frontend": "ng build --configuration production",
-    "electron": "ng build && electron ."
+    "electron": "ng build && electron .",
+    "dist": "electron-builder"
   },
   "private": true,
   "dependencies": {
@@ -37,5 +38,22 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.8.2"
+  },
+  "build": {
+  "appId": "com.example.myapp",
+  "productName": "MyApp",
+  "files": [
+    "main.js",
+    "package.json",
+    {
+      "from": "dist/ova-desktop",   
+      "to": "dist/ova-desktop",                            
+      "filter": ["**/*"]
+    }
+  ],
+  "asar": true,
+  "directories": {
+    "output": "release"
   }
+}
 }

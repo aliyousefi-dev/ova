@@ -1,19 +1,25 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
-// Error Handling
 process.on('uncaughtException', (error) => {
     console.error("Unexpected error: ", error);
 });
+
 function createWindow() {
-    win = new BrowserWindow({width: 800, height: 800});
-    win.loadFile('dist/ova-desktop/browser/index.html');
+    const win = new BrowserWindow({ width: 800, height: 800 });
+
+    // Build absolute path to index.html
+    const indexPath = path.join(__dirname, 'dist/ova-desktop/browser/index.html');
+
+    // Convert to file URL and add hash route
+    const url = `file://${indexPath.replace(/\\/g, '/') }#/my-route`;
+
+    win.loadURL(url);
 }
 
-// App Lifecycle
 app.whenReady().then(() => {
-    createWindow()
-})
+    createWindow();
+});
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
