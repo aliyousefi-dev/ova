@@ -6,6 +6,7 @@
     "ngserve": "ng serve",
     "build:frontend": "ng build --configuration production",
     "electron": "ng build && electron .",
+    "electron:dev": "concurrently \"ng serve\" \"wait-on http://localhost:4200 && electron .\"",
     "dist": "electron-builder"
   },
   "private": true,
@@ -29,6 +30,7 @@
     "@angular/cli": "^20.0.1",
     "@angular/compiler-cli": "^20.0.0",
     "@types/jasmine": "~5.1.0",
+    "concurrently": "^9.1.2",
     "electron": "^36.4.0",
     "electron-builder": "^26.0.12",
     "jasmine-core": "~5.7.0",
@@ -37,31 +39,36 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.8.2"
+    "typescript": "~5.8.2",
+    "wait-on": "^8.0.3"
   },
-"build": {
-  "appId": "com.example.myapp",
-  "productName": "ova-desktop",
-  "files": [
-    "main.js",
-    "preload.js",
-    "package.json",
-    {
-      "from": "dist/ova-desktop",
-      "to": "dist/ova-desktop",
-      "filter": ["**/*"]
-    },
-    {
-      "from": "ova-cli",
-      "to": "ova-cli",
-      "filter": ["**/*"]
+  "build": {
+    "appId": "com.example.myapp",
+    "productName": "ova-desktop",
+    "files": [
+      "main.js",
+      "preload.js",
+      "package.json",
+      {
+        "from": "dist/ova-desktop",
+        "to": "dist/ova-desktop",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "ova-cli",
+        "to": "ova-cli",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "asarUnpack": [
+      "ova-cli/**"
+    ],
+    "directories": {
+      "output": "release"
     }
-  ],
-  "asarUnpack": [
-    "ova-cli/**"
-  ],
-  "directories": {
-    "output": "release"
   }
-}
 }

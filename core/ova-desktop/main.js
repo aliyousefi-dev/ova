@@ -3,19 +3,21 @@ const path = require('path');
 const { spawn } = require('child_process');
 
 process.on('uncaughtException', (error) => {
-    console.error("Unexpected error: ", error);
+    console.error("Unexpected error:", error);
 });
 
+// Determine path to CLI binary
 function getCliPath() {
     if (app.isPackaged) {
-        // When built: app.asar.unpacked/ova-cli/ovacli.exe
+        // Packaged app: use unpacked CLI path
         return path.join(process.resourcesPath, 'app.asar.unpacked', 'ova-cli', 'ovacli.exe');
     } else {
-        // During development
+        // Dev mode: use local CLI path
         return path.join(__dirname, 'ova-cli', 'ovacli.exe');
     }
 }
 
+// Create browser window and load Angular app
 function createWindow() {
     const win = new BrowserWindow({
         width: 800,
@@ -27,15 +29,24 @@ function createWindow() {
         }
     });
 
-    const indexPath = path.join(__dirname, 'dist/ova-desktop/browser/index.html');
-    const url = `file://${indexPath.replace(/\\/g, '/') }#/my-route`;
+    const isDev = !app.isPackaged;
+
+    const url = isDev
+        ? 'http://localhost:4200/#/my-route'
+        : `file://${path.join(__dirname, 'dist/ova-desktop/browser/index.html').replace(/\\/g, '/') }#/my-route`;
 
     win.loadURL(url);
+
+    if (isDev) {
+        win.webContents.openDevTools();
+    }
 }
 
+// App ready
 app.whenReady().then(() => {
     createWindow();
 
+    // Handle CLI command execution
     ipcMain.handle('run-cli', async (event, args) => {
         const cliPath = getCliPath();
 
@@ -68,10 +79,12 @@ app.whenReady().then(() => {
     });
 });
 
+// Handle window close on non-macOS
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
 });
 
+// Reopen app on macOS when dock icon is clicked
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
