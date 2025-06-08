@@ -66,4 +66,8 @@
 </section>
 
 <!-- Bottom navigation with logs toggle -->
-<app-bottom-nav (toggleLogsEvent)="toggleLog()"></app-bottom-nav>
+<app-bottom-nav (toggleLogsEvent)="toggleLog()" (settingsClicked)="openSettings()"></app-bottom-nav>
+
+<dialog id="settings_modal" class="modal" [open]="showSettingsModal" style="overflow: hidden;">
+  <app-settings-modal (closeSettingsEvent)="closeSettings()"></app-settings-modal>
+</dialog>

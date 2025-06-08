@@ -10,6 +10,7 @@ import { HomeSectionComponent } from './panels/home-section/home-section.compone
 import { SettingsSectionComponent } from './panels/settings-section/settings-section.component';
 import { UsersSectionComponent } from './panels/users-section/users-section.component';
 import { VideosSectionComponent } from './panels/videos-section/videos-section.component';
+import { SettingsModalComponent } from './components/settings-modal/settings-modal.component';
 
 @Component({
   standalone: true,
@@ -26,6 +27,7 @@ import { VideosSectionComponent } from './panels/videos-section/videos-section.c
     SettingsSectionComponent,
     UsersSectionComponent,
     VideosSectionComponent,
+    SettingsModalComponent,
   ],
   templateUrl: './app.html',
   styleUrls: ['./app.css'],
@@ -36,6 +38,7 @@ export class App {
   newRepoPath = '';
   showLogs = true;
   selectedSection: 'home' | 'videos' | 'settings' | 'users' = 'home';
+  showSettingsModal = false;
 
   // Imported icons for lucide-icon usage
   eye = Eye;
@@ -88,7 +91,11 @@ export class App {
     this.resizing = false;
   }
 
-  constructor() {}
+  constructor() {
+    // Load theme from local storage
+    const theme = localStorage.getItem('selectedTheme') || 'light'; // Default to 'light' if not found
+    document.documentElement.setAttribute('data-theme', theme);
+  }
 
   serve() {
     console.log('Serving repo:', this.newRepoPath);
@@ -111,6 +118,16 @@ export class App {
 
   toggleLog() {
     this.showLogs = !this.showLogs;
+  }
+
+  openSettings() {
+    this.showSettingsModal = true;
+    document.documentElement.classList.add('modal-open');
+  }
+
+  closeSettings() {
+    this.showSettingsModal = false;
+    document.documentElement.classList.remove('modal-open');
   }
 
   appendLog(msg: string) {

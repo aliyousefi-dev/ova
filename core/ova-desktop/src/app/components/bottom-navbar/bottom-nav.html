@@ -2,27 +2,38 @@
   class="bottom-nav fixed bottom-0 left-0 right-0 flex justify-between items-center bg-base-300 px-4 space-x-2"
 >
   <!-- Left side: toggle logs button -->
-  <button
-    (click)="toggleLogs()"
-    class="btn btn-sm btn-ghost flex items-center space-x-1"
-    aria-label="Toggle Logs"
-  >
-    <lucide-icon
-      [img]="showLogs ? eyeOff : eye"
-      class="w-5 h-5"
-    ></lucide-icon>
-    <span>{{ showLogs ? 'Hide Logs' : 'Show Logs' }}</span>
-  </button>
+  <div class="flex items-center space-x-2">
+    <button
+      (click)="toggleLogs()"
+      class="btn btn-sm btn-ghost flex items-center space-x-1"
+      aria-label="Toggle Logs"
+    >
+      <lucide-icon
+        [img]="showLogs ? eyeOff : eye"
+        class="w-5 h-5"
+      ></lucide-icon>
+      <span>{{ showLogs ? 'Hide Logs' : 'Show Logs' }}</span>
+    </button>
+    <button
+      (click)="openTerminal()"
+      class="btn btn-sm btn-ghost flex items-center"
+      aria-label="Open Terminal"
+      title="Open Terminal"
+    >
+      <lucide-icon [img]="terminal" class="w-5 h-5"></lucide-icon>
+      <span>Open Terminal</span>
+    </button>
+  </div>
 
   <!-- Right side: app version and settings -->
   <div class="flex items-center space-x-2">
     <button
-    (click)="openSettings()"
-    class="btn btn-sm btn-ghost flex items-center"
-    aria-label="Open Settings"
-  >
-    <lucide-icon [img]="settings" class="w-5 h-5"></lucide-icon>
-  </button>
+      (click)="openSettings()"
+      class="btn btn-sm btn-ghost flex items-center"
+      aria-label="Open Settings"
+    >
+      <lucide-icon [img]="settings" class="w-5 h-5"></lucide-icon>
+    </button>
     <div class="text-sm font-mono text-gray-500 select-none">
       v0.1
     </div>

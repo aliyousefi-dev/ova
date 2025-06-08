@@ -1,17 +1,46 @@
-<div class="w-full flex justify-end p-4">
-  <button (click)="serveRepo()" class="btn btn-primary" type="button">
-    <ng-container *ngIf="!isServing">
+<div class="w-full flex justify-end p-4 bg-base-200">
+  <button (click)="serveRepo()" class="btn btn-outline" type="button" [disabled]="isLoading">
+    <ng-container *ngIf="isLoading">
+      <span class="loading loading-spinner"></span>
+      Serving...
+    </ng-container>
+    <ng-container *ngIf="!isServing && !isLoading">
       Serve
     </ng-container>
-    <ng-container *ngIf="isServing">
+    <ng-container *ngIf="isServing && !isLoading">
       Stop
     </ng-container>
   </button>
 </div>
 
 <section class="px-10 py-6 container mx-auto">
-  <div class="inline-grid *:[grid-area:1/1]">
-    <div class="status status-lg status-success animate-ping"></div>
-    <div class="status status-lg status-success"></div>
-  </div> Server is up
+  <div class="flex items-center">
+    <div class="inline-grid *:[grid-area:1/1]">
+      <div class="status" [ngClass]="{'status-success animate-ping': isServerUp, 'status-error': !isServerUp}"></div>
+      <div class="status" [ngClass]="{'status-success': isServerUp, 'status-error': !isServerUp}"></div>
+    </div>
+    <div class="ml-5 mr-5">
+      Server is {{ isServerUp ? 'up' : 'down' }}
+      <a href="http://localhost:4200" target="_blank" class="ml-2 text-blue-500">Open Frontend</a>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <p>
+      <strong>Host:</strong>
+      <code> localhost</code>
+    </p>
+    <p>
+      <strong>Port:</strong>
+      <code> 4200</code>
+    </p>
+    <p>
+      <strong>User:</strong>
+      <code> user</code>
+    </p>
+    <p>
+      <strong>Password:</strong>
+      <code> pass</code> 
+    </p>
+  </div>
 </section>

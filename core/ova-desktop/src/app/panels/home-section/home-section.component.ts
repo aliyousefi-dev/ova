@@ -14,6 +14,8 @@ export class HomeSectionComponent {
   @Output() stopServeEvent = new EventEmitter<void>();
 
   isServing: boolean = false;
+  isLoading: boolean = false;
+  isServerUp: boolean = false;
 
   runNewRepo() {
     this.runNewRepoEvent.emit();
@@ -23,12 +25,21 @@ export class HomeSectionComponent {
     this.chooseFolderEvent.emit();
   }
 
-  serveRepo() {
+  async serveRepo() {
+    this.isLoading = true;
+    await this.delay(500); // Simulate a 2-second delay
     this.isServing = !this.isServing;
+    this.isLoading = false;
+    this.isServerUp = !this.isServerUp;
+
     if (this.isServing) {
       this.serveEvent.emit();
     } else {
       this.stopServeEvent.emit();
     }
+  }
+
+  delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
