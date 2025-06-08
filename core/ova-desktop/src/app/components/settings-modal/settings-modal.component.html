@@ -1,29 +1,26 @@
-<div class="modal-box w-full flex max-w-full h-full">
-  <div class="w-64 border-r border-gray-200 dark:border-gray-700">
+<div class="modal-box flex" style="width: 1200px;">
+  <div class="w-[300px] border-r border-gray-200 dark:border-gray-700">
     <div class="p-4">
       <h3 class="font-bold text-lg">Settings</h3>
     </div>
-    <div class="tabs tabs-boxed">
-      <a class="tab" [class.tab-active]="activeTab === 'general'" (click)="activeTab = 'general'">General</a>
-      <a class="tab" [class.tab-active]="activeTab === 'theme'" (click)="activeTab = 'theme'">Theme</a>
+    <div class="flex flex-col">
+      <a class="tab p-4" [class.tab-active]="activeTab === 'general'" (click)="activeTab = 'general'">General</a>
+      <a class="tab p-4" [class.tab-active]="activeTab === 'theme'" (click)="activeTab = 'theme'">Theme</a>
     </div>
   </div>
 
-  <div class="flex-1 p-4">
-    <div *ngIf="activeTab === 'general'">
+  <div class="p-4 space-y-4">
+    <div *ngIf="activeTab === 'general'" class="max-w-full">
       <p class="py-4">General settings content goes here.</p>
     </div>
 
-    <div *ngIf="activeTab === 'theme'">
+    <div *ngIf="activeTab === 'theme'" class="max-w-full">
       <p class="py-4">Choose your theme:</p>
-      <div class="form-control w-full max-w-xs max-w-xl">
-        <label class="label">
-          <span class="label-text">Pick a theme!</span>
-        </label>
-        <select class="select select-bordered" [(ngModel)]="selectedTheme" (change)="setTheme($any($event.target).value)">
-          <option *ngFor="let theme of themes" [value]="theme">{{ theme }}</option>
-        </select>
-        <label class="label">
+      <div class="form-control w-full max-w-xl p-4">
+        <div class="flex flex-wrap gap-2">
+          <button class="btn btn-sm" *ngFor="let theme of themes" (click)="setTheme(theme)" [class.btn-active]="selectedTheme === theme">{{ theme }}</button>
+        </div>
+        <label class="label w-full">
           <span class="label-text-alt">Choose wisely</span>
         </label>
       </div>

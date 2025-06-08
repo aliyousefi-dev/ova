@@ -29,9 +29,18 @@
         (click)="selectRepo(repo)"
         class="cursor-pointer px-4 py-2 hover:bg-base-200"
         [attr.aria-selected]="repo.path === selectedRepo.path"
+        (click)="onRepoSelected(repo)"
       >
         <div class="font-medium text-base-content">{{ repo.name }}</div>
         <div class="text-xs text-base-content/50 truncate">{{ repo.path }}</div>
+      </li>
+      <li class="px-4 py-2 hover:bg-base-200">
+        <button
+          class="w-full text-left"
+          (click)="addRepo()"
+        >
+          Add Repository
+        </button>
       </li>
     </ul>
   </div>

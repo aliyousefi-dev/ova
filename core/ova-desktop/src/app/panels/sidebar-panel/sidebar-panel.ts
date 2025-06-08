@@ -18,6 +18,7 @@ export class SidebarComponent {
   >();
 
   @Output() newRepoPathChange = new EventEmitter<string>();
+  @Output() repoSelected = new EventEmitter<{ name: string; path: string }>();
 
   dropdownOpen = false;
 
@@ -35,5 +36,15 @@ export class SidebarComponent {
 
   onSectionClick(section: 'home' | 'videos' | 'settings' | 'users') {
     this.setSelectedSection.emit(section);
+  }
+
+  onRepoSelected(repo: { name: string; path: string }) {
+    this.newRepoPath = repo.path; // Update newRepoPath
+    this.repoSelected.emit(repo);
+  }
+
+  addRepo() {
+    // Logic to add a new repository
+    console.log('Add repository clicked');
   }
 }

@@ -12,10 +12,12 @@ export class HomeSectionComponent {
   @Output() chooseFolderEvent = new EventEmitter<void>();
   @Output() serveEvent = new EventEmitter<void>();
   @Output() stopServeEvent = new EventEmitter<void>();
+  @Output() restartServerEvent = new EventEmitter<void>(); // Added
 
   isServing: boolean = false;
   isLoading: boolean = false;
   isServerUp: boolean = false;
+  isRestarting: boolean = false; // Added
 
   runNewRepo() {
     this.runNewRepoEvent.emit();
@@ -37,6 +39,13 @@ export class HomeSectionComponent {
     } else {
       this.stopServeEvent.emit();
     }
+  }
+
+  async restartServer() {
+    this.isRestarting = true;
+    await this.delay(500); // Simulate a delay for restart
+    this.restartServerEvent.emit();
+    this.isRestarting = false;
   }
 
   delay(ms: number) {
