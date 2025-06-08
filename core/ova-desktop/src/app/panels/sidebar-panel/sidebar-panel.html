@@ -1,0 +1,80 @@
+<aside
+  class="w-64 bg-base-200 flex flex-col h-full"
+  role="complementary"
+  aria-label="Sidebar"
+>
+  <!-- Repository Selector -->
+  <div class="relative">
+    <button
+      class="w-full flex flex-col items-start text-left bg-base-200 p-5 hover:bg-base-300"
+      (click)="dropdownOpen = !dropdownOpen"
+      aria-haspopup="listbox"
+      [attr.aria-expanded]="dropdownOpen"
+      type="button"
+    >
+      <div class="font-semibold text-sm text-base-content/70">Current Repository
+      </div>
+      <span class="text-xs text-base-content/50 truncate">
+        {{ selectedRepo ? selectedRepo.path : 'No Path Selected' }}
+      </span>
+    </button>
+
+    <ul
+      class="absolute z-50 mt-1 w-full bg-base-100 border border-base-content/20 max-h-60 overflow-auto"
+      *ngIf="dropdownOpen"
+      role="listbox"
+    >
+      <li
+        *ngFor="let repo of recentRepos"
+        (click)="selectRepo(repo)"
+        class="cursor-pointer px-4 py-2 hover:bg-base-200"
+        [attr.aria-selected]="repo.path === selectedRepo.path"
+      >
+        <div class="font-medium text-base-content">{{ repo.name }}</div>
+        <div class="text-xs text-base-content/50 truncate">{{ repo.path }}</div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Divider -->
+  <hr class="border-base-content/20 mb-6" />
+
+  <!-- Navigation Buttons -->
+  <nav class="flex flex-col space-y-3" role="navigation" aria-label="Main Sections">
+    <button
+      class="btn btn-ghost justify-start"
+      (click)="onSectionClick('home')"
+      [attr.aria-pressed]="selectedSection === 'home'"
+      [class.btn-active]="selectedSection === 'home'"
+    >
+      Status
+    </button>
+
+    <button
+      class="btn btn-ghost justify-start"
+      (click)="onSectionClick('videos')"
+      [attr.aria-pressed]="selectedSection === 'videos'"
+      [class.btn-active]="selectedSection === 'videos'"
+    >
+      Videos
+    </button>
+
+    <button
+      class="btn btn-ghost justify-start"
+      (click)="onSectionClick('users')"
+      [attr.aria-pressed]="selectedSection === 'users'"
+      [class.btn-active]="selectedSection === 'users'"
+    >
+      Users
+    </button>
+
+    <button
+      class="btn btn-ghost justify-start"
+      (click)="onSectionClick('settings')"
+      [attr.aria-pressed]="selectedSection === 'settings'"
+      [class.btn-active]="selectedSection === 'settings'"
+    >
+      Settings
+    </button>
+  </nav>
+</aside>

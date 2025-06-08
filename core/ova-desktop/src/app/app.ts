@@ -1,10 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NavbarComponent } from './components/navbar/navbar.component';
+import { NavbarComponent } from './components/top-navbar/navbar.component';
 import { LucideAngularModule, Eye, EyeOff } from 'lucide-angular';
-import { LogsPanelComponent } from './logs-panel/logs-panel';
-import { BottomNavComponent } from './bottom-nav/bottom-nav';
+import { LogsPanelComponent } from './panels/logs-panel/logs-panel';
+import { BottomNavComponent } from './components/bottom-navbar/bottom-nav';
+import { SidebarComponent } from './panels/sidebar-panel/sidebar-panel';
+import { HomeSectionComponent } from './panels/home-section/home-section.component';
+import { SettingsSectionComponent } from './panels/settings-section/settings-section.component';
+import { UsersSectionComponent } from './panels/users-section/users-section.component';
+import { VideosSectionComponent } from './panels/videos-section/videos-section.component';
 
 @Component({
   standalone: true,
@@ -16,6 +21,11 @@ import { BottomNavComponent } from './bottom-nav/bottom-nav';
     LucideAngularModule,
     BottomNavComponent,
     LogsPanelComponent,
+    SidebarComponent,
+    HomeSectionComponent,
+    SettingsSectionComponent,
+    UsersSectionComponent,
+    VideosSectionComponent,
   ],
   templateUrl: './app.html',
   styleUrls: ['./app.css'],
@@ -53,7 +63,7 @@ export class App {
     port: 5050,
   };
 
-  logPanelHeight = 100; // Initial height in pixels
+  logPanelHeight = 300; // Initial height in pixels
   resizing = false;
 
   startResize(event: MouseEvent) {
@@ -81,8 +91,7 @@ export class App {
   constructor() {}
 
   serve() {
-    this.appendLog('Serving repository at path: ' + this.newRepoPath);
-    // Implement serve logic here
+    console.log('Serving repo:', this.newRepoPath);
   }
 
   runNewRepo() {
@@ -108,5 +117,9 @@ export class App {
     const timestamp = new Date().toLocaleTimeString();
     this.cliOutput += `[${timestamp}] ${msg}\n`;
     // The LogsPanelComponent can handle autoscroll if needed
+  }
+
+  setSelectedSection(section: 'home' | 'videos' | 'settings' | 'users') {
+    this.selectedSection = section;
   }
 }

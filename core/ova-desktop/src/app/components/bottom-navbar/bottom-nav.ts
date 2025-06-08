@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Eye, EyeOff } from 'lucide-angular';
+import { LucideAngularModule, Eye, EyeOff, Settings } from 'lucide-angular';
 
 @Component({
   selector: 'app-bottom-nav',
@@ -15,9 +15,15 @@ export class BottomNavComponent {
 
   eye = Eye;
   eyeOff = EyeOff;
+  settings = Settings;
 
   toggleLogs() {
     this.showLogs = !this.showLogs;
     this.toggleLogsEvent.emit();
+  }
+
+  openSettings() {
+    // TODO: Implement settings functionality
+    console.log('Settings opened');
   }
 }

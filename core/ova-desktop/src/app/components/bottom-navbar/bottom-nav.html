@@ -14,8 +14,17 @@
     <span>{{ showLogs ? 'Hide Logs' : 'Show Logs' }}</span>
   </button>
 
-  <!-- Right side: app version -->
-  <div class="text-sm font-mono text-gray-500 select-none">
-    v0.1
+  <!-- Right side: app version and settings -->
+  <div class="flex items-center space-x-2">
+    <button
+    (click)="openSettings()"
+    class="btn btn-sm btn-ghost flex items-center"
+    aria-label="Open Settings"
+  >
+    <lucide-icon [img]="settings" class="w-5 h-5"></lucide-icon>
+  </button>
+    <div class="text-sm font-mono text-gray-500 select-none">
+      v0.1
+    </div>
   </div>
 </nav>

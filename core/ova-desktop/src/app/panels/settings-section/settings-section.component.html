@@ -1,0 +1,65 @@
+<div class="w-full flex justify-end p-4">
+  <button (click)="saveSettings()" class="btn btn-primary" type="button">
+    Save Settings
+  </button>
+</div>
+
+<section class="px-10">
+  <label class="input flex items-center space-x-3 mb-6 max-w-xl w-full">
+    <span class="font-semibold text-base w-16">Hostname</span>
+    <input
+      id="hostname"
+      type="text"
+      name="hostname"
+      placeholder="localhost"
+      class="grow input input-bordered"
+      required
+      aria-describedby="hostnameHelp"
+    />
+  </label>
+
+  <label class="input flex items-center space-x-3 mb-6 max-w-xl w-full">
+    <span class="font-semibold text-base w-16">Port</span>
+    <input
+      id="port"
+      type="text"
+      name="port"
+      class="grow input input-bordered"
+      min="1"
+      max="65535"
+      required
+      aria-describedby="portHelp"
+    />
+  </label>
+
+  <label class="input flex items-center space-x-3 mb-6 max-w-xl w-full">
+    <span class="font-semibold text-base w-24">Default User</span>
+    <input
+      id="defaultUser"
+      type="text"
+      name="defaultUser"
+      placeholder="admin"
+      class="grow input input-bordered"
+      required
+    />
+  </label>
+
+  <label class="input flex items-center space-x-3 mb-6 max-w-xl w-full">
+    <span class="font-semibold text-base w-24">Default Password</span>
+    <input
+      id="defaultPassword"
+      type="password"
+      name="defaultPassword"
+      placeholder="password"
+      class="grow input input-bordered"
+      required
+    />
+  </label>
+
+  <div class="form-control w-full flex items-center space-x-4">
+    <label for="enableAuth" class="label font-semibold mb-0 w-16">
+      Enable Auth
+    </label>
+    <input id="enableAuth" type="checkbox" checked="checked" class="toggle" />
+  </div>
+</section>

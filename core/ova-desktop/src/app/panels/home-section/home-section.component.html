@@ -1,0 +1,17 @@
+<div class="w-full flex justify-end p-4">
+  <button (click)="serveRepo()" class="btn btn-primary" type="button">
+    <ng-container *ngIf="!isServing">
+      Serve
+    </ng-container>
+    <ng-container *ngIf="isServing">
+      Stop
+    </ng-container>
+  </button>
+</div>
+
+<section class="px-10 py-6 container mx-auto">
+  <div class="inline-grid *:[grid-area:1/1]">
+    <div class="status status-lg status-success animate-ping"></div>
+    <div class="status status-lg status-success"></div>
+  </div> Server is up
+</section>

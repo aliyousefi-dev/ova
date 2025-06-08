@@ -23,11 +23,26 @@
     <div class="h-full overflow-auto p-5 font-mono">
       <strong class="text-emerald-400">Logs:</strong>
       <div class="mt-2 space-y-1">
-        <div *ngFor="let line of cliLines; let i = index" class="flex gap-3">
+        <div *ngFor="let line of cliLines; let i = index" class="flex gap-3 items-center">
+          <!-- Colored status circle -->
+          <span
+            class="w-3 h-3 rounded-full"
+            [ngClass]="getStatusCircleClass(line)"
+            aria-hidden="true"
+          ></span>
+  
+          <!-- Line number -->
           <span class="text-emerald-500 min-w-[2em] text-right select-none">
             {{ i + 1 }}
           </span>
-          <span class="break-words whitespace-pre-wrap">{{ line }}</span>
+  
+          <!-- Log line text -->
+          <span
+            [ngClass]="getLineClass(line)"
+            class="break-words whitespace-pre-wrap"
+          >
+            {{ line }}
+          </span>
         </div>
       </div>
     </div>

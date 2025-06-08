@@ -3,262 +3,42 @@
 <div class="flex flex-col h-[calc(100vh-2.5rem)] overflow-hidden">
   <!-- Main Content Area with Sidebar and Body -->
   <div class="flex flex-1 overflow-hidden">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-base-200 flex flex-col p-4">
-      <!-- Selected Repository Dropdown -->
-      <div class="mb-6">
-        <select
-          class="select select-bordered w-full mb-2"
-          [(ngModel)]="newRepoPath"
-          aria-label="Select recent repository"
-        >
-          <option *ngFor="let repo of recentRepos" [value]="repo.path">
-            {{ repo.name }} — {{ repo.path }}
-          </option>
-        </select>
-      </div>
 
-      <nav class="flex flex-col space-y-3" role="navigation" aria-label="Main Sections">
-        <button class="btn btn-ghost justify-start" (click)="selectedSection = 'home'" [attr.aria-pressed]="selectedSection === 'home'">
-          Core
-        </button>
-        
-        <button class="btn btn-ghost justify-start" (click)="selectedSection = 'videos'" [attr.aria-pressed]="selectedSection === 'videos'">
-          Videos
-        </button>
-        
-        <button class="btn btn-ghost justify-start" (click)="selectedSection = 'users'" [attr.aria-pressed]="selectedSection === 'users'">
-          Users
-        </button>
-      
-        <button class="btn btn-ghost justify-start" (click)="selectedSection = 'settings'" [attr.aria-pressed]="selectedSection === 'settings'">
-          Settings
-        </button>
-      </nav>
-    </aside>
+    <!-- Sidebar -->
+    <app-sidebar
+    [recentRepos]="recentRepos"
+    [selectedSection]="selectedSection"
+    (setSelectedSection)="setSelectedSection($event)"
+  ></app-sidebar>
 
     <!-- Main Content -->
     <main class="flex-1 bg-base-100 overflow-auto" tabindex="0">
-      <!-- Top buttons -->
-      <div class="flex justify-end items-center mb-4 bg-base-200 p-4 space-x-2">
-        <button
-          (click)="serve()"
-          class="btn btn-primary btn-circle"
-          title="Serve repository"
-          aria-label="Serve repository"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M14.752 11.168l-6.518-3.75A.75.75 0 007 8.75v6.5a.75.75 0 001.234.625l6.518-3.75a.75.75 0 000-1.304z" />
-          </svg>
-        </button>
-      </div>
-
+      
+        <!-- Top buttons -->
+      <div class="flex items-center bg-base-300 justify-between"></div>
+  
       <!-- Home Section -->
-      <section class="px-10" *ngIf="selectedSection === 'home'">
-        <label class="input flex items-center space-x-3 mb-6 max-w-xl w-full">
-          <span class="font-semibold text-base w-16">Path</span>
-          <input
-            type="text"
-            [(ngModel)]="newRepoPath"
-            placeholder="Enter new repository path"
-            class="grow input input-bordered"
-            aria-label="Repository Path"
-          />
-        </label>
-
-        <div class="flex space-x-4 max-w-xl">
-          <button (click)="runNewRepo()" class="btn btn-success flex-1" type="button">
-            New Repository
-          </button>
-          <button (click)="chooseFolder()" class="btn btn-primary flex-1" type="button">
-            Choose Folder
-          </button>
-        </div>
-      </section>
+      <app-home-section
+        *ngIf="selectedSection === 'home'"
+        [newRepoPath]="newRepoPath"
+        (runNewRepoEvent)="runNewRepo()"
+        (chooseFolderEvent)="chooseFolder()"
+      ></app-home-section>
 
       <!-- Videos Section -->
-      <section class="px-10" *ngIf="selectedSection === 'videos'">
-        <!-- Replace below with your real videos content -->
-        <div class="stats shadow">
-          <div class="stat">
-            <div class="stat-figure text-primary" aria-hidden="true">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                class="inline-block h-8 w-8 stroke-current"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                ></path>
-              </svg>
-            </div>
-            <div class="stat-title">Total Videos</div>
-            <div class="stat-value text-primary">25.6K</div>
-            <div class="stat-desc">21% more than last month</div>
-          </div>
-        
-          <div class="stat">
-            <div class="stat-figure text-secondary" aria-hidden="true">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                class="inline-block h-8 w-8 stroke-current"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                ></path>
-              </svg>
-            </div>
-            <div class="stat-title">Total Storage</div>
-            <div class="stat-value text-secondary">2.6M</div>
-            <div class="stat-desc">21% more than last month</div>
-          </div>
-        
-          <div class="stat">
-            <div class="stat-figure text-secondary" aria-hidden="true">
-              <div class="avatar avatar-online">
-                <div class="w-16 rounded-full">
-                  <img src="https://img.daisyui.com/images/profile/demo/anakeen@192.webp" alt="User avatar" />
-                </div>
-              </div>
-            </div>
-            <div class="stat-value">86%</div>
-            <div class="stat-title">Tasks done</div>
-            <div class="stat-desc text-secondary">31 tasks remaining</div>
-          </div>
-        </div>
-      </section>
+      <app-videos-section *ngIf="selectedSection === 'videos'"></app-videos-section>
 
       <!-- Users Section -->
-      <section class="px-10" *ngIf="selectedSection === 'users'">
-        <h2 class="text-2xl font-bold mb-4">Users</h2>
-
-        <ul class="list bg-base-100 rounded-box shadow-md">
-  
-          <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Most played songs this week</li>
-          
-          <li class="list-row">
-            <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp" /></div>
-            <div>
-              <div>Dio Lupa</div>
-              <div class="text-xs uppercase font-semibold opacity-60">Remaining Reason</div>
-            </div>
-            <!-- Edit Button -->
-            <button class="btn btn-square btn-ghost" aria-label="Edit">
-              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path fill="none" stroke="currentColor" stroke-width="2" d="M16 3l5 5l-12 12H4v-5L16 3z"/>
-              </svg>
-            </button>
-            <!-- Delete Button -->
-            <button class="btn btn-square btn-ghost" aria-label="Delete">
-              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path fill="none" stroke="currentColor" stroke-width="2" d="M3 6h18M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6m-6 0V4h4v2"/>
-              </svg>
-            </button>
-          </li>
-          
-          <li class="list-row">
-            <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp" /></div>
-            <div>
-              <div>Dio Lupa</div>
-              <div class="text-xs uppercase font-semibold opacity-60">Remaining Reason</div>
-            </div>
-            <!-- Edit Button -->
-            <button class="btn btn-square btn-ghost" aria-label="Edit">
-              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path fill="none" stroke="currentColor" stroke-width="2" d="M16 3l5 5l-12 12H4v-5L16 3z"/>
-              </svg>
-            </button>
-            <!-- Delete Button -->
-            <button class="btn btn-square btn-ghost" aria-label="Delete">
-              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path fill="none" stroke="currentColor" stroke-width="2" d="M3 6h18M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6m-6 0V4h4v2"/>
-              </svg>
-            </button>
-          </li>
-          
-          <li class="list-row">
-            <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp" /></div>
-            <div>
-              <div>Dio Lupa</div>
-              <div class="text-xs uppercase font-semibold opacity-60">Remaining Reason</div>
-            </div>
-            <!-- Edit Button -->
-            <button class="btn btn-square btn-ghost" aria-label="Edit">
-              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path fill="none" stroke="currentColor" stroke-width="2" d="M16 3l5 5l-12 12H4v-5L16 3z"/>
-              </svg>
-            </button>
-            <!-- Delete Button -->
-            <button class="btn btn-square btn-ghost" aria-label="Delete">
-              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path fill="none" stroke="currentColor" stroke-width="2" d="M3 6h18M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6m-6 0V4h4v2"/>
-              </svg>
-            </button>
-          </li>
-          
-          
-        </ul>
-      </section>
+      <app-users-section *ngIf="selectedSection === 'users'"></app-users-section>
 
       <!-- Settings Section -->
-      <section class="px-10" *ngIf="selectedSection === 'settings'">
-        <form (ngSubmit)="saveSettings()" class="space-y-6 max-w-md" aria-label="Settings Form" novalidate>
-          <div class="form-control w-full flex items-center space-x-4">
-            <label for="hostname" class="label font-semibold mb-0 w-32">
-              Hostname
-            </label>
-            <input
-              id="hostname"
-              type="text"
-              [(ngModel)]="settings.hostname"
-              name="hostname"
-              placeholder="localhost"
-              class="input input-ghost flex-grow"
-              required
-              aria-describedby="hostnameHelp"
-            />
-          </div>
-      
-          <div class="form-control w-full flex items-center space-x-4">
-            <label for="port" class="label font-semibold mb-0 w-32">
-              Port
-            </label>
-            <input
-              id="port"
-              type="text"
-              [(ngModel)]="settings.port"
-              name="port"
-              class="input input-ghost"
-              min="1"
-              max="65535"
-              required
-              aria-describedby="portHelp"
-            />
-          </div>
-    
-          <div class="form-control w-full flex items-center space-x-4">
-            <label for="port" class="label font-semibold mb-0 w-32">
-              Enable Auth
-            </label>
-            <input type="checkbox" checked="checked" class="toggle" />
-          </div>
-          <button type="submit" class="btn btn-primary mt-4 w-full">
-            Save Settings
-          </button>
-        </form>
-      </section>
+      <app-settings-section
+        *ngIf="selectedSection === 'settings'"
+        [settings]="settings"
+        (saveSettingsEvent)="saveSettings()"
+      ></app-settings-section>
     </main>
+
   </div>
 </div>
 

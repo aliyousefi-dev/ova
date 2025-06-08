@@ -37,6 +37,22 @@ export class LogsPanelComponent {
     );
   }
 
+  getLineClass(line: string): string {
+    const lower = line.toLowerCase();
+    if (lower.includes('error')) return 'text-red-500';
+    if (lower.includes('warning')) return 'text-yellow-400';
+    if (lower.includes('info')) return 'text-green-400';
+    return 'text-white';
+  }
+
+  getStatusCircleClass(line: string): string {
+    const lower = line.toLowerCase();
+    if (lower.includes('error')) return 'bg-red-500';
+    if (lower.includes('warning')) return 'bg-yellow-400';
+    if (lower.includes('info')) return 'bg-green-400';
+    return 'bg-transparent'; // invisible circle for lines without status
+  }
+
   clearLogs() {
     this.cliOutput = '';
   }
