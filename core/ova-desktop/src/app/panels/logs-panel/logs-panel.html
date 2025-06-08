@@ -1,5 +1,9 @@
 <div class="relative bg-neutral-950 text-white text-sm h-full">
-
+    <!-- Log Panel Title -->
+    <div class="px-5 pt-3 pb-1 font-bold text-base select-none" style="font-family: 'Share Tech Mono', monospace;">
+      <span class="text-green-400 tracking-widest">LOGS</span>
+    </div>
+  
     <!-- Fixed Buttons -->
     <div class="absolute top-3 right-3 z-10 flex gap-2">
       <button
@@ -20,7 +24,7 @@
     </div>
   
     <!-- Scrollable log content -->
-    <div class="h-full overflow-auto p-5 font-mono">
+    <div class="h-full overflow-auto p-5 font-mono pt-2">
       <div class="mt-2 space-y-1">
         <div *ngFor="let line of cliLines; let i = index" class="flex gap-1 items-center">
   

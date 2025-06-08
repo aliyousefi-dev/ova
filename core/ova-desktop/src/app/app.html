@@ -42,29 +42,8 @@
   </div>
 </div>
 
-<!-- Logs section -->
-<!-- Logs section with resizable handle -->
-<section
-  class="fixed bottom-0 left-0 right-0 bg-base-200 "
-  [style.height.px]="logPanelHeight"
-  *ngIf="showLogs"
-  aria-live="polite"
-  aria-atomic="true"
-  (window:mousemove)="onMouseMove($event)"
-  (window:mouseup)="stopResize()"
->
-  <!-- Resize handle -->
-  <div
-    class="w-full h-1 cursor-ns-resize"
-    (mousedown)="startResize($event)"
-  ></div>
-
-  <!-- Actual logs panel -->
-  <app-logs-panel class="panel"></app-logs-panel>
-</section>
-
 <!-- Bottom navigation with logs toggle -->
-<app-bottom-nav (toggleLogsEvent)="toggleLog()" (settingsClicked)="openSettings()"></app-bottom-nav>
+<app-bottom-nav (settingsClicked)="openSettings()"></app-bottom-nav>
 
 <dialog id="settings_modal" class="modal" [open]="showSettingsModal" style="overflow: hidden;">
   <app-settings-modal (closeSettingsEvent)="closeSettings()"></app-settings-modal>

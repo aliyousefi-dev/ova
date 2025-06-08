@@ -5,66 +5,73 @@
 </div>
 
 <section class="px-10">
-  <div class="overflow-y-auto h-full grid grid-cols-1 md:grid-cols-2 gap-6">
-    <label class="input flex items-center space-x-3 max-w-xl w-full">
-      <span class="font-semibold text-base w-32">Hostname</span>
+  <div class="overflow-y-auto h-full flex flex-col gap-6 max-w-lg">
+    <div class="form-control w-full flex flex-row items-center gap-4">
+      <label for="hostname" class="label w-40">
+        <span class="label-text font-semibold text-base">Hostname</span>
+      </label>
       <input
         id="hostname"
         type="text"
         name="hostname"
         placeholder="localhost"
-        class="grow input input-bordered"
+        class="input input-bordered input-primary flex-1"
         required
         aria-describedby="hostnameHelp"
         [(ngModel)]="settings.hostname"
       />
-    </label>
+    </div>
 
-    <label class="input flex items-center space-x-3 max-w-xl w-full">
-      <span class="font-semibold text-base w-32">Port</span>
+    <div class="form-control w-full flex flex-row items-center gap-4">
+      <label for="port" class="label w-40">
+        <span class="label-text font-semibold text-base">Port</span>
+      </label>
       <input
         id="port"
         type="number"
         name="port"
-        class="grow input input-bordered"
+        class="input input-bordered input-primary flex-1"
         min="1"
         max="65535"
         required
         aria-describedby="portHelp"
         [(ngModel)]="settings.port"
       />
-    </label>
+    </div>
 
-    <label class="input flex items-center space-x-3 max-w-xl w-full">
-      <span class="font-semibold text-base w-32">Default User</span>
+    <div class="form-control w-full flex flex-row items-center gap-4">
+      <label for="defaultUser" class="label w-40">
+        <span class="label-text font-semibold text-base">Default User</span>
+      </label>
       <input
         id="defaultUser"
         type="text"
         name="defaultUser"
         placeholder="admin"
-        class="grow input input-bordered"
+        class="input input-bordered input-primary flex-1"
         required
       />
-    </label>
+    </div>
 
-    <label class="input flex items-center space-x-3 max-w-xl w-full">
-      <span class="font-semibold text-base w-32">Default Password</span>
+    <div class="form-control w-full flex flex-row items-center gap-4">
+      <label for="defaultPassword" class="label w-40">
+        <span class="label-text font-semibold text-base">Default Password</span>
+      </label>
       <input
         id="defaultPassword"
         type="password"
         name="defaultPassword"
         placeholder="password"
-        class="grow input input-bordered"
+        class="input input-bordered input-primary flex-1"
         required
       />
-    </label>
+    </div>
 
-    <div class="form-control w-full flex items-center space-x-4 max-w-xl">
-      <label for="enableAuth" class="label font-semibold mb-0 w-32">
-        Enable Auth
+    <div class="form-control w-full flex flex-row items-center gap-4">
+      <label for="enableAuth" class="label w-40 mb-0">
+        <span class="label-text font-semibold text-base">Enable Auth</span>
       </label>
       <input id="enableAuth" type="checkbox" checked="checked" class="toggle" />
     </div>
-
   </div>
 </section>

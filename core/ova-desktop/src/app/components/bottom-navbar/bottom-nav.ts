@@ -7,27 +7,47 @@ import {
   Settings,
   Terminal,
 } from 'lucide-angular';
+import { LogsPanelComponent } from '../../panels/logs-panel/logs-panel';
 
 @Component({
   selector: 'app-bottom-nav',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, LogsPanelComponent],
   templateUrl: 'bottom-nav.html',
 })
 export class BottomNavComponent {
-  @Output() toggleLogsEvent = new EventEmitter<void>();
   @Output() settingsClicked = new EventEmitter<void>();
 
   showLogs = true;
+  logPanelHeight = 300;
+  resizing = false;
+  navbarHeight = 40; // px, matches h-10
 
   eye = Eye;
   eyeOff = EyeOff;
   settings = Settings;
   terminal = Terminal;
 
+  startResize(event: MouseEvent) {
+    this.resizing = true;
+    event.preventDefault();
+  }
+
+  onMouseMove(event: MouseEvent) {
+    if (!this.resizing) return;
+    const windowHeight = window.innerHeight;
+    this.logPanelHeight = windowHeight - event.clientY;
+    if (this.logPanelHeight < 50) this.logPanelHeight = 50;
+    if (this.logPanelHeight > windowHeight - 100)
+      this.logPanelHeight = windowHeight - 100;
+  }
+
+  stopResize() {
+    this.resizing = false;
+  }
+
   toggleLogs() {
     this.showLogs = !this.showLogs;
-    this.toggleLogsEvent.emit();
   }
 
   openSettings() {

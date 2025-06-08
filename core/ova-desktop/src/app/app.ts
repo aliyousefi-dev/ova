@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from './components/top-navbar/navbar.component';
 import { LucideAngularModule, Eye, EyeOff } from 'lucide-angular';
-import { LogsPanelComponent } from './panels/logs-panel/logs-panel';
 import { BottomNavComponent } from './components/bottom-navbar/bottom-nav';
 import { SidebarComponent } from './panels/sidebar-panel/sidebar-panel';
 import { HomeSectionComponent } from './panels/home-section/home-section.component';
@@ -21,7 +20,6 @@ import { SettingsModalComponent } from './components/settings-modal/settings-mod
     NavbarComponent,
     LucideAngularModule,
     BottomNavComponent,
-    LogsPanelComponent,
     SidebarComponent,
     HomeSectionComponent,
     SettingsSectionComponent,
@@ -36,16 +34,12 @@ export class App {
   cliOutput = '';
   cliError: string | null = null;
   newRepoPath = '';
-  showLogs = true;
   selectedSection: 'home' | 'videos' | 'settings' | 'users' = 'home';
   showSettingsModal = false;
 
   // Imported icons for lucide-icon usage
   eye = Eye;
   eyeOff = EyeOff;
-
-  // Logs panel height in pixels
-  logsHeight = 192;
 
   // Fake recent repos data for dropdown
   recentRepos = [
@@ -65,31 +59,6 @@ export class App {
     hostname: 'localhost',
     port: 5050,
   };
-
-  logPanelHeight = 300; // Initial height in pixels
-  resizing = false;
-
-  startResize(event: MouseEvent) {
-    this.resizing = true;
-    event.preventDefault();
-  }
-
-  onMouseMove(event: MouseEvent) {
-    if (!this.resizing) return;
-
-    // Calculate height from bottom of screen
-    const windowHeight = window.innerHeight;
-    this.logPanelHeight = windowHeight - event.clientY;
-
-    // Optional: Set min/max height
-    if (this.logPanelHeight < 50) this.logPanelHeight = 50;
-    if (this.logPanelHeight > windowHeight - 100)
-      this.logPanelHeight = windowHeight - 100;
-  }
-
-  stopResize() {
-    this.resizing = false;
-  }
 
   constructor() {
     // Load theme from local storage
@@ -114,10 +83,6 @@ export class App {
   saveSettings() {
     this.appendLog(`Saving settings: ${JSON.stringify(this.settings)}`);
     // Implement settings persistence here
-  }
-
-  toggleLog() {
-    this.showLogs = !this.showLogs;
   }
 
   openSettings() {
