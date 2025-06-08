@@ -1,0 +1,36 @@
+<div class="relative bg-neutral-950 text-white text-sm h-full">
+
+    <!-- Fixed Buttons -->
+    <div class="absolute top-3 right-3 z-10 flex gap-2">
+      <button
+        (click)="copyLogs()"
+        class="btn btn-xs btn-ghost"
+        aria-label="Copy logs to clipboard"
+      >
+        {{ copied ? 'Copied' : 'Copy' }}
+      </button>
+  
+      <button
+        (click)="clearLogs()"
+        class="btn btn-xs btn-ghost text-error"
+        aria-label="Clear logs"
+      >
+        Clear
+      </button>
+    </div>
+  
+    <!-- Scrollable log content -->
+    <div class="h-full overflow-auto p-5 font-mono">
+      <strong class="text-emerald-400">Logs:</strong>
+      <div class="mt-2 space-y-1">
+        <div *ngFor="let line of cliLines; let i = index" class="flex gap-3">
+          <span class="text-emerald-500 min-w-[2em] text-right select-none">
+            {{ i + 1 }}
+          </span>
+          <span class="break-words whitespace-pre-wrap">{{ line }}</span>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  

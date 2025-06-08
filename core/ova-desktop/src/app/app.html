@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 
-<div class="flex h-[calc(100vh-2.5rem)] overflow-hidden flex-col">
+<div class="flex flex-col h-[calc(100vh-2.5rem)] overflow-hidden">
   <!-- Main Content Area with Sidebar and Body -->
   <div class="flex flex-1 overflow-hidden">
     <!-- Sidebar -->
@@ -10,6 +10,7 @@
         <select
           class="select select-bordered w-full mb-2"
           [(ngModel)]="newRepoPath"
+          aria-label="Select recent repository"
         >
           <option *ngFor="let repo of recentRepos" [value]="repo.path">
             {{ repo.name }} — {{ repo.path }}
@@ -17,83 +18,72 @@
         </select>
       </div>
 
-      <nav class="flex flex-col space-y-3">
-        <button class="btn btn-ghost justify-start" (click)="selectedSection = 'home'">
+      <nav class="flex flex-col space-y-3" role="navigation" aria-label="Main Sections">
+        <button class="btn btn-ghost justify-start" (click)="selectedSection = 'home'" [attr.aria-pressed]="selectedSection === 'home'">
           Core
         </button>
         
-        <button class="btn btn-ghost justify-start" (click)="selectedSection = 'videos'">
+        <button class="btn btn-ghost justify-start" (click)="selectedSection = 'videos'" [attr.aria-pressed]="selectedSection === 'videos'">
           Videos
         </button>
         
-        <!-- New Users Tab -->
-        <button class="btn btn-ghost justify-start" (click)="selectedSection = 'users'">
+        <button class="btn btn-ghost justify-start" (click)="selectedSection = 'users'" [attr.aria-pressed]="selectedSection === 'users'">
           Users
         </button>
       
-        <button class="btn btn-ghost justify-start" (click)="selectedSection = 'settings'">
+        <button class="btn btn-ghost justify-start" (click)="selectedSection = 'settings'" [attr.aria-pressed]="selectedSection === 'settings'">
           Settings
         </button>
       </nav>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 bg-base-100 overflow-auto">
-      <!-- Play button and Show/Hide Logs button on top right -->
+    <main class="flex-1 bg-base-100 overflow-auto" tabindex="0">
+      <!-- Top buttons -->
       <div class="flex justify-end items-center mb-4 bg-base-200 p-4 space-x-2">
-        <button (click)="toggleLog()" class="btn btn-soft" aria-label="Toggle Logs">
-          <lucide-icon
-            [img]="showLogs ? eyeOff : eye"
-            class="w-5 h-5"
-          ></lucide-icon>
-        </button>
-        
         <button
           (click)="serve()"
           class="btn btn-primary btn-circle"
           title="Serve repository"
-          aria-label="Serve"
+          aria-label="Serve repository"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M14.752 11.168l-6.518-3.75A.75.75 0 007 8.75v6.5a.75.75 0 001.234.625l6.518-3.75a.75.75 0 000-1.304z" />
           </svg>
         </button>
       </div>
 
-<!-- Home Section -->
-<div class="px-10" *ngIf="selectedSection === 'home'">
-  <label class="input flex items-center space-x-3 mb-6 max-w-xl w-full">
-    <span class="font-semibold text-base w-16">Path</span>
-    <input
-      type="text"
-      [(ngModel)]="newRepoPath"
-      placeholder="Enter new repository path"
-      class="grow input input-bordered"
-      aria-label="Repository Path"
-    />
-  </label>
+      <!-- Home Section -->
+      <section class="px-10" *ngIf="selectedSection === 'home'">
+        <label class="input flex items-center space-x-3 mb-6 max-w-xl w-full">
+          <span class="font-semibold text-base w-16">Path</span>
+          <input
+            type="text"
+            [(ngModel)]="newRepoPath"
+            placeholder="Enter new repository path"
+            class="grow input input-bordered"
+            aria-label="Repository Path"
+          />
+        </label>
 
-  <div class="flex space-x-4 max-w-xl">
-    <button (click)="runNewRepo()" class="btn btn-success flex-1">
-      New Repository
-    </button>
-    <button (click)="chooseFolder()" class="btn btn-primary flex-1">
-      Choose Folder
-    </button>
-  </div>
-</div>
-
-
+        <div class="flex space-x-4 max-w-xl">
+          <button (click)="runNewRepo()" class="btn btn-success flex-1" type="button">
+            New Repository
+          </button>
+          <button (click)="chooseFolder()" class="btn btn-primary flex-1" type="button">
+            Choose Folder
+          </button>
+        </div>
+      </section>
 
       <!-- Videos Section -->
-      <div class="px-10" *ngIf="selectedSection === 'videos'">
+      <section class="px-10" *ngIf="selectedSection === 'videos'">
         <!-- Replace below with your real videos content -->
-
         <div class="stats shadow">
           <div class="stat">
-            <div class="stat-figure text-primary">
+            <div class="stat-figure text-primary" aria-hidden="true">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -114,7 +104,7 @@
           </div>
         
           <div class="stat">
-            <div class="stat-figure text-secondary">
+            <div class="stat-figure text-secondary" aria-hidden="true">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -135,10 +125,10 @@
           </div>
         
           <div class="stat">
-            <div class="stat-figure text-secondary">
+            <div class="stat-figure text-secondary" aria-hidden="true">
               <div class="avatar avatar-online">
                 <div class="w-16 rounded-full">
-                  <img src="https://img.daisyui.com/images/profile/demo/anakeen@192.webp" />
+                  <img src="https://img.daisyui.com/images/profile/demo/anakeen@192.webp" alt="User avatar" />
                 </div>
               </div>
             </div>
@@ -147,28 +137,83 @@
             <div class="stat-desc text-secondary">31 tasks remaining</div>
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- Users Section -->
-      <div class="px-10" *ngIf="selectedSection === 'users'">
+      <section class="px-10" *ngIf="selectedSection === 'users'">
         <h2 class="text-2xl font-bold mb-4">Users</h2>
 
-        <!-- Example user list, replace with your actual user data and UI -->
-        <ul class="divide-y divide-gray-200">
-          <li *ngFor="let user of users" class="py-2 flex items-center justify-between">
+        <ul class="list bg-base-100 rounded-box shadow-md">
+  
+          <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Most played songs this week</li>
+          
+          <li class="list-row">
+            <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp" /></div>
             <div>
-              <p class="font-semibold">{{ user.name }}</p>
-              <p class="text-sm text-gray-500">{{ user.email }}</p>
+              <div>Dio Lupa</div>
+              <div class="text-xs uppercase font-semibold opacity-60">Remaining Reason</div>
             </div>
-            <button class="btn btn-sm btn-outline">View</button>
+            <!-- Edit Button -->
+            <button class="btn btn-square btn-ghost" aria-label="Edit">
+              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" stroke-width="2" d="M16 3l5 5l-12 12H4v-5L16 3z"/>
+              </svg>
+            </button>
+            <!-- Delete Button -->
+            <button class="btn btn-square btn-ghost" aria-label="Delete">
+              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" stroke-width="2" d="M3 6h18M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6m-6 0V4h4v2"/>
+              </svg>
+            </button>
           </li>
+          
+          <li class="list-row">
+            <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp" /></div>
+            <div>
+              <div>Dio Lupa</div>
+              <div class="text-xs uppercase font-semibold opacity-60">Remaining Reason</div>
+            </div>
+            <!-- Edit Button -->
+            <button class="btn btn-square btn-ghost" aria-label="Edit">
+              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" stroke-width="2" d="M16 3l5 5l-12 12H4v-5L16 3z"/>
+              </svg>
+            </button>
+            <!-- Delete Button -->
+            <button class="btn btn-square btn-ghost" aria-label="Delete">
+              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" stroke-width="2" d="M3 6h18M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6m-6 0V4h4v2"/>
+              </svg>
+            </button>
+          </li>
+          
+          <li class="list-row">
+            <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp" /></div>
+            <div>
+              <div>Dio Lupa</div>
+              <div class="text-xs uppercase font-semibold opacity-60">Remaining Reason</div>
+            </div>
+            <!-- Edit Button -->
+            <button class="btn btn-square btn-ghost" aria-label="Edit">
+              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" stroke-width="2" d="M16 3l5 5l-12 12H4v-5L16 3z"/>
+              </svg>
+            </button>
+            <!-- Delete Button -->
+            <button class="btn btn-square btn-ghost" aria-label="Delete">
+              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" stroke-width="2" d="M3 6h18M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6m-6 0V4h4v2"/>
+              </svg>
+            </button>
+          </li>
+          
+          
         </ul>
-      </div>
+      </section>
 
       <!-- Settings Section -->
-      <div class="px-10" *ngIf="selectedSection === 'settings'">
-        <form (ngSubmit)="saveSettings()" class="space-y-6 max-w-md">
-          <!-- Hostname -->
+      <section class="px-10" *ngIf="selectedSection === 'settings'">
+        <form (ngSubmit)="saveSettings()" class="space-y-6 max-w-md" aria-label="Settings Form" novalidate>
           <div class="form-control w-full flex items-center space-x-4">
             <label for="hostname" class="label font-semibold mb-0 w-32">
               Hostname
@@ -179,79 +224,66 @@
               [(ngModel)]="settings.hostname"
               name="hostname"
               placeholder="localhost"
-              class="input input-bordered flex-grow"
+              class="input input-ghost flex-grow"
               required
               aria-describedby="hostnameHelp"
             />
           </div>
       
-          <!-- Port -->
           <div class="form-control w-full flex items-center space-x-4">
             <label for="port" class="label font-semibold mb-0 w-32">
               Port
             </label>
             <input
               id="port"
-              type="number"
+              type="text"
               [(ngModel)]="settings.port"
               name="port"
-              class="input input-bordered flex-grow"
+              class="input input-ghost"
               min="1"
               max="65535"
               required
               aria-describedby="portHelp"
             />
           </div>
-      
-          <!-- Enable Authentication Checkbox -->
+    
           <div class="form-control w-full flex items-center space-x-4">
-            <label for="enableAuthentication" class="label font-semibold mb-0 w-32">
-              Enable Authentication
+            <label for="port" class="label font-semibold mb-0 w-32">
+              Enable Auth
             </label>
-            <input
-              id="enableAuthentication"
-              type="checkbox"
-              [(ngModel)]="settings.enableAuthentication"
-              name="enableAuthentication"
-              class="checkbox"
-            />
+            <input type="checkbox" checked="checked" class="toggle" />
           </div>
-      
-          <!-- Save Button -->
-          <button type="submit" class="btn btn-primary w-full">
+          <button type="submit" class="btn btn-primary mt-4 w-full">
             Save Settings
           </button>
         </form>
-      </div>
-      
+      </section>
     </main>
   </div>
+</div>
 
-  <!-- Resize handle for logs panel -->
+<!-- Logs section -->
+<!-- Logs section with resizable handle -->
+<section
+  class="fixed bottom-0 left-0 right-0 bg-base-200 "
+  [style.height.px]="logPanelHeight"
+  *ngIf="showLogs"
+  aria-live="polite"
+  aria-atomic="true"
+  (window:mousemove)="onMouseMove($event)"
+  (window:mouseup)="stopResize()"
+>
+  <!-- Resize handle -->
   <div
-    *ngIf="showLogs"
-    class="resize-handle"
+    class="w-full h-1 cursor-ns-resize"
     (mousedown)="startResize($event)"
-    (touchstart)="startResize($event)"
   ></div>
 
-  <!-- Bottom Log Output Panel -->
-  <div
-    *ngIf="showLogs"
-    class="relative bg-neutral-950 text-white text-sm overflow-auto font-mono border-t border-base-content"
-    [style.height.px]="logsHeight"
-    style="padding: 1rem;"
-  >
-    <!-- Copy Button -->
-    <button
-      (click)="copyLogs()"
-      class="btn btn-xs btn-ghost absolute top-2 right-2"
-      aria-label="Copy logs to clipboard"
-    >
-      Copy
-    </button>
+  <!-- Actual logs panel -->
+  <app-logs-panel
+    [cliOutput]="cliOutput"
+  ></app-logs-panel>
+</section>
 
-    <strong class="text-emerald-400">CLI Output:</strong>
-    <pre class="whitespace-pre-wrap break-words">{{ cliOutput }}</pre>
-  </div>
-</div>
+<!-- Bottom navigation with logs toggle -->
+<app-bottom-nav (toggleLogsEvent)="toggleLog()"></app-bottom-nav>
