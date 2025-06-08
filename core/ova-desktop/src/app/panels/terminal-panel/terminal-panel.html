@@ -1,6 +1,6 @@
 <div class="relative bg-neutral-950 text-green-400 text-sm h-full font-mono" (click)="focusInput()">
   <div class="px-5 pt-3 pb-1 font-bold text-base select-none" style="font-family: 'Share Tech Mono', monospace;">
-    <span class="text-green-400 tracking-widest">TERMINAL</span>
+    <span class="text-green-400 tracking-widest">REPO TERMINAL</span>
   </div>
   <div class="absolute top-3 right-3 z-10 flex gap-2">
     <button
@@ -11,9 +11,15 @@
       Clear
     </button>
   </div>
-  <div class="h-full overflow-auto p-5 pt-2 pb-10">
+  <div #scrollContainer class="h-full overflow-auto p-5 pt-2 pb-10">
     <div class="space-y-1">
-      <div *ngFor="let line of output" class="whitespace-pre-wrap break-words">{{ line }}</div>
+      <div
+        *ngFor="let line of output"
+        class="whitespace-pre-wrap break-words"
+        [ngClass]="{ 'text-red-400': line.includes('[ERROR]'), 'text-green-400': !line.includes('[ERROR]') }"
+      >
+        {{ line }}
+      </div>
     </div>
     <!-- Terminal prompt at the bottom -->
     <form class="flex items-center gap-2 mt-2" (submit)="runCommand(); $event.preventDefault();" autocomplete="off">

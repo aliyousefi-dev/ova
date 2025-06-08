@@ -74,11 +74,21 @@ export class BottomNavComponent {
   }
 
   toggleLogs() {
-    this.showLogs = !this.showLogs;
+    if (!this.showLogs) {
+      this.showLogs = true;
+      this.showTerminal = false;
+    } else {
+      this.showLogs = false;
+    }
   }
 
   toggleTerminal() {
-    this.showTerminal = !this.showTerminal;
+    if (!this.showTerminal) {
+      this.showTerminal = true;
+      this.showLogs = false;
+    } else {
+      this.showTerminal = false;
+    }
   }
 
   openSettings() {
