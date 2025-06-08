@@ -6,6 +6,7 @@ import {
   NgZone,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LogsService } from './logs.service';
 
 @Component({
   selector: 'app-logs-panel',
@@ -14,50 +15,44 @@ import { CommonModule } from '@angular/common';
   templateUrl: './logs-panel.html',
 })
 export class LogsPanelComponent implements OnInit {
-  private logs: string[] = [];
   copied = false;
 
   get cliLines(): string[] {
-    return this.logs;
+    return this.logsService.getLogs();
   }
 
   constructor(
     private el: ElementRef,
     private cdr: ChangeDetectorRef,
-    private zone: NgZone
+    private zone: NgZone,
+    private logsService: LogsService
   ) {}
 
   ngOnInit(): void {
     (window as any).electronAPI.onLogShortcut((log: string) => {
-      console.log('Log shortcut received:', log); // Debugging line
       this.zone.run(() => {
-        this.addLog(log);
+        this.logsService.addLog(log);
       });
     });
 
     (window as any).electronAPI.onSettingsSavedLog((log: string) => {
-      console.log('Settings saved log received:', log);
       this.zone.run(() => {
-        this.addLog(log);
+        this.logsService.addLog(log);
       });
     });
 
     (window as any).electronAPI.onServeRepoLog((log: string) => {
-      console.log('Serve repo log received:', log);
       this.zone.run(() => {
-        this.addLog(log);
+        this.logsService.addLog(log);
       });
     });
   }
 
-  addLog(log: string) {
-    this.logs.push(log);
-  }
-
   copyLogs() {
-    if (!this.logs.length) return;
+    const logs = this.logsService.getLogs();
+    if (!logs.length) return;
 
-    navigator.clipboard.writeText(this.logs.join('\n')).then(
+    navigator.clipboard.writeText(logs.join('\n')).then(
       () => {
         this.copied = true;
         setTimeout(() => {
@@ -87,6 +82,6 @@ export class LogsPanelComponent implements OnInit {
   }
 
   clearLogs() {
-    this.logs = [];
+    this.logsService.clearLogs();
   }
 }
