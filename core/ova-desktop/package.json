@@ -39,19 +39,27 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.8.2"
   },
-  "build": {
+"build": {
   "appId": "com.example.myapp",
-  "productName": "MyApp",
+  "productName": "ova-desktop",
   "files": [
     "main.js",
+    "preload.js",
     "package.json",
     {
-      "from": "dist/ova-desktop",   
-      "to": "dist/ova-desktop",                            
+      "from": "dist/ova-desktop",
+      "to": "dist/ova-desktop",
+      "filter": ["**/*"]
+    },
+    {
+      "from": "ova-cli",
+      "to": "ova-cli",
       "filter": ["**/*"]
     }
   ],
-  "asar": true,
+  "asarUnpack": [
+    "ova-cli/**"
+  ],
   "directories": {
     "output": "release"
   }

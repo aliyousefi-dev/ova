@@ -1,6 +1,5 @@
-// preload.js
-const {contextBridge, ipcRenderer} = require('electron');
+const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  sendMessage : (message) => ipcRenderer.send('message', message)
+  runCli: (args) => ipcRenderer.invoke('run-cli', args),
 });

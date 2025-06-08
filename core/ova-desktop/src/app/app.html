@@ -1,3 +1,17 @@
 <div class="bg-red-500 text-white p-4">
   If you see a red box, Tailwind is working!
 </div>
+
+<button (click)="runCliCommand()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+  Run CLI Command
+</button>
+
+<div class="mt-4 p-2 border rounded bg-gray-100 text-black whitespace-pre-wrap" *ngIf="cliOutput">
+  <strong>CLI Output:</strong>
+  <pre>{{ cliOutput }}</pre>
+</div>
+
+<div class="mt-4 p-2 border rounded bg-red-100 text-red-700" *ngIf="cliError">
+  <strong>Error:</strong>
+  <pre>{{ cliError }}</pre>
+</div>

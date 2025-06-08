@@ -42,3 +42,6 @@ Ctrl + F : For UX I think its best the Search bar be available on all pages
 
 instead of Watch Page 
 when click on the Video Card it open the Player full size and when going outside it on the bottom nav bar and you can search other videos 
+
+
+The Tags are Clickable and when Click on the it goin to the Explore Page for Searching Related Videos.
