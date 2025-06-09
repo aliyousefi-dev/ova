@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { StatusApiService } from 'src/app/services/status-api.service';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { AlertController } from '@ionic/angular';
 import { ServerConfigService } from 'src/app/services/server-config.service';
 
 import {
@@ -39,7 +39,7 @@ import { Router } from '@angular/router';
   ],
 })
 export class SetupPage implements OnInit {
-  serverHost: string = 'localhost'; // Default value
+  serverHost: string = '192.168.52.106'; // Default value
   serverPort: number | null = 4040; // Default value
   serverUser: string = '';
   serverPass: string = '';
@@ -59,7 +59,7 @@ export class SetupPage implements OnInit {
       .getServerStatus(fullUrl)
       .pipe(
         catchError((err) => {
-          alert('Failed to reach server at ' + fullUrl);
+          alert('Failed to reach server at ' + fullUrl + '/status');
           return of(null); // return observable with null so subscription completes
         })
       )

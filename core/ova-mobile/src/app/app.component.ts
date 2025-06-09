@@ -13,7 +13,7 @@ export class AppComponent implements OnInit {
 
   async ngOnInit() {
     try {
-      await StatusBar.hide();
+      await StatusBar.setOverlaysWebView({ overlay: false });
     } catch (err) {
       console.warn('StatusBar.setOverlaysWebView failed:', err);
     }
