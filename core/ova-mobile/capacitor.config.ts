@@ -1,9 +1,9 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.ova.mobile',
-  appName: 'ova mobile',
-  webDir: 'dist/ova-mobile/browser',
+  appId: 'io.ionic.starter',
+  appName: 'ova-mobile',
+  webDir: 'www'
 };
 
 export default config;
