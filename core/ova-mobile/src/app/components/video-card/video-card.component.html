@@ -1,3 +1,86 @@
-<p>
-  video-card works!
-</p>
+<ion-card class="video-card ion-no-margin ion-no-padding" style="border-radius: 18px; box-shadow: 0 4px 16px rgba(0,0,0,0.10); transition: box-shadow 0.2s;">
+  <div style="position: relative;">
+    <a [routerLink]="['/watch', video.videoId]"
+       style="display: block; width: 100%; height: 200px; border-radius: 18px 18px 0 0; overflow: hidden; position: relative;"
+       (mouseenter)="hovering = true" (mouseleave)="hovering = false" (touchstart)="hovering = true" (touchend)="hovering = false">
+      <img
+        [src]="getThumbnailUrl()"
+        [alt]="video.title"
+        style="width: 100%; height: 100%; object-fit: cover; display: block; transition: filter 0.2s;"
+        [style.filter]="hovering ? 'brightness(0.7)' : 'none'"
+      />
+      <video
+        [src]="getPreviewUrl()"
+        autoplay
+        muted
+        loop
+        playsinline
+        style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0.7; pointer-events: none; transition: opacity 0.2s;"
+        (error)="previewError = true"
+        *ngIf="!previewError"
+        [style.opacity]="hovering ? 1 : 0"
+      ></video>
+      <div *ngIf="previewError"
+           style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.15);">
+        <ion-icon name="videocam-off" color="medium" style="font-size: 40px;"></ion-icon>
+      </div>
+      <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.36) 60%, transparent 100%); z-index: 1;"></div>
+      <div style="position: absolute; top: 10px; left: 12px; z-index: 2;">
+        <ion-badge color="dark" style="opacity:0.90; font-size: 13px; letter-spacing: 0.5px;">
+          {{ formatDuration(video.durationSeconds) }}
+        </ion-badge>
+      </div>
+      <div *ngIf="isFavorite" style="position: absolute; top: 10px; right: 12px; z-index: 2;">
+        <ion-icon name="star" color="warning" style="font-size: 24px;"></ion-icon>
+      </div>
+      <div *ngIf="hovering" style="position: absolute; bottom: 16px; right: 16px; z-index: 2; transition: opacity 0.2s;">
+        <ion-icon name="play-circle" color="light" style="font-size: 38px; opacity: 0.92;"></ion-icon>
+      </div>
+    </a>
+  </div>
+
+  <ion-card-content style="padding: 14px 18px 10px 18px;">
+    <div style="display: flex; align-items: flex-start; justify-content: space-between;">
+      <div style="flex: 1 1 0; min-width: 0;">
+        <h2
+          style="font-size: 1.13rem; font-weight: 600; margin: 0 0 2px 0; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+          [title]="video.title"
+        >
+          <a [routerLink]="['/watch', video.videoId]" style="color: inherit; text-decoration: underline; cursor: pointer;">
+            {{ video.title }}
+          </a>
+        </h2>
+        <p style="font-size: 12px; color: var(--ion-color-medium); margin: 0 0 4px 0;">
+          {{ timeSinceAdded }}
+        </p>
+      </div>
+      <ion-buttons slot="end">
+        <ion-button fill="clear" id="video-card-actions-{{video.videoId}}">
+          <ion-icon name="ellipsis-vertical"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="video-card-actions-{{video.videoId}}" triggerAction="click">
+          <ion-content>
+            <ion-list>
+              <ion-item button (click)="download($event)">
+                <ion-label>Download</ion-label>
+              </ion-item>
+              <ion-item button (click)="toggleFavorite($event)">
+                <ion-label>
+                  {{ isFavorite ? 'Remove from Favorites' : 'Save to Favorites' }}
+                </ion-label>
+              </ion-item>
+              <ion-item button (click)="addToPlaylist($event)">
+                <ion-label>Save to Playlist</ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-content>
+        </ion-popover>
+      </ion-buttons>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 7px 10px; margin-top: 8px;">
+      <ion-chip *ngFor="let tag of video.tags" color="medium" outline style="font-size: 12px; height: 22px;">
+        #{{ tag }}
+      </ion-chip>
+    </div>
+  </ion-card-content>
+</ion-card>

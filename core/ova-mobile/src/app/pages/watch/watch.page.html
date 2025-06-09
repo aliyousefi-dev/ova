@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Watch Video</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <video
+    *ngIf="streamUrl"
+    [src]="streamUrl"
+    controls
+    autoplay
+    style="width: 100%; max-width: 700px; margin: 0 auto; display: block; border-radius: 12px; background: #000;"
+  ></video>
+  <div *ngIf="!streamUrl" style="text-align: center; margin-top: 32px;">
+    Loading video...
+  </div>
+</ion-content>

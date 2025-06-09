@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:4040
+
+###
+
+# Get server status to check if API is running
+GET {{baseUrl}}/api/v1/status
+Accept: application/json

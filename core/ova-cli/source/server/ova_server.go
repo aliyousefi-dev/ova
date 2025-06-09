@@ -49,6 +49,7 @@ func (s *OvaServer) initRoutes() {
 
 	publicPaths := map[string]bool{
 		"/api/v1/auth/login": true,
+		"/api/v1/status":     true,
 	}
 	publicPrefixes := []string{
 		"/api/v1/download/",
@@ -69,6 +70,7 @@ func (s *OvaServer) initRoutes() {
 		api.RegisterDownloadRoutes(v1, s.StorageManager)
 		api.RegisterThumbnailRoutes(v1, s.StorageManager)
 		api.RegisterPreviewRoutes(v1, s.StorageManager)
+		api.RegisterStatusRoute(v1)
 	}
 
 	if s.ServeFrontend {

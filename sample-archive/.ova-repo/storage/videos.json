@@ -6,9 +6,12 @@
     "rating": 0,
     "durationSeconds": 10,
     "thumbnailPath": ".ova-repo\\thumbnails\\087be485e0acad6fb1ba026e75542fed5f52e073496c649bc4a3ce345a63f48f.jpg",
+    "previewPath": ".ova-repo\\previews\\087be485e0acad6fb1ba026e75542fed5f52e073496c649bc4a3ce345a63f48f.webm",
     "tags": [],
-    "uploadedAt": "2025-05-31T20:59:02.3681072Z",
-    "views": 0
+    "views": 0,
+    "width": 1920,
+    "height": 1080,
+    "uploadedAt": "2025-06-09T06:15:14.6855603Z"
   },
   "41168d2b2b047e7657a2491cde2e3484aae4c8d20423170f79e4b5278b7a4f37": {
     "videoId": "41168d2b2b047e7657a2491cde2e3484aae4c8d20423170f79e4b5278b7a4f37",
@@ -17,9 +20,12 @@
     "rating": 0,
     "durationSeconds": 9,
     "thumbnailPath": ".ova-repo\\thumbnails\\41168d2b2b047e7657a2491cde2e3484aae4c8d20423170f79e4b5278b7a4f37.jpg",
+    "previewPath": ".ova-repo\\previews\\41168d2b2b047e7657a2491cde2e3484aae4c8d20423170f79e4b5278b7a4f37.webm",
     "tags": [],
-    "uploadedAt": "2025-05-31T20:59:02.2185622Z",
-    "views": 0
+    "views": 0,
+    "width": 720,
+    "height": 406,
+    "uploadedAt": "2025-06-09T06:15:14.2752153Z"
   },
   "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290": {
     "videoId": "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290",
@@ -28,9 +34,12 @@
     "rating": 0,
     "durationSeconds": 7,
     "thumbnailPath": ".ova-repo\\thumbnails\\905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290.jpg",
+    "previewPath": ".ova-repo\\previews\\905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290.webm",
     "tags": [],
-    "uploadedAt": "2025-05-31T20:59:02.4764505Z",
-    "views": 0
+    "views": 0,
+    "width": 1280,
+    "height": 720,
+    "uploadedAt": "2025-06-09T06:15:14.9719403Z"
   },
   "9d665495e51a6901422191b80599c041e6eefc2dc7fbcd3823d8ecaa8bdd8a33": {
     "videoId": "9d665495e51a6901422191b80599c041e6eefc2dc7fbcd3823d8ecaa8bdd8a33",
@@ -39,8 +48,11 @@
     "rating": 0,
     "durationSeconds": 8,
     "thumbnailPath": ".ova-repo\\thumbnails\\9d665495e51a6901422191b80599c041e6eefc2dc7fbcd3823d8ecaa8bdd8a33.jpg",
+    "previewPath": ".ova-repo\\previews\\9d665495e51a6901422191b80599c041e6eefc2dc7fbcd3823d8ecaa8bdd8a33.webm",
     "tags": [],
-    "uploadedAt": "2025-05-31T20:59:02.58255Z",
-    "views": 0
+    "views": 0,
+    "width": 1280,
+    "height": 700,
+    "uploadedAt": "2025-06-09T06:15:15.2228738Z"
   }
 }
