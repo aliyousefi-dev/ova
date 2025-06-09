@@ -1,3 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goToSetup()">
+        <ion-icon name="arrow-back"></ion-icon>
+        Setup
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Tabs</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleDarkMode()">
+        <ion-icon name="moon"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
 <ion-tabs>
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="playlist" href="/tabs/playlist">
@@ -16,3 +33,8 @@
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>
+<app-mini-player
+  [video]="videoPlayer.currentVideo"
+  [isPlaying]="videoPlayer.isPlaying"
+  style="position: fixed; bottom: 50px; left: 0; width: 100%; z-index: 10; background: var(--ion-background-color); border-top: 1px solid var(--ion-color-medium-shade);"
+></app-mini-player>

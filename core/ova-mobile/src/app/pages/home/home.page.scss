@@ -1,0 +1,13 @@
+ion-content {
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+ion-toolbar {
+  --background: var(--ion-background-color);
+  --border-color: var(--ion-color-light);
+}
+
+ion-title {
+  font-weight: 600;
+}

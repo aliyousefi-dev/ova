@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { IonRouterOutlet, IonApp } from '@ionic/angular/standalone';
 import { StatusBar } from '@capacitor/status-bar';
+import { VideoPlayerService } from './services/video-player.service';
+import { MiniPlayerComponent } from './components/mini-player/mini-player.component';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +11,7 @@ import { StatusBar } from '@capacitor/status-bar';
   imports: [IonApp, IonRouterOutlet],
 })
 export class AppComponent implements OnInit {
-  constructor() {}
+  constructor(public videoPlayer: VideoPlayerService) {}
 
   async ngOnInit() {
     try {

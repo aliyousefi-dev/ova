@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { StatusApiService } from 'src/app/services/status-api.service';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { AlertController } from '@ionic/angular';
 import { ServerConfigService } from 'src/app/services/server-config.service';
 
 import {
@@ -52,7 +51,15 @@ export class SetupPage implements OnInit {
 
   ngOnInit() {}
 
-  async saveSettings() {
+  async saveSettings($event?: Event) {
+    if ($event) $event.preventDefault();
+    console.log(
+      'saveSettings called',
+      this.serverHost,
+      this.serverPort,
+      this.serverUser,
+      this.serverPass
+    ); // Debug log
     const fullUrl = `http://${this.serverHost}:${this.serverPort}/api/v1`;
 
     this.statusApi

@@ -1,0 +1,36 @@
+<div
+  class="video-container"
+  (click)="toggleControls()"
+  style="position: relative; background-image: url('{{thumbnailUrl}}'); background-size: cover; background-position: center;"
+>
+  <video
+    #videoPlayer
+    [src]="streamUrl"
+    playsinline
+    controlsList="nodownload"
+    style="width: 100%; max-width: 100%; height: auto; border-radius: 12px; background: #000;"
+    (click)="$event.stopPropagation()"
+  ></video>
+  <div
+    *ngIf="showControls"
+    class="controls"
+    style="position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px;"
+  >
+    <div class="top-controls" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+      <ion-button fill="clear" (click)="togglePlay()" (click)="$event.stopPropagation()">
+        <ion-icon [name]="isPlaying ? 'pause' : 'play'" style="font-size: 24px; color: white;"></ion-icon>
+      </ion-button>
+      <!-- Add more top controls here -->
+    </div>
+    <div class="bottom-controls" style="width: 100%;">
+      <input
+        type="range"
+        min="0"
+        max="100"
+        [value]="progress"
+        style="width: 100%;"
+        (click)="$event.stopPropagation()"
+      />
+    </div>
+  </div>
+</div>

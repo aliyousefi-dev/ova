@@ -1,8 +1,13 @@
-<ion-card class="video-card ion-no-margin ion-no-padding" style="border-radius: 18px; box-shadow: 0 4px 16px rgba(0,0,0,0.10); transition: box-shadow 0.2s;">
+<ion-card class="video-card ion-no-margin ion-no-padding"
+  style="border-radius: 18px; box-shadow: 0 4px 16px rgba(0,0,0,0.10); transition: box-shadow 0.2s;"
+  (click)="setVideo()"
+>
   <div style="position: relative;">
-    <a [routerLink]="['/watch', video.videoId]"
-       style="display: block; width: 100%; height: 200px; border-radius: 18px 18px 0 0; overflow: hidden; position: relative;"
-       (mouseenter)="hovering = true" (mouseleave)="hovering = false" (touchstart)="hovering = true" (touchend)="hovering = false">
+    <a
+      style="display: block; width: 100%; height: 200px; border-radius: 18px 18px 0 0; overflow: hidden; position: relative;"
+      (mouseenter)="hovering = true" (mouseleave)="hovering = false" (touchstart)="hovering = true" (touchend)="hovering = false"
+      tabindex="-1"
+    >
       <img
         [src]="getThumbnailUrl()"
         [alt]="video.title"

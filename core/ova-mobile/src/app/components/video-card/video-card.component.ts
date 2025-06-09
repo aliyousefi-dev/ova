@@ -1,10 +1,11 @@
 import { Component, Input, ChangeDetectorRef } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PlaylistsApiService } from 'src/app/services/playlists-api.service';
 import { VideoApiService } from '../../services/video-api.service';
 import { FavoriteApiService } from '../../services/favorite-api.service';
+import { VideoPlayerService } from '../../services/video-player.service';
 import { VideoData } from '../../data-types/video-data';
 import {
   IonCard,
@@ -61,7 +62,9 @@ export class VideoCardComponent {
     private playlistapi: PlaylistsApiService,
     private favoriteapi: FavoriteApiService,
     private videoapi: VideoApiService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private router: Router,
+    private videoPlayer: VideoPlayerService // <-- Inject VideoPlayerService
   ) {}
 
   ngOnChanges() {
@@ -197,5 +200,10 @@ export class VideoCardComponent {
     if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
     if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
     return 'just now';
+  }
+
+  setVideo() {
+    this.videoPlayer.setVideo(this.video);
+    this.router.navigate(['/watch', this.video.videoId]);
   }
 }
