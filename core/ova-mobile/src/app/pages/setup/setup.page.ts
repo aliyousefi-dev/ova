@@ -80,6 +80,8 @@ export class SetupPage implements OnInit {
           await Preferences.set({ key: 'server_user', value: this.serverUser });
           await Preferences.set({ key: 'server_pass', value: this.serverPass });
 
+          localStorage.setItem('server_url', fullUrl); // Also save to localStorage
+
           await this.serverConfig.loadServerUrl(); // <-- ensure in-memory value is updated
 
           this.router.navigateByUrl('/tabs', { replaceUrl: true });

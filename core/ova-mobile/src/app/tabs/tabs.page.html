@@ -15,26 +15,31 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-tabs>
-  <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="playlist" href="/tabs/playlist">
-      <ion-icon aria-hidden="true" name="triangle"></ion-icon>
-      <ion-label>Playlist</ion-label>
-    </ion-tab-button>
+<div style="display: flex; flex-direction: column; height: calc(100vh - var(--ion-toolbar-height));">
+  <app-mini-player
+    [video]="videoPlayer.currentVideo"
+    [isPlaying]="videoPlayer.isPlaying"
+    style="margin-bottom: auto;"
+  ></app-mini-player>
 
-    <ion-tab-button tab="library" href="/tabs/library">
-      <ion-icon aria-hidden="true" name="library"></ion-icon>
-      <ion-label>Library</ion-label>
-    </ion-tab-button>
+  <ion-tabs>
+    <ion-tab-bar slot="bottom">
+      <ion-tab-button tab="playlist" href="/tabs/playlist">
+        <ion-icon aria-hidden="true" name="triangle"></ion-icon>
+        <ion-label>Playlist</ion-label>
+      </ion-tab-button>
 
-    <ion-tab-button tab="home" href="/tabs/home">
-      <ion-icon  aria-hidden="true" name="home-sharp"></ion-icon>
-      <ion-label>Home</ion-label>
-    </ion-tab-button>
-  </ion-tab-bar>
-</ion-tabs>
-<app-mini-player
-  [video]="videoPlayer.currentVideo"
-  [isPlaying]="videoPlayer.isPlaying"
-  style="position: fixed; bottom: 50px; left: 0; width: 100%; z-index: 10; background: var(--ion-background-color); border-top: 1px solid var(--ion-color-medium-shade);"
-></app-mini-player>
+      <ion-tab-button tab="library" href="/tabs/library">
+        <ion-icon aria-hidden="true" name="library"></ion-icon>
+        <ion-label>Library</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button tab="home" href="/tabs/home">
+        <ion-icon  aria-hidden="true" name="home-sharp"></ion-icon>
+        <ion-label>Home</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
+</div>
+
+

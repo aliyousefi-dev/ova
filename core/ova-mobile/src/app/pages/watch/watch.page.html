@@ -6,10 +6,7 @@
 
 <ion-content class="ion-padding">
   <app-custom-video-player
-    [streamUrl]="streamUrl"
-    [videoData]="videoData"
+    *ngIf="videoData"
+    [video]="videoData"
   ></app-custom-video-player>
-  <div *ngIf="!streamUrl" class="ion-text-center ion-padding">
-    Loading video...
-  </div>
 </ion-content>

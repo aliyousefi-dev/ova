@@ -1,6 +1,6 @@
 <!-- mini-video-player.component.html -->
 <ion-footer *ngIf="video" style="box-shadow: 0 -2px 16px rgba(0,0,0,0.10); border-radius: 18px 18px 0 0; overflow: hidden; z-index: 100;">
-  <ion-toolbar (click)="expand()" style="background: var(--ion-background-color, #fff); min-height: 64px; display: flex; align-items: center;">
+  <ion-toolbar (click)="expand()" style="background: var(--ion-background-color, #ff3939); min-height: 64px; display: flex; align-items: center;">
     <ion-thumbnail slot="start" style="width: 56px; height: 56px; border-radius: 12px; overflow: hidden; margin-right: 12px;">
       <img
         [src]="videoPlayer.getThumbnailUrl(video?.videoId || '')"
@@ -23,8 +23,4 @@
     </ion-buttons>
   </ion-toolbar>
   <!-- Progress bar (fake, for demo) -->
-  <div style="height: 4px; background: linear-gradient(90deg, var(--ion-color-primary) 60%, #e0e0e0 60%); transition: width 0.2s;"></div>
 </ion-footer>
-<div *ngIf="!video" style="color:red; text-align:center;">
-  Mini player: No video loaded.
-</div>

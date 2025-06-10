@@ -10,7 +10,13 @@ export class ServerConfigService {
   constructor() {}
 
   async loadServerUrl(): Promise<void> {
-    const { value } = await Preferences.get({ key: 'server_url' });
+    let { value } = await Preferences.get({ key: 'server_url' });
+
+    if (!value) {
+      // Try to get from localStorage
+      value = localStorage.getItem('server_url') || null;
+    }
+
     this.serverUrl = value;
   }
 

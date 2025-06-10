@@ -40,7 +40,6 @@ import { CustomVideoPlayerComponent } from '../../components/custom-video-player
 })
 export class WatchPage implements OnInit, AfterViewInit, OnDestroy {
   videoId: string = '';
-  streamUrl: string = '';
   videoData: VideoData | null = null;
 
   @ViewChild('videoPlayer') videoPlayerRef!: ElementRef<HTMLVideoElement>;
@@ -56,8 +55,6 @@ export class WatchPage implements OnInit, AfterViewInit, OnDestroy {
     this.route.paramMap.subscribe((params) => {
       this.videoId = params.get('videoId') || '';
       if (this.videoId) {
-        this.streamUrl = this.videoApi.getStreamUrl(this.videoId);
-
         // Fetch video data and set as current video if not already set
         if (
           !this.videoPlayer.currentVideo ||

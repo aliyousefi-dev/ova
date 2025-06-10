@@ -21,9 +21,9 @@ export class PlaylistsApiService {
   ) {}
 
   private getBaseUrl(): string {
-    const url = this.serverConfig.getServerUrl();
+    const url = localStorage.getItem('server_url') || null;
     if (!url) {
-      throw new Error('Server URL is not set');
+      throw new Error('VideoAPI - Server URL is not set');
     }
     return url;
   }
