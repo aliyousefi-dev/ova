@@ -14,9 +14,10 @@ type VideoData struct {
 	PreviewPath   *string   `json:"previewPath"`
 	Tags          []string  `json:"tags"`
 	Views         int       `json:"views"`
-	Width         int       `json:"width"`  // New field
-	Height        int       `json:"height"` // New field
+	Width         int       `json:"width"`
+	Height        int       `json:"height"`
 	UploadedAt    time.Time `json:"uploadedAt"`
+	MimeType      string    `json:"mimeType"` // NEW field
 }
 
 func GenerateVideoJSON(
@@ -28,6 +29,7 @@ func GenerateVideoJSON(
 	previewPath *string,
 	width int,
 	height int,
+	mimeType string, // NEW parameter
 ) VideoData {
 	return VideoData{
 		VideoID:       videoID,
@@ -42,5 +44,6 @@ func GenerateVideoJSON(
 		Views:         0,
 		Width:         width,
 		Height:        height,
+		MimeType:      mimeType,
 	}
 }

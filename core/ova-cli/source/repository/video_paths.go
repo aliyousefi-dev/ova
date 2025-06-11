@@ -18,7 +18,7 @@ func IsVideoFile(filename string) bool {
 	return false
 }
 
-func ScanVideos(root string) ([]string, error) {
+func GetAllVideoPaths(root string) ([]string, error) {
 	var videos []string
 	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if err != nil {

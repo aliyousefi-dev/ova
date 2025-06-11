@@ -12,8 +12,8 @@ import (
 	"ova-cli/source/repository"
 	"ova-cli/source/storage"
 	"ova-cli/source/utils"
-	"ova-cli/source/videotools"
 
+	"github.com/schollz/progressbar/v3"
 	"github.com/spf13/cobra"
 )
 
@@ -32,115 +32,113 @@ var videoAddCmd = &cobra.Command{
 	Short: "Add video(s)",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		// Initialize storage directories and manager
 		storageDir := filepath.Join(".", ".ova-repo", "storage")
 		thumbDir := filepath.Join(".", ".ova-repo", "thumbnails")
-		previewDir := filepath.Join(".", ".ova-repo", "previews") // NEW
+		previewDir := filepath.Join(".", ".ova-repo", "previews")
 		st := storage.NewStorageManager(storageDir)
 
+		// Get current working directory
 		repoRoot, err := os.Getwd()
 		if err != nil {
-			videoLogger.Error("Failed to get current directory as repo root: %v", err)
+			// Just exit silently on error
 			return
 		}
 
+		// Determine argument (single path or "all")
 		arg := args[0]
 		var videoPaths []string
 
+		// Handle "all" argument to scan all video files in current directory
 		if arg == "all" {
 			cwd, err := os.Getwd()
 			if err != nil {
-				videoLogger.Error("Error getting current directory: %v", err)
 				return
 			}
-			videoLogger.Info("Scanning for all video files...")
-			videoPaths, err = repository.ScanVideos(cwd)
+			videoPaths, err = repository.GetAllVideoPaths(cwd)
 			if err != nil {
-				videoLogger.Error("Error scanning for videos: %v", err)
 				return
 			}
 			if len(videoPaths) == 0 {
-				videoLogger.Warn("No video files found.")
 				return
 			}
 		} else {
+			// Handle single path argument
 			if _, err := os.Stat(arg); os.IsNotExist(err) {
-				videoLogger.Warn("Path does not exist: %s", arg)
 				return
 			}
 			absPath, _ := filepath.Abs(arg)
 			videoPaths = append(videoPaths, absPath)
 		}
 
+		// Initialize progress bar
+		total := len(videoPaths)
+		bar := progressbar.NewOptions(
+			total,
+			progressbar.OptionSetDescription("Processing videos"),
+			progressbar.OptionSetWriter(os.Stderr),
+			progressbar.OptionShowCount(),
+			progressbar.OptionClearOnFinish(),
+		)
+
+		// Process each video path
 		for _, absPath := range videoPaths {
+			fileName := filepath.Base(absPath)
+			bar.Describe("Processing: " + fileName)
+			bar.RenderBlank() // force immediate refresh with new description
+
 			videoID, err := filehash.ComputeFileHash(absPath)
 			if err != nil {
-				videoLogger.Error("  Error computing hash: %v", err)
+				bar.Add(1)
 				continue
 			}
 
 			_, err = st.Videos.FindVideo(videoID)
 			if err == nil {
-				videoLogger.Info("  Video with ID %s already exists, skipping.", videoID)
+				bar.Add(1)
 				continue
 			} else if !strings.Contains(err.Error(), "not found") {
-				videoLogger.Error("  Error checking video existence: %v", err)
+				bar.Add(1)
 				continue
 			}
 
-			base := filepath.Base(absPath)
-			title := strings.TrimSuffix(base, filepath.Ext(base))
-
-			duration, err := videotools.GetVideoDuration(absPath)
+			metadata, thumbPath, previewPath, err := storage.GenerateVideoPreviewAndThumbnail(absPath, thumbDir, previewDir, videoID)
 			if err != nil {
-				videoLogger.Error("  Error getting duration: %v", err)
+				bar.Add(1)
 				continue
-			}
-
-			resolution, err := videotools.GetVideoResolution(absPath)
-			if err != nil {
-				videoLogger.Error("  Error getting resolution: %v", err)
-			} else {
-				videoLogger.Info("  Resolution: %dx%d", resolution.Width, resolution.Height)
-			}
-
-			thumbTime := duration / 3.0
-			thumbPath := filepath.Join(thumbDir, videoID+".jpg")
-			err = videotools.GenerateThumbnail(absPath, thumbPath, thumbTime)
-			if err != nil {
-				videoLogger.Error("  Error generating thumbnail: %v", err)
-				continue
-			}
-			videoLogger.Info("  Thumbnail generated for %s", absPath)
-
-			// 👇 NEW: Generate preview
-			previewPath := filepath.Join(previewDir, videoID+".webm")
-			err = videotools.GeneratePreviewWebM(absPath, previewPath, thumbTime, 4.0)
-			if err != nil {
-				videoLogger.Error("  Error generating preview: %v", err)
-			} else {
-				videoLogger.Info("  Preview generated: %s", previewPath)
 			}
 
 			relVideoPath, err := utils.MakeRelative(repoRoot, absPath)
 			if err != nil {
-				videoLogger.Error("  Error making video path relative: %v", err)
+				bar.Add(1)
 				continue
 			}
 			relThumbPath, err := utils.MakeRelative(repoRoot, thumbPath)
 			if err != nil {
-				videoLogger.Error("  Error making thumbnail path relative: %v", err)
+				bar.Add(1)
 				continue
 			}
 
-			video := datatypes.GenerateVideoJSON(videoID, title, int(duration), relVideoPath, &relThumbPath, &previewPath, resolution.Width, resolution.Height)
+			video := datatypes.GenerateVideoJSON(
+				videoID,
+				strings.TrimSuffix(filepath.Base(absPath), filepath.Ext(absPath)),
+				int(metadata.Duration),
+				relVideoPath,
+				&relThumbPath,
+				&previewPath,
+				metadata.Resolution.Width,
+				metadata.Resolution.Height,
+				metadata.MimeType,
+			)
 			err = st.Videos.AddVideo(video)
 			if err != nil {
-				videoLogger.Error("  Error saving video: %v", err)
+				bar.Add(1)
 				continue
 			}
 
-			videoLogger.Info("  Added to storage: %s", title)
+			bar.Add(1)
 		}
+
 	},
 }
 

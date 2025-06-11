@@ -13,7 +13,7 @@ type FileInfo struct {
 
 // GenerateHashCollection scans a folder for videos and hashes them
 func GenerateHashCollection(root string) ([]FileInfo, error) {
-	files, err := repository.ScanVideos(root)
+	files, err := repository.GetAllVideoPaths(root)
 	if err != nil {
 		return nil, err
 	}

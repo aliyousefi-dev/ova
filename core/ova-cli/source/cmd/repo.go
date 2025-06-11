@@ -32,7 +32,7 @@ var repoLinksCmd = &cobra.Command{
 			folderPath = args[0]
 		}
 
-		videos, err := repository.ScanVideos(folderPath)
+		videos, err := repository.GetAllVideoPaths(folderPath)
 		if err != nil {
 			repoLogger.Error("Error scanning videos: %v", err)
 			os.Exit(1)
