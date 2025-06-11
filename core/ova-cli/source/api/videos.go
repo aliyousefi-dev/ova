@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"ova-cli/source/datatypes"
 	"ova-cli/source/storage"
-	"ova-cli/source/storage/datatypes"
 
 	"github.com/gin-gonic/gin"
 )

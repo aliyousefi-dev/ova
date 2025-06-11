@@ -3,8 +3,8 @@ package api
 import (
 	"net/http"
 
+	"ova-cli/source/datatypes"
 	"ova-cli/source/storage"
-	"ova-cli/source/storage/datatypes"
 	"ova-cli/source/utils"
 
 	"github.com/gin-gonic/gin"

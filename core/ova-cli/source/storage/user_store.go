@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"ova-cli/source/storage/datatypes"
+	"ova-cli/source/datatypes"
 )
 
 type UserStore struct {

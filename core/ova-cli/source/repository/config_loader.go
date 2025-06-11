@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"ova-cli/source/storage/datatypes"
+	"ova-cli/source/datatypes"
 	"path/filepath"
 )
 

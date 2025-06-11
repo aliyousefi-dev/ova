@@ -6,11 +6,11 @@ import (
 	"strings"
 	"time"
 
+	"ova-cli/source/datatypes"
 	"ova-cli/source/filehash"
 	"ova-cli/source/logs"
 	"ova-cli/source/repository"
 	"ova-cli/source/storage"
-	"ova-cli/source/storage/datatypes"
 	"ova-cli/source/utils"
 	"ova-cli/source/videotools"
 

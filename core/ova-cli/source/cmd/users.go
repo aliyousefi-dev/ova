@@ -5,9 +5,9 @@ import (
 	"path/filepath"
 	"strings"
 
+	datatypes "ova-cli/source/datatypes"
 	"ova-cli/source/logs"
 	"ova-cli/source/storage"
-	datatypes "ova-cli/source/storage/datatypes"
 
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/bcrypt"
