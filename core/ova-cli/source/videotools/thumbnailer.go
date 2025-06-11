@@ -5,14 +5,14 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 // GenerateThumbnail uses FFmpeg to create a thumbnail at a specific time position (in seconds).
 func GenerateThumbnail(videoPath, thumbnailPath string, timePos float64) error {
 	ffmpegPath, err := GetFFmpegPath()
 	if err != nil {
-		fmt.Printf("FFmpeg path error: %v\n", err)
-		return err
+		return fmt.Errorf("ffmpeg path error: %w", err)
 	}
 
 	if timePos < 0 {
@@ -22,12 +22,12 @@ func GenerateThumbnail(videoPath, thumbnailPath string, timePos float64) error {
 
 	dir := filepath.Dir(thumbnailPath)
 	if err := os.MkdirAll(dir, 0755); err != nil {
-		fmt.Printf("Failed to create thumbnail directory '%s': %v\n", dir, err)
 		return fmt.Errorf("failed to create directory: %w", err)
 	}
 
 	cmd := exec.Command(
 		ffmpegPath,
+		"-y",
 		"-ss", timePosStr,
 		"-i", videoPath,
 		"-frames:v", "1",
@@ -39,9 +39,20 @@ func GenerateThumbnail(videoPath, thumbnailPath string, timePos float64) error {
 	)
 
 	output, err := cmd.CombinedOutput()
+	outputStr := string(output)
+
+	// Clean error if FFmpeg fails with empty output (likely due to overshoot)
+	if strings.Contains(outputStr, "Output file is empty") || strings.Contains(outputStr, "nothing was encoded") {
+		return fmt.Errorf("thumbnail time exceeds video duration")
+	}
+
 	if err != nil {
-		fmt.Printf("Thumbnail error for '%s': %v\nOutput: %s\n", videoPath, err, string(output))
-		return fmt.Errorf("ffmpeg error: %v, output: %s", err, string(output))
+		return fmt.Errorf("ffmpeg error: %v, output: %s", err, outputStr)
+	}
+
+	// Verify output file
+	if _, err := os.Stat(thumbnailPath); os.IsNotExist(err) {
+		return fmt.Errorf("thumbnail file was not created: %s", thumbnailPath)
 	}
 
 	return nil

@@ -13,12 +13,7 @@
     
     <!-- Responsive Video -->
     <div class="w-full aspect-video">
-      <video
-        [src]="videoUrl"
-        controls
-        [poster]="thumbnailUrl"
-        class="w-full h-full object-contain bg-black"
-      ></video>
+        <ova-video-player [video]="video"></ova-video-player>
     </div>
 
     <!-- Info below video -->

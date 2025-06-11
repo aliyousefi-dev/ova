@@ -4,11 +4,12 @@ import { ActivatedRoute } from '@angular/router';
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
 import { VideoData } from '../../data-types/video-data';
 import { VideoApiService } from '../../services/video-api.service';
+import { OvaVideoPlayerComponent } from '../../components/ova-video-player/ova-video-player.component';
 
 @Component({
   selector: 'app-watch',
   standalone: true,
-  imports: [CommonModule, TopNavBarComponent],
+  imports: [CommonModule, TopNavBarComponent, OvaVideoPlayerComponent],
   templateUrl: './watch.component.html',
 })
 export class WatchComponent implements AfterViewInit {
