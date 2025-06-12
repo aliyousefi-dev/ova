@@ -24,7 +24,7 @@ var toolsMimeCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		filePath := args[0]
-		mimeType, err := videotools.GetMimeTypeForFile(filePath)
+		mimeType, err := videotools.GetCodecsForFile(filePath)
 		if err != nil {
 			toolsLogger.Error("Failed to detect MIME type: %v", err)
 			return
@@ -79,12 +79,92 @@ var toolsPreviewCmd = &cobra.Command{
 	},
 }
 
+var toolsMp4FragCmd = &cobra.Command{
+	Use:   "mp4frag <input-path>",
+	Short: "Convert MP4 to fragmented MP4 (fMP4) in-place",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		filePath := args[0]
+
+		err := videotools.ConvertMP4ToFragmentedMP4InPlace(filePath)
+		if err != nil {
+			toolsLogger.Error("Failed to convert to fragmented MP4: %v", err)
+			return
+		}
+
+		toolsLogger.Info("Fragmented MP4 created in-place: %s", filePath)
+	},
+}
+
+// GetMP4Info runs mp4info on the provided video path and returns the output as string.
+var toolsInfoCmd = &cobra.Command{
+	Use:   "info <video-path>",
+	Short: "Print technical metadata of an MP4 file using mp4info",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		videoPath := args[0]
+
+		info, err := videotools.GetMP4Info(videoPath)
+		if err != nil {
+			toolsLogger.Error("Failed to get MP4 info: %v", err)
+			return
+		}
+
+		fmt.Println(info) // Final clean stdout output
+	},
+}
+
+var toolsIsFragCmd = &cobra.Command{
+	Use:   "isfrag <video-path>",
+	Short: "Check if the MP4 file is fragmented (fMP4)",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		videoPath := args[0]
+
+		isFrag, err := videotools.IsFragmentedMP4(videoPath)
+		if err != nil {
+			// Still print false on failure, as per your minimal output style
+			fmt.Println("false")
+			return
+		}
+
+		if isFrag {
+			fmt.Println("true")
+		} else {
+			fmt.Println("false")
+		}
+	},
+}
+
+var toolsConvertCmd = &cobra.Command{
+	Use:   "convert <input-path> <output-path>",
+	Short: "Convert a video to MP4 format using ffmpeg",
+	Args:  cobra.ExactArgs(2),
+	Run: func(cmd *cobra.Command, args []string) {
+		inputPath := args[0]
+		outputPath := args[1]
+
+		err := videotools.ConvertToMP4(inputPath, outputPath)
+		if err != nil {
+			toolsLogger.Error("Failed to convert to MP4: %v", err)
+			return
+		}
+
+		toolsLogger.Info("Converted to MP4: %s", outputPath)
+		fmt.Println(outputPath) // For scripting
+	},
+}
+
 // InitCommandTools initializes the tools command and its subcommands
 func InitCommandTools(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(toolsCmd)
 	toolsCmd.AddCommand(toolsMimeCmd)
 	toolsCmd.AddCommand(toolsThumbnailCmd)
-	toolsCmd.AddCommand(toolsPreviewCmd) // ⬅️ Add this line
+	toolsCmd.AddCommand(toolsPreviewCmd)
+	toolsCmd.AddCommand(toolsMp4FragCmd)
+	toolsCmd.AddCommand(toolsInfoCmd)
+	toolsCmd.AddCommand(toolsIsFragCmd)
+	toolsCmd.AddCommand(toolsConvertCmd)
 
 	toolsThumbnailCmd.Flags().Float64("time", 5.0, "Time position (in seconds) for thumbnail")
 

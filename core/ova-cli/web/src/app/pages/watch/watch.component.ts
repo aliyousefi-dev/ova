@@ -42,6 +42,7 @@ export class WatchComponent implements AfterViewInit {
     this.videoapi.getVideoById(videoId).subscribe({
       next: (response) => {
         this.video = response.data;
+        (window as any).video = this.video;
         this.loading = false;
       },
       error: () => {

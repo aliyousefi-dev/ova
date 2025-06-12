@@ -1,0 +1,259 @@
+.video-player-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    /* Use a 16:9 aspect ratio */
+    padding-bottom: 56.25%; /* 9 / 16 * 100% */
+    height: 0;
+    margin: auto;
+    background-color: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'Roboto', Arial, sans-serif; /* YouTube's font */
+}
+
+.video-element {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-color: #000;
+    object-fit: contain; /* Ensure video fits without cropping */
+}
+
+/* --- Central Play Button --- */
+.center-play-button-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.3); /* Slightly transparent background */
+    z-index: 15; /* Above video, below controls */
+    cursor: pointer;
+    opacity: 1; /* Default to visible if not playing */
+    transition: opacity 0.2s ease; /* Smooth fade */
+}
+
+.center-play-button-overlay:hover {
+    background-color: rgba(0, 0, 0, 0.5); /* Darker on hover */
+}
+
+/* Corrected class name from .center-play-icon to .play-icon, as per HTML */
+.play-icon {
+    width: 64px; /* Larger icon */
+    height: 64px;
+    color: #fff; /* SVG fill color */
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.7)); /* Subtle shadow for visibility */
+}
+
+/* Hide central play button when playing */
+/* This class might be added by Angular automatically with *ngIf */
+.center-play-button-overlay.ng-hide {
+    opacity: 0;
+    pointer-events: none; /* Make it unclickable when hidden */
+}
+
+
+/* --- Controls Bar (formerly .controls-bar) --- */
+.video-controls { /* RENAMED FROM .controls-bar */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    padding: 8px 15px; /* More padding */
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%); /* Fade effect */
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Slightly more space */
+    box-sizing: border-box;
+    z-index: 20; /* Above central play button */
+    opacity: 0; /* Initially hidden */
+    pointer-events: none; /* Make unclickable when hidden */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth fade and slide up */
+    transform: translateY(100%); /* Start hidden below the player */
+}
+
+.video-controls.active { /* RENAMED FROM .controls-bar.show-controls */
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0); /* Slide up into view */
+}
+
+.control-button {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 0; /* Remove default padding */
+    width: 24px; /* Standard icon size */
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease;
+}
+
+.control-button:hover {
+    opacity: 0.8;
+}
+
+/* Removed .icon as image src directly points to SVG */
+/* .icon {
+    width: 100%;
+    height: 100%;
+} */
+
+.time-display {
+    font-size: 13px; /* Slightly smaller font */
+    white-space: nowrap;
+    margin-left: 5px; /* Space from play button */
+    color: #aaa; /* Lighter color */
+}
+
+/* --- Progress Bar --- */
+.progress-container {
+    flex-grow: 1;
+    height: 3px; /* Thinner progress bar */
+    background-color: rgba(255, 255, 255, 0.2); /* Lighter, more subtle background */
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer; /* This is key for indicating the whole bar is clickable */
+    margin: 0 10px; /* Space from time display and other controls */
+    overflow: visible; /* Allow handle to overflow slightly */
+}
+
+/* Removed, not strictly needed with buffered-segment and progress-bar-fill */
+/* .progress-bar-background {
+    display: none;
+} */
+
+/* Renamed .buffered-segment to .buffered-range as per HTML */
+.buffered-range {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.4); /* Slightly darker buffered color */
+    border-radius: 2px;
+}
+
+.progress-bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #f00; /* YouTube's signature red for played progress */
+    border-radius: 2px;
+    transition: width 0.05s linear; /* More frequent updates */
+}
+
+.progress-handle {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px; /* Smaller, subtle handle */
+    height: 12px;
+    background-color: #f00; /* Match played progress color */
+    border-radius: 50%;
+    transition: left 0.05s linear, transform 0.1s ease, width 0.1s ease, height 0.1s ease;
+    opacity: 0; /* Initially hidden, made visible when controls are shown or on hover */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+/* IMPORTANT: Make progress handle visible when controls bar is shown */
+.video-controls.active .progress-handle { /* RENAMED FROM .controls-bar.show-controls */
+    opacity: 1;
+}
+
+.progress-container:hover .progress-handle {
+    opacity: 1;
+    width: 12px; /* Slight enlargement on hover */
+    height: 12px;
+}
+
+.progress-handle:hover {
+    transform: translate(-50%, -50%) scale(1.2); /* Slightly larger on hover */
+}
+
+.progress-container:hover .progress-bar-fill,
+.progress-container:hover .buffered-range { /* RENAMED FROM .buffered-segment */
+    height: 5px; /* Thicker bar on hover */
+}
+
+.progress-container:hover .progress-handle {
+    top: 50%; /* Adjust handle position for thicker bar */
+}
+
+/* --- Volume Control --- */
+/* This was implicitly part of .controls-bar, but it's a direct child of .video-controls */
+.volume-control {
+    display: flex; /* Ensure volume button and slider are inline */
+    align-items: center;
+    gap: 8px; /* Space between volume icon and slider */
+    margin-left: auto; /* Push volume and fullscreen to the right */
+}
+
+.volume-slider {
+    width: 60px; /* Adjust length as needed */
+    height: 3px;
+    background-color: rgba(255, 255, 255, 0.2);
+    -webkit-appearance: none; /* Remove default browser styling */
+    appearance: none;
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Styles for the thumb (the draggable part) of the volume slider */
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -4.5px; /* Center thumb vertically */
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Styles for the track (the bar itself) of the volume slider */
+.volume-slider::-webkit-slider-runnable-track {
+    background: rgba(255, 255, 255, 0.2);
+    height: 3px;
+    border-radius: 2px;
+}
+
+.volume-slider::-moz-range-track {
+    background: rgba(255, 255, 255, 0.2);
+    height: 3px;
+    border-radius: 2px;
+}
+
+/* --- Fullscreen Styles (Host Selector) --- */
+/* These styles apply when the component is in fullscreen mode */
+:host.fullscreen .video-player-container {
+    max-width: 100vw;
+    height: 100vh;
+    padding-bottom: 0; /* Remove padding-bottom trick for fullscreen */
+    border-radius: 0;
+}
+:host.fullscreen .video-element {
+    object-fit: contain; /* Or 'cover' if you prefer to fill screen and crop */
+}

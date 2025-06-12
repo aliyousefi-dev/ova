@@ -1,19 +1,17 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"ova-cli/source/datatypes"
-	"ova-cli/source/filehash"
 	"ova-cli/source/logs"
 	"ova-cli/source/repository"
 	"ova-cli/source/storage"
-	"ova-cli/source/utils"
 
-	"github.com/schollz/progressbar/v3"
+	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 )
 
@@ -32,38 +30,25 @@ var videoAddCmd = &cobra.Command{
 	Short: "Add video(s)",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		// Initialize storage directories and manager
+
 		storageDir := filepath.Join(".", ".ova-repo", "storage")
 		thumbDir := filepath.Join(".", ".ova-repo", "thumbnails")
 		previewDir := filepath.Join(".", ".ova-repo", "previews")
 		st := storage.NewStorageManager(storageDir)
 
-		// Get current working directory
 		repoRoot, err := os.Getwd()
 		if err != nil {
-			// Just exit silently on error
 			return
 		}
 
-		// Determine argument (single path or "all")
 		arg := args[0]
 		var videoPaths []string
-
-		// Handle "all" argument to scan all video files in current directory
 		if arg == "all" {
-			cwd, err := os.Getwd()
-			if err != nil {
-				return
-			}
-			videoPaths, err = repository.GetAllVideoPaths(cwd)
-			if err != nil {
-				return
-			}
-			if len(videoPaths) == 0 {
+			videoPaths, err = repository.GetAllVideoPaths(repoRoot)
+			if err != nil || len(videoPaths) == 0 {
 				return
 			}
 		} else {
-			// Handle single path argument
 			if _, err := os.Stat(arg); os.IsNotExist(err) {
 				return
 			}
@@ -71,74 +56,41 @@ var videoAddCmd = &cobra.Command{
 			videoPaths = append(videoPaths, absPath)
 		}
 
-		// Initialize progress bar
 		total := len(videoPaths)
-		bar := progressbar.NewOptions(
-			total,
-			progressbar.OptionSetDescription("Processing videos"),
-			progressbar.OptionSetWriter(os.Stderr),
-			progressbar.OptionShowCount(),
-			progressbar.OptionClearOnFinish(),
-		)
+		multi := pterm.DefaultMultiPrinter
 
-		// Process each video path
-		for _, absPath := range videoPaths {
+		spinner, _ := pterm.DefaultSpinner.WithWriter(multi.NewWriter()).Start("Initializing...")
+		progressbar, _ := pterm.DefaultProgressbar.WithTotal(total).WithWriter(multi.NewWriter()).Start("Adding videos")
+		multi.Start()
+
+		for i, absPath := range videoPaths {
 			fileName := filepath.Base(absPath)
-			bar.Describe("Processing: " + fileName)
-			bar.RenderBlank() // force immediate refresh with new description
+			spinner.UpdateText(fmt.Sprintf("Processing (%d/%d): %s", i+1, total, fileName))
 
-			videoID, err := filehash.ComputeFileHash(absPath)
+			videoData, err := storage.ProcessVideoForStorage(absPath, repoRoot, thumbDir, previewDir, st)
 			if err != nil {
-				bar.Add(1)
+				// Log error but continue
+				// e.g., pterm.Error.Println(err)
 				continue
 			}
 
-			_, err = st.Videos.FindVideo(videoID)
-			if err == nil {
-				bar.Add(1)
-				continue
-			} else if !strings.Contains(err.Error(), "not found") {
-				bar.Add(1)
-				continue
+			// If videoData.VideoID is empty, means video was skipped (already exists)
+			if videoData.VideoID != "" {
+				if err := st.Videos.AddVideo(videoData); err != nil {
+					// Log add error but continue
+					// e.g., pterm.Error.Println(err)
+				}
 			}
 
-			metadata, thumbPath, previewPath, err := storage.GenerateVideoPreviewAndThumbnail(absPath, thumbDir, previewDir, videoID)
-			if err != nil {
-				bar.Add(1)
-				continue
-			}
-
-			relVideoPath, err := utils.MakeRelative(repoRoot, absPath)
-			if err != nil {
-				bar.Add(1)
-				continue
-			}
-			relThumbPath, err := utils.MakeRelative(repoRoot, thumbPath)
-			if err != nil {
-				bar.Add(1)
-				continue
-			}
-
-			video := datatypes.GenerateVideoJSON(
-				videoID,
-				strings.TrimSuffix(filepath.Base(absPath), filepath.Ext(absPath)),
-				int(metadata.Duration),
-				relVideoPath,
-				&relThumbPath,
-				&previewPath,
-				metadata.Resolution.Width,
-				metadata.Resolution.Height,
-				metadata.MimeType,
-			)
-			err = st.Videos.AddVideo(video)
-			if err != nil {
-				bar.Add(1)
-				continue
-			}
-
-			bar.Add(1)
+			progressbar.Increment()
+			time.Sleep(50 * time.Millisecond) // smooth UI update
 		}
 
+		spinner.Success("All videos processed")
+		progressbar.Stop()
+		multi.Stop()
+
+		pterm.Success.WithWriter(os.Stderr).Printfln("✅ Successfully processed %d videos.", total)
 	},
 }
 

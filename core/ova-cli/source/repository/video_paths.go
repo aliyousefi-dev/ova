@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-var videoExtensions = []string{".mp4", ".mkv", ".avi", ".mov", ".flv", ".wmv"}
+var videoExtensions = []string{".mp4"}
 
 func IsVideoFile(filename string) bool {
 	lower := strings.ToLower(filename)
