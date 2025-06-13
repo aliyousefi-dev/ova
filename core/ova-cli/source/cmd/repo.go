@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"os"
 
-	"ova-cli/source/logs"
-	"ova-cli/source/repository"
+	"ova-cli/source/internal/logs"
+	"ova-cli/source/internal/repository"
 
+	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 )
 
@@ -34,16 +35,16 @@ var repoLinksCmd = &cobra.Command{
 
 		videos, err := repository.GetAllVideoPaths(folderPath)
 		if err != nil {
-			repoLogger.Error("Error scanning videos: %v", err)
+			pterm.Error.Printf("Error scanning videos: %v\n", err)
 			os.Exit(1)
 		}
 
 		videoCount := len(videos)
-		repoLogger.Info("Found %d video(s):", videoCount)
+		pterm.Info.Printf("Found %d video(s):\n", videoCount)
 		for _, v := range videos {
-			repoLogger.Info(" - %s", v)
+			pterm.Info.Printf(" - %s\n", v)
 		}
-		repoLogger.Info("Scan completed successfully. %d video(s) found.", videoCount)
+		pterm.Success.Printf("Scan completed successfully. %d video(s) found.\n", videoCount)
 	},
 }
 
@@ -54,13 +55,13 @@ var repoInfoCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg, err := repository.LoadRepoConfig(".")
 		if err != nil {
-			repoLogger.Error("Failed to load config: %v", err)
+			pterm.Error.Printf("Failed to load config: %v\n", err)
 			os.Exit(1)
 		}
 
-		repoLogger.Info("Version: %s", cfg.Version)
-		repoLogger.Info("Server Host: %s", cfg.ServerHost)
-		repoLogger.Info("Server Port: %d", cfg.ServerPort)
+		pterm.Info.Printf("Version: %s\n", cfg.Version)
+		pterm.Info.Printf("Server Host: %s\n", cfg.ServerHost)
+		pterm.Info.Printf("Server Port: %d\n", cfg.ServerPort)
 	},
 }
 
@@ -71,26 +72,17 @@ var RepoConfigsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg, err := repository.LoadRepoConfig(".")
 		if err != nil {
-			repoLogger.Error("Failed to load config: %v", err)
+			pterm.Error.Printf("Failed to load config: %v\n", err)
 			os.Exit(1)
 		}
 
 		jsonBytes, err := json.MarshalIndent(cfg, "", "  ")
 		if err != nil {
-			repoLogger.Error("Failed to marshal config to JSON: %v", err)
+			pterm.Error.Printf("Failed to marshal config to JSON: %v\n", err)
 			os.Exit(1)
 		}
 
-		repoLogger.Info("%s", string(jsonBytes))
-	},
-}
-
-// RepoCheckCmd is the subcommand "check" under "repo"
-var RepoCheckCmd = &cobra.Command{
-	Use:   "check",
-	Short: "Run checks on repository",
-	Run: func(cmd *cobra.Command, args []string) {
-		repoLogger.Info("Use a subcommand like 'duplicates'")
+		pterm.Info.Println(string(jsonBytes))
 	},
 }
 
@@ -101,10 +93,10 @@ var RepoVersionCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg, err := repository.LoadRepoConfig(".")
 		if err != nil {
-			repoLogger.Error("Failed to load config: %v", err)
+			pterm.Error.Printf("Failed to load config: %v\n", err)
 			os.Exit(1)
 		}
-		repoLogger.Info("%s", cfg.Version)
+		pterm.Info.Println(cfg.Version)
 	},
 }
 
@@ -118,25 +110,25 @@ var repoPurgeCmd = &cobra.Command{
 
 		info, err := os.Stat(repoPath)
 		if os.IsNotExist(err) {
-			repoLogger.Warn(".ova-repo folder does not exist.")
+			pterm.Warning.Println(".ova-repo folder does not exist.")
 			return
 		} else if err != nil {
-			repoLogger.Error("Error checking .ova-repo folder: %v", err)
+			pterm.Error.Printf("Error checking .ova-repo folder: %v\n", err)
 			os.Exit(1)
 		}
 
 		if !info.IsDir() {
-			repoLogger.Error(".ova-repo exists but is not a directory.")
+			pterm.Error.Println(".ova-repo exists but is not a directory.")
 			os.Exit(1)
 		}
 
 		err = os.RemoveAll(repoPath)
 		if err != nil {
-			repoLogger.Error("Failed to delete .ova-repo folder: %v", err)
+			pterm.Error.Printf("Failed to delete .ova-repo folder: %v\n", err)
 			os.Exit(1)
 		}
 
-		repoLogger.Info(".ova-repo folder deleted successfully.")
+		pterm.Success.Println(".ova-repo folder deleted successfully.")
 	},
 }
 
@@ -148,5 +140,4 @@ func InitCommandRepo(rootCmd *cobra.Command) {
 	repoCmd.AddCommand(RepoVersionCmd)
 	repoCmd.AddCommand(repoLinksCmd)
 	repoCmd.AddCommand(repoPurgeCmd)
-	repoCmd.AddCommand(RepoCheckCmd)
 }

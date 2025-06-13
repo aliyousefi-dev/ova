@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
@@ -11,12 +11,18 @@ import { OvaVideoPlayerComponent } from '../../components/ova-video-player/ova-v
   standalone: true,
   imports: [CommonModule, TopNavBarComponent, OvaVideoPlayerComponent],
   templateUrl: './watch.component.html',
+  styleUrls: ['./watch.component.css'], // add if styles are here
 })
 export class WatchComponent implements AfterViewInit {
+  @ViewChild('videoPlayer') videoPlayer!: ElementRef<HTMLVideoElement>;
+
   loading = true;
   error = false;
   videoId: string | null = null;
   video!: VideoData;
+
+  playedPercent = 0;
+  bufferedPercent = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,7 +39,6 @@ export class WatchComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Scroll to top when the view initializes
     window.scrollTo(0, 0);
   }
 
@@ -58,10 +63,6 @@ export class WatchComponent implements AfterViewInit {
 
   get thumbnailUrl(): string {
     return this.videoapi.getThumbnailUrl(this.video.videoId);
-  }
-
-  handleLogout() {
-    console.log('Logging out...');
   }
 
   formatDuration(seconds: number): string {

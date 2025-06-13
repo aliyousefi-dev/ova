@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"encoding/json"
-	"ova-cli/source/filehash"
-	"ova-cli/source/logs"
+	"ova-cli/source/internal/filehash"
+	"ova-cli/source/internal/logs"
 
 	"github.com/spf13/cobra"
 )

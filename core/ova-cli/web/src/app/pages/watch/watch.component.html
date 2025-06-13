@@ -11,10 +11,12 @@
 
   <section *ngIf="!loading && !error && video" class="w-full max-w-4xl flex flex-col items-center">
     
-    <!-- Responsive Video -->
-    <div class="w-full aspect-video">
-        <ova-video-player [video]="video"></ova-video-player>
-    </div>
+  <video 
+    class="w-full h-full bg-black"
+    [src]="videoUrl" 
+    [poster]="thumbnailUrl"
+    controls
+  ></video>
 
     <!-- Info below video -->
     <div class="w-full mt-4 px-4 space-y-4">

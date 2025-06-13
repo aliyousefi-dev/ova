@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"ova-cli/source/logs"
-	"ova-cli/source/videotools"
+	"ova-cli/source/internal/logs"
+	videotools "ova-cli/source/internal/thirdparty"
 
 	"github.com/spf13/cobra"
 )
@@ -46,7 +46,7 @@ var toolsThumbnailCmd = &cobra.Command{
 		// Default time
 		timePos, _ := cmd.Flags().GetFloat64("time")
 
-		err := videotools.GenerateThumbnail(videoPath, thumbnailPath, timePos)
+		err := videotools.GenerateImageFromVideo(videoPath, thumbnailPath, timePos)
 		if err != nil {
 			toolsLogger.Error("Failed to generate thumbnail: %v", err)
 			return
@@ -68,7 +68,7 @@ var toolsPreviewCmd = &cobra.Command{
 		startTime, _ := cmd.Flags().GetFloat64("start")
 		duration, _ := cmd.Flags().GetFloat64("duration")
 
-		err := videotools.GeneratePreviewWebM(videoPath, outputPath, startTime, duration)
+		err := videotools.GenerateWebMFromVideo(videoPath, outputPath, startTime, duration)
 		if err != nil {
 			toolsLogger.Error("Failed to generate preview: %v", err)
 			return
@@ -155,6 +155,23 @@ var toolsConvertCmd = &cobra.Command{
 	},
 }
 
+var toolsMp4UnfragCmd = &cobra.Command{
+	Use:   "mp4unfrag <input-path>",
+	Short: "Convert a fragmented MP4 (fMP4) to a standard MP4 in-place",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		filePath := args[0]
+
+		err := videotools.ConvertFragmentedMP4ToUnfragmentedMP4InPlace(filePath)
+		if err != nil {
+			toolsLogger.Error("Failed to convert to unfragmented MP4: %v", err)
+			return
+		}
+
+		toolsLogger.Info("Unfragmented MP4 created in-place: %s", filePath)
+	},
+}
+
 // InitCommandTools initializes the tools command and its subcommands
 func InitCommandTools(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(toolsCmd)
@@ -165,6 +182,7 @@ func InitCommandTools(rootCmd *cobra.Command) {
 	toolsCmd.AddCommand(toolsInfoCmd)
 	toolsCmd.AddCommand(toolsIsFragCmd)
 	toolsCmd.AddCommand(toolsConvertCmd)
+	toolsCmd.AddCommand(toolsMp4UnfragCmd)
 
 	toolsThumbnailCmd.Flags().Float64("time", 5.0, "Time position (in seconds) for thumbnail")
 

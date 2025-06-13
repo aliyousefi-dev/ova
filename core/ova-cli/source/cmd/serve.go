@@ -5,9 +5,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"ova-cli/source/logs"
-	"ova-cli/source/repository"
-	"ova-cli/source/server"
+	"ova-cli/source/internal/logs"
+	"ova-cli/source/internal/repository"
+	"ova-cli/source/internal/server"
 
 	"github.com/spf13/cobra"
 )

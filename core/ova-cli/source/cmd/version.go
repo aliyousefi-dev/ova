@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"ova-cli/source/logs"
+	"ova-cli/source/internal/logs"
 
 	"github.com/spf13/cobra"
 )
