@@ -17,6 +17,7 @@ export interface LoginResponse {
 export interface SearchResponse {
   query: string;
   results: VideoData[];
+  totalCount: number;
 }
 
 export interface FavoritesResponse {

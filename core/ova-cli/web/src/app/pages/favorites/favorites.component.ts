@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar';
 import { VideoGridComponent } from '../../components/video-grid/video-grid.component';
-import { AuthApiService } from '../../services/auth-api.service';
 import { VideoApiService } from '../../services/video-api.service';
 import { FavoriteApiService } from '../../services/favorite-api.service';
 
@@ -53,7 +52,7 @@ export class FavoritesComponent implements OnInit {
     this.loading = true;
     this.favoriteapi.getUserFavorites(username).subscribe({
       next: (res) => {
-        const ids = res.favorites || [];
+        const ids = res.favorites || []; // This should be string[]
         if (ids.length === 0) {
           this.videos = [];
           this.loading = false;
@@ -88,13 +87,27 @@ export class FavoritesComponent implements OnInit {
   sortVideos(videos: any[]) {
     switch (this.sortOption) {
       case 'titleAsc':
-        return videos.sort((a, b) => a.title.localeCompare(b.title));
+        return [...videos].sort((a, b) => a.title.localeCompare(b.title));
       case 'titleDesc':
-        return videos.sort((a, b) => b.title.localeCompare(a.title));
+        return [...videos].sort((a, b) => b.title.localeCompare(a.title));
       case 'durationAsc':
-        return videos.sort((a, b) => a.durationSeconds - b.durationSeconds);
+        return [...videos].sort(
+          (a, b) => a.durationSeconds - b.durationSeconds
+        );
       case 'durationDesc':
-        return videos.sort((a, b) => b.durationSeconds - a.durationSeconds);
+        return [...videos].sort(
+          (a, b) => b.durationSeconds - a.durationSeconds
+        );
+      case 'newest':
+        return [...videos].sort(
+          (a, b) =>
+            new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
+        );
+      case 'oldest':
+        return [...videos].sort(
+          (a, b) =>
+            new Date(a.uploadedAt).getTime() - new Date(b.uploadedAt).getTime()
+        );
       default:
         return videos;
     }

@@ -1,24 +1,24 @@
 <!-- mini-video-player.component.html -->
-<ion-footer *ngIf="video" style="box-shadow: 0 -2px 16px rgba(0,0,0,0.10); border-radius: 18px 18px 0 0; overflow: hidden; z-index: 100;">
-  <ion-toolbar (click)="expand()" style="background: var(--ion-background-color, #ff3939); min-height: 64px; display: flex; align-items: center;">
-    <ion-thumbnail slot="start" style="width: 56px; height: 56px; border-radius: 12px; overflow: hidden; margin-right: 12px;">
+<ion-footer *ngIf="video" style="box-shadow: 0 -2px 16px rgba(0,0,0,0.10); border-radius: 0; overflow: hidden; z-index: 100;">
+  <ion-toolbar (click)="expand()" style="background: var(--ion-background-color, #ff3939); min-height: 64px; display: flex; align-items: center; padding-left: 8px; padding-right: 8px;">
+    <ion-thumbnail slot="start" style="width: 48px; height: 48px; border-radius: 8px; overflow: hidden; margin-right: 8px;">
       <img
         [src]="videoPlayer.getThumbnailUrl(video?.videoId || '')"
         [alt]="video?.title || 'Video thumbnail'"
         style="width: 100%; height: 100%; object-fit: cover;"
       />
     </ion-thumbnail>
-    <ion-label style="flex: 1 1 0; min-width: 0; margin-right: 12px;">
+    <ion-label style="flex: 1 1 0; min-width: 0; margin-right: 8px; text-align: center;">
       <h3 style="font-size: 1rem; font-weight: 600; margin: 0; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
         {{ video?.title }}
       </h3>
-      <div style="font-size: 12px; color: var(--ion-color-medium); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+      <!-- <div style="font-size: 12px; color: var(--ion-color-medium); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
         {{ video?.tags?.join(', ') }}
-      </div>
+      </div> -->
     </ion-label>
-    <ion-buttons slot="end" style="margin-left: 8px;">
+    <ion-buttons slot="end" style="margin-left: auto;">
       <ion-button (click)="togglePlayback($event)" style="--padding-start: 0; --padding-end: 0; --background-hover: var(--ion-color-primary-tint);">
-        <ion-icon [name]="isPlaying ? 'pause' : 'play'" style="font-size: 2rem;"></ion-icon>
+        <ion-icon [name]="isPlaying ? pauseIcon : playIcon" style="font-size: 2rem;"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

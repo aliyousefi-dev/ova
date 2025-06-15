@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"ova-cli/source/internal/datatypes"
@@ -11,11 +12,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func parseQueryInt(c *gin.Context, name string, defaultVal int) int {
+	valStr := c.Query(name)
+	if valStr == "" {
+		return defaultVal
+	}
+	if val, err := strconv.Atoi(valStr); err == nil && val > 0 {
+		return val
+	}
+	return defaultVal
+}
+
 // RegisterVideoRoutes adds video-related endpoints including folder listing.
 func RegisterVideoRoutes(rg *gin.RouterGroup, storage interfaces.StorageService) {
 	videos := rg.Group("/videos")
 	{
 		videos.GET("/:videoId", getVideoByID(storage)) // GET /api/v1/videos/{videoId}
+		videos.GET("/:videoId/similar", getSimilarVideos(storage))
 		videos.GET("", getVideosByFolder(storage))     // GET /api/v1/videos?folder=...
 		videos.POST("/batch", getVideosByIds(storage)) // POST /api/v1/videos/batch
 	}
@@ -38,7 +51,7 @@ func getVideoByID(storage interfaces.StorageService) gin.HandlerFunc {
 	}
 }
 
-// getVideosByFolder returns a list of videos inside the given folder path.
+// getVideosByFolder returns a paginated list of videos inside the given folder path.
 func getVideosByFolder(storage interfaces.StorageService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		folderQuery := c.Query("folder")
@@ -50,7 +63,12 @@ func getVideosByFolder(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		respondSuccess(c, http.StatusOK, videosInFolder, "Videos in folder retrieved")
+		// Return all videos, no pagination here
+		response := gin.H{
+			"videos": videosInFolder,
+		}
+
+		respondSuccess(c, http.StatusOK, response, "Videos in folder retrieved")
 	}
 }
 
@@ -87,5 +105,28 @@ func getVideosByIds(storage interfaces.StorageService) gin.HandlerFunc {
 		}
 
 		respondSuccess(c, http.StatusOK, matched, "Videos retrieved successfully")
+	}
+}
+
+func getSimilarVideos(storage interfaces.StorageService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		videoId := c.Param("videoId")
+
+		similarVideos, err := storage.GetSimilarVideos(videoId)
+		if err != nil {
+			respondError(c, http.StatusNotFound, "Video not found or no similar videos")
+			return
+		}
+
+		// Limit to 8 items
+		if len(similarVideos) > 8 {
+			similarVideos = similarVideos[:8]
+		}
+
+		response := gin.H{
+			"similarVideos": similarVideos,
+		}
+
+		respondSuccess(c, http.StatusOK, response, "Similar videos retrieved successfully")
 	}
 }

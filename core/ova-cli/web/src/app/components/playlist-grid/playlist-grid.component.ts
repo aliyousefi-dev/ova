@@ -2,21 +2,27 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PlaylistData } from '../../data-types/playlist-data';
 import { PlaylistCardComponent } from '../playlist-card/playlist-card.component';
+import {
+  DragDropModule,
+  CdkDragDrop,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-playlist-grid',
   standalone: true,
-  imports: [CommonModule, PlaylistCardComponent],
+  imports: [CommonModule, PlaylistCardComponent, DragDropModule],
   templateUrl: './playlist-grid.component.html',
+  styleUrls: ['./playlist-grid.component.css'],
 })
 export class PlaylistGridComponent {
   @Input() playlists: PlaylistData[] = [];
-  @Input() manageMode = false; // NEW input
+  @Input() manageMode = false;
 
   @Output() select = new EventEmitter<string>();
-  @Output() delete = new EventEmitter<string[]>(); // Now emits slugs, not titles
+  @Output() delete = new EventEmitter<string[]>();
 
-  selectedPlaylists = new Set<string>(); // slugs
+  selectedPlaylists = new Set<string>();
 
   get allSelected(): boolean {
     return (
@@ -42,7 +48,6 @@ export class PlaylistGridComponent {
     }
   }
 
-  // In onSelect(), only emit if not in manage mode
   onSelect(title: string): void {
     if (!this.manageMode) {
       this.select.emit(title);
@@ -50,7 +55,7 @@ export class PlaylistGridComponent {
   }
 
   deleteSelected(): void {
-    this.delete.emit(Array.from(this.selectedPlaylists)); // Emit slugs
+    this.delete.emit(Array.from(this.selectedPlaylists));
     this.selectedPlaylists.clear();
   }
 
@@ -64,5 +69,9 @@ export class PlaylistGridComponent {
     } else {
       this.selectedPlaylists.add(slug);
     }
+  }
+
+  drop(event: CdkDragDrop<PlaylistData[]>) {
+    moveItemInArray(this.playlists, event.previousIndex, event.currentIndex);
   }
 }

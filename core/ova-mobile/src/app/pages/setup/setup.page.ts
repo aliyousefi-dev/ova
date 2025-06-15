@@ -15,6 +15,7 @@ import {
   IonItem,
   IonLabel,
   IonButton,
+  IonAlert,
 } from '@ionic/angular/standalone';
 import { Preferences } from '@capacitor/preferences';
 import { Router } from '@angular/router';
@@ -25,6 +26,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./setup.page.scss'],
   standalone: true,
   imports: [
+    IonAlert,
     IonContent,
     IonHeader,
     IonTitle,
@@ -39,9 +41,10 @@ import { Router } from '@angular/router';
 })
 export class SetupPage implements OnInit {
   serverHost: string = '192.168.52.106'; // Default value
-  serverPort: number | null = 4040; // Default value
+  serverPort: any = 4040; // Default value
   serverUser: string = '';
   serverPass: string = '';
+  public alertButtons = ['OK'];
 
   constructor(
     private router: Router,
@@ -53,6 +56,10 @@ export class SetupPage implements OnInit {
 
   async saveSettings($event?: Event) {
     if ($event) $event.preventDefault();
+
+    // Convert serverPort to a Number
+    const serverPortNumber = Number(this.serverPort);
+
     console.log(
       'saveSettings called',
       this.serverHost,
@@ -60,13 +67,14 @@ export class SetupPage implements OnInit {
       this.serverUser,
       this.serverPass
     ); // Debug log
-    const fullUrl = `http://${this.serverHost}:${this.serverPort}/api/v1`;
+    const fullUrl = `http://${this.serverHost}:${serverPortNumber}/api/v1`;
 
     this.statusApi
       .getServerStatus(fullUrl)
       .pipe(
         catchError((err) => {
-          alert('Failed to reach server at ' + fullUrl + '/status');
+          console.log('Connection Error: Could not connect to server');
+          document.getElementById('connection-alert-trigger')?.click();
           return of(null); // return observable with null so subscription completes
         })
       )

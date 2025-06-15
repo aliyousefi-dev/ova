@@ -2,8 +2,10 @@ package localstorage
 
 import (
 	"fmt" // os is not directly used in the provided functions, but good to keep if used elsewhere in the package.
+	"math/rand/v2"
 	"ova-cli/source/internal/datatypes"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -138,7 +140,7 @@ func (s *LocalStorage) SearchVideos(criteria datatypes.VideoSearchCriteria) ([]d
 		}
 
 		// Filter by maximum duration if set (assuming video.Duration is in seconds)
-		if criteria.MaxDuration > 0 && video.Duration > criteria.MaxDuration {
+		if criteria.MaxDuration > 0 && video.DurationSeconds > criteria.MaxDuration {
 			continue
 		}
 
@@ -146,6 +148,15 @@ func (s *LocalStorage) SearchVideos(criteria datatypes.VideoSearchCriteria) ([]d
 	}
 
 	return results, nil
+}
+
+// GetTags retrieves the tags of a video by its ID.
+func (s *LocalStorage) GetTags(videoID string) ([]string, error) {
+	video, err := s.GetVideoByID(videoID)
+	if err != nil {
+		return nil, err
+	}
+	return video.Tags, nil
 }
 
 // AddTagToVideo adds a tag to the specified video if it doesn't already exist (case-insensitive).
@@ -319,4 +330,140 @@ func (s *LocalStorage) GetVideosByFolder(folderPath string) ([]datatypes.VideoDa
 	}
 
 	return results, nil
+}
+
+// GetSimilarVideos returns videos that share at least one tag with the given videoID.
+// The target video itself is excluded from the results.
+func (s *LocalStorage) GetSimilarVideos(videoID string) ([]datatypes.VideoData, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	videos, err := s.loadVideos()
+	if err != nil {
+		return nil, fmt.Errorf("failed to load videos: %w", err)
+	}
+
+	targetVideo, exists := videos[videoID]
+	if !exists {
+		return nil, fmt.Errorf("video %q not found", videoID)
+	}
+
+	type scoredVideo struct {
+		video datatypes.VideoData
+		score float64
+	}
+
+	var results []scoredVideo
+
+	for id, video := range videos {
+		if id == videoID {
+			continue
+		}
+
+		score := 0.0
+
+		// Tag overlap (if tags exist)
+		if len(targetVideo.Tags) > 0 && len(video.Tags) > 0 {
+			targetTags := make(map[string]struct{})
+			for _, tag := range targetVideo.Tags {
+				targetTags[strings.ToLower(tag)] = struct{}{}
+			}
+			for _, tag := range video.Tags {
+				if _, ok := targetTags[strings.ToLower(tag)]; ok {
+					score += 2.0
+				}
+			}
+		}
+
+		// Title word overlap (case-insensitive)
+		targetWords := strings.Fields(strings.ToLower(targetVideo.Title))
+		videoWords := strings.Fields(strings.ToLower(video.Title))
+		wordMatch := 0
+		for _, w1 := range targetWords {
+			for _, w2 := range videoWords {
+				if w1 == w2 {
+					wordMatch++
+				}
+			}
+		}
+		score += float64(wordMatch)
+
+		// Duration similarity (closer durations are better)
+		diff := float64(abs(targetVideo.DurationSeconds - video.DurationSeconds))
+		if diff < 30 {
+			score += 1.5
+		} else if diff < 60 {
+			score += 1.0
+		} else if diff < 120 {
+			score += 0.5
+		}
+
+		// Optional: folder similarity
+		if filepath.Dir(video.FilePath) == filepath.Dir(targetVideo.FilePath) {
+			score += 1.0
+		}
+
+		// Add if score is non-zero
+		if score > 0 {
+			results = append(results, scoredVideo{video: video, score: score})
+		}
+	}
+
+	// Sort by descending score
+	sort.Slice(results, func(i, j int) bool {
+		return results[i].score > results[j].score
+	})
+
+	// Return top N similar videos
+	var similar []datatypes.VideoData
+	for i := 0; i < len(results) && i < 20; i++ {
+		similar = append(similar, results[i].video)
+	}
+
+	// Fallback: if no results, return top-viewed or random
+	if len(similar) == 0 {
+		for _, v := range videos {
+			if v.VideoID != videoID {
+				similar = append(similar, v)
+			}
+		}
+		// Shuffle and limit
+		rand.Shuffle(len(similar), func(i, j int) {
+			similar[i], similar[j] = similar[j], similar[i]
+		})
+		if len(similar) > 20 {
+			similar = similar[:20]
+		}
+	}
+
+	return similar, nil
+}
+
+func abs(n int) int {
+	if n < 0 {
+		return -n
+	}
+	return n
+}
+
+// UpdateVideoLocalPath updates the file path of a video by its ID.
+// Returns an error if the video is not found.
+func (s *LocalStorage) UpdateVideoLocalPath(videoID, newPath string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	videos, err := s.loadVideos()
+	if err != nil {
+		return fmt.Errorf("failed to load videos: %w", err)
+	}
+
+	video, exists := videos[videoID]
+	if !exists {
+		return fmt.Errorf("video %q not found", videoID)
+	}
+
+	video.FilePath = newPath
+	videos[videoID] = video
+
+	return s.saveVideos(videos)
 }

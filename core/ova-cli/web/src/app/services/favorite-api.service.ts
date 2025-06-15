@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
-import { FavoritesResponse } from '../data-types/responses';
-import { ApiResponse } from '../data-types/responses';
 import { environment } from '../../environments/environment';
+
+export interface FavoritesResponse {
+  username: string;
+  favorites: string[]; // array of video IDs (strings)
+}
 
 @Injectable({
   providedIn: 'root',
@@ -13,27 +16,57 @@ import { environment } from '../../environments/environment';
 export class FavoriteApiService {
   private baseUrl = environment.apiBaseUrl;
 
+  private httpOptions = { withCredentials: true };
+
   constructor(private http: HttpClient) {}
 
   getUserFavorites(username: string): Observable<FavoritesResponse> {
     return this.http
-      .get<ApiResponse<FavoritesResponse>>(
+      .get<{ data: FavoritesResponse }>(
         `${this.baseUrl}/users/${username}/favorites`,
-        { withCredentials: true } // ✅ required for session cookie
+        this.httpOptions
       )
-      .pipe(map((response) => response.data));
+      .pipe(
+        map((response) => response.data),
+        catchError(this.handleError)
+      );
   }
 
-  updateUserFavorites(
+  addUserFavorite(
     username: string,
-    favorites: string[]
-  ): Observable<FavoritesResponse> {
+    videoId: string
+  ): Observable<{ username: string; videoId: string }> {
     return this.http
-      .post<ApiResponse<FavoritesResponse>>(
-        `${this.baseUrl}/users/${username}/favorites`,
-        { favorites },
-        { withCredentials: true } // ✅ required for session cookie
+      .post<{ data: { username: string; videoId: string } }>(
+        `${this.baseUrl}/users/${username}/favorites/${videoId}`,
+        {}, // empty body
+        this.httpOptions
       )
-      .pipe(map((response) => response.data));
+      .pipe(
+        map((response) => response.data),
+        catchError(this.handleError)
+      );
+  }
+
+  removeUserFavorite(
+    username: string,
+    videoId: string
+  ): Observable<{ username: string; videoId: string }> {
+    return this.http
+      .delete<{ data: { username: string; videoId: string } }>(
+        `${this.baseUrl}/users/${username}/favorites/${videoId}`,
+        this.httpOptions
+      )
+      .pipe(
+        map((response) => response.data),
+        catchError(this.handleError)
+      );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    console.error('Favorite API error:', error);
+    return throwError(
+      () => new Error(error.error?.message || 'Favorite API error')
+    );
   }
 }

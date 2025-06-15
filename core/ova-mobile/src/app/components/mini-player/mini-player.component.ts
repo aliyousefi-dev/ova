@@ -13,6 +13,7 @@ import { VideoPlayerService } from '../../services/video-player.service';
 import { Router } from '@angular/router';
 import { VideoApiService } from '../../services/video-api.service';
 import { VideoData } from '../../data-types/video-data';
+import { play, pause } from 'ionicons/icons';
 
 @Component({
   selector: 'app-mini-player',
@@ -32,6 +33,9 @@ import { VideoData } from '../../data-types/video-data';
 export class MiniPlayerComponent implements OnInit {
   @Input() video?: VideoData | null;
   @Input() isPlaying!: boolean; // <-- Definite assignment assertion
+
+  public playIcon = play;
+  public pauseIcon = pause;
 
   constructor(
     public videoPlayer: VideoPlayerService,

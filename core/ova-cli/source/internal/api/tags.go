@@ -9,17 +9,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// TagUpdateRequest represents the payload to update tags for a video.
-type TagUpdateRequest struct {
-	Tags []string `json:"tags"`
+// TagAddRequest represents the payload to add a single tag.
+type TagAddRequest struct {
+	Tag string `json:"tag"`
 }
 
-// RegisterVideoTagRoutes registers routes to get or update video tags.
-func RegisterVideoTagRoutes(rg *gin.RouterGroup, storage interfaces.StorageService) {
+// TagRemoveRequest represents the payload to remove a single tag.
+type TagRemoveRequest struct {
+	Tag string `json:"tag"`
+}
+
+// RegisterVideoTagRoutes registers routes to get, add, or remove video tags.
+func RegisterVideoTagRoutes(rg *gin.RouterGroup, Storage interfaces.StorageService) {
 	videos := rg.Group("/videos/tags")
 	{
-		videos.GET("/:videoID", getVideoTags(storage))
-		videos.POST("/:videoID", updateVideoTags(storage))
+		videos.GET("/:videoID", getVideoTags(Storage))
+		videos.POST("/:videoID/add", addVideoTag(Storage))
+		videos.POST("/:videoID/remove", removeVideoTag(Storage))
 	}
 }
 
@@ -38,35 +44,56 @@ func getVideoTags(storage interfaces.StorageService) gin.HandlerFunc {
 	}
 }
 
-// updateVideoTags handles POST /videos/tags/:videoID
-func updateVideoTags(storage interfaces.StorageService) gin.HandlerFunc {
+// addVideoTag handles POST /videos/tags/:videoID/add
+func addVideoTag(Storage interfaces.StorageService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoID := strings.TrimSpace(c.Param("videoID"))
-		var req TagUpdateRequest
+		var req TagAddRequest
 
-		if err := c.ShouldBindJSON(&req); err != nil {
+		if err := c.ShouldBindJSON(&req); err != nil || strings.TrimSpace(req.Tag) == "" {
 			respondError(c, http.StatusBadRequest, "Invalid request payload")
 			return
 		}
 
-		if len(req.Tags) == 0 {
-			respondError(c, http.StatusBadRequest, "Tags list cannot be empty")
+		if err := Storage.AddTagToVideo(videoID, req.Tag); err != nil {
+			respondError(c, http.StatusInternalServerError, "Failed to add tag")
 			return
 		}
 
-		video, err := storage.GetVideoByID(videoID)
+		// Optionally fetch updated video to get latest tags
+		video, err := Storage.GetVideoByID(videoID)
 		if err != nil {
-			respondError(c, http.StatusNotFound, "Video not found")
+			respondError(c, http.StatusInternalServerError, "Failed to fetch updated video")
 			return
 		}
 
-		video.Tags = req.Tags
+		respondSuccess(c, http.StatusOK, gin.H{"tags": video.Tags}, "Tag added successfully")
+	}
+}
 
-		if err := storage.UpdateVideo(*video); err != nil {
-			respondError(c, http.StatusInternalServerError, "Failed to update video tags")
+// removeVideoTag handles POST /videos/tags/:videoID/remove
+func removeVideoTag(Storage interfaces.StorageService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		videoID := strings.TrimSpace(c.Param("videoID"))
+		var req TagRemoveRequest
+
+		if err := c.ShouldBindJSON(&req); err != nil || strings.TrimSpace(req.Tag) == "" {
+			respondError(c, http.StatusBadRequest, "Invalid request payload")
 			return
 		}
 
-		respondSuccess(c, http.StatusOK, gin.H{"tags": video.Tags}, "Tags updated successfully")
+		if err := Storage.RemoveTagFromVideo(videoID, req.Tag); err != nil {
+			respondError(c, http.StatusInternalServerError, "Failed to remove tag")
+			return
+		}
+
+		// Optionally fetch updated video to get latest tags
+		video, err := Storage.GetVideoByID(videoID)
+		if err != nil {
+			respondError(c, http.StatusInternalServerError, "Failed to fetch updated video")
+			return
+		}
+
+		respondSuccess(c, http.StatusOK, gin.H{"tags": video.Tags}, "Tag removed successfully")
 	}
 }

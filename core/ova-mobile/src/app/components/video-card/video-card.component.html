@@ -1,5 +1,5 @@
 <ion-card class="video-card ion-no-margin ion-no-padding"
-  style="border-radius: 18px; box-shadow: 0 4px 16px rgba(0,0,0,0.10); transition: box-shadow 0.2s;"
+  style="box-shadow: 0 4px 16px rgba(0,0,0,0.10); transition: box-shadow 0.2s;"
   (click)="setVideo()"
 >
   <div style="position: relative;">
@@ -10,9 +10,9 @@
     >
       <img
         [src]="getThumbnailUrl()"
-        [alt]="video.title"
-        style="width: 100%; height: 100%; object-fit: cover; display: block; transition: filter 0.2s;"
-        [style.filter]="hovering ? 'brightness(0.7)' : 'none'"
+        style="width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.2s;"
+        [style.opacity]="hovering ? 0 : 1"
+        (error)="previewError = true"
       />
       <video
         [src]="getPreviewUrl()"
@@ -20,18 +20,17 @@
         muted
         loop
         playsinline
-        style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0.7; pointer-events: none; transition: opacity 0.2s;"
-        (error)="previewError = true"
-        *ngIf="!previewError"
+        style="width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; top: 0; left: 0; transition: opacity 0.2s;"
         [style.opacity]="hovering ? 1 : 0"
+        (error)="previewError = true"
       ></video>
       <div *ngIf="previewError"
            style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.15);">
         <ion-icon name="videocam-off" color="medium" style="font-size: 40px;"></ion-icon>
       </div>
       <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.36) 60%, transparent 100%); z-index: 1;"></div>
-      <div style="position: absolute; top: 10px; left: 12px; z-index: 2;">
-        <ion-badge color="dark" style="opacity:0.90; font-size: 13px; letter-spacing: 0.5px;">
+      <div style="position: absolute; top: auto; bottom: 10px; left: auto; right: 12px; z-index: 2;">
+        <ion-badge color="light" style="opacity:0.90; font-size: 13px; letter-spacing: 0.5px;">
           {{ formatDuration(video.durationSeconds) }}
         </ion-badge>
       </div>

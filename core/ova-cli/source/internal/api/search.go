@@ -10,9 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// SearchRequest represents the POST body with the search query.
+// SearchRequest represents the structure of the incoming search request.
 type SearchRequest struct {
-	Query string `json:"query"`
+	Query       string   `json:"query"`
+	Tags        []string `json:"tags"`
+	MinRating   float64  `json:"minRating"`
+	MaxDuration int      `json:"maxDuration"`
 }
 
 // RegisterSearchRoutes adds the /search endpoint to the router group.
@@ -20,7 +23,7 @@ func RegisterSearchRoutes(rg *gin.RouterGroup, storage interfaces.StorageService
 	rg.POST("/search", searchVideos(storage))
 }
 
-// searchVideos handles POST /search with JSON body containing a search query.
+// searchVideos handles POST /search with a JSON body containing search criteria.
 func searchVideos(storage interfaces.StorageService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req SearchRequest
@@ -29,15 +32,17 @@ func searchVideos(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		query := strings.TrimSpace(req.Query)
-		if query == "" {
-			respondError(c, http.StatusBadRequest, "Query cannot be empty")
-			return
+		criteria := datatypes.VideoSearchCriteria{
+			Query:       strings.TrimSpace(req.Query),
+			Tags:        req.Tags,
+			MinRating:   req.MinRating,
+			MaxDuration: req.MaxDuration,
 		}
 
-		criteria := datatypes.VideoSearchCriteria{
-			Query: query,
-			// You can add additional fields like Tags, MinRating, MaxDuration here if needed
+		// Validate that at least one filter is provided
+		if criteria.Query == "" && len(criteria.Tags) == 0 && criteria.MinRating == 0 && criteria.MaxDuration == 0 {
+			respondError(c, http.StatusBadRequest, "At least one search criteria must be provided (query, tags, minRating, or maxDuration)")
+			return
 		}
 
 		results, err := storage.SearchVideos(criteria)
@@ -47,8 +52,10 @@ func searchVideos(storage interfaces.StorageService) gin.HandlerFunc {
 		}
 
 		respondSuccess(c, http.StatusOK, gin.H{
-			"query":   query,
-			"results": results,
+			"query":      req.Query,
+			"tags":       req.Tags,
+			"results":    results,
+			"totalCount": len(results),
 		}, "Search completed successfully")
 	}
 }

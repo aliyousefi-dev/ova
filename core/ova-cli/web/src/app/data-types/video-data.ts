@@ -1,15 +1,26 @@
+export interface Codecs {
+  format: string; // e.g., "video/mp4"
+  video: string; // e.g., "avc1.64001F"
+  audio: string; // e.g., "mp4a.40.2"
+}
+
+export interface VideoResolution {
+  width: number;
+  height: number;
+}
+
 export interface VideoData {
   videoId: string;
   title: string;
+  description: string;
   filePath: string;
   rating: number;
   durationSeconds: number;
-  thumbnailPath?: string | null; // Optional (nullable)
-  previewPath?: string | null; // Optional (nullable)
+  thumbnailPath?: string | null;
+  previewPath?: string | null;
   tags: string[];
   views: number;
-  width: number;
-  height: number;
-  uploadedAt: string; // ISO 8601 string (e.g., from time.Time in Go)
-  mimeType: string; // New field
+  resolution: VideoResolution;
+  uploadedAt: string; // ISO 8601 string
+  codecs: Codecs;
 }

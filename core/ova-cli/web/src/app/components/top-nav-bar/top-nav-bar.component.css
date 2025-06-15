@@ -1,0 +1,8 @@
+/* Highlight active dock button */
+.dock button.active {
+  color: #2563eb; /* Tailwind blue-600 */
+}
+
+.dock button.active svg {
+  stroke: #2563eb; /* stroke color for SVG icons */
+}

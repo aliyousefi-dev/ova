@@ -8,10 +8,12 @@ import { AuthApiService } from '../../services/auth-api.service';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './top-nav-bar.component.html',
+  styleUrls: ['./top-nav-bar.component.css'],
 })
 export class TopNavBarComponent implements OnInit {
   @Input() title = '';
 
+  favoritesCount = 10;
   username = '';
 
   constructor(private authapi: AuthApiService, private router: Router) {}

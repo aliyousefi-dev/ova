@@ -24,6 +24,7 @@ type StorageService interface {
 	DeleteUserPlaylist(username, playlistSlug string) error
 	AddVideoToPlaylist(username, playlistSlug, videoID string) error
 	RemoveVideoFromPlaylist(username, playlistSlug, videoID string) error
+	UpdateVideoLocalPath(videoID, newPath string) error
 
 	// Video tags management
 	AddTagToVideo(videoID, tag string) error
@@ -34,10 +35,12 @@ type StorageService interface {
 	DeleteVideo(id string) error
 	DeleteAllVideos() error
 	GetVideoByID(id string) (*datatypes.VideoData, error)
-	UpdateVideo(video datatypes.VideoData) error
+
 	SearchVideos(criteria datatypes.VideoSearchCriteria) ([]datatypes.VideoData, error)
-	ProcessVideoForStorage(videoPath string) (datatypes.VideoData, error)
+	RegisterVideoForStorage(videoPath string) (datatypes.VideoData, error)
+	UnregisterVideoFromStorage(videoPath string) error
 	GetAllVideos() ([]datatypes.VideoData, error)
+	GetSimilarVideos(videoID string) ([]datatypes.VideoData, error)
 
 	// Folder management
 	GetFolderList() ([]string, error)

@@ -7,7 +7,7 @@
 
 <!-- Sort Menu -->
 <div class="max-w-7xl mx-auto px-4 mt-4 flex justify-end items-center gap-2">
-  <label for="sort" class="text-sm text-gray-700 font-medium">Sort by:</label>
+  <label for="sort" class="text-sm  font-medium">Sort by:</label>
   <select
     id="sort"
     [(ngModel)]="sortOption"
@@ -17,12 +17,14 @@
     <option value="titleDesc">Title (Z–A)</option>
     <option value="durationAsc">Duration (Short → Long)</option>
     <option value="durationDesc">Duration (Long → Short)</option>
+    <option value="newest">Newest</option>
+    <option value="oldest">Oldest</option>
   </select>
 </div>
 
 <!-- Videos Block -->
 <div class="max-w-7xl mx-auto px-4 mt-6">
-  <p *ngIf="loading" class="text-gray-700 font-medium text-center">Loading favorites...</p>
+  <p *ngIf="loading" class=" font-medium text-center">Loading favorites...</p>
 
   <app-video-grid
     *ngIf="!loading"

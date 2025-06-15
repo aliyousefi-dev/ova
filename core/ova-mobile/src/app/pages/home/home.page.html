@@ -4,6 +4,8 @@
   </ion-toolbar>
 </ion-header>
 
+
+
 <ion-content [fullscreen]="true" class="ion-padding" style="background: var(--ion-background-color);">
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
@@ -15,6 +17,7 @@
     </ion-toolbar>
   </ion-header>
 
+  
   <div style="margin-bottom: 18px;">
     <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 4px;">Welcome 👋</h1>
     <div style="font-size: 1.1rem; color: var(--ion-color-medium); margin-bottom: 12px;">
@@ -29,7 +32,6 @@
           [video]="video"
           [isFavorite]="favorites.includes(video.videoId)"
           [username]="username"
-          style="margin-bottom: 16px;"
         ></app-video-card>
       </ion-col>
     </ion-row>

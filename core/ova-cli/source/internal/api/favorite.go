@@ -22,7 +22,7 @@ func getUserFavorites(storage interfaces.StorageService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
 
-		favorites, err := storage.GetUserFavoriteVideos(username)
+		videos, err := storage.GetUserFavoriteVideos(username)
 		if err != nil {
 			if err.Error() == "user not found" {
 				respondError(c, http.StatusNotFound, "User not found")
@@ -32,9 +32,15 @@ func getUserFavorites(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
+		// Map []VideoData to []string (video IDs only)
+		favoriteIDs := make([]string, 0, len(videos))
+		for _, video := range videos {
+			favoriteIDs = append(favoriteIDs, video.VideoID)
+		}
+
 		respondSuccess(c, http.StatusOK, gin.H{
 			"username":  username,
-			"favorites": favorites,
+			"favorites": favoriteIDs,
 		}, "Favorites retrieved")
 	}
 }

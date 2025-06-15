@@ -14,10 +14,14 @@ export class SearchApiService {
 
   constructor(private http: HttpClient) {}
 
-  searchVideos(query: string): Observable<ApiResponse<SearchResponse>> {
+  // search-api.service.ts
+  searchVideos(params: {
+    query?: string;
+    tags?: string[];
+  }): Observable<ApiResponse<SearchResponse>> {
     return this.http.post<ApiResponse<SearchResponse>>(
       `${this.baseUrl}/search`,
-      { query }
+      params
     );
   }
 }

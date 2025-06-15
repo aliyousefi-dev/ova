@@ -1,4 +1,10 @@
-import { Component, Input, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -7,14 +13,15 @@ import { PlaylistAPIService } from '../../services/playlist-api.service';
 import { VideoApiService } from '../../services/video-api.service';
 import { FavoriteApiService } from '../../services/favorite-api.service';
 import { VideoData } from '../../data-types/video-data';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-video-card',
   templateUrl: './video-card.component.html',
-  imports: [CommonModule, RouterModule, FormsModule, PlaylistModalComponent],
   standalone: true,
+  imports: [CommonModule, RouterModule, FormsModule, PlaylistModalComponent],
 })
-export class VideoCardComponent {
+export class VideoCardComponent implements OnChanges {
   @Input() video!: VideoData;
   @Input() isFavorite: boolean = false;
   @Input() username: string = '';
@@ -30,8 +37,13 @@ export class VideoCardComponent {
     private playlistapi: PlaylistAPIService,
     private favoriteapi: FavoriteApiService,
     private videoapi: VideoApiService,
-    private cd: ChangeDetectorRef // <-- Inject ChangeDetectorRef here
+    private router: Router,
+    private cd: ChangeDetectorRef
   ) {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.cd.detectChanges(); // Ensure bindings update when video input changes
+  }
 
   getThumbnailUrl(): string {
     return this.videoapi.getThumbnailUrl(this.video.videoId);
@@ -39,6 +51,17 @@ export class VideoCardComponent {
 
   getPreviewUrl(): string {
     return this.videoapi.getPreviewUrl(this.video.videoId);
+  }
+
+  get videoQuality(): string {
+    if (!this.video) return '';
+    const width = this.video.resolution.width;
+    const height = this.video.resolution.height;
+
+    if (width >= 3840 || height >= 2160) return '4K';
+    if (width >= 1920 || height >= 1080) return 'HD';
+    if (width >= 1280 || height >= 720) return '720p';
+    return '';
   }
 
   addToPlaylist(event: MouseEvent) {
@@ -67,8 +90,7 @@ export class VideoCardComponent {
         this.playlists = checkList;
         this.originalPlaylists = checkList.map((p) => ({ ...p }));
         this.playlistModalVisible = true;
-
-        this.cd.detectChanges(); // <-- Force Angular to detect changes immediately
+        this.cd.detectChanges();
       });
     });
   }
@@ -106,22 +128,34 @@ export class VideoCardComponent {
     if (!this.username) return;
 
     this.savingFavorite = true;
-    this.favoriteapi.getUserFavorites(this.username).subscribe((favData) => {
-      let updatedFavorites = new Set(favData.favorites);
 
-      if (this.isFavorite) {
-        updatedFavorites.delete(this.video.videoId);
-      } else {
-        updatedFavorites.add(this.video.videoId);
-      }
-
+    if (this.isFavorite) {
       this.favoriteapi
-        .updateUserFavorites(this.username, Array.from(updatedFavorites))
-        .subscribe((newData) => {
-          this.isFavorite = newData.favorites.includes(this.video.videoId);
-          this.savingFavorite = false;
+        .removeUserFavorite(this.username, this.video.videoId)
+        .subscribe({
+          next: () => {
+            this.isFavorite = false;
+            this.savingFavorite = false;
+            this.cd.detectChanges();
+          },
+          error: () => {
+            this.savingFavorite = false;
+          },
         });
-    });
+    } else {
+      this.favoriteapi
+        .addUserFavorite(this.username, this.video.videoId)
+        .subscribe({
+          next: () => {
+            this.isFavorite = true;
+            this.savingFavorite = false;
+            this.cd.detectChanges();
+          },
+          error: () => {
+            this.savingFavorite = false;
+          },
+        });
+    }
   }
 
   download(event: MouseEvent) {
@@ -163,5 +197,9 @@ export class VideoCardComponent {
     if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
     if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
     return 'just now';
+  }
+
+  navigateToWatch() {
+    this.router.navigate(['/watch', this.video.videoId]);
   }
 }

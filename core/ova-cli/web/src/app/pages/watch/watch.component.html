@@ -1,46 +1,126 @@
 <app-top-nav-bar [title]="'Watch'"></app-top-nav-bar>
 
-<main class="flex flex-col items-center justify-start min-h-screen">
-  <section *ngIf="loading" class="text-center text-gray-500 py-5 w-full">
-    <p>Loading video...</p>
+<main class="flex w-full min-h-screen overflow-x-hidden max-w-7xl mx-auto  gap-8">
+
+  <!-- Loading State -->
+  <section *ngIf="loading" class="text-center text-gray-500 py-10 w-full">
+    <p class="text-lg">Loading video...</p>
   </section>
 
+  <!-- Error State -->
   <section *ngIf="error" class="text-center text-red-500 py-10 w-full">
-    <p>Failed to load video</p>
+    <p class="text-lg font-semibold">⚠️ Failed to load video</p>
   </section>
 
-  <section *ngIf="!loading && !error && video" class="w-full max-w-4xl flex flex-col items-center">
-    
-  <video 
-    class="w-full h-full bg-black"
-    [src]="videoUrl" 
-    [poster]="thumbnailUrl"
-    controls
-  ></video>
+  <!-- Video Section -->
+  <section *ngIf="!loading && !error && video" class="flex flex-col lg:flex-row gap-8 w-full">
 
-    <!-- Info below video -->
-    <div class="w-full mt-4 px-4 space-y-4">
-      <h1 
-        class="text-2xl font-semibold truncate overflow-hidden whitespace-nowrap"
-        [title]="video.title"
-      >
-        {{ video.title }}
-      </h1>
+    <!-- Main Video Area -->
+    <div class="flex-grow max-w-4xl flex flex-col">
 
-      <div class="flex flex-wrap gap-3 text-sm text-gray-600">
-        <span class="badge badge-outline flex items-center gap-1">⏱ {{ formatDuration(video.durationSeconds) }}</span>
-        <span class="badge badge-outline flex items-center gap-1">⭐ {{ video.rating.toFixed(1) }} Rating</span>
-        <span class="badge badge-outline flex items-center gap-1">👁 {{ video.views }} Views</span>
-        <span class="badge badge-outline flex items-center gap-1">📅 {{ video.uploadedAt | date:'mediumDate' }}</span>
+
+<div class="flex items-center justify-between gap-2 px-4 bg-base-100 p-5">
+  <div class="text-lg font-semibold leading-tight truncate" [title]="video.title">
+    {{ video.title }}
+  </div>
+  <button
+    class="btn btn-sm btn-primary"
+    [ngClass]="isFavorite ? 'btn-error' : 'btn-outline'"
+    (click)="toggleFavorite()"
+    [disabled]="favoriteLoading"
+  >
+    <ng-container *ngIf="isFavorite; else notFavorite">Saved</ng-container>
+    <ng-template #notFavorite>Save</ng-template>
+  </button>
+
+</div>
+
+      <!-- Video Player -->
+      <div class="overflow-hidden">
+        <video
+          #videoRef
+          controls
+          muted
+          [src]="videoUrl"
+          [poster]="thumbnailUrl"
+          class="w-full aspect-video"
+          (loadedmetadata)="onVideoLoaded()"
+        ></video>
       </div>
 
-      <div *ngIf="video.tags?.length" class="mt-4">
-        <h2 class="text-sm font-semibold mb-2">Tags:</h2>
-        <div class="flex flex-wrap gap-2">
-          <span *ngFor="let tag of video.tags" class="badge badge-primary cursor-default">#{{ tag }}</span>
+      <div class="flex flex-col gap-6 p-5">
+
+
+
+        <!-- Meta Info -->
+        <div class="flex flex-wrap gap-3 text-sm">
+          <span class="badge badge-outline">⏱ {{ formatDuration(video.durationSeconds) }}</span>
+          <span class="badge badge-outline">⭐ {{ video.rating.toFixed(1) }} Rating</span>
+          <span class="badge badge-outline">👁 {{ video.views }} Views</span>
+          <span class="badge badge-outline">📅 {{ video.uploadedAt | date: 'mediumDate' }}</span>
+        </div>
+
+        <!-- Tags -->
+        <div class="mt-4">
+          <h2 class="text-sm font-semibold mb-2">Tags:</h2>
+          <div class="flex flex-wrap gap-2 items-center">
+            <app-tag-chip
+              *ngFor="let tag of video.tags"
+              [tag]="tag"
+              [videoId]="video.videoId"
+              (removed)="onTagRemoved($event)"
+            ></app-tag-chip>
+          </div>
+
+          <div class="mt-4 flex gap-2">
+            <input
+              [(ngModel)]="newTag"
+              type="text"
+              placeholder="Add new tag"
+              class="input input-bordered w-full"
+              (keyup.enter)="addTag()"
+            />
+            <button (click)="addTag()" class="btn btn-primary">Add</button>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Sidebar -->
+    <aside class="w-full lg:w-80 mt-10 lg:self-start p-5">
+      <h2 class="text-lg font-semibold mb-4">Similar Videos</h2>
+
+      <!-- Loading -->
+      <div *ngIf="similarVideosLoading" class="text-center py-4">
+        Loading similar videos...
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="similarVideosError" class="text-center py-4">
+        Failed to load similar videos.
+      </div>
+
+      <!-- Grid View of Thumbnails -->
+      <div
+        *ngIf="!similarVideosLoading && !similarVideosError"
+        class="grid grid-cols-2 gap-4"
+      >
+        <div
+          *ngFor="let sv of similarVideos"
+          class="cursor-pointer hover:scale-[1.02] transition-transform"
+          (click)="navigateToVideo(sv.videoId)"
+        >
+          <img
+            [src]="videoapi.getThumbnailUrl(sv.videoId)"
+            [alt]="sv.title"
+            class="w-full aspect-video object-cover"
+          />
+          <div class="mt-1 text-xs font-medium truncate" [title]="sv.title">
+            {{ sv.title }}
+          </div>
+        </div>
+      </div>
+    </aside>
 
   </section>
 </main>

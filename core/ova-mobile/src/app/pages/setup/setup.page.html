@@ -30,4 +30,12 @@
       Save & Continue
     </ion-button>
   </form>
+
+  <ion-button id="connection-alert-trigger" style="display: none;">Alert</ion-button>
+  <ion-alert
+    trigger="connection-alert-trigger"
+    header="Connection Error"
+    message="Could not connect to the server."
+    [buttons]="alertButtons"
+  ></ion-alert>
 </ion-content>

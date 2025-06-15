@@ -1,1 +1,0 @@
-showing the version of the app
