@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"net/http"
 	"path/filepath"
 	"strings"
@@ -21,17 +22,17 @@ func uploadVideo(storage interfaces.StorageService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Get folder from form
 		folder := strings.TrimSpace(c.PostForm("folder"))
-		if folder == "" {
-			respondError(c, http.StatusBadRequest, "Folder path is required")
-			return
-		}
 
-		// Sanitize and resolve full folder path
-		basePath := "." // You can make this configurable
-		fullFolderPath := filepath.Join(basePath, folder)
-		if !repository.FolderExists(fullFolderPath) {
-			respondError(c, http.StatusBadRequest, "Folder does not exist")
-			return
+		basePath := "." // configurable base path
+
+		// If folder is empty, upload to base path (root)
+		fullFolderPath := basePath
+		if folder != "" {
+			fullFolderPath = filepath.Join(basePath, folder)
+			if !repository.FolderExists(fullFolderPath) {
+				respondError(c, http.StatusBadRequest, "Folder does not exist")
+				return
+			}
 		}
 
 		// Get the file from form
@@ -44,10 +45,13 @@ func uploadVideo(storage interfaces.StorageService) gin.HandlerFunc {
 		// Save file in the specified folder with a unique name
 		filename := uuid.New().String() + filepath.Ext(file.Filename)
 		savePath := filepath.Join(fullFolderPath, filename)
+		log.Printf("Saving file %s to path: %s", file.Filename, savePath)
 		if err := c.SaveUploadedFile(file, savePath); err != nil {
+			log.Printf("SaveUploadedFile error: %v", err)
 			respondError(c, http.StatusInternalServerError, "Failed to save video file")
 			return
 		}
+		log.Printf("File saved successfully to %s", savePath)
 
 		// Build minimal video metadata
 		video := datatypes.VideoData{

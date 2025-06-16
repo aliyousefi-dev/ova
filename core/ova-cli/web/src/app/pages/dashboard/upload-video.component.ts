@@ -26,6 +26,7 @@ export class UploadVideoComponent {
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
       this.title = this.selectedFile.name.replace(/\.[^/.]+$/, '');
+      console.log('File selected:', this.selectedFile.name);
     }
   }
 
@@ -47,6 +48,7 @@ export class UploadVideoComponent {
       if (file.type.startsWith('video/')) {
         this.selectedFile = file;
         this.title = file.name.replace(/\.[^/.]+$/, '');
+        console.log('File dropped:', file.name);
       } else {
         alert('Only video files are allowed.');
       }
@@ -54,7 +56,19 @@ export class UploadVideoComponent {
   }
 
   onSubmit(): void {
-    if (!this.selectedFile || !this.selectedFolder) return;
+    console.log(
+      'Uploading to folder:',
+      this.selectedFolder === '' ? '[ROOT]' : this.selectedFolder
+    );
+
+    if (
+      !this.selectedFile ||
+      this.selectedFolder === null ||
+      this.selectedFolder === undefined
+    ) {
+      console.warn('Missing file or folder for upload');
+      return;
+    }
 
     this.uploading = true;
     this.uploadApi
@@ -69,7 +83,12 @@ export class UploadVideoComponent {
       });
   }
 
-  onFolderSelected(folder: string) {
+  onFolderSelected(folder: string): void {
+    console.log(
+      'Folder selected in upload component:',
+      folder === '' ? '[ROOT]' : folder
+    );
+    this.selectedFolder = folder;
     this.folderSelected.emit(folder);
   }
 }
