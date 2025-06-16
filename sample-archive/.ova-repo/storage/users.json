@@ -1,13 +1,13 @@
 {
   "user": {
     "username": "user",
-    "passwordHash": "$2a$10$/hKqm96LdaDQmZetfHeE9eUo7z6xCmXxIs7QicB4idfPolqXg84ju",
+    "passwordHash": "$2a$10$fjA.N/wmDaDgkJ/HcyFyCOxQInDH3whwlzBqY/XYA7b3hXcl9NWRO",
     "roles": [
       "admin"
     ],
-    "createdAt": "2025-06-09T06:15:08.7068127Z",
+    "createdAt": "2025-06-15T23:07:25.4841525Z",
     "lastLoginAt": "0001-01-01T00:00:00Z",
-    "favorites": [],
+    "favorites": null,
     "playlists": null
   }
 }

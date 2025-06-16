@@ -32,9 +32,6 @@ func RegisterVideoRoutes(rg *gin.RouterGroup, storage interfaces.StorageService)
 		videos.GET("", getVideosByFolder(storage))     // GET /api/v1/videos?folder=...
 		videos.POST("/batch", getVideosByIds(storage)) // POST /api/v1/videos/batch
 	}
-
-	// New folder route
-	rg.GET("/folders", getFolderList(storage))
 }
 
 // getVideoByID returns details of a single video by ID.
@@ -69,19 +66,6 @@ func getVideosByFolder(storage interfaces.StorageService) gin.HandlerFunc {
 		}
 
 		respondSuccess(c, http.StatusOK, response, "Videos in folder retrieved")
-	}
-}
-
-// getFolderList returns a list of unique folder paths containing videos.
-func getFolderList(storage interfaces.StorageService) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		folders, err := storage.GetFolderList()
-		if err != nil {
-			respondError(c, http.StatusInternalServerError, "Failed to load folders")
-			return
-		}
-
-		respondSuccess(c, http.StatusOK, folders, "Folders retrieved successfully")
 	}
 }
 

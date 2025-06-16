@@ -1,7 +1,5 @@
 {
   "version": "1.0.0",
-  "defaultUser": "user",
-  "defaultPassword": "pass",
   "serverHost": "0.0.0.0",
   "serverPort": 4040,
   "enableAuthentication": false,

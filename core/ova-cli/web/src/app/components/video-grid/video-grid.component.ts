@@ -2,8 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { VideoCardComponent } from '../../components/video-card/video-card.component';
 import { CommonModule } from '@angular/common';
 import { VideoData } from '../../data-types/video-data';
-import { FavoriteApiService } from '../../services/favorite-api.service';
-
+import { FavoriteApiService } from '../../services/api/favorite-api.service';
 @Component({
   selector: 'app-video-grid',
   standalone: true,

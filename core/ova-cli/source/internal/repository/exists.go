@@ -15,3 +15,9 @@ func CheckRepoExists(basePath string) error {
 	}
 	return nil
 }
+
+// FolderExists checks if the specified folder exists and is a directory.
+func FolderExists(basePath string) bool {
+	info, err := os.Stat(basePath)
+	return err == nil && info.IsDir()
+}

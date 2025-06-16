@@ -22,12 +22,6 @@ export class VideoApiService {
 
   constructor(private http: HttpClient) {}
 
-  getFolderLists(): Observable<ApiResponse<string[]>> {
-    return this.http.get<ApiResponse<string[]>>(`${this.baseUrl}/folders`, {
-      withCredentials: true,
-    });
-  }
-
   getVideosByFolder(folder: string): Observable<ApiResponse<any>> {
     const params = new URLSearchParams();
     if (folder) {

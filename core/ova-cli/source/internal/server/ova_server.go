@@ -76,8 +76,10 @@ func (s *OvaServer) initRoutes() {
 	api.RegisterVideoTagRoutes(v1, s.StorageService)
 	api.RegisterStreamRoutes(v1, s.StorageService)
 	api.RegisterDownloadRoutes(v1, s.StorageService)
+	api.RegisterUploadRoutes(v1, s.StorageService)
 	api.RegisterThumbnailRoutes(v1, s.StorageService)
 	api.RegisterPreviewRoutes(v1, s.StorageService)
+	api.RegisterFolderRoutes(v1, s.StorageService)
 	api.RegisterStatusRoute(v1)
 
 	if s.ServeFrontend {

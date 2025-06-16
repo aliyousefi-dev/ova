@@ -29,6 +29,8 @@ Ideal for efficiently hosting online video libraries.`,
 	cmd.InitCommandVideo(rootCmd)
 	cmd.InitCommandUsers(rootCmd)
 
+	cmd.InitCommandConfig(rootCmd)
+
 	// version command
 	cmd.InitCommandVersion(rootCmd)
 

@@ -1,7 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { PlaylistData } from '../../data-types/playlist-data';
 import { PlaylistCardComponent } from '../playlist-card/playlist-card.component';
+import { CommonModule } from '@angular/common';
+
 import {
   DragDropModule,
   CdkDragDrop,
@@ -10,9 +11,8 @@ import {
 
 @Component({
   selector: 'app-playlist-grid',
-  standalone: true,
-  imports: [CommonModule, PlaylistCardComponent, DragDropModule],
   templateUrl: './playlist-grid.component.html',
+  imports: [PlaylistCardComponent, CommonModule, DragDropModule],
   styleUrls: ['./playlist-grid.component.css'],
 })
 export class PlaylistGridComponent {
@@ -23,6 +23,14 @@ export class PlaylistGridComponent {
   @Output() delete = new EventEmitter<string[]>();
 
   selectedPlaylists = new Set<string>();
+
+  // Track which playlist is currently selected
+  selectedPlaylistTitle: string | null = null;
+
+  // Drop handler for drag-and-drop sorting
+  drop(event: CdkDragDrop<PlaylistData[]>): void {
+    moveItemInArray(this.playlists, event.previousIndex, event.currentIndex);
+  }
 
   get allSelected(): boolean {
     return (
@@ -50,6 +58,7 @@ export class PlaylistGridComponent {
 
   onSelect(title: string): void {
     if (!this.manageMode) {
+      this.selectedPlaylistTitle = title; // update selected for animation toggle
       this.select.emit(title);
     }
   }
@@ -69,9 +78,5 @@ export class PlaylistGridComponent {
     } else {
       this.selectedPlaylists.add(slug);
     }
-  }
-
-  drop(event: CdkDragDrop<PlaylistData[]>) {
-    moveItemInArray(this.playlists, event.previousIndex, event.currentIndex);
   }
 }

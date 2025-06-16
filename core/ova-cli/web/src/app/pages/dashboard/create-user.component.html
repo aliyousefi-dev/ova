@@ -1,0 +1,26 @@
+<div class="max-w-sm mx-auto bg-base-100 p-4 rounded-xl shadow-md space-y-4">
+  <h2 class="text-lg font-semibold text-center">Create New User</h2>
+
+  <div class="space-y-3">
+    <input
+      type="text"
+      class="input input-sm input-bordered w-full"
+      placeholder="Username"
+      [(ngModel)]="newUser.username"
+    />
+
+    <input
+      type="password"
+      class="input input-sm input-bordered w-full"
+      placeholder="Password"
+      [(ngModel)]="newUser.password"
+    />
+
+    <select class="select select-sm select-bordered w-full" [(ngModel)]="newUser.role">
+      <option disabled selected>Select role</option>
+      <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+    </select>
+  </div>
+
+  <button class="btn btn-sm btn-primary w-full" (click)="createUser()">Create</button>
+</div>

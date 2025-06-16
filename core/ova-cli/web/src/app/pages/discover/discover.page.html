@@ -1,0 +1,260 @@
+<app-top-nav-bar [title]="'Discover'"></app-top-nav-bar>
+
+<app-search-bar
+  [value]="searchTerm"
+  (valueChange)="onSearchTermChange($event)"
+  placeholder="Search videos..."
+></app-search-bar>
+
+<div class="max-w-7xl mx-auto px-4 mt-6 space-y-4">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+    <div class="w-full md:w-auto">
+      <div class="flex flex-wrap items-center gap-2">
+        <label class="btn btn-sm" [class.btn-active]="resolutionFilter === ''">
+          <input
+            type="radio"
+            name="resolution"
+            aria-label="All"
+            value=""
+            [checked]="resolutionFilter === ''"
+            (change)="setResolutionFilter('')"
+            hidden
+          />All
+        </label>
+        <label class="btn btn-sm" [class.btn-active]="resolutionFilter === '720p'">
+          <input
+            type="radio"
+            name="resolution"
+            aria-label="720p"
+            value="720p"
+            [checked]="resolutionFilter === '720p'"
+            (change)="setResolutionFilter('720p')"
+            hidden
+          />720p
+        </label>
+        <label class="btn btn-sm" [class.btn-active]="resolutionFilter === '1080p'">
+          <input
+            type="radio"
+            name="resolution"
+            aria-label="1080p"
+            value="1080p"
+            [checked]="resolutionFilter === '1080p'"
+            (change)="setResolutionFilter('1080p')"
+            hidden
+          />1080p
+        </label>
+        <label class="btn btn-sm" [class.btn-active]="resolutionFilter === '4K'">
+          <input
+            type="radio"
+            name="resolution"
+            aria-label="4K"
+            value="4K"
+            [checked]="resolutionFilter === '4K'"
+            (change)="setResolutionFilter('4K')"
+            hidden
+          />4K
+        </label>
+      </div>
+    </div>
+
+    <div class="w-full md:w-auto">
+      <div class="flex items-center gap-2">
+        <label class="label cursor-pointer">
+          <span class="label-text text-sm font-medium">Advanced Search</span>
+          <input
+            type="checkbox"
+            class="toggle toggle-sm"
+            [(ngModel)]="advancedSearchEnabled"
+          />
+        </label>
+      </div>
+    </div>
+
+    <div class="w-full md:w-auto">
+      <div class="flex items-center gap-2">
+        <label for="sort" class="text-sm font-medium">Sort by:</label>
+        <select
+          id="sort"
+          [(ngModel)]="sortOption"
+          (ngModelChange)="onSortOptionChange()"
+          class="select select-sm select-bordered w-40"
+        >
+          <option value="titleAsc">Title (A–Z)</option>
+          <option value="titleDesc">Title (Z–A)</option>
+          <option value="durationAsc">Duration (Short → Long)</option>
+          <option value="durationDesc">Duration (Long → Short)</option>
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="advancedSearchEnabled" class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-4">
+    <div class="w-full md:w-auto">
+      <div class="flex flex-wrap items-center gap-2">
+        <label class="btn btn-sm" [class.btn-active]="durationFilter === ''">
+          <input
+            type="radio"
+            name="duration"
+            aria-label="All"
+            value=""
+            [checked]="durationFilter === ''"
+            (change)="setDurationFilter('')"
+            hidden
+          />All
+        </label>
+        <label class="btn btn-sm" [class.btn-active]="durationFilter === 'short'">
+          <input
+            type="radio"
+            name="duration"
+            aria-label="≤ 5 min"
+            value="short"
+            [checked]="durationFilter === 'short'"
+            (change)="setDurationFilter('short')"
+            hidden
+          />≤ 5 min
+        </label>
+        <label class="btn btn-sm" [class.btn-active]="durationFilter === 'medium'">
+          <input
+            type="radio"
+            name="duration"
+            aria-label="5 – 15 min"
+            value="medium"
+            [checked]="durationFilter === 'medium'"
+            (change)="setDurationFilter('medium')"
+            hidden
+          />5 – 15 min
+        </label>
+        <label class="btn btn-sm" [class.btn-active]="durationFilter === 'long'">
+          <input
+            type="radio"
+            name="duration"
+            aria-label="15 – 30 min"
+            value="long"
+            [checked]="durationFilter === 'long'"
+            (change)="setDurationFilter('long')"
+            hidden
+          />15 – 30 min
+        </label>
+        <label class="btn btn-sm" [class.btn-active]="durationFilter === 'veryLong'">
+          <input
+            type="radio"
+            name="duration"
+            aria-label="30 – 60 min"
+            value="veryLong"
+            [checked]="durationFilter === 'veryLong'"
+            (change)="setDurationFilter('veryLong')"
+            hidden
+          />30 – 60 min
+        </label>
+        <label class="btn btn-sm" [class.btn-active]="durationFilter === 'extraLong'">
+          <input
+            type="radio"
+            name="duration"
+            aria-label="> 60 min"
+            value="extraLong"
+            [checked]="durationFilter === 'extraLong'"
+            (change)="setDurationFilter('extraLong')"
+            hidden
+          />> 60 min
+        </label>
+      </div>
+    </div>
+
+    <div class="w-full md:w-auto flex flex-col gap-2">
+      <label class="text-sm font-medium">Upload Date Range:</label>
+      <div class="flex items-center gap-2">
+        <input
+          type="date"
+          class="input input-sm input-bordered"
+          [value]="uploadFrom"
+          (change)="setUploadFrom($event)" placeholder="From"
+        />
+        <span>to</span>
+        <input
+          type="date"
+          class="input input-sm input-bordered"
+          [value]="uploadTo"
+          (change)="setUploadTo($event)" placeholder="To"
+        />
+        <button
+          class="btn btn-xs btn-outline"
+          (click)="clearUploadDateFilter()"
+          title="Clear date filter"
+        >
+          Clear
+        </button>
+      </div>
+    </div>
+    <div class="w-full md:w-auto">
+      <div class="flex items-center gap-2">
+        <label class="label cursor-pointer">
+          <span class="label-text text-sm font-medium">Tag Only Search</span>
+          <input
+            type="checkbox"
+            class="toggle toggle-sm"
+            [(ngModel)]="tagSearchEnabled"
+            (change)="onTagSearchToggle()"
+          />
+        </label>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="flex flex-wrap items-center justify-between mt-20 w-full">
+
+    <div class="text-sm md:text-base">
+      Result: {{ totalCount }} videos
+    </div>
+
+    <div class="pagination-wrapper overflow-x-auto mt-4">
+      <div *ngIf="totalPages > 1 && !loading" class="overflow-x-auto">
+        <div class="join whitespace-nowrap w-max mx-auto">
+          <button
+            *ngFor="let _ of [].constructor(totalPages); let i = index"
+            class="join-item btn btn-sm"
+            [class.btn-active]="currentPage === i + 1"
+            (click)="goToPage(i + 1)"
+          >
+            {{ i + 1 }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto mt-6 pb-2">
+    <p *ngIf="loading" class="font-medium text-center">Loading videos...</p>
+
+    <app-video-grid
+      *ngIf="!loading && filteredVideos.length > 0"
+      [videos]="filteredVideos"
+    ></app-video-grid>
+
+    <div class="w-full mb-30 overflow-x-auto">
+      <div *ngIf="totalPages > 1 && !loading" class="w-max mx-auto">
+        <div class="join whitespace-nowrap">
+          <button
+            *ngFor="let _ of [].constructor(totalPages); let i = index"
+            class="join-item btn btn-sm"
+            [class.btn-active]="currentPage === i + 1"
+            (click)="goToPage(i + 1)"
+          >
+            {{ i + 1 }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <p *ngIf="!loading && !searchTerm" class="text-center mt-4">
+      Please enter a search term to find videos.
+    </p>
+
+    <p *ngIf="!loading && filteredVideos.length === 0 && searchTerm" class="text-center mt-4">
+      No videos found for "{{ searchTerm }}"
+    </p>
+  </div>
+</div>

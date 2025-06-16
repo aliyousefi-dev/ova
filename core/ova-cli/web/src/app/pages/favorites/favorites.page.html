@@ -1,0 +1,33 @@
+<app-top-nav-bar [title]="'Saved'"></app-top-nav-bar>
+
+<app-search-bar
+  [(value)]="searchTerm"
+  placeholder="Search favorites..."
+></app-search-bar>
+
+<!-- Sort Menu -->
+<div class="max-w-7xl mx-auto px-4 mt-4 flex justify-end items-center gap-2">
+  <label for="sort" class="text-sm  font-medium">Sort by:</label>
+  <select
+    id="sort"
+    [(ngModel)]="sortOption"
+    class="select select-sm select-bordered w-40"
+  >
+    <option value="titleAsc">Title (A–Z)</option>
+    <option value="titleDesc">Title (Z–A)</option>
+    <option value="durationAsc">Duration (Short → Long)</option>
+    <option value="durationDesc">Duration (Long → Short)</option>
+    <option value="newest">Newest</option>
+    <option value="oldest">Oldest</option>
+  </select>
+</div>
+
+<!-- Videos Block -->
+<div class="max-w-7xl mx-auto px-4 mt-6">
+  <p *ngIf="loading" class=" font-medium text-center">Loading favorites...</p>
+
+  <app-video-grid
+    *ngIf="!loading"
+    [videos]="filteredVideos"
+  ></app-video-grid>
+</div>

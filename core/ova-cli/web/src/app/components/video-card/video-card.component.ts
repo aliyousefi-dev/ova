@@ -9,9 +9,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PlaylistModalComponent } from '../playlist-modal/playlist-modal.component';
-import { PlaylistAPIService } from '../../services/playlist-api.service';
+import { PlaylistAPIService } from '../../services/api/playlist-api.service';
 import { VideoApiService } from '../../services/video-api.service';
-import { FavoriteApiService } from '../../services/favorite-api.service';
+import { FavoriteApiService } from '../../services/api/favorite-api.service';
 import { VideoData } from '../../data-types/video-data';
 import { Router } from '@angular/router';
 

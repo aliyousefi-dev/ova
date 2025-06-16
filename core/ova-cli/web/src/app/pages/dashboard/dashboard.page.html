@@ -1,0 +1,97 @@
+<app-top-nav-bar title="Upload" (menuToggle)="sidebarOpen = !sidebarOpen"></app-top-nav-bar>
+
+<div class="drawer lg:drawer-open ">
+  <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+
+  <!-- Main Content -->
+  <div class="drawer-content flex flex-col">
+    <label for="my-drawer-2" class="btn btn-soft btn-neutral drawer-button lg:hidden m-4">
+      Menu
+    </label>
+
+    <div class="flex-1 overflow-y-auto p-6">
+      <div class="max-w-2xl mx-auto space-y-4">
+        <!-- Tab Content -->
+        <ng-container [ngSwitch]="activeTab">
+          <app-upload-video
+            *ngSwitchCase="'upload'"
+            [folderList]="folderList"
+            [selectedFolder]="selectedFolder"
+            (folderSelected)="onFolderSelected($event)">
+          </app-upload-video>
+
+          <div *ngSwitchCase="'folder-manager'" class="text-center text-gray-500">
+            Folder Manager tab content...
+          </div>
+
+          <app-user-manager *ngSwitchCase="'users-list'"></app-user-manager>
+
+          <app-create-user *ngSwitchCase="'create-user'"></app-create-user>
+
+          <div *ngSwitchDefault class="text-center text-gray-400">
+            Select an option from the sidebar.
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar Menu -->
+  <div class="drawer-side">
+    <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
+<ul class="menu bg-base-100 h-full w-80 p-5 text-base-content">
+
+  <!-- Menu Heading -->
+<h2 class="menu-title">Menu</h2>
+
+  <!-- USERS SECTION -->
+  <li>
+    <a class="font-semibold cursor-default">Users</a>
+    <ul>
+      <li>
+        <a
+          class="cursor-pointer"
+          [class.font-bold]="activeTab === 'users-list'"
+          (click)="activeTab = 'users-list'"
+        >List</a>
+      </li>
+      <li>
+  <a
+    class="cursor-pointer"
+    [class.font-bold]="activeTab === 'create-user'"
+    (click)="activeTab = 'create-user'"
+  >Create User</a>
+</li>
+    </ul>
+  </li>
+
+  <!-- VIDEOS SECTION -->
+  <li>
+    <a class="font-semibold">Videos</a>
+    <ul>
+      <li>
+        <a
+          class="cursor-pointer"
+          [class.font-bold]="activeTab === 'upload'"
+          (click)="activeTab = 'upload'"
+        >Upload</a>
+      </li>
+      <li>
+        <a
+          class="cursor-pointer"
+          [class.font-bold]="activeTab === 'folder-manager'"
+          (click)="activeTab = 'folder-manager'"
+        >Folders</a>
+      </li>
+    </ul>
+  </li>
+
+  <!-- CONFIG SECTION -->
+  <li>
+    <a>Config</a>
+  </li>
+
+</ul>
+
+  </div>
+</div>

@@ -87,16 +87,15 @@ func (s *LocalStorage) UpdateVideo(newVideo datatypes.VideoData) error {
 // It returns a slice of matching videos.
 // Returns an error if no meaningful search criteria are provided.
 func (s *LocalStorage) SearchVideos(criteria datatypes.VideoSearchCriteria) ([]datatypes.VideoData, error) {
-	s.mu.Lock() // Added lock for read operation, consistency with other methods
+	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	query := strings.ToLower(strings.TrimSpace(criteria.Query))
 	tags := make([]string, len(criteria.Tags))
 	for i, tag := range criteria.Tags {
-		tags[i] = strings.ToLower(strings.TrimSpace(tag)) // Normalize search tags
+		tags[i] = strings.ToLower(strings.TrimSpace(tag))
 	}
 
-	// Ensure at least one search criterion is provided.
 	if query == "" && len(tags) == 0 && criteria.MinRating == 0 && criteria.MaxDuration == 0 {
 		return nil, fmt.Errorf("at least one search criteria must be provided (query, tags, minRating, or maxDuration)")
 	}
@@ -106,17 +105,35 @@ func (s *LocalStorage) SearchVideos(criteria datatypes.VideoSearchCriteria) ([]d
 		return nil, fmt.Errorf("failed to load videos for search: %w", err)
 	}
 
-	var results []datatypes.VideoData
-	for _, video := range videos {
-		// Filter by query (title and description, case-insensitive)
-		if query != "" &&
-			!(strings.Contains(strings.ToLower(video.Title), query) ||
-				strings.Contains(strings.ToLower(video.Description), query)) { // Added description search
-			continue
-		}
+	// Use a map to track videos already added by ID, to avoid duplicates
+	resultsMap := make(map[string]datatypes.VideoData)
 
-		// Filter by tags if provided
-		if len(tags) > 0 {
+	// Helper function to apply rating and duration filters
+	filterExtras := func(video datatypes.VideoData) bool {
+		if criteria.MinRating > 0 && video.Rating < criteria.MinRating {
+			return false
+		}
+		if criteria.MaxDuration > 0 && video.DurationSeconds > criteria.MaxDuration {
+			return false
+		}
+		return true
+	}
+
+	// Search by query
+	if query != "" {
+		for _, video := range videos {
+			if strings.Contains(strings.ToLower(video.Title), query) ||
+				strings.Contains(strings.ToLower(video.Description), query) {
+				if filterExtras(video) {
+					resultsMap[video.VideoID] = video
+				}
+			}
+		}
+	}
+
+	// Search by tags
+	if len(tags) > 0 {
+		for _, video := range videos {
 			matchesTags := false
 			for _, searchTag := range tags {
 				for _, videoTag := range video.Tags {
@@ -129,21 +146,24 @@ func (s *LocalStorage) SearchVideos(criteria datatypes.VideoSearchCriteria) ([]d
 					break
 				}
 			}
-			if !matchesTags {
-				continue
+			if matchesTags && filterExtras(video) {
+				resultsMap[video.VideoID] = video
 			}
 		}
+	}
 
-		// Filter by minimum rating if set
-		if criteria.MinRating > 0 && video.Rating < criteria.MinRating {
-			continue
+	// If no query or tags provided (but minRating or maxDuration were), include all that pass filters
+	if query == "" && len(tags) == 0 {
+		for _, video := range videos {
+			if filterExtras(video) {
+				resultsMap[video.VideoID] = video
+			}
 		}
+	}
 
-		// Filter by maximum duration if set (assuming video.Duration is in seconds)
-		if criteria.MaxDuration > 0 && video.DurationSeconds > criteria.MaxDuration {
-			continue
-		}
-
+	// Convert map to slice
+	var results []datatypes.VideoData
+	for _, video := range resultsMap {
 		results = append(results, video)
 	}
 

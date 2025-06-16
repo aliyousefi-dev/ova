@@ -1,62 +1,37 @@
-<!-- Header -->
-<section class="mb-6 px-4 max-w-4xl mx-auto">
-  <h2 class="text-2xl font-bold tracking-tight">Your Playlists</h2>
-
-  <!-- Manage Controls -->
-  <div *ngIf="manageMode" class="mt-4 flex justify-end items-center gap-4">
-    <label class="inline-flex items-center gap-2 cursor-pointer text-sm">
-      <input
-        id="selectAll"
-        type="checkbox"
-        [checked]="allSelected"
-        (change)="toggleSelectAll($event)"
-        class="checkbox checkbox-sm"
-      />
-      Select All
-    </label>
-
-    <button
-      (click)="deleteSelected()"
-      [disabled]="selectedPlaylists.size === 0"
-      class="btn btn-sm btn-error disabled:opacity-50"
-    >
-      Delete ({{ selectedPlaylists.size }})
-    </button>
-  </div>
-</section>
-
-<!-- Playlist List -->
-<div
+<ul
+  id="playlist-draggable-list"
+  class="list-none p-0 m-0 bg-base-100 w-full max-w-full sm:max-w-4xl mx-auto overflow-hidden"
   cdkDropList
-  [cdkDropListSortingDisabled]="!manageMode"
+  [cdkDropListData]="playlists"
+  [cdkDropListDisabled]="!manageMode"
   (cdkDropListDropped)="drop($event)"
-  class="space-y-3 px-6 max-w-4xl mx-auto"
 >
-  <ng-container *ngFor="let playlist of playlists">
-    <div
-      cdkDrag
-      class="flex items-center gap-4 p-3 rounded-xl bg-base-100 shadow transition-all duration-200 ease-in-out hover:shadow-md active:scale-[0.98] cursor-pointer"
-      [ngClass]="{ 'opacity-70': manageMode }"
-      (click)="manageMode ? toggleSelectionManual(playlist.slug) : null"
-    >
-      <!-- Drag Preview -->
-      <ng-template cdkDragPreview>
-        <div class="p-3 bg-base-300 rounded-xl shadow text-sm">
-          {{ playlist.title }}
-        </div>
-      </ng-template>
+  <li
+    class="p-4 pb-2 text-xs opacity-60 tracking-wide"
+    *ngIf="playlists.length > 0"
+  >
+    Your saved playlists
+  </li>
 
-      <!-- Checkbox (manageMode only) -->
-      <div *ngIf="manageMode" (click)="$event.stopPropagation()">
+  <ng-container *ngFor="let playlist of playlists; let i = index">
+    <!-- Draggable item -->
+    <li
+      *ngIf="manageMode; else nonDraggable"
+      cdkDrag
+      class="flex items-center gap-2 hover:bg-base-200 cursor-pointer px-4 py-2 overflow-hidden"
+      (click)="onSelect(playlist.title)"
+    >
+
+
+      <div class="flex-shrink-0" (click)="$event.stopPropagation()">
         <input
           type="checkbox"
+          class="checkbox checkbox-sm"
           [checked]="isChecked(playlist.slug)"
           (change)="toggleSelection(playlist.slug, $event)"
-          class="checkbox checkbox-sm"
         />
       </div>
 
-      <!-- Playlist Card -->
       <div class="flex-1 min-w-0">
         <app-playlist-card
           [playlist]="playlist"
@@ -64,18 +39,29 @@
         ></app-playlist-card>
       </div>
 
-      <!-- Drag Handle (manageMode only) -->
-      <div
-        *ngIf="manageMode"
-        cdkDragHandle
-        class="text-base-content/50 hover:text-primary px-2 cursor-grab active:cursor-grabbing transition"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-          viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M4 8h16M4 16h16" />
-        </svg>
+      <div class="w-8 text-xl cursor-grab text-right flex-shrink-0" cdkDragHandle>
+        ☰
       </div>
-    </div>
+    </li>
+
+    <!-- Non-draggable item -->
+    <ng-template #nonDraggable>
+      <li
+        class="flex items-center gap-2 hover:bg-base-200 cursor-pointer px-4 py-2 overflow-hidden"
+        (click)="onSelect(playlist.title)"
+      >
+        <div class="text-4xl font-thin opacity-30 tabular-nums w-12 text-center flex-shrink-0">
+          {{ (i + 1) | number: '2.0' }}
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <app-playlist-card
+            [playlist]="playlist"
+            (select)="onSelect(playlist.title)"
+          ></app-playlist-card>
+        </div>
+
+      </li>
+    </ng-template>
   </ng-container>
-</div>
+</ul>

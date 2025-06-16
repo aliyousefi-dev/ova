@@ -1,81 +1,102 @@
 <div
-  class="flex h-24 bg-base-200 rounded-md shadow-sm overflow-hidden cursor-pointer relative hover:shadow-md transition"
+  class="flex bg-base-100 shadow-sm overflow-hidden cursor-pointer relative hover:shadow-md transition items-center gap-4 w-full"
   (click)="onSelect()"
 >
   <!-- Thumbnail -->
-  <div class="relative w-1/3 h-full">
+  <div class="relative w-16 h-16 flex-shrink-0 rounded-box overflow-hidden">
     <ng-container *ngIf="hasHeaderVideo; else emptyThumbnail">
-      <img [src]="getThumbnailUrl()" alt="thumbnail" class="w-full h-full object-cover" />
+      <img
+        [src]="getThumbnailUrl()"
+        alt="thumbnail"
+        class="w-full h-full object-cover"
+      />
       <div
-        class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition"
+        class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition"
       >
-        <!-- Play Icon -->
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-5.197-3.03A1 1 0 008 9v6a1 1 0 001.555.832l5.197-3.03a1 1 0 000-1.664z" />
-        </svg>
+
       </div>
     </ng-container>
 
     <ng-template #emptyThumbnail>
-      <div class="flex items-center justify-center h-full w-full text-sm text-gray-400 bg-base-100">
-        No videos yet
+      <div
+        class="flex items-center justify-center h-full w-full text-xs bg-base-200"
+      >
+        No videos
       </div>
     </ng-template>
   </div>
 
   <!-- Info Section -->
-  <div class="w-2/3 p-3 flex flex-col justify-between relative">
+  <div class="flex-1 flex flex-col justify-center min-w-0">
     <!-- Title and Count -->
-    <div class="flex justify-between items-center">
-      <h3 class="text-lg font-semibold truncate" [title]="playlist.title">
+    <div class="flex justify-between items-center gap-2 min-w-0">
+      <h3
+        class="text-sm font-semibold truncate min-w-0"
+        [title]="playlist.title"
+      >
         {{ playlist.title }}
       </h3>
-      <span class="text-xs font-medium bg-base-100 rounded-full px-2 py-0.5 text-white/80">
+      <span
+        class="text-[10px] font-medium bg-base-300 rounded-full px-2 py-0.5 flex-shrink-0"
+      >
         {{ playlist.videoIds.length || 0 }} videos
       </span>
     </div>
 
     <!-- Description -->
-    <p class="text-sm text-gray-400 line-clamp-2 mt-1" [title]="playlist.description || 'No description provided.'">
+    <p
+      class="text-xs truncate mt-0.5 min-w-0"
+      [title]="playlist.description || 'No description provided.'"
+    >
       {{ playlist.description || 'No description provided.' }}
     </p>
+  </div>
 
-    <!-- Menu Button -->
-    <div class="absolute bottom-2 right-2">
+
+  <!-- Menu Button -->
+  <div class="flex-shrink-0 relative">
+    <button
+      type="button"
+      class="p-2 rounded-full hover:bg-base-200 transition"
+      aria-haspopup="true"
+      aria-label="Options"
+      [attr.aria-expanded]="menuOpen"
+      (click)="$event.stopPropagation(); toggleMenu()"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 text-gray-600"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        fill="none"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 6v.01M12 12v.01M12 18v.01"
+        />
+      </svg>
+    </button>
+
+    <!-- Dropdown -->
+    <div
+      *ngIf="menuOpen"
+      class="absolute right-0 top-8 w-28 bg-base-200 rounded-md shadow z-50"
+      (click)="$event.stopPropagation()"
+    >
       <button
-        type="button"
-        class="p-1 rounded-full hover:bg-white/20 transition"
-        aria-haspopup="true"
-        aria-label="Options"
-        [attr.aria-expanded]="menuOpen"
-        (click)="$event.stopPropagation(); toggleMenu()"
+        class="w-full text-left px-3 py-1 text-xs hover:bg-base-300 rounded-t-md"
+        (click)="onEdit(); menuOpen = false"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 24 24" stroke="currentColor"
-          fill="none">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v.01M12 12v.01M12 18v.01" />
-        </svg>
+        Edit
       </button>
-
-      <!-- Dropdown -->
-      <div
-        *ngIf="menuOpen"
-        class="absolute right-0 top-8 w-32 bg-base-300 rounded-md shadow z-50"
-        (click)="$event.stopPropagation()"
+      <button
+        class="w-full text-left px-3 py-1 text-xs hover:bg-base-300 rounded-b-md"
+        (click)="onDelete(); menuOpen = false"
       >
-        <button
-          class="w-full text-left px-4 py-2 text-sm hover:bg-base-100"
-          (click)="onEdit(); menuOpen = false"
-        >
-          Edit
-        </button>
-        <button
-          class="w-full text-left px-4 py-2 text-sm hover:bg-base-100"
-          (click)="onDelete(); menuOpen = false"
-        >
-          Delete
-        </button>
-      </div>
+        Delete
+      </button>
     </div>
   </div>
 </div>

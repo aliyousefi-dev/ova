@@ -1,0 +1,40 @@
+<div class="overflow-x-auto p-5">
+  <h2 class="text-2xl font-semibold mb-4">Users</h2>
+
+  <!-- User List Table -->
+  <table class="table w-full mb-6">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Username</th>
+        <th>Role</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let user of users; let i = index"
+        [class.hover:bg-base-300]="true"
+        (click)="selectUser(user)"
+        [class.bg-base-200]="selectedUser?.id === user.id"
+        style="cursor:pointer"
+      >
+        <th>{{ i + 1 }}</th>
+        <td>{{ user.username }}</td>
+        <td>{{ user.role }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- User Info Panel -->
+  <div *ngIf="selectedUser; else noUserSelected" class="p-4 border rounded bg-base-100">
+    <h3 class="text-xl font-semibold mb-2">User Info</h3>
+    <p><strong>ID:</strong> {{ selectedUser.id }}</p>
+    <p><strong>Username:</strong> {{ selectedUser.username }}</p>
+    <p><strong>Role:</strong> {{ selectedUser.role }}</p>
+    <!-- Add more info here if needed -->
+  </div>
+
+  <ng-template #noUserSelected>
+    <p class="text-gray-500">Select a user from the list to see info.</p>
+  </ng-template>
+</div>
