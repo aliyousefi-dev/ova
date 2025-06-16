@@ -8,6 +8,7 @@ type PlaylistData struct {
 	Description string   `json:"description"`
 	VideoIDs    []string `json:"videoIds"`
 	Slug        string   `json:"slug"`
+	Order       int      `json:"order"` // New order field added
 }
 
 // NewPlaylistData returns an example playlist map.
@@ -17,5 +18,6 @@ func NewPlaylistData(title string) PlaylistData {
 		Description: "A new sample playlist",
 		VideoIDs:    []string{},
 		Slug:        utils.ToSlug(title),
+		Order:       0, // default order value
 	}
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import {
@@ -22,10 +22,19 @@ export class PlaylistAPIService {
   getUserPlaylists(
     username: string
   ): Observable<ApiResponse<PlaylistDataResponse>> {
-    return this.http.get<ApiResponse<PlaylistDataResponse>>(
-      `${this.baseUrl}/users/${username}/playlists`,
-      { withCredentials: true } // ✅ important
-    );
+    return this.http
+      .get<ApiResponse<PlaylistDataResponse>>(
+        `${this.baseUrl}/users/${username}/playlists`,
+        { withCredentials: true }
+      )
+      .pipe(
+        map((response) => {
+          response.data.playlists = [...response.data.playlists].sort(
+            (a, b) => (a.Order ?? 0) - (b.Order ?? 0)
+          );
+          return response;
+        })
+      );
   }
 
   createUserPlaylist(
@@ -94,5 +103,30 @@ export class PlaylistAPIService {
       `${this.baseUrl}/users/${username}/playlists/${slug}/videos/${videoId}`,
       { withCredentials: true } // ✅ important
     );
+  }
+
+  setPlaylistsOrder(
+    username: string,
+    order: string[]
+  ): Observable<ApiResponse<null>> {
+    return this.http
+      .put<ApiResponse<null>>(
+        `${this.baseUrl}/users/${username}/playlists/order`,
+        { order },
+        { withCredentials: true }
+      )
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          let userFriendlyError = 'An unknown error occurred';
+          if (
+            error.error &&
+            error.error.status === 'error' &&
+            error.error.error?.message
+          ) {
+            userFriendlyError = error.error.error.message;
+          }
+          return throwError(() => new Error(userFriendlyError));
+        })
+      );
   }
 }

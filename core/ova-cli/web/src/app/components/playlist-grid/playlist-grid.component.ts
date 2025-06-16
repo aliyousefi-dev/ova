@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { PlaylistData } from '../../data-types/playlist-data';
 import { PlaylistCardComponent } from '../playlist-card/playlist-card.component';
 import { CommonModule } from '@angular/common';
@@ -9,13 +9,17 @@ import {
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
 
+import { PlaylistAPIService } from '../../services/api/playlist-api.service';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+
 @Component({
   selector: 'app-playlist-grid',
   templateUrl: './playlist-grid.component.html',
   imports: [PlaylistCardComponent, CommonModule, DragDropModule],
   styleUrls: ['./playlist-grid.component.css'],
 })
-export class PlaylistGridComponent {
+export class PlaylistGridComponent implements OnInit {
   @Input() playlists: PlaylistData[] = [];
   @Input() manageMode = false;
 
@@ -24,12 +28,49 @@ export class PlaylistGridComponent {
 
   selectedPlaylists = new Set<string>();
 
-  // Track which playlist is currently selected
   selectedPlaylistTitle: string | null = null;
 
-  // Drop handler for drag-and-drop sorting
+  username: string | null = null;
+
+  constructor(private playlistApi: PlaylistAPIService) {}
+
+  ngOnInit() {
+    this.username = localStorage.getItem('username');
+    if (!this.username) {
+      console.warn(
+        'No username found in localStorage. Playlist order updates will be disabled.'
+      );
+    }
+  }
+
   drop(event: CdkDragDrop<PlaylistData[]>): void {
+    if (!this.username) {
+      console.error(
+        'Cannot update playlist order: username not found in localStorage.'
+      );
+      return;
+    }
+
+    // Reorder the local playlists array based on drag-drop
     moveItemInArray(this.playlists, event.previousIndex, event.currentIndex);
+
+    // Prepare an array of slugs in the new order
+    const newOrderSlugs = this.playlists.map((pl) => pl.slug);
+
+    // Send one API request with the new slug order array
+    this.playlistApi
+      .setPlaylistsOrder(this.username, newOrderSlugs)
+      .pipe(
+        catchError((err) => {
+          console.error('Failed to update playlist order:', err);
+          return of(null);
+        })
+      )
+      .subscribe((res) => {
+        if (res && res.status === 'success') {
+          // Order updated successfully
+        }
+      });
   }
 
   get allSelected(): boolean {
@@ -58,7 +99,7 @@ export class PlaylistGridComponent {
 
   onSelect(title: string): void {
     if (!this.manageMode) {
-      this.selectedPlaylistTitle = title; // update selected for animation toggle
+      this.selectedPlaylistTitle = title;
       this.select.emit(title);
     }
   }

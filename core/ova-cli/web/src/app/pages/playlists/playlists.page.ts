@@ -60,9 +60,7 @@ export class PlaylistsPage implements OnInit {
   }
 
   private sortPlaylists(): void {
-    this.playlists.sort((a, b) =>
-      a.title.toLowerCase().localeCompare(b.title.toLowerCase())
-    );
+    this.playlists.sort((a, b) => (a.Order ?? 0) - (b.Order ?? 0));
   }
 
   onSelectPlaylist(title: string): void {

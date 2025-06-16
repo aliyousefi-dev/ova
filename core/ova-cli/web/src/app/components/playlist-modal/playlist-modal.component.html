@@ -10,7 +10,7 @@
     <form (ngSubmit)="save()" class="max-h-48 overflow-y-auto mb-4 px-2">
       <div
         class="form-control mb-2"
-        *ngFor="let playlist of playlists; trackBy: trackBySlug"
+        *ngFor="let playlist of sortedPlaylists; trackBy: trackBySlug"
       >
         <label class="label cursor-pointer flex items-center space-x-3">
           <input

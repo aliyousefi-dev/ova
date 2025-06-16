@@ -3,6 +3,7 @@ export interface PlaylistData {
   description?: string;
   videoIds: string[];
   slug: string;
+  Order: number;
 }
 
 export interface PlaylistDataResponse {

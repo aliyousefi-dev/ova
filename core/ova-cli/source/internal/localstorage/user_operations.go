@@ -232,6 +232,17 @@ func (s *LocalStorage) AddPlaylistToUser(username string, pl *datatypes.Playlist
 		}
 	}
 
+	// If order is 0 (unordered), assign it max existing order + 1
+	if pl.Order == 0 {
+		maxOrder := 0
+		for _, existing := range user.Playlists {
+			if existing.Order > maxOrder {
+				maxOrder = existing.Order
+			}
+		}
+		pl.Order = maxOrder + 1
+	}
+
 	user.Playlists = append(user.Playlists, *pl) // Append a copy of the playlist
 	users[username] = user                       // Update the map with the modified user struct
 	return s.saveUsers(users)
@@ -390,5 +401,47 @@ func (s *LocalStorage) RemoveVideoFromPlaylist(username, slug, videoID string) e
 
 	user.Playlists[foundPlaylistIndex].VideoIDs = newVideos
 	users[username] = user // Update the map with the modified user struct
+	return s.saveUsers(users)
+}
+
+func (s *LocalStorage) SetPlaylistsOrder(username string, newOrderSlugs []string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	users, err := s.loadUsers()
+	if err != nil {
+		return fmt.Errorf("failed to load users: %w", err)
+	}
+
+	user, exists := users[username]
+	if !exists {
+		return fmt.Errorf("user %q not found", username)
+	}
+
+	// Build a map from slug to playlist for quick lookup
+	playlistMap := make(map[string]datatypes.PlaylistData)
+	for _, pl := range user.Playlists {
+		playlistMap[pl.Slug] = pl
+	}
+
+	// Validate that all slugs in newOrderSlugs exist in user's playlists
+	for _, slug := range newOrderSlugs {
+		if _, ok := playlistMap[slug]; !ok {
+			return fmt.Errorf("playlist %q not found for user %q", slug, username)
+		}
+	}
+
+	// Rebuild the playlists slice in the new order given by newOrderSlugs
+	reordered := make([]datatypes.PlaylistData, 0, len(newOrderSlugs))
+	for i, slug := range newOrderSlugs {
+		pl := playlistMap[slug]
+		pl.Order = i + 1 // assign order starting from 1
+		reordered = append(reordered, pl)
+	}
+
+	// Replace user's playlists with reordered slice
+	user.Playlists = reordered
+	users[username] = user
+
 	return s.saveUsers(users)
 }

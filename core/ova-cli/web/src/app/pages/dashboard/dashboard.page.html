@@ -5,7 +5,7 @@
 
   <!-- Main Content -->
   <div class="drawer-content flex flex-col">
-    <label for="my-drawer-2" class="btn btn-soft btn-neutral drawer-button lg:hidden m-4">
+    <label for="my-drawer-2" class="btn btn-soft btn-neutral drawer-button lg:hidden">
       Menu
     </label>
 
@@ -20,7 +20,7 @@
             (folderSelected)="onFolderSelected($event)">
           </app-upload-video>
 
-          <div *ngSwitchCase="'folder-manager'" class="text-center text-gray-500">
+          <div *ngSwitchCase="'folder-manager'" class="text-center">
             Folder Manager tab content...
           </div>
 
@@ -28,7 +28,7 @@
 
           <app-create-user *ngSwitchCase="'create-user'"></app-create-user>
 
-          <div *ngSwitchDefault class="text-center text-gray-400">
+          <div *ngSwitchDefault class="text-center">
             Select an option from the sidebar.
           </div>
         </ng-container>
@@ -39,7 +39,7 @@
   <!-- Sidebar Menu -->
   <div class="drawer-side">
     <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
-<ul class="menu bg-base-100 h-full w-80 p-5 text-base-content">
+<ul class="menu bg-base-100 h-full w-80 p-5 pl-30 pt-15 text-base-content">
 
   <!-- Menu Heading -->
 <h2 class="menu-title">Menu</h2>

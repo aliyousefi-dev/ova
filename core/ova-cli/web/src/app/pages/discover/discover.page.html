@@ -61,7 +61,7 @@
     <div class="w-full md:w-auto">
       <div class="flex items-center gap-2">
         <label class="label cursor-pointer">
-          <span class="label-text text-sm font-medium">Advanced Search</span>
+          <span class="label-text text-sm font-medium">Advanced Filters</span>
           <input
             type="checkbox"
             class="toggle toggle-sm"
@@ -163,31 +163,26 @@
       </div>
     </div>
 
-    <div class="w-full md:w-auto flex flex-col gap-2">
-      <label class="text-sm font-medium">Upload Date Range:</label>
-      <div class="flex items-center gap-2">
-        <input
-          type="date"
-          class="input input-sm input-bordered"
-          [value]="uploadFrom"
-          (change)="setUploadFrom($event)" placeholder="From"
-        />
-        <span>to</span>
-        <input
-          type="date"
-          class="input input-sm input-bordered"
-          [value]="uploadTo"
-          (change)="setUploadTo($event)" placeholder="To"
-        />
-        <button
-          class="btn btn-xs btn-outline"
-          (click)="clearUploadDateFilter()"
-          title="Clear date filter"
-        >
-          Clear
-        </button>
-      </div>
-    </div>
+<div class="flex flex-row gap-2 mx-20 items-center">
+  <label class="text-sm font-medium"> Date Range:</label>
+  <div class="flex items-center gap-2">
+    <input
+      type="date"
+      class="input input-sm input-bordered"
+      [value]="uploadFrom"
+      (change)="setUploadFrom($event)"
+    />
+    <span>to</span>
+    <input
+      type="date"
+      class="input input-sm input-bordered"
+      [value]="uploadTo"
+      (change)="setUploadTo($event)"
+    />
+    <button class="btn btn-xs btn-outline" (click)="clearUploadDateFilter()">Clear</button>
+  </div>
+</div>
+
     <div class="w-full md:w-auto">
       <div class="flex items-center gap-2">
         <label class="label cursor-pointer">

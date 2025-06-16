@@ -1,4 +1,11 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -8,21 +15,43 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
   templateUrl: './playlist-modal.component.html',
 })
-export class PlaylistModalComponent {
+export class PlaylistModalComponent implements OnChanges {
   @Input() visible = false;
-  @Input() playlists: { title: string; slug: string; checked: boolean }[] = [];
+
+  // Original playlists input
+  @Input() playlists: {
+    title: string;
+    slug: string;
+    checked: boolean;
+    Order?: number;
+  }[] = [];
+
+  // Internal sorted copy
+  sortedPlaylists: {
+    title: string;
+    slug: string;
+    checked: boolean;
+    Order?: number;
+  }[] = [];
 
   @Output() close = new EventEmitter<
     { title: string; slug: string; checked: boolean }[]
   >();
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['playlists']) {
+      this.sortedPlaylists = [...this.playlists].sort(
+        (a, b) => (a.Order ?? 0) - (b.Order ?? 0)
+      );
+    }
+  }
+
   closeModal() {
-    this.close.emit(this.playlists); // emit without saving changes explicitly
+    this.close.emit(this.sortedPlaylists);
   }
 
   save() {
-    // emit playlists and close modal
-    this.close.emit(this.playlists);
+    this.close.emit(this.sortedPlaylists);
   }
 
   trackBySlug(index: number, playlist: { slug: string }) {

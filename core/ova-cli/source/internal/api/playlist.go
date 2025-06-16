@@ -20,6 +20,7 @@ func RegisterUserPlaylistRoutes(rg *gin.RouterGroup, storage interfaces.StorageS
 		users.DELETE("/:username/playlists/:slug", deleteUserPlaylistBySlug(storage))
 		users.POST("/:username/playlists/:slug/videos", addVideoToPlaylist(storage))
 		users.DELETE("/:username/playlists/:slug/videos/:videoId", deleteVideoFromPlaylist(storage))
+		users.PUT("/:username/playlists/order", setPlaylistsOrder(storage))
 
 	}
 }
@@ -159,5 +160,34 @@ func deleteVideoFromPlaylist(storage interfaces.StorageService) gin.HandlerFunc 
 		}
 
 		respondSuccess(c, http.StatusOK, pl, "Video removed from playlist")
+	}
+}
+
+// PUT /users/:username/playlists/order
+// Request JSON: { "order": ["slug1", "slug2", "slug3", ...] }
+func setPlaylistsOrder(storage interfaces.StorageService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		username := c.Param("username")
+
+		var body struct {
+			Order []string `json:"order"`
+		}
+
+		if err := c.ShouldBindJSON(&body); err != nil || len(body.Order) == 0 {
+			respondError(c, http.StatusBadRequest, "Invalid or missing order array")
+			return
+		}
+
+		err := storage.SetPlaylistsOrder(username, body.Order)
+		if err != nil {
+			if err.Error() == "user not found" || err.Error() == "playlist not found" {
+				respondError(c, http.StatusNotFound, err.Error())
+				return
+			}
+			respondError(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		respondSuccess(c, http.StatusOK, nil, "Playlist order updated")
 	}
 }
