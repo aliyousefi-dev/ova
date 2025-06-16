@@ -129,4 +129,30 @@ export class PlaylistAPIService {
         })
       );
   }
+
+  updateUserPlaylistInfo(
+    username: string,
+    slug: string,
+    update: { title?: string; description?: string }
+  ): Observable<ApiResponse<PlaylistData>> {
+    return this.http
+      .put<ApiResponse<PlaylistData>>(
+        `${this.baseUrl}/users/${username}/playlists/${slug}`,
+        update,
+        { withCredentials: true }
+      )
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          let userFriendlyError = 'An unknown error occurred';
+          if (
+            error.error &&
+            error.error.status === 'error' &&
+            error.error.error?.message
+          ) {
+            userFriendlyError = error.error.error.message;
+          }
+          return throwError(() => new Error(userFriendlyError));
+        })
+      );
+  }
 }

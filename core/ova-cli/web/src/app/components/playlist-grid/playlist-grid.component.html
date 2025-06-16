@@ -1,6 +1,6 @@
 <ul
   id="playlist-draggable-list"
-  class="list-none p-0 m-0 bg-base-100 w-full max-w-full sm:max-w-4xl mx-auto overflow-hidden"
+  class="list-none p-0 m-0 bg-base-100 w-full max-w-full sm:max-w-4xl mx-auto "
   cdkDropList
   [cdkDropListData]="playlists"
   [cdkDropListDisabled]="!manageMode"
@@ -18,7 +18,7 @@
     <li
       *ngIf="manageMode; else nonDraggable"
       cdkDrag
-      class="flex items-center gap-2 hover:bg-base-200 cursor-pointer px-4 py-2 overflow-hidden"
+      class="flex items-center gap-2 hover:bg-base-200 cursor-pointer px-4 py-2 "
       (click)="onSelect(playlist.title)"
     >
 
@@ -36,6 +36,7 @@
         <app-playlist-card
           [playlist]="playlist"
           (select)="onSelect(playlist.title)"
+            (playlistDeleted)="handlePlaylistDeleted($event)"
         ></app-playlist-card>
       </div>
 
@@ -47,7 +48,7 @@
     <!-- Non-draggable item -->
     <ng-template #nonDraggable>
       <li
-        class="flex items-center gap-2 hover:bg-base-200 cursor-pointer px-2 py-2 overflow-hidden"
+        class="flex items-center gap-2 hover:bg-base-200 cursor-pointer px-2 py-2 overflow-visible"
         (click)="onSelect(playlist.title)"
       >
         <div class="text-4xl font-thin opacity-30 tabular-nums w-12 text-center flex-shrink-0">
@@ -58,6 +59,8 @@
           <app-playlist-card
             [playlist]="playlist"
             (select)="onSelect(playlist.title)"
+              (playlistDeleted)="handlePlaylistDeleted($event)"
+              (click)="$event.stopPropagation()"
           ></app-playlist-card>
         </div>
 

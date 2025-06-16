@@ -1,5 +1,5 @@
 <div
-  class="flex bg-base-100 shadow-sm overflow-hidden cursor-pointer relative hover:shadow-md transition items-center gap-4 w-full"
+  class="flex bg-base-100 shadow-sm cursor-pointer relative hover:shadow-md transition items-center gap-4 w-full"
   (click)="onSelect()"
 >
   <!-- Thumbnail -->
@@ -13,7 +13,7 @@
       <div
         class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition"
       >
-
+        <!-- Possible overlay content -->
       </div>
     </ng-container>
 
@@ -51,7 +51,6 @@
       {{ playlist.description || 'No description provided.' }}
     </p>
   </div>
-
 
   <!-- Menu Button -->
   <div class="flex-shrink-0 relative">
@@ -100,3 +99,19 @@
     </div>
   </div>
 </div>
+
+<!-- Confirm Modal -->
+<app-confirm-modal
+  #confirmModal
+  (confirmed)="confirmDelete()"
+  (cancelled)="null"
+></app-confirm-modal>
+
+<!-- Edit Playlist Modal -->
+<app-edit-playlist-modal
+  [visible]="editModalVisible"
+  [title]="editTitle"
+  [description]="editDescription"
+  (cancelled)="onEditCancelled()"
+  (saved)="onEditSaved($event)"
+></app-edit-playlist-modal>

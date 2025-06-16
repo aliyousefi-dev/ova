@@ -445,3 +445,41 @@ func (s *LocalStorage) SetPlaylistsOrder(username string, newOrderSlugs []string
 
 	return s.saveUsers(users)
 }
+
+// UpdatePlaylistInfo updates the title and description of a user's playlist.
+// Returns an error if the user or playlist is not found.
+func (s *LocalStorage) UpdatePlaylistInfo(username, playlistSlug, newTitle, newDescription string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	users, err := s.loadUsers()
+	if err != nil {
+		return fmt.Errorf("failed to load users: %w", err)
+	}
+
+	user, exists := users[username]
+	if !exists {
+		return fmt.Errorf("user %q not found", username)
+	}
+
+	foundPlaylistIndex := -1
+	for i := range user.Playlists {
+		if user.Playlists[i].Slug == playlistSlug {
+			foundPlaylistIndex = i
+			break
+		}
+	}
+
+	if foundPlaylistIndex == -1 {
+		return fmt.Errorf("playlist with slug %q not found for user %q", playlistSlug, username)
+	}
+
+	// Update the playlist title and description
+	user.Playlists[foundPlaylistIndex].Title = newTitle
+	user.Playlists[foundPlaylistIndex].Description = newDescription
+
+	// Update the user in the map
+	users[username] = user
+
+	return s.saveUsers(users)
+}

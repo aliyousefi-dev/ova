@@ -120,4 +120,22 @@ export class PlaylistGridComponent implements OnInit {
       this.selectedPlaylists.add(slug);
     }
   }
+
+  handlePlaylistDeleted(deletedSlug: string) {
+    // Remove playlist with matching slug from the array
+    this.playlists = this.playlists.filter((pl) => pl.slug !== deletedSlug);
+
+    // Also remove from selected set if present
+    this.selectedPlaylists.delete(deletedSlug);
+
+    // If the deleted playlist was selected, clear selection
+    if (this.selectedPlaylistTitle) {
+      const deletedPlaylist = this.playlists.find(
+        (pl) => pl.title === this.selectedPlaylistTitle
+      );
+      if (!deletedPlaylist) {
+        this.selectedPlaylistTitle = null;
+      }
+    }
+  }
 }

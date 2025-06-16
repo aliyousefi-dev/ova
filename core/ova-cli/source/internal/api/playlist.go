@@ -21,6 +21,7 @@ func RegisterUserPlaylistRoutes(rg *gin.RouterGroup, storage interfaces.StorageS
 		users.POST("/:username/playlists/:slug/videos", addVideoToPlaylist(storage))
 		users.DELETE("/:username/playlists/:slug/videos/:videoId", deleteVideoFromPlaylist(storage))
 		users.PUT("/:username/playlists/order", setPlaylistsOrder(storage))
+		users.PUT("/:username/playlists/:slug", updateUserPlaylistInfo(storage))
 
 	}
 }
@@ -189,5 +190,48 @@ func setPlaylistsOrder(storage interfaces.StorageService) gin.HandlerFunc {
 		}
 
 		respondSuccess(c, http.StatusOK, nil, "Playlist order updated")
+	}
+}
+
+// PUT /users/:username/playlists/:slug
+// Request JSON: { "title": "new title", "description": "new description" }
+func updateUserPlaylistInfo(storage interfaces.StorageService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		username := c.Param("username")
+		slug := c.Param("slug")
+
+		var body struct {
+			Title       string `json:"title"`
+			Description string `json:"description"`
+		}
+
+		if err := c.ShouldBindJSON(&body); err != nil {
+			respondError(c, http.StatusBadRequest, "Invalid JSON: "+err.Error())
+			return
+		}
+
+		// Validate that at least one of title or description is provided
+		if body.Title == "" && body.Description == "" {
+			respondError(c, http.StatusBadRequest, "At least one of title or description must be provided")
+			return
+		}
+
+		err := storage.UpdatePlaylistInfo(username, slug, body.Title, body.Description)
+		if err != nil {
+			if err.Error() == "user not found" || err.Error() == "playlist not found" {
+				respondError(c, http.StatusNotFound, err.Error())
+				return
+			}
+			respondError(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		pl, err := storage.GetUserPlaylist(username, slug)
+		if err != nil {
+			respondError(c, http.StatusInternalServerError, "Failed to retrieve updated playlist")
+			return
+		}
+
+		respondSuccess(c, http.StatusOK, pl, "Playlist info updated")
 	}
 }
