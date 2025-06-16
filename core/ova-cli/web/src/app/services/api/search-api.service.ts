@@ -1,10 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { VideoData } from '../../data-types/video-data';
 
-import { ApiResponse, SearchResponse } from '../../data-types/responses';
+import { ApiResponse } from '../../data-types/responses';
 
 import { environment } from '../../../environments/environment';
+
+export interface SearchResponse {
+  query: string;
+  results: VideoData[];
+  totalCount: number;
+}
 
 @Injectable({
   providedIn: 'root',

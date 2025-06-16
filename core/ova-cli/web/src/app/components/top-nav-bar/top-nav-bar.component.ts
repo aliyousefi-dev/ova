@@ -14,7 +14,7 @@ import { SettingsModalComponent } from '../setting-modal/settings-modal.componen
 export class TopNavBarComponent implements OnInit {
   @Input() title = '';
 
-  favoritesCount = 10;
+  SavedCount = 10;
   username = '';
   isSettingsModalOpen = false; // New property to control modal visibility
 

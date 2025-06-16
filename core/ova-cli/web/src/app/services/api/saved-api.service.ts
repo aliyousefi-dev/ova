@@ -5,25 +5,25 @@ import { map, catchError } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 
-export interface FavoritesResponse {
+export interface SavedResponse {
   username: string;
-  favorites: string[]; // array of video IDs (strings)
+  saved: string[]; // array of video IDs (strings)
 }
 
 @Injectable({
   providedIn: 'root',
 })
-export class FavoriteApiService {
+export class SavedApiService {
   private baseUrl = environment.apiBaseUrl;
 
   private httpOptions = { withCredentials: true };
 
   constructor(private http: HttpClient) {}
 
-  getUserFavorites(username: string): Observable<FavoritesResponse> {
+  getUserSaved(username: string): Observable<SavedResponse> {
     return this.http
-      .get<{ data: FavoritesResponse }>(
-        `${this.baseUrl}/users/${username}/favorites`,
+      .get<{ data: SavedResponse }>(
+        `${this.baseUrl}/users/${username}/saved`,
         this.httpOptions
       )
       .pipe(
@@ -32,13 +32,13 @@ export class FavoriteApiService {
       );
   }
 
-  addUserFavorite(
+  addUserSaved(
     username: string,
     videoId: string
   ): Observable<{ username: string; videoId: string }> {
     return this.http
       .post<{ data: { username: string; videoId: string } }>(
-        `${this.baseUrl}/users/${username}/favorites/${videoId}`,
+        `${this.baseUrl}/users/${username}/saved/${videoId}`,
         {}, // empty body
         this.httpOptions
       )
@@ -48,13 +48,13 @@ export class FavoriteApiService {
       );
   }
 
-  removeUserFavorite(
+  removeUserSaved(
     username: string,
     videoId: string
   ): Observable<{ username: string; videoId: string }> {
     return this.http
       .delete<{ data: { username: string; videoId: string } }>(
-        `${this.baseUrl}/users/${username}/favorites/${videoId}`,
+        `${this.baseUrl}/users/${username}/saved/${videoId}`,
         this.httpOptions
       )
       .pipe(
@@ -64,9 +64,9 @@ export class FavoriteApiService {
   }
 
   private handleError(error: HttpErrorResponse) {
-    console.error('Favorite API error:', error);
+    console.error('Saved API error:', error);
     return throwError(
-      () => new Error(error.error?.message || 'Favorite API error')
+      () => new Error(error.error?.message || 'Saved API error')
     );
   }
 }

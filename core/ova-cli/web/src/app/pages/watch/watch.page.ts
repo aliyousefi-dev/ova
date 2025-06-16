@@ -6,7 +6,7 @@ import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.com
 import { VideoData } from '../../data-types/video-data';
 import { VideoApiService } from '../../services/video-api.service';
 import { TagChipComponent } from '../../components/tag-chip/tag-chip.component';
-import { FavoriteApiService } from '../../services/api/favorite-api.service';
+import { SavedApiService } from '../../services/api/saved-api.service';
 
 @Component({
   selector: 'app-watch',
@@ -27,8 +27,8 @@ export class WatchPage implements AfterViewInit {
   updatingTags = false;
   tagUpdateError = false;
 
-  isFavorite = false;
-  favoriteLoading = false;
+  isSaved = false;
+  LoadingSavedVideo = false;
   username = ''; // filled from auth
 
   playedPercent = 0;
@@ -41,7 +41,7 @@ export class WatchPage implements AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private favoriteApi: FavoriteApiService,
+    private savedapi: SavedApiService,
     public videoapi: VideoApiService
   ) {
     this.videoId = this.route.snapshot.paramMap.get('videoId');
@@ -96,7 +96,7 @@ export class WatchPage implements AfterViewInit {
         this.loadSimilarVideos(videoId);
         this.username = localStorage.getItem('username') ?? '';
 
-        this.checkIfFavorite();
+        this.checkIfVideoSaved();
       },
       error: () => {
         this.error = true;
@@ -186,40 +186,38 @@ export class WatchPage implements AfterViewInit {
     }
   }
 
-  checkIfFavorite() {
+  checkIfVideoSaved() {
     if (!this.username || !this.videoId) return;
 
-    this.favoriteApi.getUserFavorites(this.username).subscribe({
+    this.savedapi.getUserSaved(this.username).subscribe({
       next: (res) => {
-        this.isFavorite = res.favorites.includes(this.videoId!);
+        this.isSaved = res.saved.includes(this.videoId!);
       },
       error: () => {
-        this.isFavorite = false;
+        this.isSaved = false;
       },
     });
   }
 
-  toggleFavorite() {
+  toggleSaved() {
     if (!this.username || !this.videoId) return;
 
-    this.favoriteLoading = true;
+    this.LoadingSavedVideo = true;
 
-    const done = () => (this.favoriteLoading = false);
+    const done = () => (this.LoadingSavedVideo = false);
 
-    if (this.isFavorite) {
-      this.favoriteApi
-        .removeUserFavorite(this.username, this.videoId)
-        .subscribe({
-          next: () => {
-            this.isFavorite = false;
-            done();
-          },
-          error: () => done(),
-        });
-    } else {
-      this.favoriteApi.addUserFavorite(this.username, this.videoId).subscribe({
+    if (this.isSaved) {
+      this.savedapi.removeUserSaved(this.username, this.videoId).subscribe({
         next: () => {
-          this.isFavorite = true;
+          this.isSaved = false;
+          done();
+        },
+        error: () => done(),
+      });
+    } else {
+      this.savedapi.addUserSaved(this.username, this.videoId).subscribe({
+        next: () => {
+          this.isSaved = true;
           done();
         },
         error: () => done(),

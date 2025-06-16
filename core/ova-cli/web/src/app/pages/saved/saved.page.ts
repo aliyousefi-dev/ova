@@ -7,7 +7,7 @@ import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.com
 import { SearchBarComponent } from '../../components/search-bar/search-bar';
 import { VideoGridComponent } from '../../components/video-grid/video-grid.component';
 import { VideoApiService } from '../../services/video-api.service';
-import { FavoriteApiService } from '../../services/api/favorite-api.service';
+import { SavedApiService } from '../../services/api/saved-api.service';
 
 @Component({
   selector: 'app-favorites',
@@ -19,9 +19,9 @@ import { FavoriteApiService } from '../../services/api/favorite-api.service';
     SearchBarComponent,
     VideoGridComponent,
   ],
-  templateUrl: './favorites.page.html',
+  templateUrl: './saved.page.html',
 })
-export class FavoritesPage implements OnInit {
+export class SavedPage implements OnInit {
   protected videos: any[] = [];
   protected loading = true;
   protected searchTerm = '';
@@ -30,7 +30,7 @@ export class FavoritesPage implements OnInit {
 
   constructor(
     private videoapi: VideoApiService,
-    private favoriteapi: FavoriteApiService,
+    private savedapi: SavedApiService,
     private router: Router
   ) {}
 
@@ -50,9 +50,9 @@ export class FavoritesPage implements OnInit {
 
   fetchFavorites(username: string) {
     this.loading = true;
-    this.favoriteapi.getUserFavorites(username).subscribe({
+    this.savedapi.getUserSaved(username).subscribe({
       next: (res) => {
-        const ids = res.favorites || []; // This should be string[]
+        const ids = res.saved || []; // This should be string[]
         if (ids.length === 0) {
           this.videos = [];
           this.loading = false;

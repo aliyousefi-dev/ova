@@ -14,9 +14,9 @@ type StorageService interface {
 	GetAllUsers() ([]datatypes.UserData, error)
 
 	// User favorites management
-	GetUserFavoriteVideos(username string) ([]datatypes.VideoData, error)
-	AddVideoToFavorites(username, videoID string) error
-	RemoveVideoFromFavorites(username, videoID string) error
+	GetUserSavedVideos(username string) ([]datatypes.VideoData, error)
+	AddVideoToSaved(username, videoID string) error
+	RemoveVideoFromSaved(username, videoID string) error
 
 	// User playlists management
 	AddPlaylistToUser(username string, playlist *datatypes.PlaylistData) error

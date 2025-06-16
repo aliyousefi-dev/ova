@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { PlaylistModalComponent } from '../playlist-modal/playlist-modal.component';
 import { PlaylistAPIService } from '../../services/api/playlist-api.service';
 import { VideoApiService } from '../../services/video-api.service';
-import { FavoriteApiService } from '../../services/api/favorite-api.service';
+import { SavedApiService } from '../../services/api/saved-api.service';
 import { VideoData } from '../../data-types/video-data';
 import { Router } from '@angular/router';
 
@@ -23,11 +23,11 @@ import { Router } from '@angular/router';
 })
 export class VideoCardComponent implements OnChanges {
   @Input() video!: VideoData;
-  @Input() isFavorite: boolean = false;
+  @Input() isSaved: boolean = false;
   @Input() username: string = '';
 
   hovering = false;
-  savingFavorite = false;
+  Saved = false;
 
   playlistModalVisible = false;
   playlists: { title: string; slug: string; checked: boolean }[] = [];
@@ -35,7 +35,7 @@ export class VideoCardComponent implements OnChanges {
 
   constructor(
     private playlistapi: PlaylistAPIService,
-    private favoriteapi: FavoriteApiService,
+    private savedapi: SavedApiService,
     private videoapi: VideoApiService,
     private router: Router,
     private cd: ChangeDetectorRef
@@ -123,38 +123,36 @@ export class VideoCardComponent implements OnChanges {
     });
   }
 
-  toggleFavorite(event: MouseEvent) {
+  toggleSaved(event: MouseEvent) {
     event.stopPropagation();
     if (!this.username) return;
 
-    this.savingFavorite = true;
+    this.Saved = true;
 
-    if (this.isFavorite) {
-      this.favoriteapi
-        .removeUserFavorite(this.username, this.video.videoId)
+    if (this.isSaved) {
+      this.savedapi
+        .removeUserSaved(this.username, this.video.videoId)
         .subscribe({
           next: () => {
-            this.isFavorite = false;
-            this.savingFavorite = false;
+            this.isSaved = false;
+            this.Saved = false;
             this.cd.detectChanges();
           },
           error: () => {
-            this.savingFavorite = false;
+            this.Saved = false;
           },
         });
     } else {
-      this.favoriteapi
-        .addUserFavorite(this.username, this.video.videoId)
-        .subscribe({
-          next: () => {
-            this.isFavorite = true;
-            this.savingFavorite = false;
-            this.cd.detectChanges();
-          },
-          error: () => {
-            this.savingFavorite = false;
-          },
-        });
+      this.savedapi.addUserSaved(this.username, this.video.videoId).subscribe({
+        next: () => {
+          this.isSaved = true;
+          this.Saved = false;
+          this.cd.detectChanges();
+        },
+        error: () => {
+          this.Saved = false;
+        },
+      });
     }
   }
 

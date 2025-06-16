@@ -8,10 +8,10 @@
   (click)="navigateToWatch()"
 >
     <figure class="relative w-full h-40 rounded-lg overflow-hidden bg-transparent">
-      <div *ngIf="isFavorite" class="absolute bottom-2 left-2 z-30">
+      <div *ngIf="isSaved" class="absolute bottom-2 left-2 z-30">
         <button
           class="btn btn-xs btn-circle bg-black/60 hover:bg-black text-yellow-500 border-none"
-          title="Add to Favorites"
+          title="Add to Saved"
           (click)="$event.preventDefault(); $event.stopPropagation()"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
@@ -75,8 +75,8 @@
         </div>
         <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-44 z-40">
           <li><a (click)="download($event)">Download</a></li>
-          <li><a (click)="toggleFavorite($event)">
-            {{ isFavorite ? 'Remove from Favorites' : 'Save to Favorites' }}
+          <li><a (click)="toggleSaved($event)">
+            {{ isSaved ? 'Remove from Saved' : 'Save to Saved' }}
           </a></li>
           <li><a (click)="addToPlaylist($event)">Save to Playlist</a></li>
         </ul>

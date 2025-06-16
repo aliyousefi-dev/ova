@@ -102,9 +102,9 @@ func (s *LocalStorage) GetAllUsers() ([]datatypes.UserData, error) {
 
 // --- User Favorites Management ---
 
-// GetUserFavoriteVideos retrieves the full VideoData for a user's favorite videos.
+// GetUserSavedVideos retrieves the full VideoData for a user's favorite videos.
 // Returns an error if the user is not found or loading videos fails.
-func (s *LocalStorage) GetUserFavoriteVideos(username string) ([]datatypes.VideoData, error) {
+func (s *LocalStorage) GetUserSavedVideos(username string) ([]datatypes.VideoData, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -136,9 +136,9 @@ func (s *LocalStorage) GetUserFavoriteVideos(username string) ([]datatypes.Video
 	return favorites, nil
 }
 
-// AddVideoToFavorites adds a video ID to a user's favorites list.
+// AddVideoToSaved adds a video ID to a user's favorites list.
 // Returns an error if the user or video is not found, or if the video is already favorited.
-func (s *LocalStorage) AddVideoToFavorites(username, videoID string) error {
+func (s *LocalStorage) AddVideoToSaved(username, videoID string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -173,9 +173,9 @@ func (s *LocalStorage) AddVideoToFavorites(username, videoID string) error {
 	return s.saveUsers(users)
 }
 
-// RemoveVideoFromFavorites removes a video ID from a user's favorites list.
+// RemoveVideoFromSaved removes a video ID from a user's favorites list.
 // Returns an error if the user is not found, or if the video is not in their favorites.
-func (s *LocalStorage) RemoveVideoFromFavorites(username, videoID string) error {
+func (s *LocalStorage) RemoveVideoFromSaved(username, videoID string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 

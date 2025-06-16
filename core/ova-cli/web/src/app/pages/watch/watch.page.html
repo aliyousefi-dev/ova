@@ -18,25 +18,25 @@
     <!-- Main Video Area -->
     <div class="flex-grow max-w-4xl flex flex-col">
 
-      <!-- Video Title + Favorite Button -->
+      <!-- Video Title + Saved Button -->
 <div class="flex items-center justify-between pt-5 pb-5 bg-base-100 sm:px-3 md:px-6 lg:px-0 xl:px-0 2xl:px-0 px-3">
   <!-- Video Title -->
   <div class="text-lg font-semibold leading-tight truncate flex-1" [title]="video.title">
     {{ video.title }}
   </div>
 
-<!-- Favorite Button -->
+<!-- Saved Button -->
 <button
   class="ml-2 rounded-full border transition-all duration-300 ease-in-out shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-error
     sm:px-3 px-2 py-2
     sm:btn-md btn-sm
     flex items-center justify-center"
-  [ngClass]="isFavorite ? 'bg-error border-error' : 'bg-base-100 text-error border-error hover:bg-error'"
-  (click)="toggleFavorite()"
-  [disabled]="favoriteLoading"
-  [attr.aria-label]="isFavorite ? 'Unsave from favorites' : 'Save to favorites'"
+  [ngClass]="isSaved ? 'bg-error border-error' : 'bg-base-100 text-error border-error hover:bg-error'"
+  (click)="toggleSaved()"
+  [disabled]="LoadingSavedVideo"
+  [attr.aria-label]="isSaved ? 'Unsave from favorites' : 'Save to favorites'"
 >
-  <ng-container *ngIf="isFavorite; else notFavoriteIcon">
+  <ng-container *ngIf="isSaved; else notFavoriteIcon">
     <!-- Filled Bookmark -->
     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-200" viewBox="0 0 24 24" fill="currentColor">
       <path d="M19 21l-7-4-7 4V5a2 2 0 012-2h10a2 2 0 012 2v16z" />

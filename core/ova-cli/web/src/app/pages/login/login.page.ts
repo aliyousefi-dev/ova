@@ -2,8 +2,10 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router'; // Import Router for navigation
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { LoginResponse } from '../../data-types/responses';
-import { AuthApiService } from '../../services/api/auth-api.service';
+import {
+  AuthApiService,
+  LoginResponse,
+} from '../../services/api/auth-api.service';
 
 @Component({
   selector: 'app-login',

@@ -2,8 +2,21 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ApiResponse, AuthStatusResponse } from '../../data-types/responses';
+import { ApiResponse } from '../../data-types/responses';
 import { environment } from '../../../environments/environment';
+
+export interface LoginResponse {
+  data: {
+    sessionId: string;
+  };
+  message: string;
+  status: string;
+}
+
+export interface AuthStatusResponse {
+  authenticated: boolean;
+  username?: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +50,7 @@ export class AuthApiService {
     return this.http.post<ApiResponse<null>>(
       `${this.baseUrl}/auth/logout`,
       null,
-      { withCredentials: true } // ✅ include this
+      { withCredentials: true }
     );
   }
 
@@ -48,7 +61,7 @@ export class AuthApiService {
   getAuthStatusFull(): Observable<ApiResponse<AuthStatusResponse>> {
     return this.http.get<ApiResponse<AuthStatusResponse>>(
       `${this.baseUrl}/auth/status`,
-      { withCredentials: true } // ✅ include this
+      { withCredentials: true }
     );
   }
 }

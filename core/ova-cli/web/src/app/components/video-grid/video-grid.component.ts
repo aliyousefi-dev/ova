@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { VideoCardComponent } from '../../components/video-card/video-card.component';
 import { CommonModule } from '@angular/common';
 import { VideoData } from '../../data-types/video-data';
-import { FavoriteApiService } from '../../services/api/favorite-api.service';
+import { SavedApiService } from '../../services/api/saved-api.service';
 @Component({
   selector: 'app-video-grid',
   standalone: true,
@@ -12,22 +12,22 @@ import { FavoriteApiService } from '../../services/api/favorite-api.service';
 export class VideoGridComponent implements OnInit {
   @Input() videos: VideoData[] = [];
 
-  favoriteIds = new Set<string>();
+  SavedIds = new Set<string>();
   username: string | null = null;
 
-  constructor(private favorite: FavoriteApiService) {}
+  constructor(private savedapi: SavedApiService) {}
 
   ngOnInit() {
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
       this.username = storedUsername;
-      this.favorite.getUserFavorites(storedUsername).subscribe((favData) => {
-        this.favoriteIds = new Set(favData.favorites);
+      this.savedapi.getUserSaved(storedUsername).subscribe((favData) => {
+        this.SavedIds = new Set(favData.saved);
       });
     }
   }
 
-  isFavorite(videoId: string): boolean {
-    return this.favoriteIds.has(videoId);
+  isSaved(videoId: string): boolean {
+    return this.SavedIds.has(videoId);
   }
 }

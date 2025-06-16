@@ -8,7 +8,7 @@
       <li><a routerLink="/">Home</a></li>
       <li><a routerLink="/discover">Discover</a></li>
       <li><a routerLink="/library">Library</a></li>
-      <li><a routerLink="/favorites">Saved</a></li>
+      <li><a routerLink="/saved">Saved</a></li>
       <li><a routerLink="/playlists">Playlists</a></li>
     </ul>
   </div>
@@ -53,7 +53,7 @@
   </button>
 
 
-  <button routerLink="/favorites" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="flex flex-col items-center">
+  <button routerLink="/saved" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="flex flex-col items-center">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bookmark-icon lucide-bookmark"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
     <span class="dock-label text-xs">Saved</span>
   </button>

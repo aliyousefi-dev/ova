@@ -9,7 +9,7 @@
   <app-video-card
     *ngFor="let video of videos"
     [video]="video"
-    [isFavorite]="isFavorite(video.videoId)"
+    [isSaved]="isSaved(video.videoId)"
     [username]="username!"
     class="h-[20rem]"
   ></app-video-card>

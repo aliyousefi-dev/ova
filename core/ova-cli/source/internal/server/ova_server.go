@@ -70,7 +70,7 @@ func (s *OvaServer) initRoutes() {
 
 	api.RegisterAuthRoutes(v1, s.StorageService, s.SessionManager)
 	api.RegisterUserPlaylistRoutes(v1, s.StorageService)
-	api.RegisterUserFavoritesRoutes(v1, s.StorageService)
+	api.RegisterUserSavedRoutes(v1, s.StorageService)
 	api.RegisterVideoRoutes(v1, s.StorageService)
 	api.RegisterSearchRoutes(v1, s.StorageService)
 	api.RegisterVideoTagRoutes(v1, s.StorageService)

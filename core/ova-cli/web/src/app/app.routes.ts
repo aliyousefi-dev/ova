@@ -5,7 +5,7 @@ import { NotFoundPage } from './pages/NotFoundComponent/not-found.page';
 import { HomePage } from './pages/home/home.page';
 import { LoginPage } from './pages/login/login.page';
 import { AuthGuard } from './services/auth.guard';
-import { FavoritesPage } from './pages/favorites/favorites.page';
+import { SavedPage } from './pages/saved/saved.page';
 import { PlaylistsPage } from './pages/playlists/playlists.page';
 import { PlaylistDetailPage } from './pages/playlists-detail/playlist-detail.page';
 import { DiscoverPage } from './pages/discover/discover.page';
@@ -60,8 +60,8 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'favorites',
-    component: FavoritesPage,
+    path: 'saved',
+    component: SavedPage,
     canActivate: [AuthGuard], // protected
   },
   {
