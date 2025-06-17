@@ -1,12 +1,6 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnChanges,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FolderApiService } from '../../services/api/folder=api.service';
 
 export interface FolderNode {
   name: string;
@@ -20,18 +14,32 @@ export interface FolderNode {
   imports: [CommonModule],
   templateUrl: './folder-tree.component.html',
 })
-export class FolderTreeComponent implements OnChanges {
-  @Input() folders: string[] = [];
+export class FolderTreeComponent implements OnInit {
   @Input() currentFolder: string = '';
   @Output() folderSelected = new EventEmitter<string>();
 
   folderTree: FolderNode | null = null;
+  loading = false; // <== for loading spinner
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['folders']) {
-      this.folderTree = this.buildTree(this.folders);
-      this.sortTree(this.folderTree);
-    }
+  constructor(private folderApi: FolderApiService) {}
+
+  ngOnInit() {
+    this.refresh();
+  }
+
+  refresh() {
+    this.loading = true;
+    this.folderApi.getFolderLists().subscribe({
+      next: (res) => {
+        this.folderTree = this.buildTree(res.data);
+        this.sortTree(this.folderTree);
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load folders:', err);
+        this.loading = false;
+      },
+    });
   }
 
   buildTree(folders: string[]): FolderNode {
@@ -67,6 +75,7 @@ export class FolderTreeComponent implements OnChanges {
     node.children.forEach(this.sortTree.bind(this));
   }
 
+  // Already exists and is fine:
   onSelect(path: string) {
     this.folderSelected.emit(path);
   }

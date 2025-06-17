@@ -12,3 +12,5 @@ Speed
 Sound 
 Visible Buffer
 FullScreen
+
+Upload Multiple Files from Adming 

@@ -12,7 +12,7 @@
       <!-- Sidebar -->
       <nav class="lg:w-48 flex flex-col space-y-2 border-b lg:border-b-0 lg:border-r border-base-300 pb-4 lg:pb-0 lg:pr-4">
         <button class="btn btn-ghost justify-start" [class.btn-primary]="activeTab === 'theme'" (click)="setActiveTab('theme')">Theme</button>
-        <button class="btn btn-ghost justify-start" [class.btn-primary]="activeTab === 'profile'" (click)="setActiveTab('profile')">Profile</button>
+        <button class="btn btn-ghost justify-start" [class.btn-primary]="activeTab === 'backend'" (click)="setActiveTab('backend')">Backend Config</button>
       </nav>
 
       <!-- Content -->
@@ -27,28 +27,16 @@
           />
         </ng-container>
 
-        <ng-container *ngIf="activeTab === 'profile'">
-          <h3 class="text-xl font-semibold">Profile</h3>
-          <label class="form-control w-full">
-            <span class="label-text">Username</span>
-            <input class="input input-bordered w-full" [(ngModel)]="username" />
-          </label>
-          <button class="btn btn-primary mt-2" (click)="onSaveProfile()">Save Profile</button>
+        <ng-container *ngIf="activeTab === 'backend'">
+          <h3 class="text-xl font-semibold">Backend Configuration</h3>
+          <p class="text-sm text-base-content/70">Set the base URL for the API server your app should connect to.</p>
 
-          <h3 class="text-xl font-semibold mt-6">Change Password</h3>
-          <label class="form-control w-full">
-            <span class="label-text">Current Password</span>
-            <input type="password" class="input input-bordered w-full" [(ngModel)]="currentPassword" />
-          </label>
           <label class="form-control w-full mt-2">
-            <span class="label-text">New Password</span>
-            <input type="password" class="input input-bordered w-full" [(ngModel)]="newPassword" />
+            <span class="label-text">API Base URL</span>
+            <input class="input input-bordered w-full" [(ngModel)]="apiBaseUrl" placeholder="/api/v1" />
           </label>
-          <label class="form-control w-full mt-2">
-            <span class="label-text">Confirm Password</span>
-            <input type="password" class="input input-bordered w-full" [(ngModel)]="confirmPassword" />
-          </label>
-          <button class="btn btn-primary mt-4" (click)="onChangePassword()">Change Password</button>
+
+          <button class="btn btn-primary mt-4" (click)="onSaveBackendConfig()">Save</button>
         </ng-container>
       </section>
     </div>

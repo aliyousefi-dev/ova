@@ -62,14 +62,10 @@ export class SettingsModalComponent implements OnChanges {
   ];
 
   selectedTheme = 'light';
-  activeTab: 'theme' | 'profile' = 'theme';
+  activeTab: 'theme' | 'backend' = 'theme';
 
-  username = localStorage.getItem('username') || '';
-  email = '';
-
-  currentPassword = '';
-  newPassword = '';
-  confirmPassword = '';
+  // Backend Config
+  apiBaseUrl = localStorage.getItem('apiBaseUrl') || '/api/v1';
 
   ngOnInit() {
     const savedTheme = localStorage.getItem('theme') || 'light';
@@ -87,7 +83,7 @@ export class SettingsModalComponent implements OnChanges {
     }
   }
 
-  setActiveTab(tab: 'theme' | 'profile') {
+  setActiveTab(tab: 'theme' | 'backend') {
     this.activeTab = tab;
   }
 
@@ -97,24 +93,9 @@ export class SettingsModalComponent implements OnChanges {
     document.documentElement.setAttribute('data-theme', theme);
   }
 
-  onSaveProfile() {
-    localStorage.setItem('username', this.username);
-    alert('Profile saved!');
-  }
-
-  onChangePassword() {
-    if (!this.currentPassword || !this.newPassword || !this.confirmPassword) {
-      alert('Please fill in all password fields.');
-      return;
-    }
-    if (this.newPassword !== this.confirmPassword) {
-      alert('New passwords do not match.');
-      return;
-    }
-    alert('Password change requested (not implemented).');
-    this.currentPassword = '';
-    this.newPassword = '';
-    this.confirmPassword = '';
+  onSaveBackendConfig() {
+    localStorage.setItem('apiBaseUrl', this.apiBaseUrl);
+    alert('API base URL saved!');
   }
 
   onClose() {

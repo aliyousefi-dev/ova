@@ -4,7 +4,6 @@ import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 import { PlaylistData } from '../../data-types/playlist-data';
 import { VideoData } from '../../data-types/video-data';
 import { VideoApiService } from '../../services/video-api.service';
-import { FolderApiService } from '../../services/api/folder=api.service';
 
 import { FolderTreeComponent } from '../../components/folder-tree/folder-tree.component';
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
@@ -46,14 +45,12 @@ export class LibraryPage implements OnInit {
 
   constructor(
     private videoapi: VideoApiService,
-    private folderapi: FolderApiService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
     this.loadUsername();
-    this.fetchFolders();
 
     // Subscribe to query params (page, search, sort, folder)
     this.route.queryParamMap.subscribe((params) => {
@@ -84,17 +81,6 @@ export class LibraryPage implements OnInit {
   loadUsername() {
     const storedUsername = localStorage.getItem('username');
     this.username = storedUsername ? storedUsername : null;
-  }
-
-  fetchFolders() {
-    this.folderapi.getFolderLists().subscribe({
-      next: (res) => {
-        this.folders = res.data || [];
-      },
-      error: () => {
-        this.folders = [];
-      },
-    });
   }
 
   fetchVideos() {

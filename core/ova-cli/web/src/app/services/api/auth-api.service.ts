@@ -18,6 +18,11 @@ export interface AuthStatusResponse {
   username?: string;
 }
 
+export interface UserProfile {
+  username: string;
+  roles: string[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -63,5 +68,11 @@ export class AuthApiService {
       `${this.baseUrl}/auth/status`,
       { withCredentials: true }
     );
+  }
+
+  getProfile(): Observable<UserProfile> {
+    return this.http.get<UserProfile>(`${this.baseUrl}/auth/profile`, {
+      withCredentials: true,
+    });
   }
 }

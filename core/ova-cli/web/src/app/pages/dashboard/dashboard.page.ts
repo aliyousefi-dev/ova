@@ -20,23 +20,16 @@ import { CreateUserComponent } from './create-user.component';
   ],
 })
 export class DashboardPage implements OnInit {
-  folderList: string[] = [];
   selectedFolder = '';
   sidebarOpen = false;
   isMobile = false;
   activeTab: string = 'upload'; // default tab
 
-  constructor(private folderApi: FolderApiService, private router: Router) {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.updateIsMobile();
-    this.folderApi.getFolderLists().subscribe({
-      next: (res) => {
-        this.folderList = res.data;
-        this.selectedFolder = this.folderList[0] || '';
-      },
-      error: (err) => console.error('Failed to load folders:', err),
-    });
+    this.selectedFolder = ''; // default to root or empty
   }
 
   @HostListener('window:resize')

@@ -28,9 +28,9 @@ func (s *LocalStorage) AddVideo(video datatypes.VideoData) error {
 	return s.saveVideos(videos)
 }
 
-// DeleteVideo removes a video by its ID.
+// DeleteVideoByID removes a video by its ID.
 // If the video does not exist, it's considered a no-op (no error is returned).
-func (s *LocalStorage) DeleteVideo(id string) error {
+func (s *LocalStorage) DeleteVideoByID(id string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 

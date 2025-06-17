@@ -15,7 +15,6 @@
         <ng-container [ngSwitch]="activeTab">
           <app-upload-video
             *ngSwitchCase="'upload'"
-            [folderList]="folderList"
             [selectedFolder]="selectedFolder"
             (folderSelected)="onFolderSelected($event)">
           </app-upload-video>
@@ -37,12 +36,12 @@
   </div>
 
   <!-- Sidebar Menu -->
-  <div class="drawer-side">
+  <div class="drawer-side z-100">
     <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
-<ul class="menu bg-base-100 h-full w-80 p-5 pl-30 pt-15 text-base-content">
+<ul class="menu bg-base-100 h-full w-80 p-5 pl-10 pt-20 text-base-content">
 
   <!-- Menu Heading -->
-<h2 class="menu-title">Menu</h2>
+<h2 class="menu-title">Repository Settings</h2>
 
   <!-- USERS SECTION -->
   <li>

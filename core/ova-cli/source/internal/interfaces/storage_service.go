@@ -34,7 +34,7 @@ type StorageService interface {
 
 	// Video management
 	AddVideo(video datatypes.VideoData) error
-	DeleteVideo(id string) error
+	DeleteVideoByID(id string) error
 	DeleteAllVideos() error
 	GetVideoByID(id string) (*datatypes.VideoData, error)
 

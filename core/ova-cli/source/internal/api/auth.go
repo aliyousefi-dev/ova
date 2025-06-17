@@ -28,6 +28,7 @@ func RegisterAuthRoutes(rg *gin.RouterGroup, storage interfaces.StorageService, 
 		auth.POST("/login", func(c *gin.Context) { loginHandler(c, sm, storage) })
 		auth.POST("/logout", sm.logoutHandler)
 		auth.GET("/status", sm.authStatusHandler)
+		auth.GET("/profile", sm.profileHandler(storage))
 	}
 }
 
@@ -113,5 +114,32 @@ func (sm *SessionManager) authStatusHandler(c *gin.Context) {
 		}, "Status check successful")
 	} else {
 		respondSuccess(c, http.StatusOK, gin.H{"authenticated": false}, "Not authenticated")
+	}
+}
+
+func (sm *SessionManager) profileHandler(storage interfaces.StorageService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		sessionID, err := c.Cookie("session_id")
+		if err != nil {
+			respondError(c, http.StatusUnauthorized, "No session found")
+			return
+		}
+
+		username, exists := sm.sessions[sessionID]
+		if !exists {
+			respondError(c, http.StatusUnauthorized, "Invalid session")
+			return
+		}
+
+		user, err := storage.GetUserByUsername(username)
+		if err != nil {
+			respondError(c, http.StatusNotFound, "User not found")
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"username": user.Username,
+			"roles":    user.Roles,
+		})
 	}
 }

@@ -10,6 +10,7 @@ import { PlaylistsPage } from './pages/playlists/playlists.page';
 import { PlaylistDetailPage } from './pages/playlists-detail/playlist-detail.page';
 import { DiscoverPage } from './pages/discover/discover.page';
 import { DashboardPage } from './pages/dashboard/dashboard.page';
+import { ProfilePage } from './pages/profile/profile.page';
 
 // Custom matcher to catch /library + optional nested folder path
 export function libraryFolderMatcher(
@@ -57,6 +58,11 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardPage,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'profile',
+    component: ProfilePage,
     canActivate: [AuthGuard],
   },
   {

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UploadApiService } from '../../services/api/upload-api.service';
 import { FolderTreeComponent } from '../../components/folder-tree/folder-tree.component';
+import { HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'app-upload-video',
@@ -18,6 +19,7 @@ export class UploadVideoComponent {
   uploading = false;
   dragging = false;
   title = '';
+  progress = 0;
 
   constructor(private uploadApi: UploadApiService) {}
 
@@ -45,7 +47,7 @@ export class UploadVideoComponent {
     this.dragging = false;
     if (event.dataTransfer && event.dataTransfer.files.length > 0) {
       const file = event.dataTransfer.files[0];
-      if (file.type.startsWith('video/')) {
+      if (file.type.startsWith('video/mp4')) {
         this.selectedFile = file;
         this.title = file.name.replace(/\.[^/.]+$/, '');
         console.log('File dropped:', file.name);
@@ -56,38 +58,42 @@ export class UploadVideoComponent {
   }
 
   onSubmit(): void {
-    console.log(
-      'Uploading to folder:',
-      this.selectedFolder === '' ? '[ROOT]' : this.selectedFolder
-    );
-
     if (
       !this.selectedFile ||
-      this.selectedFolder === null ||
-      this.selectedFolder === undefined
+      this.selectedFolder === undefined ||
+      this.selectedFolder === null
     ) {
       console.warn('Missing file or folder for upload');
       return;
     }
 
     this.uploading = true;
+    this.progress = 0;
+
     this.uploadApi
       .uploadVideo(this.selectedFolder, this.selectedFile)
       .subscribe({
-        next: () => alert('Video uploaded successfully!'),
+        next: (event) => {
+          if (event.type === HttpEventType.UploadProgress && event.total) {
+            this.progress = Math.round((event.loaded / event.total) * 100);
+          } else if (event.type === HttpEventType.Response) {
+            alert('Video uploaded successfully!');
+          }
+        },
         error: (err) => {
           console.error('Upload failed', err);
           alert('Failed to upload video.');
+          this.uploading = false;
         },
-        complete: () => (this.uploading = false),
+        complete: () => {
+          this.uploading = false;
+          this.selectedFile = null;
+          this.progress = 0;
+        },
       });
   }
 
   onFolderSelected(folder: string): void {
-    console.log(
-      'Folder selected in upload component:',
-      folder === '' ? '[ROOT]' : folder
-    );
     this.selectedFolder = folder;
     this.folderSelected.emit(folder);
   }
