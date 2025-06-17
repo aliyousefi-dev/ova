@@ -58,18 +58,19 @@
       </div>
     </div>
 
-    <div class="w-full md:w-auto">
-      <div class="flex items-center gap-2">
-        <label class="label cursor-pointer">
-          <span class="label-text text-sm font-medium">Advanced Filters</span>
-          <input
-            type="checkbox"
-            class="toggle toggle-sm"
-            [(ngModel)]="advancedSearchEnabled"
-          />
-        </label>
-      </div>
-    </div>
+<div class="w-full md:w-auto">
+  <div class="flex items-center gap-2">
+    <label class="label cursor-pointer">
+      <span class="label-text text-sm font-medium">Advanced Filters</span>
+      <input
+        type="checkbox"
+        class="toggle toggle-sm"
+        [(ngModel)]="advancedSearchEnabled"
+        (ngModelChange)="onAdvancedSearchToggle()"
+        />
+    </label>
+  </div>
+</div>
 
     <div class="w-full md:w-auto">
       <div class="flex items-center gap-2">

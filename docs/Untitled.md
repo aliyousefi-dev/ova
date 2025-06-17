@@ -14,3 +14,6 @@ Visible Buffer
 FullScreen
 
 Upload Multiple Files from Adming 
+
+
+Tag on the Video 

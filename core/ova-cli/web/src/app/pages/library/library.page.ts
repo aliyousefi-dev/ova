@@ -1,5 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  HostListener,
+  AfterViewInit,
+  ElementRef,
+  ViewChild,
+} from '@angular/core'; // Import ElementRef and ViewChild
 import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { PlaylistData } from '../../data-types/playlist-data';
 import { VideoData } from '../../data-types/video-data';
@@ -25,7 +34,7 @@ import { CommonModule } from '@angular/common';
   ],
   templateUrl: './library.page.html',
 })
-export class LibraryPage implements OnInit {
+export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
   allVideos: VideoData[] = [];
   videos: VideoData[] = [];
   folders: string[] = [];
@@ -43,6 +52,11 @@ export class LibraryPage implements OnInit {
   playlists: PlaylistData[] = [];
   username: string | null = null;
 
+  private routerSubscription: Subscription | undefined;
+
+  // Reference to the main content div for scrolling
+  @ViewChild('videoGridContainer') videoGridContainer!: ElementRef;
+
   constructor(
     private videoapi: VideoApiService,
     private router: Router,
@@ -52,7 +66,6 @@ export class LibraryPage implements OnInit {
   ngOnInit() {
     this.loadUsername();
 
-    // Subscribe to query params (page, search, sort, folder)
     this.route.queryParamMap.subscribe((params) => {
       this.currentPage = +(params.get('page') ?? 1);
       this.searchTerm = params.get('search') ?? '';
@@ -64,18 +77,33 @@ export class LibraryPage implements OnInit {
       this.fetchVideos();
     });
 
-    // Restore scroll position on init
-    const scrollY = sessionStorage.getItem('videoListScroll');
-    if (scrollY) {
-      setTimeout(() => window.scrollTo(0, +scrollY!), 0);
-    }
-
-    // Save scroll position on navigation away
-    this.router.events.subscribe((event) => {
+    this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
+        // Save the current scroll position when navigating away
         sessionStorage.setItem('videoListScroll', window.scrollY.toString());
       }
     });
+  }
+
+  ngAfterViewInit() {
+    // Restore scroll position after the view has been initialized and content rendered
+    const scrollY = sessionStorage.getItem('videoListScroll');
+    if (scrollY) {
+      setTimeout(() => {
+        // Use window.scrollTo with 'smooth' behavior
+        window.scrollTo({
+          top: +scrollY!,
+          behavior: 'smooth', // This makes the scroll smooth
+        });
+        sessionStorage.removeItem('videoListScroll'); // Clear it after use
+      }, 50); // Small delay for rendering
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 
   loadUsername() {
@@ -89,7 +117,6 @@ export class LibraryPage implements OnInit {
     this.videoapi.getVideosByFolder(this.currentFolder).subscribe({
       next: (res) => {
         this.allVideos = res.data.videos || [];
-        // Calculate total pages after filtering + sorting in paginateVideos()
         this.paginateVideos();
         this.loading = false;
       },
@@ -112,7 +139,6 @@ export class LibraryPage implements OnInit {
     this.totalPages = Math.ceil(filtered.length / this.limit);
     if (this.currentPage > this.totalPages) {
       this.currentPage = this.totalPages || 1;
-      // Update URL if currentPage changed after filter
       this.updateQueryParams();
     }
 
@@ -126,6 +152,11 @@ export class LibraryPage implements OnInit {
       this.currentPage = page;
       this.paginateVideos();
       this.updateQueryParams();
+      // Scroll to the top of the content smoothly when changing pages manually
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth', // Smooth scroll to top
+      });
     }
   }
 
@@ -138,12 +169,11 @@ export class LibraryPage implements OnInit {
         sort: this.sortOption || null,
         folder: this.currentFolder || null,
       },
-      queryParamsHandling: 'merge', // merge with other existing query params
+      queryParamsHandling: 'merge',
     });
   }
 
   onFolderSelected(folder: string) {
-    // Navigate with folder param updated (page resets automatically via queryParamMap subscription)
     if (folder !== null && folder !== undefined) {
       this.router.navigate(['/library'], {
         queryParams: { folder, page: 1 },

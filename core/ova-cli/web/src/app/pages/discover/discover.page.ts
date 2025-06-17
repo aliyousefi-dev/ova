@@ -1,14 +1,16 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   debounceTime,
   distinctUntilChanged,
-  Subject,
   switchMap,
   Subscription,
   of,
+  map,
+  filter,
 } from 'rxjs';
+import { ActivatedRoute, Router, Params } from '@angular/router';
 
 import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
 import { SearchBarComponent } from '../../components/search-bar/search-bar';
@@ -27,78 +29,101 @@ import { SearchApiService } from '../../services/api/search-api.service';
   ],
   templateUrl: './discover.page.html',
 })
-export class DiscoverPage implements OnDestroy {
+export class DiscoverPage implements OnInit, OnDestroy {
   searchTerm: string = '';
   sortOption: string = 'titleAsc';
-  // New property to control visibility of advanced filters
   advancedSearchEnabled: boolean = false;
   tagSearchEnabled: boolean = false;
   loading: boolean = false;
-  videos: any[] = []; // ALL results from server
+  videos: any[] = [];
 
   currentPage: number = 1;
-  limit: number = 20; // items per page
+  limit: number = 20;
 
-  resolutionFilter: string = ''; // '', '720p', '1080p', '4K'
-  durationFilter: string = ''; // '', 'short', 'medium', 'long'
-  uploadFrom: string = ''; // YYYY-MM-DD format (date string)
+  resolutionFilter: string = '';
+  durationFilter: string = '';
+  uploadFrom: string = '';
   uploadTo: string = '';
 
   totalCount: number = 0;
 
-  private searchSubject = new Subject<void>();
-  private searchSubscription: Subscription;
+  private searchSubscription!: Subscription;
 
-  constructor(private searchapi: SearchApiService) {
-    this.searchSubscription = this.searchSubject
+  constructor(
+    private searchapi: SearchApiService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+    this.searchSubscription = this.route.queryParams
       .pipe(
-        debounceTime(300),
-        // If you want to use distinctUntilChanged here, you'd need to emit a complex object
-        // containing all relevant search/filter parameters for comparison, e.g.,
-        // distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr))
-        // For simplicity and to ensure all filter changes trigger a re-evaluation of `filteredVideos` getter,
-        // I'll keep it commented out for now unless specifically needed for backend API calls.
-        switchMap(() => {
-          // Construct search parameters based on current state
+        debounceTime(100),
+        map((params: Params) => {
+          // Update component state first from URL params
+          this.searchTerm = params['q'] || '';
+          this.sortOption = params['sort'] || 'titleAsc';
+          this.resolutionFilter = params['res'] || '';
+          this.durationFilter = params['dur'] || '';
+          this.uploadFrom = params['from'] || '';
+          this.uploadTo = params['to'] || '';
+          this.tagSearchEnabled = params['tagsOnly'] === 'true';
+          this.advancedSearchEnabled = params['adv'] === 'true';
+          this.currentPage = params['page'] ? +params['page'] : 1;
+
+          // Return the full set of parameters relevant to the API search
+          return {
+            q: this.searchTerm,
+            tagsOnly: this.tagSearchEnabled,
+            adv: this.advancedSearchEnabled,
+          };
+        }),
+        distinctUntilChanged(
+          (prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)
+        ),
+        switchMap((apiSearchState) => {
+          const { q, tagsOnly, adv } = apiSearchState;
+
           const searchParams: { query?: string; tags?: string[] } = {};
-          const tags = this.searchTerm
+          const tags = q
             .split(',')
             .map((t) => t.trim())
             .filter((t) => t.length > 0);
 
-          if (this.tagSearchEnabled) {
-            // If tag search is enabled, only search by tags
-            if (tags.length === 0) {
+          const shouldPerformApiSearch =
+            q.trim() !== '' || tags.length > 0 || adv;
+
+          if (!shouldPerformApiSearch) {
+            this.videos = [];
+            this.totalCount = 0;
+            this.loading = false;
+            return of(null);
+          }
+
+          if (tagsOnly) {
+            if (tags.length === 0 && q.trim() === '') {
               this.videos = [];
               this.totalCount = 0;
               this.loading = false;
-              return of(null); // No tags, no search
+              return of(null);
             }
             searchParams.tags = tags;
           } else {
-            // If tag search is not enabled, search by query
-            if (!this.searchTerm.trim()) {
-              this.videos = [];
-              this.totalCount = 0;
-              this.loading = false;
-              return of(null); // No search term, no search
+            if (q.trim()) {
+              searchParams.query = q;
             }
-            searchParams.query = this.searchTerm;
-            // Optionally, if you want tags to also filter during a regular search:
             if (tags.length > 0) {
               searchParams.tags = tags;
             }
           }
 
           this.loading = true;
-          this.currentPage = 1; // Reset page on any new search trigger
           return this.searchapi.searchVideos(searchParams);
         })
       )
       .subscribe({
         next: (response) => {
           this.videos = response?.data.results || [];
-          // totalCount is now updated by the filteredVideos getter
           this.loading = false;
         },
         error: (err) => {
@@ -108,33 +133,55 @@ export class DiscoverPage implements OnDestroy {
           this.loading = false;
         },
       });
+  }
 
-    // Initial search or load on component creation
-    // This will trigger a search based on initial searchTerm (empty by default)
-    this.searchSubject.next();
+  // Method to update URL with current search parameters
+  private updateUrlParams() {
+    const queryParams: Params = {};
+
+    if (this.searchTerm) queryParams['q'] = this.searchTerm;
+    queryParams['sort'] =
+      this.sortOption === 'titleAsc' ? null : this.sortOption;
+
+    queryParams['adv'] = this.advancedSearchEnabled ? true : null;
+    queryParams['tagsOnly'] = this.tagSearchEnabled ? true : null;
+
+    queryParams['res'] = this.resolutionFilter || null;
+    queryParams['dur'] = this.durationFilter || null;
+
+    // FIX: If uploadFrom or uploadTo are empty strings (cleared), set to null to remove from URL
+    queryParams['from'] = this.uploadFrom || null;
+    queryParams['to'] = this.uploadTo || null;
+
+    if (this.currentPage > 1) queryParams['page'] = this.currentPage;
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: queryParams,
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 
   onSearchTermChange(term: string) {
     this.searchTerm = term;
-    this.searchSubject.next();
+    this.currentPage = 1;
+    this.updateUrlParams();
   }
 
   onTagSearchToggle() {
-    // Trigger search immediately on toggle change, as it changes the search logic
-    this.searchSubject.next();
+    this.currentPage = 1;
+    this.updateUrlParams();
   }
 
   onSortOptionChange() {
-    // No need to call searchSubject.next() as sorting/filtering is done client-side
-    // and `filteredVideos` getter will re-calculate automatically on change detection.
+    this.currentPage = 1;
+    this.updateUrlParams();
   }
 
-  // Calculate videos to display on current page after sorting and filtering
   get filteredVideos() {
-    // Start with the raw videos received from the API
     let processedVideos = [...this.videos];
 
-    // Apply client-side filters
     processedVideos = processedVideos.filter((video) => {
       const height = video.resolution?.height || 0;
       const duration = video.durationSeconds || 0;
@@ -146,34 +193,31 @@ export class DiscoverPage implements OnDestroy {
         (this.resolutionFilter === '1080p' && height === 1080) ||
         (this.resolutionFilter === '4K' && height >= 2160);
 
-      // Apply duration, upload date, and tag search filters only if advancedSearchEnabled is true
       let matchesAdvancedFilters = true;
       if (this.advancedSearchEnabled) {
         const matchesDuration =
           this.durationFilter === '' ||
-          (this.durationFilter === 'short' && duration <= 300) || // ≤ 5min
+          (this.durationFilter === 'short' && duration <= 300) ||
           (this.durationFilter === 'medium' &&
             duration > 300 &&
-            duration <= 900) || // 5-15min
+            duration <= 900) ||
           (this.durationFilter === 'long' &&
             duration > 900 &&
-            duration <= 1800) || // 15-30min
+            duration <= 1800) ||
           (this.durationFilter === 'veryLong' &&
             duration > 1800 &&
-            duration <= 3600) || // 30-60min
-          (this.durationFilter === 'extraLong' && duration > 3600); // > 60min
+            duration <= 3600) ||
+          (this.durationFilter === 'extraLong' && duration > 3600);
 
         let matchesUploadDate = true;
         if (uploadedAt) {
           if (this.uploadFrom) {
             const fromDate = new Date(this.uploadFrom);
-            // Set to start of the day for proper comparison
             fromDate.setHours(0, 0, 0, 0);
             if (uploadedAt < fromDate) matchesUploadDate = false;
           }
           if (this.uploadTo) {
             const toDate = new Date(this.uploadTo);
-            // Set to end of the day to include the selected 'to' date
             toDate.setHours(23, 59, 59, 999);
             if (uploadedAt > toDate) matchesUploadDate = false;
           }
@@ -184,17 +228,14 @@ export class DiscoverPage implements OnDestroy {
       return matchesResolution && matchesAdvancedFilters;
     });
 
-    // Apply client-side sorting to the filtered results
     const sortedFilteredVideos = this.sortVideos(processedVideos);
 
-    this.totalCount = sortedFilteredVideos.length; // update total count based on all applied filters/sorts
+    this.totalCount = sortedFilteredVideos.length;
 
-    // Apply pagination
     const start = (this.currentPage - 1) * this.limit;
     return sortedFilteredVideos.slice(start, start + this.limit);
   }
 
-  // Helper method to sort videos
   sortVideos(videos: any[]): any[] {
     switch (this.sortOption) {
       case 'titleAsc':
@@ -225,44 +266,54 @@ export class DiscoverPage implements OnDestroy {
   }
 
   get totalPages(): number {
-    // totalCount is already updated by the filteredVideos getter
     return Math.ceil(this.totalCount / this.limit);
   }
 
   goToPage(page: number) {
     if (page < 1 || page > this.totalPages || page === this.currentPage) return;
     this.currentPage = page;
+    this.updateUrlParams();
   }
 
   setResolutionFilter(res: string) {
     this.resolutionFilter = res;
-    this.currentPage = 1; // Reset page to first when filter changes
+    this.currentPage = 1;
+    this.updateUrlParams();
   }
 
   setDurationFilter(filter: string) {
     this.durationFilter = filter;
-    this.currentPage = 1; // Reset page to first when filter changes
+    this.currentPage = 1;
+    this.updateUrlParams();
   }
 
-  // Modified to accept Event and extract value
   setUploadFrom(event: Event) {
     this.uploadFrom = (event.target as HTMLInputElement).value;
-    this.currentPage = 1; // Reset page to first when filter changes
+    this.currentPage = 1;
+    this.updateUrlParams();
   }
 
-  // Modified to accept Event and extract value
   setUploadTo(event: Event) {
     this.uploadTo = (event.target as HTMLInputElement).value;
-    this.currentPage = 1; // Reset page to first when filter changes
+    this.currentPage = 1;
+    this.updateUrlParams();
   }
 
   clearUploadDateFilter() {
     this.uploadFrom = '';
     this.uploadTo = '';
-    this.currentPage = 1; // Reset page to first when filter changes
+    this.currentPage = 1;
+    this.updateUrlParams();
+  }
+
+  onAdvancedSearchToggle() {
+    this.currentPage = 1;
+    this.updateUrlParams();
   }
 
   ngOnDestroy() {
-    this.searchSubscription.unsubscribe();
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
 }

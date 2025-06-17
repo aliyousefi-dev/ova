@@ -38,8 +38,8 @@ export class LoginPage {
           this.error = res.message || 'Login failed';
         }
       },
-      error: (err) => {
-        this.error = err.error?.message || 'An error occurred during login.';
+      error: (errorMessage) => {
+        this.error = errorMessage;
       },
     });
   }

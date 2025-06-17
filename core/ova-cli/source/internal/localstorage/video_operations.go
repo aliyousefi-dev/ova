@@ -195,19 +195,20 @@ func (s *LocalStorage) AddTagToVideo(videoID, tag string) error {
 		return fmt.Errorf("video %q not found", videoID)
 	}
 
-	// Normalize the tag to be added for case-insensitive comparison
+	// Normalize the tag to lowercase
 	normalizedTag := strings.ToLower(strings.TrimSpace(tag))
 
-	// Check if tag already exists (case-insensitive)
+	// Check if the tag already exists (case-insensitive)
 	for _, existingTag := range video.Tags {
 		if strings.EqualFold(existingTag, normalizedTag) {
 			return nil // Tag already exists, no need to add
 		}
 	}
 
-	// Add the new tag (preserving its original casing if desired, or use normalizedTag)
-	video.Tags = append(video.Tags, tag) // Storing the original case of the tag
+	// Add the normalized (lowercase) tag
+	video.Tags = append(video.Tags, normalizedTag)
 	videos[videoID] = video
+
 	return s.saveVideos(videos)
 }
 
