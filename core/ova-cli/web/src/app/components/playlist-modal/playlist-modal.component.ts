@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-playlist-modal',
@@ -38,6 +39,8 @@ export class PlaylistModalComponent implements OnChanges {
     { title: string; slug: string; checked: boolean }[]
   >();
 
+  constructor(private router: Router) {}
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['playlists']) {
       this.sortedPlaylists = [...this.playlists].sort(
@@ -56,5 +59,9 @@ export class PlaylistModalComponent implements OnChanges {
 
   trackBySlug(index: number, playlist: { slug: string }) {
     return playlist.slug;
+  }
+
+  navigateToPlaylists() {
+    this.router.navigate(['/playlists']);
   }
 }

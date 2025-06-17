@@ -37,3 +37,12 @@ func GetAllVideoPaths(root string) ([]string, error) {
 	})
 	return videos, err
 }
+
+// GetVideoCountInRepository returns the total number of video files in the given root directory.
+func GetVideoCountInRepository(root string) (int, error) {
+	videoPaths, err := GetAllVideoPaths(root)
+	if err != nil {
+		return 0, err
+	}
+	return len(videoPaths), nil
+}

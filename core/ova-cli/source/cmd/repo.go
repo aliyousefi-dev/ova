@@ -2,8 +2,12 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
+	"path/filepath"
 
+	"ova-cli/source/internal/interfaces"
+	"ova-cli/source/internal/localstorage"
 	"ova-cli/source/internal/logs"
 	"ova-cli/source/internal/repository"
 
@@ -132,6 +136,158 @@ var repoPurgeCmd = &cobra.Command{
 	},
 }
 
+// repoSizeCmd shows the total workspace size excluding .ova-repo
+var repoSizeCmd = &cobra.Command{
+	Use:   "size [path]",
+	Short: "Show total workspace size excluding .ova-repo",
+	Args:  cobra.MaximumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		folderPath := "."
+		if len(args) == 1 {
+			folderPath = args[0]
+		}
+
+		size, err := repository.GetWorkspaceSize(folderPath)
+		if err != nil {
+			pterm.Error.Printf("Failed to calculate workspace size: %v\n", err)
+			os.Exit(1)
+		}
+
+		mb := float64(size) / (1024 * 1024)
+		gb := float64(size) / (1024 * 1024 * 1024)
+
+		pterm.Info.Printf("Workspace size (excluding .ova-repo): %.2f GB (%.2f MB, %d bytes)\n", gb, mb, size)
+	},
+}
+
+// GetAllFolders lists all folders under the root path (skipping .ova-server and hidden folders).
+func GetAllFolders(root string) ([]string, error) {
+	var folders []string
+
+	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return nil // skip errors
+		}
+		if info.IsDir() {
+			if info.Name() == ".ova-server" || info.Name()[0] == '.' {
+				return filepath.SkipDir
+			}
+			if path != root {
+				rel, _ := filepath.Rel(root, path)
+				folders = append(folders, rel)
+			}
+		}
+		return nil
+	})
+
+	return folders, err
+}
+
+// repoFoldersCmd lists all folders in the repository
+var repoFoldersCmd = &cobra.Command{
+	Use:   "folders [path]",
+	Short: "List all folders in the repository (excluding hidden and .ova-server)",
+	Args:  cobra.MaximumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		root := "."
+		if len(args) == 1 {
+			root = args[0]
+		}
+
+		folders, err := repository.GetAllFolders(root)
+		if err != nil {
+			pterm.Error.Printf("Error fetching folders: %v\n", err)
+			os.Exit(1)
+		}
+
+		if len(folders) == 0 {
+			pterm.Warning.Println("No folders found.")
+			return
+		}
+
+		pterm.Info.Printf("Found %d folder(s):\n", len(folders))
+		for _, folder := range folders {
+			pterm.Info.Printf(" - %s\n", folder)
+		}
+		pterm.Success.Println("Folder listing completed.")
+	},
+}
+
+// repoCountCmd shows the total number of video files in the repository and indexed videos count
+var repoCountCmd = &cobra.Command{
+	Use:   "count [path]",
+	Short: "Show total number of video files and indexed videos in the repository",
+	Args:  cobra.MaximumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		folderPath := "."
+		if len(args) == 1 {
+			folderPath = args[0]
+		}
+
+		// Get total number of video files on disk (repository)
+		count, err := repository.GetVideoCountInRepository(folderPath)
+		if err != nil {
+			pterm.Error.Printf("Failed to count videos in repository: %v\n", err)
+			os.Exit(1)
+		}
+
+		// Initialize storage at the .ova-repo/storage folder inside the repo path
+		storagePath := filepath.Join(folderPath, ".ova-repo", "storage")
+		var storage interfaces.StorageService = localstorage.NewLocalStorage(storagePath)
+
+		// Get total indexed videos count from storage
+		indexedVideos, err := storage.GetAllVideos()
+		if err != nil {
+			pterm.Error.Printf("Failed to get indexed videos: %v\n", err)
+			os.Exit(1)
+		}
+
+		pterm.Info.Printf("Total number of video files: %d\n", count)
+		pterm.Info.Printf("Total indexed videos: %d\n", len(indexedVideos))
+	},
+}
+
+// New command: repoCheckUnindexedCmd
+var repoUnindexedCmd = &cobra.Command{
+	Use:   "unindexed [path]",
+	Short: "List video files on disk that are not indexed in the repository",
+	Args:  cobra.MaximumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		root := "."
+		if len(args) == 1 {
+			root = args[0]
+		}
+
+		// Initialize storage service at .ova-repo/storage inside root
+		storagePath := filepath.Join(root, ".ova-repo", "storage")
+		var storage interfaces.StorageService = localstorage.NewLocalStorage(storagePath)
+
+		// Get all indexed videos from storage
+		indexedVideos, err := storage.GetAllVideos()
+		if err != nil {
+			pterm.Error.Printf("Failed to get indexed videos: %v\n", err)
+			os.Exit(1)
+		}
+
+		// Get unindexed videos on disk
+		unindexed, err := repository.GetUnindexedVideos(root, indexedVideos)
+		if err != nil {
+			pterm.Error.Printf("Failed to get unindexed videos: %v\n", err)
+			os.Exit(1)
+		}
+
+		if len(unindexed) == 0 {
+			pterm.Success.Println("All videos on disk are indexed.")
+			return
+		}
+
+		pterm.Info.Printf("Found %d unindexed video(s):\n", len(unindexed))
+		for _, path := range unindexed {
+			fmt.Println(" - " + path)
+		}
+	},
+}
+
 func InitCommandRepo(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(repoCmd)
 
@@ -140,4 +296,8 @@ func InitCommandRepo(rootCmd *cobra.Command) {
 	repoCmd.AddCommand(RepoVersionCmd)
 	repoCmd.AddCommand(repoLinksCmd)
 	repoCmd.AddCommand(repoPurgeCmd)
+	repoCmd.AddCommand(repoSizeCmd)
+	repoCmd.AddCommand(repoFoldersCmd)
+	repoCmd.AddCommand(repoCountCmd)
+	repoCmd.AddCommand(repoUnindexedCmd)
 }

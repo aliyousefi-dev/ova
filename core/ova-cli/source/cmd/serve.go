@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"net"
 	"os"
 	"path/filepath"
 
@@ -17,10 +18,50 @@ var serveBackendOnly bool
 var serveDisableAuth bool
 var serveUseHttps bool
 
+// GetLocalIPs returns a slice of all non-loopback IPv4 addresses on the host.
+func GetLocalIPs() ([]string, error) {
+	var ips []string
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		return ips, err
+	}
+	for _, iface := range ifaces {
+		// Skip interfaces that are down or loopback
+		if iface.Flags&net.FlagUp == 0 || iface.Flags&net.FlagLoopback != 0 {
+			continue
+		}
+		addrs, err := iface.Addrs()
+		if err != nil {
+			continue
+		}
+		for _, addr := range addrs {
+			var ip net.IP
+			switch v := addr.(type) {
+			case *net.IPNet:
+				ip = v.IP
+			case *net.IPAddr:
+				ip = v.IP
+			}
+			if ip == nil || ip.IsLoopback() {
+				continue
+			}
+			ip = ip.To4()
+			if ip == nil {
+				continue // not IPv4
+			}
+			ips = append(ips, ip.String())
+		}
+	}
+	if len(ips) == 0 {
+		return ips, fmt.Errorf("no connected network interface found")
+	}
+	return ips, nil
+}
+
 var serveCmd = &cobra.Command{
 	Use:   "serve <repo-path>",
 	Short: "Start the backend API server (optionally with web)",
-	Args:  cobra.ExactArgs(1), // Expect exactly one argument: the repo path
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		repoPath := args[0]
 
@@ -61,6 +102,16 @@ var serveCmd = &cobra.Command{
 		}
 
 		serveLogger.Info("Serving API at %s/api/v1/", addr)
+
+		localIPs, err := GetLocalIPs()
+		if err != nil {
+			serveLogger.Warn("Could not determine local IP addresses: %v", err)
+		} else {
+			for _, ip := range localIPs {
+				serveLogger.Info("Server reachable at http://%s:%d/", ip, cfg.ServerPort)
+			}
+		}
+
 		s := server.NewBackendServer(addr, exeDir, metadataDir, cwd, serveweb, webPath, serveDisableAuth, serveUseHttps)
 
 		if err := s.Run(); err != nil {

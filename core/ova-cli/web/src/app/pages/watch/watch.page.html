@@ -2,48 +2,55 @@
 
 <main class="flex w-full min-h-screen overflow-x-hidden max-w-7xl mx-auto gap-8">
 
-  <!-- Loading State -->
   <section *ngIf="loading" class="text-center py-10 w-full">
     <p class="text-lg">Loading video...</p>
   </section>
 
-  <!-- Error State -->
   <section *ngIf="error" class="text-center py-10 w-full">
     <p class="text-lg font-semibold">⚠️ Failed to load video</p>
   </section>
 
-  <!-- Video Content -->
   <section *ngIf="!loading && !error && video" class="flex flex-col lg:flex-row gap-8 w-full">
 
-    <!-- Main Video Area -->
     <div class="flex-grow max-w-4xl flex flex-col">
 
-      <!-- Video Title + Saved Button -->
-<div class="flex items-center justify-between pt-5 pb-5 bg-base-100 sm:px-3 md:px-6 lg:px-0 xl:px-0 2xl:px-0 px-3">
-  <!-- Video Title -->
-  <div class="text-lg font-semibold leading-tight truncate flex-1" [title]="video.title">
-    {{ video.title }}
-  </div>
+      <div class="flex items-center justify-between pt-5 pb-5 bg-base-100 sm:px-3 md:px-6 lg:px-0 xl:px-0 2xl:px-0 px-3">
+        <div class="text-lg font-semibold leading-tight truncate flex-1" [title]="video.title">
+          {{ video.title }}
+        </div>
 
-<!-- Saved Button -->
+<button
+  class="ml-2 rounded-full border transition-all duration-300 ease-in-out shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary
+    sm:px-3 px-2 py-2
+    sm:btn-md btn-sm
+    flex items-center justify-center
+    bg-base-100 text-primary border-primary hover:bg-primary hover:text-white"
+  (click)="addToPlaylist($event)"
+  aria-label="Add to Playlist"
+>
+  <svg xmlns="http://www.w3.org/2000/svg"
+       class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <path d="M11 12H3"/><path d="M16 6H3"/><path d="M16 18H3"/><path d="M18 9v6"/><path d="M21 12h-6"/>
+  </svg>
+</button>
+
 <button
   class="ml-2 rounded-full border transition-all duration-300 ease-in-out shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-error
     sm:px-3 px-2 py-2
     sm:btn-md btn-sm
-    flex items-center justify-center"
+    flex items-center justify-center
+    hover:text-white"
   [ngClass]="isSaved ? 'bg-error border-error' : 'bg-base-100 text-error border-error hover:bg-error'"
   (click)="toggleSaved()"
   [disabled]="LoadingSavedVideo"
   [attr.aria-label]="isSaved ? 'Unsave from favorites' : 'Save to favorites'"
 >
   <ng-container *ngIf="isSaved; else notFavoriteIcon">
-    <!-- Filled Bookmark -->
     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-200" viewBox="0 0 24 24" fill="currentColor">
       <path d="M19 21l-7-4-7 4V5a2 2 0 012-2h10a2 2 0 012 2v16z" />
     </svg>
   </ng-container>
   <ng-template #notFavoriteIcon>
-    <!-- Bookmark Plus -->
     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-200" viewBox="0 0 24 24" fill="none"
       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M19 21l-7-4-7 4V5a2 2 0 012-2h10a2 2 0 012 2v16z" />
@@ -52,13 +59,8 @@
     </svg>
   </ng-template>
 </button>
+      </div>
 
-</div>
-
-
-
-
-      <!-- Video Player -->
       <div class="overflow-hidden">
         <video
           #videoRef
@@ -71,35 +73,32 @@
         ></video>
       </div>
 
-      <!-- Metadata + Tags -->
       <div class="flex flex-col gap-6 p-5">
 
-        <!-- Meta Info -->
-<div class="flex flex-wrap gap-2 text-sm">
-  <span class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-    <span>{{ formatDuration(video.durationSeconds) }}</span>
-  </span>
-  <span class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star-icon lucide-star"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-     <span>{{ video.rating.toFixed(1) }} Rating</span>
-  </span>
-  <span class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
-    <span>{{ video.views }} Views</span>
-  </span>
-  <span class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-arrow-down-icon lucide-calendar-arrow-down"><path d="m14 18 4 4 4-4"/><path d="M16 2v4"/><path d="M18 14v8"/><path d="M21 11.354V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.343"/><path d="M3 10h18"/><path d="M8 2v4"/></svg>
-    <span>{{ video.uploadedAt | date: 'mediumDate' }}</span>
-  </span>
-    <span class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-play-icon lucide-square-play"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 8 6 4-6 4Z"/></svg>
-      <span>{{ video.resolution.width }} x {{ video.resolution.height }} </span>
-  </span>
-</div>
+        <div class="flex flex-wrap gap-2 text-sm">
+          <span class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>{{ formatDuration(video.durationSeconds) }}</span>
+          </span>
+          <span class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star-icon lucide-star"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span>{{ video.rating.toFixed(1) }} Rating</span>
+          </span>
+          <span class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>{{ video.views }} Views</span>
+          </span>
+          <span class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-arrow-down-icon lucide-calendar-arrow-down"><path d="m14 18 4 4 4-4"/><path d="M16 2v4"/><path d="M18 14v8"/><path d="M21 11.354V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.343"/><path d="M3 10h18"/><path d="M8 2v4"/></svg>
+            <span>{{ video.uploadedAt | date: 'mediumDate' }}</span>
+          </span>
+          <span class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-play-icon lucide-square-play"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 8 6 4-6 4Z"/></svg>
+              <span>{{ video.resolution.width }} x {{ video.resolution.height }} </span>
+          </span>
+        </div>
 
 
-        <!-- Tags -->
         <div class="mt-4">
           <h2 class="text-sm font-semibold mb-2">Tags:</h2>
           <div class="flex flex-wrap gap-2 items-center">
@@ -111,7 +110,6 @@
             ></app-tag-chip>
           </div>
 
-          <!-- Add Tag -->
           <div class="mt-4 flex gap-2">
             <input
               [(ngModel)]="newTag"
@@ -126,21 +124,17 @@
       </div>
     </div>
 
-    <!-- Sidebar: Similar Videos -->
     <aside class="w-full lg:w-80 mt-10 lg:self-start p-5">
       <h2 class="text-lg font-semibold mb-4">Similar Videos</h2>
 
-      <!-- Loading -->
       <div *ngIf="similarVideosLoading" class="text-center py-4">
         Loading similar videos...
       </div>
 
-      <!-- Error -->
       <div *ngIf="similarVideosError" class="text-center py-4">
         Failed to load similar videos.
       </div>
 
-      <!-- Grid of Similar Videos -->
       <div
         *ngIf="!similarVideosLoading && !similarVideosError"
         class="grid grid-cols-2 gap-4"
@@ -164,3 +158,9 @@
 
   </section>
 </main>
+
+<app-playlist-modal
+  [visible]="playlistModalVisible"
+  [playlists]="playlists"
+  (close)="closePlaylistModal($event)">
+</app-playlist-modal>

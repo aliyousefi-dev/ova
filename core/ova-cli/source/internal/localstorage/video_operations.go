@@ -28,7 +28,7 @@ func (s *LocalStorage) AddVideo(video datatypes.VideoData) error {
 	return s.saveVideos(videos)
 }
 
-// DeleteVideoByID removes a video by its ID.
+// DeleteVideo removes a video by its ID.
 // If the video does not exist, it's considered a no-op (no error is returned).
 func (s *LocalStorage) DeleteVideoByID(id string) error {
 	s.mu.Lock()
@@ -486,4 +486,15 @@ func (s *LocalStorage) UpdateVideoLocalPath(videoID, newPath string) error {
 	videos[videoID] = video
 
 	return s.saveVideos(videos)
+}
+
+func (s *LocalStorage) GetTotalVideoCount() (int, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	videos, err := s.loadVideos()
+	if err != nil {
+		return 0, fmt.Errorf("failed to load videos: %w", err)
+	}
+	return len(videos), nil
 }

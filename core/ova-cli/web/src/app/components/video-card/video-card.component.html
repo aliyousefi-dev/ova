@@ -3,10 +3,10 @@
   (mouseenter)="hovering = true"
   (mouseleave)="hovering = false"
 >
-<div
-  class="block w-full h-40 rounded-lg overflow-hidden relative"
-  (click)="navigateToWatch()"
->
+  <div
+    class="block w-full h-40 rounded-lg overflow-hidden relative"
+    (click)="navigateToWatch()"
+  >
     <figure class="relative w-full h-40 rounded-lg overflow-hidden bg-transparent">
       <div *ngIf="isSaved" class="absolute bottom-2 left-2 z-30">
         <button
@@ -21,6 +21,13 @@
           </svg>
         </button>
       </div>
+
+<div
+  *ngIf="isWatched"
+  class="absolute top-2 right-2 bg-black text-white text-xs font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 z-30 shadow">
+  <span>Watched</span>
+</div>
+
 
       <img
         [src]="getThumbnailUrl()"
@@ -54,7 +61,7 @@
   </div>
 
   <div
-    class="flex flex-col gap-2 p-4 mt-2 rounded-lg  shadow-sm hover:shadow-md bg-base-200 z-20"
+    class="flex flex-col gap-2 p-4 mt-2 rounded-lg shadow-sm hover:shadow-md bg-base-200 z-20"
     (click)="$event.stopPropagation()"
   >
     <div class="flex items-start justify-between">
@@ -94,7 +101,6 @@
   </div>
 </div>
 
-<!-- Playlist Modal -->
 <app-playlist-modal
   [visible]="playlistModalVisible"
   [playlists]="playlists"

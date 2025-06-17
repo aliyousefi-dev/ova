@@ -80,6 +80,7 @@ func (s *OvaServer) initRoutes() {
 	api.RegisterThumbnailRoutes(v1, s.StorageService)
 	api.RegisterPreviewRoutes(v1, s.StorageService)
 	api.RegisterFolderRoutes(v1, s.StorageService)
+	api.RegisterUserWatchedRoutes(v1, s.StorageService)
 	api.RegisterStatusRoute(v1)
 
 	if s.ServeFrontend {

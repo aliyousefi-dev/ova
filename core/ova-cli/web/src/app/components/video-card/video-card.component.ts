@@ -6,14 +6,13 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router'; // Ensure Router is imported from @angular/router
 import { FormsModule } from '@angular/forms';
 import { PlaylistModalComponent } from '../playlist-modal/playlist-modal.component';
 import { PlaylistAPIService } from '../../services/api/playlist-api.service';
 import { VideoApiService } from '../../services/video-api.service';
 import { SavedApiService } from '../../services/api/saved-api.service';
 import { VideoData } from '../../data-types/video-data';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-video-card',
@@ -25,6 +24,7 @@ export class VideoCardComponent implements OnChanges {
   @Input() video!: VideoData;
   @Input() isSaved: boolean = false;
   @Input() username: string = '';
+  @Input() isWatched: boolean = false; // Add the new input for 'isWatched'
 
   hovering = false;
   Saved = false;
@@ -42,6 +42,12 @@ export class VideoCardComponent implements OnChanges {
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
+    // You might want to react to changes in `isWatched` here if needed,
+    // for example, to update the UI based on the new value.
+    if (changes['isWatched']) {
+      // console.log('isWatched changed to:', changes['isWatched'].currentValue);
+      // Perform any UI updates or logic based on the new isWatched value
+    }
     this.cd.detectChanges(); // Ensure bindings update when video input changes
   }
 

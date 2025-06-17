@@ -1,4 +1,10 @@
-import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,11 +13,20 @@ import { VideoData } from '../../data-types/video-data';
 import { VideoApiService } from '../../services/video-api.service';
 import { TagChipComponent } from '../../components/tag-chip/tag-chip.component';
 import { SavedApiService } from '../../services/api/saved-api.service';
+import { PlaylistModalComponent } from '../../components/playlist-modal/playlist-modal.component'; // Import PlaylistModalComponent
+import { PlaylistAPIService } from '../../services/api/playlist-api.service'; // Import PlaylistAPIService
+import { WatchedApiService } from '../../services/api/watched-api.service'; // Import WatchedApiService
 
 @Component({
   selector: 'app-watch',
   standalone: true,
-  imports: [CommonModule, FormsModule, TopNavBarComponent, TagChipComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TopNavBarComponent,
+    TagChipComponent,
+    PlaylistModalComponent,
+  ],
   templateUrl: './watch.page.html',
   styleUrls: ['./watch.page.css'],
 })
@@ -38,11 +53,19 @@ export class WatchPage implements AfterViewInit {
   similarVideosLoading = false;
   similarVideosError = false;
 
+  // Playlist properties
+  playlistModalVisible = false;
+  playlists: { title: string; slug: string; checked: boolean }[] = [];
+  originalPlaylists: { title: string; slug: string; checked: boolean }[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private savedapi: SavedApiService,
-    public videoapi: VideoApiService
+    public videoapi: VideoApiService,
+    private playlistapi: PlaylistAPIService, // Inject PlaylistAPIService
+    private watchedapi: WatchedApiService, // Inject WatchedApiService
+    private cd: ChangeDetectorRef // Inject ChangeDetectorRef
   ) {
     this.videoId = this.route.snapshot.paramMap.get('videoId');
 
@@ -56,31 +79,22 @@ export class WatchPage implements AfterViewInit {
 
   ngAfterViewInit(): void {
     window.scrollTo(0, 0);
-    // muted attribute is set in template, no need to set here
   }
 
   onVideoLoaded() {
     const videoElement = this.videoRef?.nativeElement;
     if (videoElement) {
-      // Set muted state from localStorage
       const storedMute = localStorage.getItem('isMuted');
       videoElement.muted = storedMute === 'true';
-
-      // Remove previous listeners if any to avoid duplicates
       videoElement.removeEventListener('volumechange', this.onVolumeChange);
-
-      // Attach listener
       videoElement.addEventListener('volumechange', this.onVolumeChange);
     }
   }
 
-  // Separate handler method to enable add/remove listener easily
   onVolumeChange = () => {
     const videoElement = this.videoRef?.nativeElement;
     if (!videoElement) return;
-
     localStorage.setItem('isMuted', String(videoElement.muted));
-    console.log('changed'); // Should now reliably fire on mute/unmute
   };
 
   fetchVideo(videoId: string) {
@@ -91,12 +105,24 @@ export class WatchPage implements AfterViewInit {
         this.video = response.data;
         (window as any).video = this.video;
         this.loading = false;
-
-        // After loading video, load similar videos
         this.loadSimilarVideos(videoId);
         this.username = localStorage.getItem('username') ?? '';
-
         this.checkIfVideoSaved();
+
+        // --- Mark video as watched when successfully loaded ---
+        if (this.username && this.videoId) {
+          this.watchedapi
+            .addUserWatched(this.username, this.videoId)
+            .subscribe({
+              next: () => {
+                console.log('Video marked as watched!');
+              },
+              error: (err) => {
+                console.error('Failed to mark video as watched:', err);
+              },
+            });
+        }
+        // --- End of watched video update ---
       },
       error: () => {
         this.error = true;
@@ -132,7 +158,7 @@ export class WatchPage implements AfterViewInit {
 
     this.router.navigate(['/watch', videoId], { replaceUrl: true }).then(() => {
       this.videoId = videoId;
-      this.fetchVideo(videoId);
+      this.fetchVideo(videoId); // This will re-trigger the watched update
       window.scrollTo(0, 0);
     });
   }
@@ -149,7 +175,11 @@ export class WatchPage implements AfterViewInit {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
-    return `${h > 0 ? `${h}h ` : ''}${m > 0 ? `${m}m ` : ''}${s}s`;
+    const parts = [];
+    if (h > 0) parts.push(`${h}h`);
+    if (m > 0) parts.push(`${m}m`);
+    if (s > 0 || parts.length === 0) parts.push(`${s}s`);
+    return parts.join(' ');
   }
 
   addTag() {
@@ -223,5 +253,65 @@ export class WatchPage implements AfterViewInit {
         error: () => done(),
       });
     }
+  }
+
+  // New methods for playlist functionality
+  addToPlaylist(event: MouseEvent) {
+    event.stopPropagation();
+    if (!this.username || !this.video) return;
+
+    this.playlistapi.getUserPlaylists(this.username).subscribe((response) => {
+      const pls = response.data.playlists;
+      const checkList = pls.map((p) => ({ ...p, checked: false }));
+
+      Promise.all(
+        checkList.map(
+          (playlist) =>
+            new Promise<void>((resolve) => {
+              this.playlistapi
+                .getUserPlaylistBySlug(this.username, playlist.slug)
+                .subscribe((plData) => {
+                  playlist.checked = plData.data.videoIds.includes(
+                    this.video.videoId
+                  );
+                  resolve();
+                });
+            })
+        )
+      ).then(() => {
+        this.playlists = checkList;
+        this.originalPlaylists = checkList.map((p) => ({ ...p }));
+        this.playlistModalVisible = true;
+        this.cd.detectChanges();
+      });
+    });
+  }
+
+  closePlaylistModal(
+    updatedPlaylists: { title: string; slug: string; checked: boolean }[]
+  ) {
+    this.playlistModalVisible = false;
+    if (!this.username || !this.video) return;
+
+    updatedPlaylists.forEach((playlist) => {
+      const original = this.originalPlaylists.find(
+        (p) => p.slug === playlist.slug
+      );
+      if (!original) return;
+
+      if (playlist.checked && !original.checked) {
+        this.playlistapi
+          .addVideoToPlaylist(this.username, playlist.slug, this.video.videoId)
+          .subscribe();
+      } else if (!playlist.checked && original.checked) {
+        this.playlistapi
+          .deleteVideoFromPlaylist(
+            this.username,
+            playlist.slug,
+            this.video.videoId
+          )
+          .subscribe();
+      }
+    });
   }
 }

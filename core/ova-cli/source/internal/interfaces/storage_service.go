@@ -47,4 +47,12 @@ type StorageService interface {
 	// Folder management
 	GetFolderList() ([]string, error)
 	GetVideosByFolder(folderPath string) ([]datatypes.VideoData, error)
+
+	// New method to get total video count
+	GetTotalVideoCount() (int, error)
+
+	// New method to add video to user's watched list
+	AddVideoToWatched(username, videoID string) error
+	GetUserWatchedVideos(username string) ([]datatypes.VideoData, error)
+	ClearUserWatchedHistory(username string) error
 }
