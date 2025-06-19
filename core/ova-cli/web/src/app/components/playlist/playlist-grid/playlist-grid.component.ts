@@ -1,7 +1,15 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { PlaylistData } from '../../../data-types/playlist-data';
 import { PlaylistCardComponent } from '../playlist-card/playlist-card.component';
 import { CommonModule } from '@angular/common';
+import { ConfirmModalComponent } from '../../common/confirm-modal/confirm-modal.component';
 
 import {
   DragDropModule,
@@ -16,7 +24,12 @@ import { of } from 'rxjs';
 @Component({
   selector: 'app-playlist-grid',
   templateUrl: './playlist-grid.component.html',
-  imports: [PlaylistCardComponent, CommonModule, DragDropModule],
+  imports: [
+    PlaylistCardComponent,
+    CommonModule,
+    DragDropModule,
+    ConfirmModalComponent,
+  ],
   styleUrls: ['./playlist-grid.component.css'],
 })
 export class PlaylistGridComponent implements OnInit {
@@ -25,6 +38,8 @@ export class PlaylistGridComponent implements OnInit {
 
   @Output() select = new EventEmitter<string>();
   @Output() delete = new EventEmitter<string[]>();
+
+  @ViewChild(ConfirmModalComponent) confirmModal!: ConfirmModalComponent;
 
   selectedPlaylists = new Set<string>();
 
@@ -86,7 +101,10 @@ export class PlaylistGridComponent implements OnInit {
     if (checked) {
       this.playlists.forEach((p) => this.selectedPlaylists.add(p.slug));
     }
+
+    console.log(this.selectedPlaylists);
   }
+
   toggleSelection(slug: string, event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
     if (checked) {
@@ -118,6 +136,27 @@ export class PlaylistGridComponent implements OnInit {
     } else {
       this.selectedPlaylists.add(slug);
     }
+  }
+
+  deleteButton() {
+    this.confirmModal.open(
+      `Are you sure you want to delete all selected playlists? This action cannot be undone.`
+    );
+  }
+
+  confirmDelete() {
+    this.selectedPlaylists.forEach((playlist_slug) => {
+      this.playlistApi
+        .deleteUserPlaylistBySlug(this.username!, playlist_slug)
+        .subscribe({
+          next: () => {
+            this.handlePlaylistDeleted(playlist_slug);
+          },
+          error: (err) => {
+            alert('Failed to delete playlist: ' + err.message);
+          },
+        });
+    });
   }
 
   handlePlaylistDeleted(deletedSlug: string) {

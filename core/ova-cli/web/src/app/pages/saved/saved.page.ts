@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { NavBarComponent } from '../../components/common/navbar/navbar.component';
 import { SearchBarComponent } from '../../components/advance/search-bar/search-bar';
 import { VideoGridComponent } from '../../components/video/video-grid/video-grid.component';
-import { VideoApiService } from '../../services/video-api.service';
+import { VideoApiService } from '../../services/api/video-api.service';
 import { SavedApiService } from '../../services/api/saved-api.service';
 
 @Component({

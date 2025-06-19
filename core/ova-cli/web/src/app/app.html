@@ -1,6 +1,10 @@
 
   <app-loading-spinner *ngIf="loading$ | async"></app-loading-spinner>
+  
   <div>
+    <div style="height: 64px;"></div>
+    
     <router-outlet />
+
     <div style="height: 64px;"></div>
   </div>

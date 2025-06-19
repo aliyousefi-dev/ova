@@ -4,14 +4,14 @@
     <input
       type="checkbox"
       class="checkbox checkbox-sm"
-      (toggle)="toggleSelectAll($event)"
+      (change)="toggleSelectAll($event)"
     />
       <span class="label-text text-base select-none">
     Select All
     </span>
   </div>
   <div class="flex justify-end">
-    <button class="btn btn-error">
+    <button (click)="deleteButton()" class="btn btn-error">
       Delete</button>
   </div>
 </div>
@@ -87,3 +87,11 @@
     </ng-template>
   </ng-container>
 </ul>
+
+
+<!-- Confirm Modal -->
+<app-confirm-modal
+  #confirmModal
+  (confirmed)="confirmDelete()"
+  (cancelled)="null"
+></app-confirm-modal>

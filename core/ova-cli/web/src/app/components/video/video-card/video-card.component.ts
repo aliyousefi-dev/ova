@@ -10,7 +10,7 @@ import { RouterModule, Router } from '@angular/router'; // Ensure Router is impo
 import { FormsModule } from '@angular/forms';
 import { PlaylistModalComponent } from '../../playlist/playlist-modal/playlist-modal.component';
 import { PlaylistAPIService } from '../../../services/api/playlist-api.service';
-import { VideoApiService } from '../../../services/video-api.service';
+import { VideoApiService } from '../../../services/api/video-api.service';
 import { SavedApiService } from '../../../services/api/saved-api.service';
 import { VideoData } from '../../../data-types/video-data';
 

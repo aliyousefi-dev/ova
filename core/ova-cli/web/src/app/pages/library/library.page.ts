@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 
 import { PlaylistData } from '../../data-types/playlist-data';
 import { VideoData } from '../../data-types/video-data';
-import { VideoApiService } from '../../services/video-api.service';
+import { VideoApiService } from '../../services/api/video-api.service';
 
 import { FolderTreeComponent } from '../../components/advance/folder-tree/folder-tree.component';
 import { NavBarComponent } from '../../components/common/navbar/navbar.component';

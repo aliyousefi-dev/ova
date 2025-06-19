@@ -3,10 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-import { VideoData } from '../data-types/video-data';
-import { ApiResponse } from '../data-types/responses';
+import { VideoData } from '../../data-types/video-data';
+import { ApiResponse } from '../../data-types/responses';
 
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 interface SimilarVideosResponse {
   similarVideos: VideoData[];

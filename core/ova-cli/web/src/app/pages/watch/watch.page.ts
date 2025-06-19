@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavBarComponent } from '../../components/common/navbar/navbar.component';
 import { VideoData } from '../../data-types/video-data';
-import { VideoApiService } from '../../services/video-api.service';
+import { VideoApiService } from '../../services/api/video-api.service';
 import { TagChipComponent } from '../../components/video/tag-chip/tag-chip.component';
 import { SavedApiService } from '../../services/api/saved-api.service';
 import { PlaylistModalComponent } from '../../components/playlist/playlist-modal/playlist-modal.component'; // Import PlaylistModalComponent
