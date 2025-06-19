@@ -8,6 +8,7 @@ import { ConfirmModalComponent } from '../../common/confirm-modal/confirm-modal.
 import { CommonModule } from '@angular/common';
 import { ViewChild } from '@angular/core';
 import { UtilsService } from '../../../services/utils.service';
+import { RouterModule, Router } from '@angular/router';
 
 @Component({
   selector: 'app-playlist-manager',
@@ -17,6 +18,7 @@ import { UtilsService } from '../../../services/utils.service';
     PlaylistGridComponent,
     PlaylistCreatorModalComponent,
     ConfirmModalComponent,
+    RouterModule,
   ],
 })
 export class PlaylistManagerComponent implements OnInit {
@@ -41,7 +43,8 @@ export class PlaylistManagerComponent implements OnInit {
 
   constructor(
     private playlistApi: PlaylistAPIService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private router: Router
   ) {}
 
   // Get Playlist from Backend
@@ -126,5 +129,11 @@ export class PlaylistManagerComponent implements OnInit {
   onPlaylistCreated(title: string): void {
     console.log('playlist created');
     this.FetchPlaylists();
+  }
+
+  onSelectPlaylist(title: string): void {
+    if (!this.manageMode) {
+      this.router.navigate(['/playlists', title]);
+    }
   }
 }

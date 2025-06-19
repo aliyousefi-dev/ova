@@ -44,6 +44,7 @@
   <app-playlist-grid
     [playlists]="playlists"
     [manageMode]="manageMode"
+    (select)="onSelectPlaylist($event)"
   ></app-playlist-grid>
 </section>
 
