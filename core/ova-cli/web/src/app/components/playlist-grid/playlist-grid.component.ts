@@ -87,7 +87,6 @@ export class PlaylistGridComponent implements OnInit {
       this.playlists.forEach((p) => this.selectedPlaylists.add(p.slug));
     }
   }
-
   toggleSelection(slug: string, event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
     if (checked) {

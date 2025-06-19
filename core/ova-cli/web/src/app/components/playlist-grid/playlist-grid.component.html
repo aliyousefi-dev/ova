@@ -1,3 +1,22 @@
+<div class="w-full h-15">
+<div *ngIf="manageMode"  class="flex flex-wrap justify-around gap-4">
+  <div class="flex flex-row justify-center items-center gap-4">
+    <input
+      type="checkbox"
+      class="checkbox checkbox-sm"
+      (toggle)="toggleSelectAll($event)"
+    />
+      <span class="label-text text-base select-none">
+    Select All
+    </span>
+  </div>
+  <div class="flex justify-end">
+    <button class="btn btn-error">
+      Delete</button>
+  </div>
+</div>
+</div>
+
 <ul
   id="playlist-draggable-list"
   class="list-none p-0 m-0 bg-base-100 w-full max-w-full sm:max-w-4xl mx-auto "
@@ -36,7 +55,7 @@
         <app-playlist-card
           [playlist]="playlist"
           (select)="onSelect(playlist.title)"
-            (playlistDeleted)="handlePlaylistDeleted($event)"
+          (playlistDeleted)="handlePlaylistDeleted($event)"
         ></app-playlist-card>
       </div>
 
@@ -59,8 +78,8 @@
           <app-playlist-card
             [playlist]="playlist"
             (select)="onSelect(playlist.title)"
-              (playlistDeleted)="handlePlaylistDeleted($event)"
-              (click)="$event.stopPropagation()"
+            (playlistDeleted)="handlePlaylistDeleted($event)"
+            (click)="$event.stopPropagation()"
           ></app-playlist-card>
         </div>
 

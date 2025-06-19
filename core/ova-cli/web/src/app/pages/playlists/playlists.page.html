@@ -24,6 +24,7 @@
   </button>
 </div>
 
+
 <!-- Toast -->
 <app-toast
   *ngIf="creationError"
@@ -31,6 +32,8 @@
   type="error"
   (close)="creationError = null"
 ></app-toast>
+
+
 
 <!-- Empty State -->
 <section
@@ -58,8 +61,11 @@
   </p>
 </section>
 
+
+
+
 <!-- Playlist Grid -->
-<section *ngIf="!loading && playlists.length > 0" class="px-6 py-10 max-w-7xl mx-auto">
+<section *ngIf="!loading && playlists.length > 0" class="px-6 py-2 max-w-7xl mx-auto">
   <app-playlist-grid
     [playlists]="playlists"
     [manageMode]="manageMode"

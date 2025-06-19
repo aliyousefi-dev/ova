@@ -1,19 +1,7 @@
 
+Playlist Grid
+Playlist Page
+Playlist Card
 
-This is a passion Project that we can manage the Videos over the Lan.
-this is  Network Project that can guide you how Build things on top of others.
+what we must manage that?
 
-i thinking about a admin panel that running on different port
-is this good approach or not ?
-
-
-What i want from a player? 
-Speed 
-Sound 
-Visible Buffer
-FullScreen
-
-Upload Multiple Files from Adming 
-
-
-Tag on the Video 
