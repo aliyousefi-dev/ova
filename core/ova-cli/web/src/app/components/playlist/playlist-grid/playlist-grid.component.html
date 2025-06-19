@@ -1,21 +1,3 @@
-<div class="w-full h-15">
-<div *ngIf="manageMode"  class="flex flex-wrap justify-around gap-4">
-  <div class="flex flex-row justify-center items-center gap-4">
-    <input
-      type="checkbox"
-      class="checkbox checkbox-sm"
-      (change)="toggleSelectAll($event)"
-    />
-      <span class="label-text text-base select-none">
-    Select All
-    </span>
-  </div>
-  <div class="flex justify-end">
-    <button (click)="deleteButton()" class="btn btn-error">
-      Delete</button>
-  </div>
-</div>
-</div>
 
 <ul
   id="playlist-draggable-list"
@@ -37,7 +19,7 @@
     <li
       *ngIf="manageMode; else nonDraggable"
       cdkDrag
-      class="flex items-center gap-2 hover:bg-base-200 cursor-pointer px-4 py-2 "
+      class="flex items-center gap-5 hover:bg-base-200 cursor-pointer px-4 py-2 "
       (click)="onSelect(playlist.title)"
     >
 
@@ -87,11 +69,3 @@
     </ng-template>
   </ng-container>
 </ul>
-
-
-<!-- Confirm Modal -->
-<app-confirm-modal
-  #confirmModal
-  (confirmed)="confirmDelete()"
-  (cancelled)="null"
-></app-confirm-modal>

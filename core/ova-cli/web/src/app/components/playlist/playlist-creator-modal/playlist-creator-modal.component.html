@@ -1,31 +1,30 @@
 <dialog
   id="playlist_modal"
-  class="modal bg-black/40 backdrop-blur-sm"
-  [open]="visible"
+  *ngIf="isVisible"
+  class="modal modal-open bg-black/40 backdrop-blur-sm z-200"
   (keydown.escape)="onCancel()"
   (keydown.enter)="playlistName.trim() && submit()"
   aria-labelledby="playlist_modal_title"
   role="dialog"
   aria-modal="true"
 >
+
   <div
-    class="modal-box bg-base-200 text-base-content max-w-md mx-auto rounded-lg shadow-lg p-6"
-    tabindex="0"
+    class="modal-box " (click)="$event.stopPropagation()"
   >
     <h3 id="playlist_modal_title" class="font-bold text-xl mb-4">
-      Create New Playlist
+      Create New Playlistssss
     </h3>
 
     <label for="playlistNameInput" class="sr-only">Playlist Name</label>
     <input
-      id="playlistNameInput"
       #playlistInput
+      id="playlistNameInput"
       type="text"
       [(ngModel)]="playlistName"
       placeholder="Enter playlist name"
       class="input input-bordered w-full"
       aria-required="true"
-      autofocus
       autocomplete="off"
     />
 
@@ -53,3 +52,6 @@
     </div>
   </div>
 </dialog>
+
+
+  

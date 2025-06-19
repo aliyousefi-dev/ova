@@ -6,12 +6,8 @@
 
 .cdk-drag-animating {
   /* This targets items that are animating into their new position */
-  transition: transform 250ms ease;
-}
-
-.list-row {
-  /* This class doesn't seem to be used in your HTML, but keeping it as is */
-  transition: background-color 0.2s ease;
+  transition: transform 300ms ease;
+  
 }
 
 /* This is the key rule for animating other items when the list is being dragged */

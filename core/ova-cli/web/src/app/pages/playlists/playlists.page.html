@@ -5,24 +5,10 @@
   Loading playlists...
 </div>
 
-<!-- Actions -->
-<div class="my-8 flex flex-wrap justify-center gap-4 px-4">
-  <button
-    class="btn btn-primary text-sm px-6 py-2 min-w-[160px]"
-    (click)="openCreateModal()"
-    aria-label="Create New Playlist"
-  >
-    + Create New Playlist
-  </button>
 
-  <button
-    class="btn text-sm px-6 py-2 min-w-[160px] border border-base-content/10 hover:bg-base-300"
-    (click)="toggleManageMode()"
-    [attr.aria-pressed]="manageMode"
-  >
-    {{ manageMode ? 'Done' : 'Manage' }}
-  </button>
-</div>
+<!-- Playlist Manager -->
+<app-playlist-manager>
+</app-playlist-manager>
 
 
 <!-- Toast -->
@@ -35,48 +21,7 @@
 
 
 
-<!-- Empty State -->
-<section
-  *ngIf="!loading && playlists.length === 0"
-  class="flex flex-col items-center justify-center text-center px-6 py-12 max-w-md mx-auto text-base-content/70"
->
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    class="w-16 h-16 text-base-content/20 mb-4"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    aria-hidden="true"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      d="M9 19V6h13M9 6L3 12l6 6"
-    />
-  </svg>
-  <h2 class="text-xl font-semibold text-base-content/80 mb-2">No playlists yet</h2>
-  <p class="text-sm text-base-content/60">
-    You haven't created any playlists. Start building one to organize your favorite videos!
-  </p>
-</section>
 
 
 
 
-<!-- Playlist Grid -->
-<section *ngIf="!loading && playlists.length > 0" class="px-6 py-2 max-w-7xl mx-auto">
-  <app-playlist-grid
-    [playlists]="playlists"
-    [manageMode]="manageMode"
-    (select)="onSelectPlaylist($event)"
-    (delete)="onDeletePlaylists($event)"
-  ></app-playlist-grid>
-</section>
-
-<!-- Create Modal -->
-<app-playlist-create-modal
-  [visible]="showCreateModal"
-  (close)="onModalClose()"
-  (create)="onModalCreate($event)"
-></app-playlist-create-modal>

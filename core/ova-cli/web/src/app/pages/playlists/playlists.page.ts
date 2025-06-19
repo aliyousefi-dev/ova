@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { NavBarComponent } from '../../components/common/navbar/navbar.component';
-import { PlaylistCreateModalComponent } from '../../components/playlist/playlist-create-modal/playlist-create-modal.component';
 
 import { PlaylistAPIService } from '../../services/api/playlist-api.service';
 import { PlaylistData } from '../../data-types/playlist-data';
-import { PlaylistGridComponent } from '../../components/playlist/playlist-grid/playlist-grid.component';
 
 import { ToastComponent } from '../../components/common/toast/toast.component';
+
+import { PlaylistManagerComponent } from '../../components/playlist/playlist-manager/playlist-manager.component';
 
 @Component({
   selector: 'app-playlists',
@@ -17,8 +17,7 @@ import { ToastComponent } from '../../components/common/toast/toast.component';
   imports: [
     CommonModule,
     NavBarComponent,
-    PlaylistGridComponent,
-    PlaylistCreateModalComponent,
+    PlaylistManagerComponent,
     ToastComponent,
   ],
   templateUrl: './playlists.page.html',
