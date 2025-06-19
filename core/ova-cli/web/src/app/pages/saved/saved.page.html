@@ -5,14 +5,19 @@
   placeholder="Search videos..."
 ></app-search-bar>
 
-<!-- Sort Menu -->
-<div class="max-w-7xl mx-auto px-4 mt-4 flex justify-end items-center gap-2">
-  <label for="sort" class="text-sm  font-medium">Sort by:</label>
-  <select
+
+<div class="max-w-7xl mx-auto px-4 mt-4 flex items-center justify-between">
+  <div class="font-medium">
+    Total videos: {{ filteredVideos.length }}
+  </div>
+  <!-- Sort Menu -->
+  <div class="flex justify-end items-center gap-2">
+    <label for="sort" class="text-sm  font-medium">Sort by:</label>
+    <select
     id="sort"
     [(ngModel)]="sortOption"
     class="select select-sm select-bordered w-40"
-  >
+    >
     <option value="titleAsc">Title (A–Z)</option>
     <option value="titleDesc">Title (Z–A)</option>
     <option value="durationAsc">Duration (Short → Long)</option>
@@ -20,6 +25,7 @@
     <option value="newest">Newest</option>
     <option value="oldest">Oldest</option>
   </select>
+</div>
 </div>
 
 <!-- Videos Block -->
