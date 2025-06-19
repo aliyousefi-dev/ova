@@ -1,20 +1,19 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthApiService } from '../../services/api/auth-api.service';
-import { SettingsModalComponent } from '../setting-modal/settings-modal.component';
+import { AuthApiService } from '../../../services/api/auth-api.service';
+import { SettingsModalComponent } from '../../settings/setting-modal/settings-modal.component';
 
 @Component({
-  selector: 'app-top-nav-bar',
+  selector: 'app-navbar',
   standalone: true,
   imports: [CommonModule, RouterModule, SettingsModalComponent], // Add SettingsModalComponent here
-  templateUrl: './top-nav-bar.component.html',
-  styleUrls: ['./top-nav-bar.component.css'],
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.css'],
 })
-export class TopNavBarComponent implements OnInit {
+export class NavBarComponent implements OnInit {
   @Input() title = '';
 
-  SavedCount = 10;
   username = '';
   isSettingsModalOpen = false; // New property to control modal visibility
 

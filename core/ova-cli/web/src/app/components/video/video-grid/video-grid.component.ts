@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { VideoCardComponent } from '../../components/video-card/video-card.component';
+import { VideoCardComponent } from '../video-card/video-card.component';
 import { CommonModule } from '@angular/common';
-import { VideoData } from '../../data-types/video-data';
-import { SavedApiService } from '../../services/api/saved-api.service';
-import { WatchedApiService } from '../../services/api/watched-api.service'; // Import WatchedApiService
+import { VideoData } from '../../../data-types/video-data';
+import { SavedApiService } from '../../../services/api/saved-api.service';
+import { WatchedApiService } from '../../../services/api/watched-api.service'; // Import WatchedApiService
 
 @Component({
   selector: 'app-video-grid',

@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { VideoGridComponent } from '../../components/video-grid/video-grid.component';
-import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
+import { VideoGridComponent } from '../../components/video/video-grid/video-grid.component';
+import { NavBarComponent } from '../../components/common/navbar/navbar.component';
 import { PlaylistAPIService } from '../../services/api/playlist-api.service';
 import { VideoApiService } from '../../services/video-api.service';
 
 @Component({
   selector: 'app-playlist-detail',
   standalone: true,
-  imports: [CommonModule, TopNavBarComponent, VideoGridComponent],
+  imports: [CommonModule, NavBarComponent, VideoGridComponent],
   templateUrl: './playlist-detail.page.html',
 })
 export class PlaylistDetailPage implements OnInit {

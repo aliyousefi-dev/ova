@@ -2,21 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
-import { PlaylistCreateModalComponent } from '../../components/playlist-create-modal/playlist-create-modal.component';
+import { NavBarComponent } from '../../components/common/navbar/navbar.component';
+import { PlaylistCreateModalComponent } from '../../components/playlist/playlist-create-modal/playlist-create-modal.component';
 
 import { PlaylistAPIService } from '../../services/api/playlist-api.service';
 import { PlaylistData } from '../../data-types/playlist-data';
-import { PlaylistGridComponent } from '../../components/playlist-grid/playlist-grid.component';
+import { PlaylistGridComponent } from '../../components/playlist/playlist-grid/playlist-grid.component';
 
-import { ToastComponent } from '../../components/toast/toast.component';
+import { ToastComponent } from '../../components/common/toast/toast.component';
 
 @Component({
   selector: 'app-playlists',
   standalone: true,
   imports: [
     CommonModule,
-    TopNavBarComponent,
+    NavBarComponent,
     PlaylistGridComponent,
     PlaylistCreateModalComponent,
     ToastComponent,

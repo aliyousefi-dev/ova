@@ -4,14 +4,14 @@ import {
   UserProfile,
 } from '../../services/api/auth-api.service';
 import { WatchedApiService } from '../../services/api/watched-api.service'; // Import WatchedApiService
-import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
-import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component'; // Import ConfirmModalComponent
+import { NavBarComponent } from '../../components/common/navbar/navbar.component';
+import { ConfirmModalComponent } from '../../components/common/confirm-modal/confirm-modal.component'; // Import ConfirmModalComponent
 import { CommonModule } from '@angular/common'; // Import CommonModule for ngIf
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [TopNavBarComponent, ConfirmModalComponent, CommonModule], // Add ConfirmModalComponent and CommonModule
+  imports: [NavBarComponent, ConfirmModalComponent, CommonModule], // Add ConfirmModalComponent and CommonModule
   templateUrl: './profile.page.html',
 })
 export class ProfilePage implements OnInit {

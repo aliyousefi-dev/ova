@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
-import { SearchBarComponent } from '../../components/search-bar/search-bar';
-import { VideoGridComponent } from '../../components/video-grid/video-grid.component';
+import { NavBarComponent } from '../../components/common/navbar/navbar.component';
+import { SearchBarComponent } from '../../components/advance/search-bar/search-bar';
+import { VideoGridComponent } from '../../components/video/video-grid/video-grid.component';
 import { VideoApiService } from '../../services/video-api.service';
 import { SavedApiService } from '../../services/api/saved-api.service';
 
@@ -15,7 +15,7 @@ import { SavedApiService } from '../../services/api/saved-api.service';
   imports: [
     CommonModule,
     FormsModule,
-    TopNavBarComponent,
+    NavBarComponent,
     SearchBarComponent,
     VideoGridComponent,
   ],

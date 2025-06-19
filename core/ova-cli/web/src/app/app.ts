@@ -8,7 +8,7 @@ import {
   NavigationError,
 } from '@angular/router';
 import { LoadingService } from './services/loading.service';
-import { LoadingSpinnerComponent } from './components/spinner-loading/spinner-loading.component';
+import { LoadingSpinnerComponent } from './components/common/spinner-loading/spinner-loading.component';
 import { CommonModule } from '@angular/common';
 
 @Component({

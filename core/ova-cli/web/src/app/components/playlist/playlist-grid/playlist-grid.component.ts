@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { PlaylistData } from '../../data-types/playlist-data';
+import { PlaylistData } from '../../../data-types/playlist-data';
 import { PlaylistCardComponent } from '../playlist-card/playlist-card.component';
 import { CommonModule } from '@angular/common';
 
@@ -9,7 +9,7 @@ import {
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
 
-import { PlaylistAPIService } from '../../services/api/playlist-api.service';
+import { PlaylistAPIService } from '../../../services/api/playlist-api.service';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 

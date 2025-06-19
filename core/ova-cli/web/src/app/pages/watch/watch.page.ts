@@ -8,12 +8,12 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
+import { NavBarComponent } from '../../components/common/navbar/navbar.component';
 import { VideoData } from '../../data-types/video-data';
 import { VideoApiService } from '../../services/video-api.service';
-import { TagChipComponent } from '../../components/tag-chip/tag-chip.component';
+import { TagChipComponent } from '../../components/video/tag-chip/tag-chip.component';
 import { SavedApiService } from '../../services/api/saved-api.service';
-import { PlaylistModalComponent } from '../../components/playlist-modal/playlist-modal.component'; // Import PlaylistModalComponent
+import { PlaylistModalComponent } from '../../components/playlist/playlist-modal/playlist-modal.component'; // Import PlaylistModalComponent
 import { PlaylistAPIService } from '../../services/api/playlist-api.service'; // Import PlaylistAPIService
 import { WatchedApiService } from '../../services/api/watched-api.service'; // Import WatchedApiService
 
@@ -23,7 +23,7 @@ import { WatchedApiService } from '../../services/api/watched-api.service'; // I
   imports: [
     CommonModule,
     FormsModule,
-    TopNavBarComponent,
+    NavBarComponent,
     TagChipComponent,
     PlaylistModalComponent,
   ],

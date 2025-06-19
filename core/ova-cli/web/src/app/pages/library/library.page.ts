@@ -14,10 +14,10 @@ import { PlaylistData } from '../../data-types/playlist-data';
 import { VideoData } from '../../data-types/video-data';
 import { VideoApiService } from '../../services/video-api.service';
 
-import { FolderTreeComponent } from '../../components/folder-tree/folder-tree.component';
-import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
-import { SearchBarComponent } from '../../components/search-bar/search-bar';
-import { VideoGridComponent } from '../../components/video-grid/video-grid.component';
+import { FolderTreeComponent } from '../../components/advance/folder-tree/folder-tree.component';
+import { NavBarComponent } from '../../components/common/navbar/navbar.component';
+import { SearchBarComponent } from '../../components/advance/search-bar/search-bar';
+import { VideoGridComponent } from '../../components/video/video-grid/video-grid.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -26,7 +26,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [
     FolderTreeComponent,
-    TopNavBarComponent,
+    NavBarComponent,
     SearchBarComponent,
     VideoGridComponent,
     FormsModule,

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FolderApiService } from '../../services/api/folder=api.service';
+import { FolderApiService } from '../../../services/api/folder=api.service';
 
 export interface FolderNode {
   name: string;
@@ -19,15 +19,15 @@ export class FolderTreeComponent implements OnInit {
   @Output() folderSelected = new EventEmitter<string>();
 
   folderTree: FolderNode | null = null;
-  loading = false; // <== for loading spinner
+  loading = false;
 
   constructor(private folderApi: FolderApiService) {}
 
   ngOnInit() {
-    this.refresh();
+    this.fetchFolders();
   }
 
-  refresh() {
+  fetchFolders() {
     this.loading = true;
     this.folderApi.getFolderLists().subscribe({
       next: (res) => {

@@ -12,9 +12,9 @@ import {
 } from 'rxjs';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 
-import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
-import { SearchBarComponent } from '../../components/search-bar/search-bar';
-import { VideoGridComponent } from '../../components/video-grid/video-grid.component';
+import { NavBarComponent } from '../../components/common/navbar/navbar.component';
+import { SearchBarComponent } from '../../components/advance/search-bar/search-bar';
+import { VideoGridComponent } from '../../components/video/video-grid/video-grid.component';
 import { SearchApiService } from '../../services/api/search-api.service';
 
 @Component({
@@ -23,7 +23,7 @@ import { SearchApiService } from '../../services/api/search-api.service';
   imports: [
     CommonModule,
     FormsModule,
-    TopNavBarComponent,
+    NavBarComponent,
     SearchBarComponent,
     VideoGridComponent,
   ],

@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { TopNavBarComponent } from '../../components/top-nav-bar/top-nav-bar.component';
+import { NavBarComponent } from '../../components/common/navbar/navbar.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.page.html',
-  imports: [RouterModule, TopNavBarComponent],
+  imports: [RouterModule, NavBarComponent],
 })
 export class HomePage {}
