@@ -1,1 +1,28 @@
 
+
+<!-- Actions -->
+<div class="my-8 flex flex-wrap justify-center gap-4 px-4">
+  <button
+    class="btn btn-primary text-sm px-6 py-2 min-w-[160px]"
+    (click)="openCreateModal()"
+    aria-label="Create New Playlist"
+  >
+    + Create New Playlist
+  </button>
+
+  <button
+    class="btn text-sm px-6 py-2 min-w-[160px] border border-base-content/10 hover:bg-base-300"
+    (click)="toggleManageMode()"
+    [attr.aria-pressed]="manageMode"
+  >
+    {{ manageMode ? 'Done' : 'Manage' }}
+  </button>
+</div>
+
+<!-- Playlist Grid -->
+<section *ngIf="!loading && playlists.length > 0" class="px-6 py-2 max-w-7xl mx-auto">
+  <app-playlist-grid
+    [playlists]="playlists"
+    [manageMode]="manageMode"
+  ></app-playlist-grid>
+</section>
