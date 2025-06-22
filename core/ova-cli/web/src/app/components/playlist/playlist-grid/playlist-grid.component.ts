@@ -80,13 +80,6 @@ export class PlaylistGridComponent implements OnInit {
       });
   }
 
-  get allSelected(): boolean {
-    return (
-      this.playlists.length > 0 &&
-      this.selectedPlaylists.size === this.playlists.length
-    );
-  }
-
   toggleSelectAll(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
     this.selectedPlaylists.clear();

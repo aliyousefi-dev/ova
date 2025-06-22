@@ -16,6 +16,7 @@ import { SavedApiService } from '../../services/api/saved-api.service';
 import { PlaylistModalComponent } from '../../components/playlist/playlist-modal/playlist-modal.component'; // Import PlaylistModalComponent
 import { PlaylistAPIService } from '../../services/api/playlist-api.service'; // Import PlaylistAPIService
 import { WatchedApiService } from '../../services/api/watched-api.service'; // Import WatchedApiService
+import { VideojsPlayerComponent } from '../../components/video/videojs-player/videojs-player.component';
 
 @Component({
   selector: 'app-watch',
@@ -26,6 +27,8 @@ import { WatchedApiService } from '../../services/api/watched-api.service'; // I
     NavBarComponent,
     TagChipComponent,
     PlaylistModalComponent,
+
+    VideojsPlayerComponent,
   ],
   templateUrl: './watch.page.html',
   styleUrls: ['./watch.page.css'],

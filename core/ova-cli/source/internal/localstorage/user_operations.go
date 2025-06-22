@@ -577,3 +577,25 @@ func (s *LocalStorage) ClearUserWatchedHistory(username string) error {
 
 	return s.saveUsers(users) // Save the updated users data back to storage
 }
+
+func (s *LocalStorage) UpdateUserPassword(username, newHashedPassword string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	users, err := s.loadUsers()
+	if err != nil {
+		return fmt.Errorf("failed to load users: %w", err)
+	}
+
+	user, exists := users[username]
+	if !exists {
+		return fmt.Errorf("user %q not found", username)
+	}
+
+	user.PasswordHash = newHashedPassword
+
+	users[username] = user
+
+	return s.saveUsers(users)
+
+}

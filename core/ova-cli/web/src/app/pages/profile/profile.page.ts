@@ -7,11 +7,12 @@ import { WatchedApiService } from '../../services/api/watched-api.service'; // I
 import { NavBarComponent } from '../../components/common/navbar/navbar.component';
 import { ConfirmModalComponent } from '../../components/common/confirm-modal/confirm-modal.component'; // Import ConfirmModalComponent
 import { CommonModule } from '@angular/common'; // Import CommonModule for ngIf
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [NavBarComponent, ConfirmModalComponent, CommonModule], // Add ConfirmModalComponent and CommonModule
+  imports: [NavBarComponent, ConfirmModalComponent, CommonModule, FormsModule], // Add ConfirmModalComponent and CommonModule
   templateUrl: './profile.page.html',
 })
 export class ProfilePage implements OnInit {
@@ -23,6 +24,9 @@ export class ProfilePage implements OnInit {
 
   username = '';
   roles: string[] = [];
+  rewritePassword = '';
+  newPassword = '';
+  oldPassword = '';
 
   ngOnInit(): void {
     this.authApi.getProfile().subscribe({
@@ -66,4 +70,7 @@ export class ProfilePage implements OnInit {
       });
     }
   }
+
+  onConfirm() {}
+  onCancel() {}
 }

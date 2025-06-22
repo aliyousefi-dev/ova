@@ -94,4 +94,15 @@ export class AuthApiService {
       withCredentials: true,
     });
   }
+
+  updatePassword(
+    oldpassword: string,
+    newpassword: string
+  ): Observable<ApiResponse<AuthStatusResponse>> {
+    return this.http.post<ApiResponse<AuthStatusResponse>>(
+      `${this.baseUrl}/auth/login`,
+      { oldpassword, newpassword },
+      { withCredentials: true }
+    );
+  }
 }

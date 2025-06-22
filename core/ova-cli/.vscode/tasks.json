@@ -39,7 +39,7 @@
       {
         "label": "Build Web (Angular)",
         "type": "shell",
-        "command": "npm install; if ($?) { npm run build }",
+        "command": "npm run build",
         "options": {
           "cwd": "${workspaceFolder}/web"
         },

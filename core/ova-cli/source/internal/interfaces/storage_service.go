@@ -27,6 +27,7 @@ type StorageService interface {
 	UpdateVideoLocalPath(videoID, newPath string) error
 	SetPlaylistsOrder(username string, newOrderSlugs []string) error
 	UpdatePlaylistInfo(username, playlistSlug, newTitle, newDescription string) error
+	UpdateUserPassword(username, newHashedPassword string) error
 
 	// Video tags management
 	AddTagToVideo(videoID, tag string) error
