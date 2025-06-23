@@ -29,6 +29,7 @@ export class SettingsModalComponent implements OnChanges {
   themes = [
     'light',
     'dark',
+    'mytheme',
     'cupcake',
     'bumblebee',
     'emerald',

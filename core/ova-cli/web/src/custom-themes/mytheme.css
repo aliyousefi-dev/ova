@@ -1,0 +1,46 @@
+/* mytheme.css */
+@plugin "daisyui/theme" {
+  name: "mytheme";
+  color-scheme: dark;
+
+  --color-base-100: #000; /* editor background */
+  --color-base-200: #252526; /* sidebar */
+  --color-base-300: #2d2d2d; /* panel/dark background */
+  --color-base-content: #d4d4d4; /* default text */
+
+  --color-primary: #569cd6; /* blue for keywords, links */
+  --color-primary-content: #ffffff;
+
+  --color-secondary: #c586c0; /* purple for classes/types */
+  --color-secondary-content: #ffffff;
+
+  --color-accent: #9cdcfe; /* cyan/blue for variables */
+  --color-accent-content: #1e1e1e;
+
+  --color-neutral: #3c3c3c; /* borders, input background */
+  --color-neutral-content: #d4d4d4;
+
+  --color-info: #6796e6; /* info messages */
+  --color-info-content: #ffffff;
+
+  --color-success: #6a9955; /* green for success/symbols */
+  --color-success-content: #ffffff;
+
+  --color-warning: #dcdcaa; /* yellow for warnings */
+  --color-warning-content: #1e1e1e;
+
+  --color-error: #f44747; /* red for errors */
+  --color-error-content: #ffffff;
+
+  /* UI settings */
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}

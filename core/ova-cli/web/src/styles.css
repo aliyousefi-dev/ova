@@ -1,11 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles */
 @import "video.js/dist/video-js.css";
-@import '@videojs/themes/dist/sea/index.css';
+@import "@videojs/themes/dist/fantasy/index.css";
+
 @import "tailwindcss";
+
+/* Load all default DaisyUI themes */
 @plugin "daisyui" {
   themes: all;
 }
 
+/* Import your custom theme */
+@import "./custom-themes/mytheme.css"; /* Adjust path as needed */
+
+
+/* Basic reset */
 html, body {
   margin: 0;
   padding: 0;
