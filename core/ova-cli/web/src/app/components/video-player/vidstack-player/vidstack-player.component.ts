@@ -6,6 +6,10 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import 'vidstack/player';
+import 'vidstack/player/layouts/default';
+import 'vidstack/player/ui';
+
 @Component({
   selector: 'app-vidstack-player',
   standalone: true,

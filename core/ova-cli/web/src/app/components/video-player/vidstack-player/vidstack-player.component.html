@@ -1,4 +1,9 @@
 <media-player [src]="videoUrl">
-  <media-provider></media-provider>
+  <media-provider>
+       <media-poster
+      class="absolute inset-0 block h-full w-full rounded-md bg-black opacity-0 transition-opacity data-[visible]:opacity-100 [&>img]:h-full [&>img]:w-full [&>img]:object-cover"
+      [src]="posterUrl"
+    />
+  </media-provider>
   <media-video-layout></media-video-layout>
 </media-player>
