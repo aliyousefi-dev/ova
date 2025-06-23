@@ -16,7 +16,8 @@ import { SavedApiService } from '../../services/api/saved-api.service';
 import { PlaylistModalComponent } from '../../components/playlist/playlist-modal/playlist-modal.component'; // Import PlaylistModalComponent
 import { PlaylistAPIService } from '../../services/api/playlist-api.service'; // Import PlaylistAPIService
 import { WatchedApiService } from '../../services/api/watched-api.service'; // Import WatchedApiService
-import { VideojsPlayerComponent } from '../../components/video/videojs-player/videojs-player.component';
+import { VidstackPlayerComponent } from '../../components/video-player/vidstack-player/vidstack-player.component';
+import { DefaultVideoPlayerComponent } from '../../components/video-player/default-video-player/default-video-player.component';
 
 @Component({
   selector: 'app-watch',
@@ -27,8 +28,8 @@ import { VideojsPlayerComponent } from '../../components/video/videojs-player/vi
     NavBarComponent,
     TagChipComponent,
     PlaylistModalComponent,
-
-    VideojsPlayerComponent,
+    VidstackPlayerComponent,
+    DefaultVideoPlayerComponent,
   ],
   templateUrl: './watch.page.html',
   styleUrls: ['./watch.page.css'],
@@ -79,6 +80,8 @@ export class WatchPage implements AfterViewInit {
       this.loading = false;
     }
   }
+
+  vidstackReady = false;
 
   ngAfterViewInit(): void {
     window.scrollTo(0, 0);

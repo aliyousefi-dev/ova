@@ -2,6 +2,10 @@
 @import "video.js/dist/video-js.css";
 @import "@videojs/themes/dist/fantasy/index.css";
 
+@import 'vidstack/player/styles/base.css';
+@import 'vidstack/player/styles/default/theme.css';
+@import "vidstack/player/styles/default/layouts/video.css";
+
 @import "tailwindcss";
 
 /* Load all default DaisyUI themes */

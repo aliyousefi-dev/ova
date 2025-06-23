@@ -9,12 +9,12 @@ import {
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-video-player',
+  selector: 'app-default-video-player',
   standalone: true,
-  templateUrl: './video-player.component.html',
+  templateUrl: './default-video-player.component.html',
   imports: [CommonModule],
 })
-export class VideoPlayerComponent implements AfterViewInit {
+export class DefaultVideoPlayerComponent implements AfterViewInit {
   @Input() videoUrl!: string;
   @Input() posterUrl!: string;
   @Input() markers: number[] = []; // e.g. [5, 10, 25]

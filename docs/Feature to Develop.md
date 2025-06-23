@@ -6,3 +6,4 @@
 - Random Play
 - Support VR Videos
 - How Telegram Keep the Scroll we need also doing that
+- Trim Download

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Feature to Develop.md",
+                "file": "Overview.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Feature to Develop"
+              "title": "Overview"
             }
           },
           {
@@ -251,8 +251,9 @@
   },
   "active": "1b26e2a822847d7c",
   "lastOpenFiles": [
-    "Untitled.md",
     "Feature to Develop.md",
+    "Overview.md",
+    "Untitled.md",
     "Software Versioning.md",
     "Folder Tree.md",
     "Rule Auth.md",
@@ -277,7 +278,6 @@
     "OVA CLI/Console Command/repo.md",
     "OVA CLI/Console Command/Init.md",
     "OVA CLI/Console Command/debug.md",
-    "Client Connections.md",
     "OVA Desktop",
     "OVA Mobile",
     "OVA CLI/Untitled",

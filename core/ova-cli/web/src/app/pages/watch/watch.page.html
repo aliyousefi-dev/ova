@@ -62,11 +62,19 @@
       </div>
 
       <div class="overflow-hidden">
-<app-videojs-player
-  [videoUrl]="videoUrl"
-  [posterUrl]="thumbnailUrl"
-  [markers]="[500, 200, 300]"
-></app-videojs-player>
+<ng-container *ngIf="true; else defaultPlayer">
+  <app-vidstack-player
+    [videoUrl]="videoUrl"
+    [posterUrl]="thumbnailUrl"
+  ></app-vidstack-player>
+</ng-container>
+
+<ng-template #defaultPlayer>
+  <app-default-video-player
+    [videoUrl]="videoUrl"
+    [posterUrl]="thumbnailUrl"
+  ></app-default-video-player>
+</ng-template>
       </div>
 
       <div class="flex flex-col gap-6 p-5">
