@@ -37,6 +37,23 @@
         }
       },
       {
+        "label": "Build Sprites Tool (Python)",
+        "type": "shell",
+        "command": "powershell",
+        "args": [
+          "-Command",
+          "pyinstaller --onefile generate_sprites.py; if ($?) { Copy-Item -Path dist\\generate_sprites.exe -Destination ..\\builds\\generate_sprites.exe -Force }"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder}/python_tools"
+        },
+        "problemMatcher": [],
+        "group": "build",
+        "presentation": {
+          "reveal": "always"
+        }
+      },
+      {
         "label": "Build Web (Angular)",
         "type": "shell",
         "command": "npm run build",

@@ -11,6 +11,10 @@ type LocalStorage struct {
 	storageDir string
 }
 
+func (s *LocalStorage) GetStoragePath() string {
+	return s.storageDir
+}
+
 func NewLocalStorage(storageDir string) *LocalStorage {
 	return &LocalStorage{storageDir: storageDir}
 }

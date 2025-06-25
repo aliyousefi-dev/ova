@@ -84,3 +84,31 @@ func GetFFprobePath() (string, error) {
 	}
 	return ffprobePath, nil
 }
+
+// GetPythonSpriteGenPath returns the full path to the Python-generated sprite sheet EXE.
+// It assumes the EXE is located relative to your Go executable in a folder named "python_tools".
+func GetPythonSpriteGenPath() (string, error) {
+	exePath, err := os.Executable()
+	if err != nil {
+		return "", fmt.Errorf("failed to get executable path: %w", err)
+	}
+	exeDir := filepath.Dir(exePath)
+
+	// Adjust this path as per your deployment structure
+	pythonExePath := filepath.Join(exeDir, "python_tools", "generate_sprites")
+	if runtime.GOOS == "windows" {
+		pythonExePath += ".exe"
+	}
+
+	info, err := os.Stat(pythonExePath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return "", fmt.Errorf("sprite sheet generator exe not found: %s", pythonExePath)
+		}
+		return "", fmt.Errorf("error checking sprite sheet generator exe: %w", err)
+	}
+	if info.IsDir() {
+		return "", fmt.Errorf("sprite sheet generator path is a directory: %s", pythonExePath)
+	}
+	return pythonExePath, nil
+}

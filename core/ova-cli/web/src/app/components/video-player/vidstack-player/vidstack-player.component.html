@@ -1,9 +1,31 @@
-<media-player [src]="videoUrl">
+<media-player
+  #mediaPlayer
+  view-type="video"
+  stream-type="on-demand"
+  log-level="warn"
+  crossorigin
+  playsinline
+  [muted]="isMuted"
+  [volume]="volume"
+  [title]="'Fake Movie'"
+  [poster]="posterUrl"
+>
   <media-provider>
-       <media-poster
-      class="absolute inset-0 block h-full w-full rounded-md bg-black opacity-0 transition-opacity data-[visible]:opacity-100 [&>img]:h-full [&>img]:w-full [&>img]:object-cover"
-      [src]="posterUrl"
+    <media-poster class="vds-poster"></media-poster>
+
+    <!-- Video source with explicit type -->
+    <source [src]="videoUrl" type="video/mp4" />
+
+    <track
+      kind="chapters"
+      src="/fake-chapters.vtt"
+      label="Fake Chapters"
+      language="en-US"
+      default
     />
   </media-provider>
-  <media-video-layout></media-video-layout>
+
+    <media-audio-layout></media-audio-layout>
+  <media-video-layout [thumbnails]="vttUrl ? vttUrl : null"></media-video-layout>
+
 </media-player>

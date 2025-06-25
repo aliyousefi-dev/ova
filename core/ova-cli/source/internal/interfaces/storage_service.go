@@ -6,6 +6,7 @@ import "ova-cli/source/internal/datatypes"
 type StorageService interface {
 	// Initialization
 	PrepareStorage() error
+	GetStoragePath() string
 
 	// User management
 	CreateUser(user *datatypes.UserData) error

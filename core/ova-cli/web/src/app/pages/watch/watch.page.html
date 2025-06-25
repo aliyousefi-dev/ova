@@ -63,10 +63,11 @@
 
       <div class="overflow-hidden">
 <ng-container *ngIf="true; else defaultPlayer">
-  <app-vidstack-player
-    [videoUrl]="videoUrl"
-    [posterUrl]="thumbnailUrl"
-  ></app-vidstack-player>
+<app-vidstack-player
+  [videoUrl]="videoUrl"
+  [posterUrl]="thumbnailUrl"
+  [vttUrl]="storyboardVttUrl"
+></app-vidstack-player>
 </ng-container>
 
 <ng-template #defaultPlayer>

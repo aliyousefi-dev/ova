@@ -2,9 +2,15 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"ova-cli/source/internal/logs"
+	"ova-cli/source/internal/thirdparty"
 	videotools "ova-cli/source/internal/thirdparty"
+	"path/filepath"
+	"strings"
+	"time"
 
+	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 )
 
@@ -172,6 +178,97 @@ var toolsMp4UnfragCmd = &cobra.Command{
 	},
 }
 
+var toolsSpritesheetCmd = &cobra.Command{
+	Use:   "spritesheet <video-path> <output-folder>",
+	Short: "Generate thumbnail sprite sheets and matching VTT file from a video",
+	Args:  cobra.ExactArgs(2),
+	Run: func(cmd *cobra.Command, args []string) {
+		overallStart := time.Now()
+
+		videoPath := args[0]
+		outputFolder := args[1]
+
+		if err := os.MkdirAll(outputFolder, 0755); err != nil {
+			pterm.Error.Println("❌ Failed to create output folder:", err)
+			return
+		}
+
+		// Read flags
+		tile, err := cmd.Flags().GetString("tile")
+		if err != nil {
+			pterm.Error.Println("❌ Invalid tile flag:", err)
+			return
+		}
+		scaleWidth, err := cmd.Flags().GetInt("width")
+		if err != nil {
+			pterm.Error.Println("❌ Invalid width flag:", err)
+			return
+		}
+		scaleHeight, err := cmd.Flags().GetInt("height")
+		if err != nil {
+			pterm.Error.Println("❌ Invalid height flag:", err)
+			return
+		}
+		urlPrefix, err := cmd.Flags().GetString("prefix")
+		if err != nil {
+			pterm.Error.Println("❌ Invalid prefix flag:", err)
+			return
+		}
+		if urlPrefix != "" && !strings.HasSuffix(urlPrefix, "/") {
+			urlPrefix += "/"
+		}
+
+		keyframeDir := filepath.Join(outputFolder, "keyframes")
+		if err := os.MkdirAll(keyframeDir, 0755); err != nil {
+			pterm.Error.Println("❌ Failed to create keyframe folder:", err)
+			return
+		}
+
+		pterm.Info.Println("🎞️ Extracting keyframes...")
+		err = thirdparty.ExtractKeyframes(videoPath, keyframeDir, scaleWidth, scaleHeight)
+		if err != nil {
+			pterm.Error.Println("❌ FFmpeg keyframe extraction failed:", err)
+			return
+		}
+		pterm.Success.Println("✅ Keyframes extracted.")
+
+		pterm.Info.Println("🧩 Generating sprite sheets...")
+		outputPattern := filepath.Join(outputFolder, "thumb_L0_%03d.jpg")
+		err = thirdparty.GenerateSpriteSheetsFromFolder(keyframeDir, outputPattern, tile, scaleWidth, scaleHeight)
+		if err != nil {
+			pterm.Error.Println("❌ Sprite sheet generation failed:", err)
+			return
+		}
+		pterm.Success.Println("✅ Sprite sheets generated.")
+
+		pterm.Info.Println("⏳ Getting keyframe timestamps...")
+		keyframeTimes, err := thirdparty.GetKeyframePacketTimestamps(videoPath)
+		if err != nil {
+			pterm.Error.Println("❌ Failed to get keyframe timestamps:", err)
+			return
+		}
+		if len(keyframeTimes) == 0 {
+			pterm.Error.Println("❌ No keyframes found, cannot generate VTT.")
+			return
+		}
+		pterm.Success.Printf("✅ Found %d keyframes.\n", len(keyframeTimes))
+
+		vttPath := filepath.Join(outputFolder, "thumbnails.vtt")
+		pterm.Info.Println("📝 Generating VTT file...")
+		err = thirdparty.GenerateVTT(keyframeTimes, tile, scaleWidth, scaleHeight, outputPattern, vttPath, urlPrefix)
+		if err != nil {
+			pterm.Error.Println("❌ VTT generation failed:", err)
+			return
+		}
+		pterm.Success.Println("✅ VTT file generated.")
+
+		pterm.Info.Println("📁 All assets saved to:", outputFolder)
+
+		totalElapsed := time.Since(overallStart).Round(time.Millisecond)
+		pterm.Success.Printf("🎉 All done in %s\n", totalElapsed)
+	},
+}
+
 // InitCommandTools initializes the tools command and its subcommands
 func InitCommandTools(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(toolsCmd)
@@ -183,6 +280,14 @@ func InitCommandTools(rootCmd *cobra.Command) {
 	toolsCmd.AddCommand(toolsIsFragCmd)
 	toolsCmd.AddCommand(toolsConvertCmd)
 	toolsCmd.AddCommand(toolsMp4UnfragCmd)
+	toolsCmd.AddCommand(toolsSpritesheetCmd)
+
+	toolsSpritesheetCmd.Flags().Int("interval", 10, "Interval between thumbnails in seconds")
+	toolsSpritesheetCmd.Flags().String("tile", "5x5", "Tile layout for sprite sheet (e.g., 5x5)")
+	toolsSpritesheetCmd.Flags().Int("width", 160, "Thumbnail width")
+	toolsSpritesheetCmd.Flags().Int("height", 90, "Thumbnail height")
+	toolsSpritesheetCmd.Flags().String("prefix", "", "URL prefix for thumbnails in VTT")
+	toolsSpritesheetCmd.Flags().Bool("gpu", false, "Use GPU acceleration for keyframe extraction")
 
 	toolsThumbnailCmd.Flags().Float64("time", 5.0, "Time position (in seconds) for thumbnail")
 
