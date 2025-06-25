@@ -35,6 +35,10 @@ func (s *LocalStorage) getPreviewsDir() string {
 	return filepath.Join(s.storageDir, "previews")
 }
 
+func (s *LocalStorage) GetVideoChaptersDir() string {
+	return filepath.Join(s.storageDir, "chapters_vtt")
+}
+
 func (s *LocalStorage) getRootRepositoryPath() string {
 	return filepath.Dir(filepath.Dir(s.storageDir))
 }

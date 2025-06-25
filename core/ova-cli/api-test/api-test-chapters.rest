@@ -1,0 +1,36 @@
+@baseUrl = http://localhost:4040
+@session_id = b39efc57-5e73-47fe-978d-9368ae596ed6
+@videoId = 9dc5c55785b0c1d1ad48bd0a5ca57058743d37fccf059f3560327f4713908e9e
+
+###
+
+# Get VTT Chapters for a Video
+GET {{baseUrl}}/api/v1/video/chapters/{{videoId}}
+Accept: application/json
+Cookie: session_id={{session_id}}
+
+###
+
+# Update VTT Chapters for a Video
+POST {{baseUrl}}/api/v1/video/chapters/{{videoId}}
+Content-Type: application/json
+Accept: application/json
+Cookie: session_id={{session_id}}
+
+{
+  "chapters": [
+    {
+      "startTime": 0,
+      "title": "Intro"
+    },
+    {
+      "startTime": 60.5,
+      "title": "Main Part"
+    },
+    {
+      "startTime": 150.75,
+      "title": "Conclusion"
+    }
+  ]
+}
+

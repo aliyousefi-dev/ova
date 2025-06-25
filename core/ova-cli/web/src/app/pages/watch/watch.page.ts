@@ -181,6 +181,10 @@ export class WatchPage implements AfterViewInit {
     return this.videoapi.getStoryboardVttUrl(this.video.videoId);
   }
 
+  get chapterFileUrl(): string {
+    return this.videoapi.getChapterFileUrl(this.video.videoId);
+  }
+
   formatDuration(seconds: number): string {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);

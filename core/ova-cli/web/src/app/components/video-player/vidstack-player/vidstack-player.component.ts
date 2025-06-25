@@ -24,6 +24,7 @@ export class VidstackPlayerComponent implements OnInit, AfterViewInit {
   @Input() videoUrl!: string;
   @Input() posterUrl?: string;
   @Input() vttUrl?: string; // new optional input
+  @Input() vttChapters?: string; // new optional input
 
   isMuted = false;
   volume = 1;

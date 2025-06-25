@@ -7,6 +7,7 @@ type StorageService interface {
 	// Initialization
 	PrepareStorage() error
 	GetStoragePath() string
+	GetVideoChaptersDir() string
 
 	// User management
 	CreateUser(user *datatypes.UserData) error
@@ -57,4 +58,8 @@ type StorageService interface {
 	AddVideoToWatched(username, videoID string) error
 	GetUserWatchedVideos(username string) ([]datatypes.VideoData, error)
 	ClearUserWatchedHistory(username string) error
+
+	// New methods for VTT chapters management
+	UpdateVttChapters(videoID string, chapters []datatypes.VttChapter) error
+	GetVttChapters(videoID string) ([]datatypes.VttChapter, error)
 }
