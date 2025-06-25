@@ -283,31 +283,6 @@ var cookVTTsCmd = &cobra.Command{
 	},
 }
 
-var toolsKeyframesCmd = &cobra.Command{
-	Use:   "keyframes <video-path>",
-	Short: "Print keyframe timestamps of a video",
-	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		videoPath := args[0]
-
-		timestamps, err := thirdparty.GetKeyframePacketTimestamps(videoPath)
-		if err != nil {
-			pterm.Error.Println("❌ Failed to get keyframe timestamps:", err)
-			return
-		}
-
-		if len(timestamps) == 0 {
-			pterm.Warning.Println("⚠️ No keyframes found.")
-			return
-		}
-
-		pterm.Success.Printf("✅ Found %d keyframe timestamps (seconds):\n", len(timestamps))
-		for _, ts := range timestamps {
-			pterm.Println(fmt.Sprintf(" - %.3f", ts))
-		}
-	},
-}
-
 var videoRemoveCmd = &cobra.Command{
 	Use:   "remove [path|all]",
 	Short: "Remove video(s)",
@@ -479,7 +454,6 @@ func InitCommandVideo(rootCmd *cobra.Command) {
 	videoCmd.AddCommand(videoInfoCmd)
 	videoCmd.AddCommand(videoRemoveCmd)
 	videoCmd.AddCommand(cookVTTsCmd)
-	videoCmd.AddCommand(toolsKeyframesCmd)
 
 	rootCmd.AddCommand(videoCmd)
 }

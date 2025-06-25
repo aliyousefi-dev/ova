@@ -178,6 +178,31 @@ var toolsMp4UnfragCmd = &cobra.Command{
 	},
 }
 
+var toolsKeyframesCmd = &cobra.Command{
+	Use:   "keyframes <video-path>",
+	Short: "Print keyframe timestamps of a video",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		videoPath := args[0]
+
+		timestamps, err := thirdparty.GetKeyframePacketTimestamps(videoPath)
+		if err != nil {
+			pterm.Error.Println("❌ Failed to get keyframe timestamps:", err)
+			return
+		}
+
+		if len(timestamps) == 0 {
+			pterm.Warning.Println("⚠️ No keyframes found.")
+			return
+		}
+
+		pterm.Success.Printf("✅ Found %d keyframe timestamps (seconds):\n", len(timestamps))
+		for _, ts := range timestamps {
+			pterm.Println(fmt.Sprintf(" - %.3f", ts))
+		}
+	},
+}
+
 var toolsSpritesheetCmd = &cobra.Command{
 	Use:   "spritesheet <video-path> <output-folder>",
 	Short: "Generate thumbnail sprite sheets and matching VTT file from a video",
@@ -281,6 +306,7 @@ func InitCommandTools(rootCmd *cobra.Command) {
 	toolsCmd.AddCommand(toolsConvertCmd)
 	toolsCmd.AddCommand(toolsMp4UnfragCmd)
 	toolsCmd.AddCommand(toolsSpritesheetCmd)
+	toolsCmd.AddCommand(toolsKeyframesCmd)
 
 	toolsSpritesheetCmd.Flags().Int("interval", 10, "Interval between thumbnails in seconds")
 	toolsSpritesheetCmd.Flags().String("tile", "5x5", "Tile layout for sprite sheet (e.g., 5x5)")
