@@ -1,0 +1,38 @@
+<div
+  class="flex items-center justify-between pt-5 pb-5 bg-base-100 sm:px-3 md:px-6 lg:px-0 xl:px-0 2xl:px-0 px-3"
+>
+  <div
+    *ngIf="videoTitle"
+    class="text-lg font-semibold leading-tight truncate flex-1"
+    [title]="videoTitle"
+  >
+    {{ videoTitle }}
+  </div>
+
+  <button
+    class="ml-2 rounded-full border transition-all duration-300 ease-in-out shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:px-3 px-2 py-2 sm:btn-md btn-sm flex items-center justify-center bg-base-100 text-primary border-primary hover:bg-primary hover:text-white"
+    (click)="addToPlaylist.emit($event)"
+    aria-label="Add to Playlist"
+  >
+    <i-lucide [img]="PlusSquare" class="w-5 h-5"></i-lucide>
+  </button>
+
+  <button
+    class="ml-2 rounded-full border transition-all duration-300 ease-in-out shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-error sm:px-3 px-2 py-2 sm:btn-md btn-sm flex items-center justify-center hover:text-white"
+    [ngClass]="
+      isSaved
+        ? 'bg-error border-error'
+        : 'bg-base-100 text-error border-error hover:bg-error'
+    "
+    (click)="toggleSaved.emit()"
+    [disabled]="loadingSavedVideo"
+    [attr.aria-label]="isSaved ? 'Unsave from favorites' : 'Save to favorites'"
+  >
+    <ng-container *ngIf="isSaved; else notFavoriteIcon">
+      <i-lucide [img]="BookmarkPlus" class="w-5 h-5"></i-lucide>
+    </ng-container>
+    <ng-template #notFavoriteIcon>
+      <i-lucide [img]="Bookmark" class="w-5 h-5"></i-lucide>
+    </ng-template>
+  </button>
+</div>

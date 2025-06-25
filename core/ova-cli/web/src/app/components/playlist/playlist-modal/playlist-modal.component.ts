@@ -9,17 +9,17 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LucideAngularModule, Edit2 } from 'lucide-angular';
 
 @Component({
   selector: 'app-playlist-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './playlist-modal.component.html',
 })
 export class PlaylistModalComponent implements OnChanges {
   @Input() visible = false;
 
-  // Original playlists input
   @Input() playlists: {
     title: string;
     slug: string;
@@ -27,7 +27,6 @@ export class PlaylistModalComponent implements OnChanges {
     Order?: number;
   }[] = [];
 
-  // Internal sorted copy
   sortedPlaylists: {
     title: string;
     slug: string;
@@ -38,6 +37,9 @@ export class PlaylistModalComponent implements OnChanges {
   @Output() close = new EventEmitter<
     { title: string; slug: string; checked: boolean }[]
   >();
+
+  // Lucide icon reference
+  readonly Edit2 = Edit2;
 
   constructor(private router: Router) {}
 

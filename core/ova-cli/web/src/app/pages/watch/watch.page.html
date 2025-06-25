@@ -1,7 +1,8 @@
 <app-navbar [title]="'Watch'"></app-navbar>
 
-<main class="flex w-full min-h-screen overflow-x-hidden max-w-7xl mx-auto gap-8">
-
+<main
+  class="flex w-full min-h-screen overflow-x-hidden max-w-7xl mx-auto gap-8"
+>
   <section *ngIf="loading" class="text-center py-10 w-full">
     <p class="text-lg">Loading video...</p>
   </section>
@@ -10,155 +11,71 @@
     <p class="text-lg font-semibold">⚠️ Failed to load video</p>
   </section>
 
-  <section *ngIf="!loading && !error && video" class="flex flex-col lg:flex-row gap-8 w-full">
-
+  <section
+    *ngIf="!loading && !error && video"
+    class="flex flex-col lg:flex-row gap-8 w-full"
+  >
     <div class="flex-grow max-w-4xl flex flex-col">
-
-      <div class="flex items-center justify-between pt-5 pb-5 bg-base-100 sm:px-3 md:px-6 lg:px-0 xl:px-0 2xl:px-0 px-3">
-        <div class="text-lg font-semibold leading-tight truncate flex-1" [title]="video.title">
-          {{ video.title }}
-        </div>
-
-<button
-  class="ml-2 rounded-full border transition-all duration-300 ease-in-out shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary
-    sm:px-3 px-2 py-2
-    sm:btn-md btn-sm
-    flex items-center justify-center
-    bg-base-100 text-primary border-primary hover:bg-primary hover:text-white"
-  (click)="addToPlaylist($event)"
-  aria-label="Add to Playlist"
->
-  <svg xmlns="http://www.w3.org/2000/svg"
-       class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-       <path d="M11 12H3"/><path d="M16 6H3"/><path d="M16 18H3"/><path d="M18 9v6"/><path d="M21 12h-6"/>
-  </svg>
-</button>
-
-<button
-  class="ml-2 rounded-full border transition-all duration-300 ease-in-out shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-error
-    sm:px-3 px-2 py-2
-    sm:btn-md btn-sm
-    flex items-center justify-center
-    hover:text-white"
-  [ngClass]="isSaved ? 'bg-error border-error' : 'bg-base-100 text-error border-error hover:bg-error'"
-  (click)="toggleSaved()"
-  [disabled]="LoadingSavedVideo"
-  [attr.aria-label]="isSaved ? 'Unsave from favorites' : 'Save to favorites'"
->
-  <ng-container *ngIf="isSaved; else notFavoriteIcon">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-200" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M19 21l-7-4-7 4V5a2 2 0 012-2h10a2 2 0 012 2v16z" />
-    </svg>
-  </ng-container>
-  <ng-template #notFavoriteIcon>
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-200" viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M19 21l-7-4-7 4V5a2 2 0 012-2h10a2 2 0 012 2v16z" />
-      <line x1="12" y1="7" x2="12" y2="13" />
-      <line x1="15" y1="10" x2="9" y2="10" />
-    </svg>
-  </ng-template>
-</button>
-      </div>
+      <!-- Use the new VideoActionBarComponent -->
+      <app-video-action-bar
+        [videoTitle]="video.title"
+        [isSaved]="isSaved"
+        [loadingSavedVideo]="loadingSavedVideo"
+        (addToPlaylist)="addToPlaylist($event)"
+        (toggleSaved)="toggleSaved()"
+      ></app-video-action-bar>
 
       <div class="overflow-hidden">
-<ng-container *ngIf="true; else defaultPlayer">
-<app-vidstack-player
-  [videoUrl]="videoUrl"
-  [posterUrl]="thumbnailUrl"
-  [vttUrl]="storyboardVttUrl"
-  [vttChapters]="chapterFileUrl"
-></app-vidstack-player>
-</ng-container>
+        <ng-container *ngIf="true; else defaultPlayer">
+          <app-vidstack-player
+            [videoUrl]="videoUrl"
+            [posterUrl]="thumbnailUrl"
+            [vttUrl]="storyboardVttUrl"
+            [vttChapters]="chapterFileUrl"
+          ></app-vidstack-player>
+        </ng-container>
 
-<ng-template #defaultPlayer>
-  <app-default-video-player
-    [videoUrl]="videoUrl"
-    [posterUrl]="thumbnailUrl"
-  ></app-default-video-player>
-</ng-template>
+        <ng-template #defaultPlayer>
+          <app-default-video-player
+            [videoUrl]="videoUrl"
+            [posterUrl]="thumbnailUrl"
+          ></app-default-video-player>
+        </ng-template>
       </div>
 
       <div class="flex flex-col gap-6 p-5">
+        <!-- Use the new VideoMetadataPanelComponent -->
+        <app-video-metadata-panel
+          [videoDurationSeconds]="video.durationSeconds"
+          [videoUploadedAt]="video.uploadedAt"
+          [videoResolution]="video.resolution"
+        ></app-video-metadata-panel>
 
-        <div class="flex flex-wrap gap-2 text-sm">
-          <span class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span>{{ formatDuration(video.durationSeconds) }}</span>
-          </span>
-          <span class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-arrow-down-icon lucide-calendar-arrow-down"><path d="m14 18 4 4 4-4"/><path d="M16 2v4"/><path d="M18 14v8"/><path d="M21 11.354V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.343"/><path d="M3 10h18"/><path d="M8 2v4"/></svg>
-            <span>{{ video.uploadedAt | date: 'mediumDate' }}</span>
-          </span>
-          <span class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-play-icon lucide-square-play"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 8 6 4-6 4Z"/></svg>
-              <span>{{ video.resolution.width }} x {{ video.resolution.height }} </span>
-          </span>
-        </div>
+        <!-- Use the TagManagementPanelComponent (already renamed) -->
+        <app-tag-management-panel
+          [videoId]="video.videoId"
+          [currentTags]="video.tags"
+          (tagsUpdated)="video.tags = $event"
+        ></app-tag-management-panel>
 
-
-        <div class="mt-4">
-          <h2 class="text-sm font-semibold mb-2">Tags:</h2>
-          <div class="flex flex-wrap gap-2 items-center">
-            <app-tag-chip
-              *ngFor="let tag of video.tags"
-              [tag]="tag"
-              [videoId]="video.videoId"
-              (removed)="onTagRemoved($event)"
-            ></app-tag-chip>
-          </div>
-
-          <div class="mt-4 flex gap-2">
-            <input
-              [(ngModel)]="newTag"
-              type="text"
-              placeholder="Add new tag"
-              class="input input-bordered w-full"
-              (keyup.enter)="addTag()"
-            />
-            <button (click)="addTag()" class="btn btn-primary">Add</button>
-          </div>
-        </div>
+        <app-chapter-edit-panel
+          [videoId]="video.videoId"
+        ></app-chapter-edit-panel>
       </div>
     </div>
 
     <aside class="w-full lg:w-80 mt-10 lg:self-start p-5">
-      <h2 class="text-lg font-semibold mb-4">Similar Videos</h2>
-
-      <div *ngIf="similarVideosLoading" class="text-center py-4">
-        Loading similar videos...
-      </div>
-
-      <div *ngIf="similarVideosError" class="text-center py-4">
-        Failed to load similar videos.
-      </div>
-
-      <div
-        *ngIf="!similarVideosLoading && !similarVideosError"
-        class="grid grid-cols-2 gap-4"
-      >
-        <div
-          *ngFor="let sv of similarVideos"
-          class="cursor-pointer hover:scale-[1.02] transition-transform"
-          (click)="navigateToVideo(sv.videoId)"
-        >
-          <img
-            [src]="videoapi.getThumbnailUrl(sv.videoId)"
-            [alt]="sv.title"
-            class="w-full aspect-video object-cover"
-          />
-          <div class="mt-1 text-xs font-medium truncate" [title]="sv.title">
-            {{ sv.title }}
-          </div>
-        </div>
-      </div>
+      <!-- Use the SimilarVideosPanelComponent (already renamed) -->
+      <app-similar-videos-panel
+        [currentVideoId]="videoId!"
+        (navigateToVideo)="navigateToVideo($event)"
+      ></app-similar-videos-panel>
     </aside>
-
   </section>
 </main>
 
 <app-playlist-modal
   [visible]="playlistModalVisible"
   [playlists]="playlists"
-  (close)="closePlaylistModal($event)">
-</app-playlist-modal>
+  (close)="closePlaylistModal($event)"
+></app-playlist-modal>

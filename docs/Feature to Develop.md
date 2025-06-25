@@ -69,3 +69,19 @@ i thinking about an Edit button on the Video for Edit the Tags and other things.
 [INFO] Video processor service finished.  
 [INFO] Video data added to database.  
 [SUCCESS] Video 'xxxx2' successfully added to storage.
+
+
+i thinking about hte chapter that whta is the best ui and ux for develop that ? 
+
+having the title ad start is godo but we also need the ending 
+
+
+what must be the api ?: 
+how the api need to acesss the edit the Chapters ? 
+
+imaybe better have the single commonds like create and delte and the update chapter.
+and how we can mange the for hte chapter what we want 
+
+i wnat a start and ending 
+
+i thinking about the markers not chapters 

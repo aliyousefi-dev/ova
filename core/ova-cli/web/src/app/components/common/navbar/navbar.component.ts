@@ -4,10 +4,24 @@ import { CommonModule } from '@angular/common';
 import { AuthApiService } from '../../../services/api/auth-api.service';
 import { SettingsModalComponent } from '../../settings/setting-modal/settings-modal.component';
 
+import {
+  LucideAngularModule,
+  Settings, // Gear icon for settings button
+  Search, // Search icon
+  BookOpen, // Library icon (closest)
+  Bookmark, // Saved icon
+  List, // Playlists icon (closest)
+} from 'lucide-angular';
+
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, SettingsModalComponent], // Add SettingsModalComponent here
+  imports: [
+    CommonModule,
+    RouterModule,
+    SettingsModalComponent,
+    LucideAngularModule,
+  ],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
@@ -15,7 +29,14 @@ export class NavBarComponent implements OnInit {
   @Input() title = '';
 
   username = '';
-  isSettingsModalOpen = false; // New property to control modal visibility
+  isSettingsModalOpen = false;
+
+  // Expose lucide icons here:
+  readonly Settings = Settings;
+  readonly Search = Search;
+  readonly BookOpen = BookOpen;
+  readonly Bookmark = Bookmark;
+  readonly List = List;
 
   constructor(private authapi: AuthApiService, private router: Router) {}
 
@@ -39,14 +60,12 @@ export class NavBarComponent implements OnInit {
     return this.username ? this.username.charAt(0).toUpperCase() : '?';
   }
 
-  // New methods for modal control
   openSettingsModal() {
     this.isSettingsModalOpen = true;
   }
 
   closeSettingsModal() {
     this.isSettingsModalOpen = false;
-    // Optionally, update the username displayed in the top bar if it was changed in the modal
     this.username = localStorage.getItem('username') || 'Guest';
   }
 }

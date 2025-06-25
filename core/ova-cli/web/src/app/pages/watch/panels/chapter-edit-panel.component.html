@@ -1,0 +1,137 @@
+<div
+  class="chapter-edit-panel p-4 bg-base-100 rounded-lg border border-base-300 w-full"
+>
+  <h3 class="text-lg font-semibold mb-4">Edit Chapters</h3>
+
+  <div *ngIf="loading" class="text-center text-info mb-2">
+    Loading chapters...
+  </div>
+
+  <!-- Global Error Message Display -->
+  <div
+    *ngIf="globalError"
+    class="alert alert-error text-error-content mb-4 shadow-lg rounded-md"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="stroke-current shrink-0 h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+    <span>Error: {{ globalError }}</span>
+  </div>
+
+  <!-- Success Message Display -->
+  <div
+    *ngIf="successMessage"
+    class="alert alert-success text-success-content mb-4 shadow-lg rounded-md"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="stroke-current shrink-0 h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+    <span>{{ successMessage }}</span>
+  </div>
+
+  <div *ngIf="!loading && !globalError">
+    <div
+      *ngFor="let chapter of chapters; let i = index"
+      class="flex flex-col gap-1 mb-3 p-2 border border-base-200 rounded-md"
+    >
+      <div class="flex items-center gap-2">
+        <!-- Start time input with error styling and display -->
+        <input
+          type="text"
+          [value]="secondsToDisplay(chapter.startTime)"
+          (input)="onStartTimeInput($event, i)"
+          class="input input-sm w-24"
+          [ngClass]="{
+            'input-error': chapterErrors[i] && chapterErrors[i].startTime
+          }"
+          placeholder="mm:ss or hh:mm:ss"
+          aria-label="Chapter start time"
+        />
+
+        <!-- Chapter title input with error styling -->
+        <input
+          type="text"
+          [(ngModel)]="chapter.title"
+          (input)="onTitleInput($event, i)"
+          placeholder="Chapter title"
+          class="input input-sm flex-grow"
+          [ngClass]="{
+            'input-error': chapterErrors[i] && chapterErrors[i].title
+          }"
+          aria-label="Chapter title"
+        />
+
+        <button
+          type="button"
+          class="btn btn-error btn-sm"
+          (click)="removeChapter(i)"
+          aria-label="Remove chapter"
+        >
+          &times;
+        </button>
+      </div>
+      <!-- Per-input error messages -->
+      <!-- Explicitly check chapterErrors[i] before accessing its properties -->
+      <div
+        *ngIf="chapterErrors[i] && chapterErrors[i].startTime"
+        class="text-error text-xs ml-2"
+      >
+        {{ chapterErrors[i].startTime }}
+      </div>
+      <!-- Explicitly check chapterErrors[i] before accessing its properties -->
+      <div
+        *ngIf="chapterErrors[i] && chapterErrors[i].title"
+        class="text-error text-xs ml-2"
+      >
+        {{ chapterErrors[i].title }}
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-outline btn-sm mb-4"
+      (click)="addChapter()"
+    >
+      + Add Chapter
+    </button>
+
+    <div class="flex justify-center space-x-4">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="fetchChapters()"
+        [disabled]="saving"
+      >
+        Reset
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="saveChapters()"
+        [disabled]="saving"
+      >
+        {{ saving ? "Saving..." : "Save" }}
+      </button>
+    </div>
+  </div>
+</div>

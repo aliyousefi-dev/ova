@@ -1,30 +1,31 @@
-import { Component } from '@angular/core';
-import { OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule, Router } from '@angular/router';
+
 import { PlaylistData } from '../../../data-types/playlist-data';
 import { PlaylistAPIService } from '../../../services/api/playlist-api.service';
 import { PlaylistGridComponent } from '../playlist-grid/playlist-grid.component';
 import { PlaylistCreatorModalComponent } from '../playlist-creator-modal/playlist-creator-modal.component';
 import { ConfirmModalComponent } from '../../common/confirm-modal/confirm-modal.component';
-import { CommonModule } from '@angular/common';
-import { ViewChild } from '@angular/core';
 import { UtilsService } from '../../../services/utils.service';
-import { RouterModule, Router } from '@angular/router';
+
+import { LucideAngularModule, FolderPlus, Trash2, List } from 'lucide-angular';
 
 @Component({
   selector: 'app-playlist-manager',
-  templateUrl: './playlist-manager.component.html',
+  standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     PlaylistGridComponent,
     PlaylistCreatorModalComponent,
     ConfirmModalComponent,
-    RouterModule,
+    LucideAngularModule,
   ],
+  templateUrl: './playlist-manager.component.html',
 })
 export class PlaylistManagerComponent implements OnInit {
-  // Get Confirm Modal from Html
   @ViewChild(ConfirmModalComponent) confirmModal!: ConfirmModalComponent;
-  // Get Create Playlist Modal From Html
   @ViewChild(PlaylistCreatorModalComponent)
   createPlaylistModal!: PlaylistCreatorModalComponent;
 
@@ -35,11 +36,10 @@ export class PlaylistManagerComponent implements OnInit {
   selectedPlaylists = new Set<string>();
   selectedPlaylistTitle: string | null = null;
 
-  ngOnInit(): void {
-    // load username from local stroage
-    this.username = this.utils.getUsername();
-    this.FetchPlaylists();
-  }
+  // Lucide icons exposed to template
+  readonly FolderPlus = FolderPlus; // for create new playlist button (optional)
+  readonly Trash2 = Trash2; // for delete button
+  readonly List = List; // fallback icon if needed
 
   constructor(
     private playlistApi: PlaylistAPIService,
@@ -47,7 +47,11 @@ export class PlaylistManagerComponent implements OnInit {
     private router: Router
   ) {}
 
-  // Get Playlist from Backend
+  ngOnInit(): void {
+    this.username = this.utils.getUsername();
+    this.FetchPlaylists();
+  }
+
   private FetchPlaylists(): void {
     this.playlistApi.getUserPlaylists(this.username!).subscribe({
       next: (response) => {
@@ -62,7 +66,6 @@ export class PlaylistManagerComponent implements OnInit {
     });
   }
 
-  // Sort Based the Order Property
   private sortPlaylists(): void {
     this.playlists.sort((a, b) => (a.Order ?? 0) - (b.Order ?? 0));
   }
@@ -73,7 +76,6 @@ export class PlaylistManagerComponent implements OnInit {
     if (checked) {
       this.playlists.forEach((p) => this.selectedPlaylists.add(p.slug));
     }
-
     console.log(this.selectedPlaylists);
   }
 
@@ -87,7 +89,6 @@ export class PlaylistManagerComponent implements OnInit {
     );
   }
 
-  // If Confirm Modal for Delete Called
   confirmDelete() {
     this.selectedPlaylists.forEach((playlist_slug) => {
       this.playlistApi
@@ -103,15 +104,9 @@ export class PlaylistManagerComponent implements OnInit {
     });
   }
 
-  // Remove Playlist Deleted Locally
   handlePlaylistDeleted(deletedSlug: string) {
-    // Remove playlist with matching slug from the array
     this.playlists = this.playlists.filter((pl) => pl.slug !== deletedSlug);
-
-    // Also remove from selected set if present
     this.selectedPlaylists.delete(deletedSlug);
-
-    // If the deleted playlist was selected, clear selection
     if (this.selectedPlaylistTitle) {
       const deletedPlaylist = this.playlists.find(
         (pl) => pl.title === this.selectedPlaylistTitle
@@ -127,7 +122,6 @@ export class PlaylistManagerComponent implements OnInit {
   }
 
   onPlaylistCreated(title: string): void {
-    console.log('playlist created');
     this.FetchPlaylists();
   }
 

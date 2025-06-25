@@ -1,5 +1,3 @@
-
-
 <!-- Actions -->
 <div class="my-8 flex flex-wrap justify-center gap-4 px-4">
   <button
@@ -7,6 +5,7 @@
     (click)="OnCreatePlaylistButton()"
     aria-label="Create New Playlist"
   >
+    <i-lucide [img]="FolderPlus" class="w-5 h-5 mr-2"></i-lucide>
     + Create New Playlist
   </button>
 
@@ -15,32 +14,38 @@
     (click)="toggleManageMode()"
     [attr.aria-pressed]="manageMode"
   >
-    {{ manageMode ? 'Done' : 'Manage' }}
+    {{ manageMode ? "Done" : "Manage" }}
   </button>
 </div>
 
 <!-- Manager -->
 <div class="w-full h-15">
-    <div *ngIf="manageMode"  class="flex flex-wrap justify-around gap-4">
+  <div *ngIf="manageMode" class="flex flex-wrap justify-around gap-4">
     <div class="flex flex-row justify-center items-center gap-4">
-        <input
+      <input
         type="checkbox"
         class="checkbox checkbox-sm"
         (change)="toggleSelectAll($event)"
-        />
-        <span class="label-text text-base select-none">
-        Select All
-        </span>
+      />
+      <span class="label-text text-base select-none">Select All</span>
     </div>
     <div class="flex justify-end">
-        <button (click)="onDeleteButton()" class="btn btn-error">
-        Delete</button>
+      <button
+        (click)="onDeleteButton()"
+        class="btn btn-error flex items-center gap-2"
+      >
+        <i-lucide [img]="Trash2" class="w-5 h-5"></i-lucide>
+        Delete
+      </button>
     </div>
-    </div>
+  </div>
 </div>
 
 <!-- Playlist Grid -->
-<section *ngIf="!loading && playlists.length > 0" class="px-6 py-2 max-w-7xl mx-auto">
+<section
+  *ngIf="!loading && playlists.length > 0"
+  class="px-6 py-2 max-w-7xl mx-auto"
+>
   <app-playlist-grid
     [playlists]="playlists"
     [manageMode]="manageMode"
@@ -48,19 +53,18 @@
   ></app-playlist-grid>
 </section>
 
-
 <!-- Playlist Creator Modal -->
 <app-playlist-creator-modal
-    #createPlaylistModal
-    (created)="onPlaylistCreated($event)"
-    (cancelled)="null"
+  #createPlaylistModal
+  (created)="onPlaylistCreated($event)"
+  (cancelled)="(null)"
 ></app-playlist-creator-modal>
 
 <!-- Confirm Delete Selected Playlist Modal -->
 <app-confirm-modal
   #confirmModal
   (confirmed)="confirmDelete()"
-  (cancelled)="null"
+  (cancelled)="(null)"
 ></app-confirm-modal>
 
 <!-- Empty State -->
@@ -68,23 +72,16 @@
   *ngIf="!loading && playlists.length === 0"
   class="flex flex-col items-center justify-center text-center px-6 py-12 max-w-md mx-auto text-base-content/70"
 >
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
+  <i-lucide
+    [img]="List"
     class="w-16 h-16 text-base-content/20 mb-4"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
     aria-hidden="true"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      d="M9 19V6h13M9 6L3 12l6 6"
-    />
-  </svg>
-  <h2 class="text-xl font-semibold text-base-content/80 mb-2">No playlists yet</h2>
+  ></i-lucide>
+  <h2 class="text-xl font-semibold text-base-content/80 mb-2">
+    No playlists yet
+  </h2>
   <p class="text-sm text-base-content/60">
-    You haven't created any playlists. Start building one to organize your favorite videos!
+    You haven't created any playlists. Start building one to organize your
+    favorite videos!
   </p>
 </section>

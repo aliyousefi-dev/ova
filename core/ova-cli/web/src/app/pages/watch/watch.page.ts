@@ -1,23 +1,23 @@
-import {
-  Component,
-  AfterViewInit,
-  ViewChild,
-  ElementRef,
-  ChangeDetectorRef,
-} from '@angular/core';
+import { Component, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavBarComponent } from '../../components/common/navbar/navbar.component';
 import { VideoData } from '../../data-types/video-data';
 import { VideoApiService } from '../../services/api/video-api.service';
-import { TagChipComponent } from '../../components/video/tag-chip/tag-chip.component';
 import { SavedApiService } from '../../services/api/saved-api.service';
-import { PlaylistModalComponent } from '../../components/playlist/playlist-modal/playlist-modal.component'; // Import PlaylistModalComponent
-import { PlaylistAPIService } from '../../services/api/playlist-api.service'; // Import PlaylistAPIService
-import { WatchedApiService } from '../../services/api/watched-api.service'; // Import WatchedApiService
+import { PlaylistModalComponent } from '../../components/playlist/playlist-modal/playlist-modal.component';
+import { PlaylistAPIService } from '../../services/api/playlist-api.service';
+import { WatchedApiService } from '../../services/api/watched-api.service';
 import { VidstackPlayerComponent } from '../../components/video-player/vidstack-player/vidstack-player.component';
 import { DefaultVideoPlayerComponent } from '../../components/video-player/default-video-player/default-video-player.component';
+
+// Updated: Import new child components
+import { VideoActionBarComponent } from './panels/video-action-bar.component'; // Path assuming it's in the same directory as watch.page.ts
+import { VideoMetadataPanelComponent } from './panels/video-metadata-panel.component'; // Path assuming it's in the same directory as watch.page.ts
+import { TagManagementPanelComponent } from './panels/tag-management-panel.component';
+import { SimilarVideosPanelComponent } from './panels/similar-videos-panel.component';
+import { ChapterEditPanelComponent } from './panels/chapter-edit-panel.component';
 
 @Component({
   selector: 'app-watch',
@@ -26,38 +26,29 @@ import { DefaultVideoPlayerComponent } from '../../components/video-player/defau
     CommonModule,
     FormsModule,
     NavBarComponent,
-    TagChipComponent,
     PlaylistModalComponent,
     VidstackPlayerComponent,
     DefaultVideoPlayerComponent,
+    // Updated: Add new child components and remove the old VideoDetailsComponent
+    VideoActionBarComponent,
+    VideoMetadataPanelComponent,
+    TagManagementPanelComponent,
+    SimilarVideosPanelComponent,
+    ChapterEditPanelComponent,
   ],
   templateUrl: './watch.page.html',
   styleUrls: ['./watch.page.css'],
 })
 export class WatchPage implements AfterViewInit {
-  @ViewChild('videoRef') videoRef!: ElementRef<HTMLVideoElement>;
-
   loading = true;
   error = false;
   videoId: string | null = null;
   video!: VideoData;
 
-  newTag: string = '';
-  updatingTags = false;
-  tagUpdateError = false;
-
   isSaved = false;
-  LoadingSavedVideo = false;
-  username = ''; // filled from auth
+  loadingSavedVideo = false;
+  username = '';
 
-  playedPercent = 0;
-  bufferedPercent = 0;
-
-  similarVideos: VideoData[] = [];
-  similarVideosLoading = false;
-  similarVideosError = false;
-
-  // Playlist properties
   playlistModalVisible = false;
   playlists: { title: string; slug: string; checked: boolean }[] = [];
   originalPlaylists: { title: string; slug: string; checked: boolean }[] = [];
@@ -67,9 +58,9 @@ export class WatchPage implements AfterViewInit {
     private router: Router,
     private savedapi: SavedApiService,
     public videoapi: VideoApiService,
-    private playlistapi: PlaylistAPIService, // Inject PlaylistAPIService
-    private watchedapi: WatchedApiService, // Inject WatchedApiService
-    private cd: ChangeDetectorRef // Inject ChangeDetectorRef
+    private playlistapi: PlaylistAPIService,
+    private watchedapi: WatchedApiService,
+    private cd: ChangeDetectorRef
   ) {
     this.videoId = this.route.snapshot.paramMap.get('videoId');
 
@@ -81,27 +72,9 @@ export class WatchPage implements AfterViewInit {
     }
   }
 
-  vidstackReady = false;
-
   ngAfterViewInit(): void {
     window.scrollTo(0, 0);
   }
-
-  onVideoLoaded() {
-    const videoElement = this.videoRef?.nativeElement;
-    if (videoElement) {
-      const storedMute = localStorage.getItem('isMuted');
-      videoElement.muted = storedMute === 'true';
-      videoElement.removeEventListener('volumechange', this.onVolumeChange);
-      videoElement.addEventListener('volumechange', this.onVolumeChange);
-    }
-  }
-
-  onVolumeChange = () => {
-    const videoElement = this.videoRef?.nativeElement;
-    if (!videoElement) return;
-    localStorage.setItem('isMuted', String(videoElement.muted));
-  };
 
   fetchVideo(videoId: string) {
     this.loading = true;
@@ -109,13 +82,11 @@ export class WatchPage implements AfterViewInit {
     this.videoapi.getVideoById(videoId).subscribe({
       next: (response) => {
         this.video = response.data;
-        (window as any).video = this.video;
+        (window as any).video = this.video; // Consider removing this if not debugging
         this.loading = false;
-        this.loadSimilarVideos(videoId);
         this.username = localStorage.getItem('username') ?? '';
         this.checkIfVideoSaved();
 
-        // --- Mark video as watched when successfully loaded ---
         if (this.username && this.videoId) {
           this.watchedapi
             .addUserWatched(this.username, this.videoId)
@@ -128,7 +99,6 @@ export class WatchPage implements AfterViewInit {
               },
             });
         }
-        // --- End of watched video update ---
       },
       error: () => {
         this.error = true;
@@ -137,34 +107,16 @@ export class WatchPage implements AfterViewInit {
     });
   }
 
-  loadSimilarVideos(videoId: string) {
-    this.similarVideosLoading = true;
-    this.similarVideosError = false;
-
-    this.videoapi.getSimilarVideos(videoId).subscribe({
-      next: (res) => {
-        this.similarVideos = res.data.similarVideos || [];
-        this.similarVideosLoading = false;
-      },
-      error: () => {
-        this.similarVideosLoading = false;
-        this.similarVideosError = true;
-      },
-    });
-  }
-
   navigateToVideo(videoId: string) {
     if (videoId === this.videoId) return;
 
+    // Reset states for new video loading
     this.loading = true;
     this.error = false;
-    this.similarVideos = [];
-    this.similarVideosLoading = true;
-    this.similarVideosError = false;
 
     this.router.navigate(['/watch', videoId], { replaceUrl: true }).then(() => {
       this.videoId = videoId;
-      this.fetchVideo(videoId); // This will re-trigger the watched update
+      this.fetchVideo(videoId);
       window.scrollTo(0, 0);
     });
   }
@@ -185,51 +137,6 @@ export class WatchPage implements AfterViewInit {
     return this.videoapi.getChapterFileUrl(this.video.videoId);
   }
 
-  formatDuration(seconds: number): string {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-    const parts = [];
-    if (h > 0) parts.push(`${h}h`);
-    if (m > 0) parts.push(`${m}m`);
-    if (s > 0 || parts.length === 0) parts.push(`${s}s`);
-    return parts.join(' ');
-  }
-
-  addTag() {
-    const tag = this.newTag.trim();
-    if (!tag) return;
-
-    if (this.video.tags.includes(tag)) {
-      this.newTag = '';
-      return;
-    }
-
-    if (!this.videoId) return;
-
-    this.updatingTags = true;
-    this.tagUpdateError = false;
-
-    this.videoapi.addVideoTag(this.videoId, tag).subscribe({
-      next: (res) => {
-        this.video.tags = res.data.tags;
-        this.newTag = '';
-        this.updatingTags = false;
-      },
-      error: () => {
-        this.updatingTags = false;
-        this.tagUpdateError = true;
-      },
-    });
-  }
-
-  onTagRemoved(removedTag: string) {
-    const index = this.video.tags.indexOf(removedTag);
-    if (index !== -1) {
-      this.video.tags.splice(index, 1);
-    }
-  }
-
   checkIfVideoSaved() {
     if (!this.username || !this.videoId) return;
 
@@ -246,9 +153,9 @@ export class WatchPage implements AfterViewInit {
   toggleSaved() {
     if (!this.username || !this.videoId) return;
 
-    this.LoadingSavedVideo = true;
+    this.loadingSavedVideo = true;
 
-    const done = () => (this.LoadingSavedVideo = false);
+    const done = () => (this.loadingSavedVideo = false);
 
     if (this.isSaved) {
       this.savedapi.removeUserSaved(this.username, this.videoId).subscribe({
@@ -269,7 +176,6 @@ export class WatchPage implements AfterViewInit {
     }
   }
 
-  // New methods for playlist functionality
   addToPlaylist(event: MouseEvent) {
     event.stopPropagation();
     if (!this.username || !this.video) return;
