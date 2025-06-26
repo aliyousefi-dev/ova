@@ -257,6 +257,13 @@ var cookVTTsCmd = &cobra.Command{
 					continue
 				}
 
+				// <-- DELETE KEYFRAME DIRECTORY HERE -->
+				if err := os.RemoveAll(keyframeDir); err != nil {
+					mu.Lock()
+					pterm.Warning.Printf("⚠️ Failed to delete keyframe dir for %s: %v\n", fileName, err)
+					mu.Unlock()
+				}
+
 				mu.Lock()
 				progressbar.Increment()
 				mu.Unlock()

@@ -7,7 +7,7 @@ type StorageService interface {
 	// Initialization
 	PrepareStorage() error
 	GetStoragePath() string
-	GetVideoChaptersDir() string
+	GetVideoMarkerDir() string
 
 	// User management
 	CreateUser(user *datatypes.UserData) error

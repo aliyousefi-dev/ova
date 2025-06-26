@@ -11,15 +11,17 @@ import { PlaylistAPIService } from '../../services/api/playlist-api.service';
 import { WatchedApiService } from '../../services/api/watched-api.service';
 import { VidstackPlayerComponent } from '../../components/video-player/vidstack-player/vidstack-player.component';
 import { DefaultVideoPlayerComponent } from '../../components/video-player/default-video-player/default-video-player.component';
-import { MarkerApiService } from '../../services/api/chapter-api.service';
+import { MarkerApiService } from '../../services/api/marker-api.service';
 
 // Updated: Import new child components
 import { VideoActionBarComponent } from './panels/video-action-bar.component'; // Path assuming it's in the same directory as watch.page.ts
 import { VideoMetadataPanelComponent } from './panels/video-metadata-panel.component'; // Path assuming it's in the same directory as watch.page.ts
-import { TagManagementPanelComponent } from './panels/tag-management-panel.component';
 import { SimilarVideosPanelComponent } from './panels/similar-videos-panel.component';
 import { MarkerEditPanelComponent } from './panels/marker-edit-panel.component';
 import { VideoTagsPanelComponent } from './panels/video-tags-panel.component';
+import { VideoAdminTabsComponent } from './panels/video-admin-tabs.component';
+
+import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-watch',
@@ -34,15 +36,17 @@ import { VideoTagsPanelComponent } from './panels/video-tags-panel.component';
     // Updated: Add new child components and remove the old VideoDetailsComponent
     VideoActionBarComponent,
     VideoMetadataPanelComponent,
-    TagManagementPanelComponent,
     SimilarVideosPanelComponent,
-    MarkerEditPanelComponent,
+    VideoAdminTabsComponent,
     VideoTagsPanelComponent,
   ],
   templateUrl: './watch.page.html',
   styleUrls: ['./watch.page.css'],
 })
 export class WatchPage implements AfterViewInit {
+  @ViewChild('vidstackPlayer') vidstackPlayer!: VidstackPlayerComponent;
+  @ViewChild('adminTabs') adminTabs!: VideoAdminTabsComponent;
+
   loading = true;
   error = false;
   videoId: string | null = null;
@@ -52,9 +56,18 @@ export class WatchPage implements AfterViewInit {
   loadingSavedVideo = false;
   username = '';
 
+  selectedTab: 'tag' | 'marker' = 'tag'; // default
+
   playlistModalVisible = false;
   playlists: { title: string; slug: string; checked: boolean }[] = [];
   originalPlaylists: { title: string; slug: string; checked: boolean }[] = [];
+
+  onAddMarkerClicked() {
+    const currentTime = this.vidstackPlayer.getCurrentTime();
+    console.log('Current Time:', currentTime);
+
+    this.adminTabs.addMarkerBySeconds(currentTime);
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -78,6 +91,12 @@ export class WatchPage implements AfterViewInit {
 
   ngAfterViewInit(): void {
     window.scrollTo(0, 0);
+
+    // Load tab from localStorage
+    const savedTab = localStorage.getItem('watch-selected-tab');
+    if (savedTab === 'marker' || savedTab === 'tag') {
+      this.selectedTab = savedTab;
+    }
   }
 
   fetchVideo(videoId: string) {
@@ -123,6 +142,10 @@ export class WatchPage implements AfterViewInit {
       this.fetchVideo(videoId);
       window.scrollTo(0, 0);
     });
+  }
+
+  persistTab(tab: 'tag' | 'marker') {
+    localStorage.setItem('watch-selected-tab', tab);
   }
 
   get videoUrl(): string {

@@ -1,12 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
 import {
   VideoMarker,
   MarkerApiService,
-} from '../../../services/api/chapter-api.service';
+} from '../../../services/api/marker-api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-
 import { LucideAngularModule, X } from 'lucide-angular';
 
 @Component({
@@ -17,16 +16,19 @@ import { LucideAngularModule, X } from 'lucide-angular';
 })
 export class MarkerEditPanelComponent implements OnInit {
   @Input() videoId!: string;
+  @Output() addMarkerClicked = new EventEmitter<void>();
 
   markers: VideoMarker[] = [];
+  originalMarkers: VideoMarker[] = [];
   loading = false;
   saving = false;
-
-  readonly RemoveIcon = X;
-
   globalError: string | null = null;
-  markerErrors: { [key: number]: { timestamp?: string; title?: string } } = {};
   successMessage: string | null = null;
+  markerErrors: Record<
+    number,
+    Partial<Record<'hour' | 'minute' | 'second' | 'title', string>>
+  > = {};
+  readonly RemoveIcon = X;
 
   constructor(private markerApi: MarkerApiService) {}
 
@@ -34,20 +36,34 @@ export class MarkerEditPanelComponent implements OnInit {
     this.fetchMarkers();
   }
 
+  private toSeconds({ hour = 0, minute = 0, second = 0 }: VideoMarker): number {
+    return hour * 3600 + minute * 60 + second;
+  }
+
+  private fromSeconds(total: number): VideoMarker {
+    const hour = Math.floor(total / 3600);
+    const minute = Math.floor((total % 3600) / 60);
+    const second = Math.floor(total % 60);
+    return { hour, minute, second, title: '' };
+  }
+
   fetchMarkers() {
     if (!this.videoId) return;
     this.loading = true;
-    this.globalError = null;
-    this.markerErrors = {};
-
     this.markerApi.getMarkers(this.videoId).subscribe({
       next: (res) => {
-        const raw = res.data.markers ?? [];
-        this.markers = raw.map((m) => ({
-          timestamp: m.timestamp,
+        this.markers = (res.data.markers ?? []).map((m) => ({
+          hour: +m.hour,
+          minute: +m.minute,
+          second: +m.second,
           title: m.title,
         }));
+
+        // Keep deep copy of original markers for reset
+        this.originalMarkers = this.markers.map((m) => ({ ...m }));
+
         this.loading = false;
+        this.validateAllMarkers();
       },
       error: (err: HttpErrorResponse) => {
         this.globalError = err.error?.message || 'Failed to load markers.';
@@ -57,180 +73,133 @@ export class MarkerEditPanelComponent implements OnInit {
   }
 
   addMarker() {
-    const newTimestamp =
-      this.markers.length > 0
-        ? Math.max(0, this.markers[this.markers.length - 1].timestamp + 20)
-        : 0;
-    this.markers.push({ timestamp: newTimestamp, title: '' });
-    this.validateMarker(
-      this.markers[this.markers.length - 1],
-      this.markers.length - 1
-    );
+    this.addMarkerClicked.emit();
+  }
+
+  addMarkerBySeconds(totalSeconds: number) {
+    const marker = this.fromSeconds(totalSeconds);
+    this.markers = [...this.markers, { ...marker, title: '' }];
+    this.validateMarker(this.markers.length - 1);
   }
 
   removeMarker(index: number) {
     this.markers.splice(index, 1);
-    delete this.markerErrors[index];
-    this.clearGlobalErrorsIfNoMarkerErrors();
-  }
-
-  validateMarker(marker: VideoMarker, index: number): boolean {
-    let isValid = true;
-    const errors: { timestamp?: string; title?: string } = {};
-
-    if (typeof marker.timestamp !== 'number' || isNaN(marker.timestamp)) {
-      errors.timestamp = 'Timestamp must be a number.';
-      isValid = false;
-    } else if (marker.timestamp < 0) {
-      errors.timestamp = 'Timestamp cannot be negative.';
-      isValid = false;
-    } else if (
-      index > 0 &&
-      marker.timestamp <= this.markers[index - 1].timestamp
-    ) {
-      errors.timestamp = 'Timestamp must be after previous marker.';
-      isValid = false;
-    }
-
-    if (!marker.title || marker.title.trim() === '') {
-      errors.title = 'Title cannot be empty.';
-      isValid = false;
-    }
-
-    if (Object.keys(errors).length > 0) {
-      this.markerErrors[index] = errors;
-    } else {
-      delete this.markerErrors[index];
-    }
-    return isValid;
-  }
-
-  validateAllMarkers(): boolean {
-    this.markerErrors = {};
-    let allValid = true;
-    this.markers.forEach((marker, index) => {
-      if (!this.validateMarker(marker, index)) {
-        allValid = false;
-      }
-    });
-    return allValid;
+    this.revalidateAll();
+    this.successMessage = 'Marker removed locally. Click Save to confirm.';
+    setTimeout(() => (this.successMessage = null), 3000);
   }
 
   saveMarkers() {
-    if (!this.videoId) {
-      this.globalError = 'Video ID is missing. Cannot save markers.';
-      return;
-    }
-
     if (!this.validateAllMarkers()) {
-      this.globalError = 'Please fix errors in individual marker fields.';
+      this.globalError = 'Fix all errors before saving.';
       return;
     }
-
     this.saving = true;
-    this.globalError = null;
-    this.successMessage = null;
-
-    const markersToSend: VideoMarker[] = this.markers.map((m) => ({
-      timestamp: m.timestamp,
-      title: m.title.trim(),
-    }));
-
-    this.markerApi.updateMarkers(this.videoId, markersToSend).subscribe({
+    this.markerApi.updateMarkers(this.videoId, this.markers).subscribe({
       next: () => {
         this.saving = false;
-        this.successMessage = 'Markers saved successfully!';
-        this.globalError = null;
-        this.markerErrors = {};
-        this.fetchMarkers();
+        this.successMessage = 'Markers saved!';
+        // Update originalMarkers to current saved markers
+        this.originalMarkers = this.markers.map((m) => ({ ...m }));
         setTimeout(() => (this.successMessage = null), 3000);
+        this.fetchMarkers();
       },
-      error: (err: HttpErrorResponse) => {
+      error: (err) => {
         this.saving = false;
-        this.globalError =
-          err.error?.message || 'Failed to save markers. Please try again.';
-        console.error('Save markers error:', err);
+        this.globalError = err.error?.message || 'Save failed.';
       },
     });
   }
 
-  onTimestampInput(event: Event, index: number) {
-    const input = event.target as HTMLInputElement;
-    const rawValue = input.value;
-    const seconds = this.displayToSeconds(rawValue);
-    this.markers[index].timestamp = seconds;
-    this.validateMarker(this.markers[index], index);
-    this.clearGlobalErrorsIfNoMarkerErrors();
+  validateMarker(index: number): boolean {
+    const m = this.markers[index];
+    const errors: (typeof this.markerErrors)[number] = {};
+    let valid = true;
+
+    if (m.hour == null || m.hour < 0) errors.hour = 'Hour ≥ 0';
+    if (m.minute == null || m.minute < 0 || m.minute >= 60)
+      errors.minute = '0 ≤ Min < 60';
+    if (m.second == null || m.second < 0 || m.second >= 60)
+      errors.second = '0 ≤ Sec < 60';
+    if (!m.title?.trim()) errors.title = 'Title required';
+
+    if (Object.keys(errors).length) valid = false;
+    this.markerErrors[index] = errors;
+    return valid;
   }
 
-  onTitleInput(event: Event, index: number) {
-    this.validateMarker(this.markers[index], index);
-    this.clearGlobalErrorsIfNoMarkerErrors();
+  validateAllMarkers(): boolean {
+    return this.markers.every((_, i) => this.validateMarker(i));
   }
 
-  secondsToDisplay(seconds: number): string {
-    if (typeof seconds !== 'number' || isNaN(seconds) || seconds < 0)
-      return '00:00:00';
-    const totalSeconds = Math.floor(seconds);
-    const h = Math.floor(totalSeconds / 3600);
-    const m = Math.floor((totalSeconds % 3600) / 60);
-    const s = totalSeconds % 60;
-
-    if (h > 0) {
-      return [
-        h.toString().padStart(2, '0'),
-        m.toString().padStart(2, '0'),
-        s.toString().padStart(2, '0'),
-      ].join(':');
-    } else {
-      return [
-        m.toString().padStart(2, '0'),
-        s.toString().padStart(2, '0'),
-      ].join(':');
-    }
-  }
-
-  displayToSeconds(displayString: string): number {
-    if (!displayString) return 0;
-
-    let totalSeconds = 0;
-    const parts = displayString.trim().split(':');
-
-    let secPart = parts[parts.length - 1];
-    const milliParts = secPart.split('.');
-    if (milliParts.length > 1) {
-      secPart = milliParts[0];
-      const ms = parseInt(milliParts[1], 10);
-      if (!isNaN(ms)) {
-        totalSeconds += ms / 1000.0;
-      }
-    }
-
-    const numericParts = parts
-      .slice(0, parts.length - 1)
-      .concat(secPart)
-      .map(Number);
-
-    if (numericParts.length === 3) {
-      totalSeconds +=
-        numericParts[0] * 3600 + numericParts[1] * 60 + numericParts[2];
-    } else if (numericParts.length === 2) {
-      totalSeconds += numericParts[0] * 60 + numericParts[1];
-    } else if (numericParts.length === 1) {
-      totalSeconds += numericParts[0];
-    } else {
-      return NaN;
-    }
-    return totalSeconds;
+  revalidateAll() {
+    this.markerErrors = {};
+    this.validateAllMarkers();
+    if (!this.hasMarkerErrors()) this.globalError = null;
   }
 
   hasMarkerErrors(): boolean {
-    return Object.keys(this.markerErrors).length > 0;
+    return Object.values(this.markerErrors).some(
+      (err) => Object.keys(err).length
+    );
   }
 
-  private clearGlobalErrorsIfNoMarkerErrors(): void {
-    if (!this.hasMarkerErrors()) {
-      this.globalError = null;
+  onTimeInput(index: number) {
+    this.validateMarker(index);
+    if (!this.hasMarkerErrors()) this.globalError = null;
+  }
+
+  onTitleInput(_: Event, index: number) {
+    this.validateMarker(index);
+    if (!this.hasMarkerErrors()) this.globalError = null;
+  }
+
+  // Detect if a marker has been modified compared to original
+  isMarkerModified(index: number): boolean {
+    const original = this.originalMarkers[index];
+    const current = this.markers[index];
+    if (!original || !current) return false;
+    return (
+      original.hour !== current.hour ||
+      original.minute !== current.minute ||
+      original.second !== current.second ||
+      original.title !== current.title
+    );
+  }
+
+  resetMarker(index: number) {
+    if (!this.originalMarkers[index]) return;
+    this.markers[index] = { ...this.originalMarkers[index] };
+    this.validateMarker(index);
+    this.revalidateAll();
+  }
+
+  confirmAndDeleteAllMarkers() {
+    if (
+      confirm(
+        'Are you sure you want to delete ALL markers for this video? This action cannot be undone.'
+      )
+    ) {
+      this.deleteAllMarkers();
     }
+  }
+
+  private deleteAllMarkers() {
+    if (!this.videoId) return;
+    this.loading = true;
+    this.markerApi.deleteAllMarkers(this.videoId).subscribe({
+      next: () => {
+        this.markers = [];
+        this.originalMarkers = [];
+        this.loading = false;
+        this.successMessage = 'All markers deleted!';
+        setTimeout(() => (this.successMessage = null), 3000);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.globalError =
+          err.error?.message || 'Failed to delete all markers.';
+        this.loading = false;
+      },
+    });
   }
 }

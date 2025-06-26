@@ -15,10 +15,9 @@
     <!-- Marker track (chapters) -->
     <track
       kind="chapters"
-      *ngIf="vttMarkers"
-      [src]="vttMarkers"
-      label="Markers"
-      srclang="en"
+      [src]="vttMarkersUrl ? vttMarkersUrl : null"
+      label="Fake Chapters"
+      language="en-US"
       default
     />
   </media-provider>
@@ -26,3 +25,5 @@
   <media-audio-layout></media-audio-layout>
   <media-video-layout [thumbnails]="vttUrl || null"></media-video-layout>
 </media-player>
+<!-- Video source with explicit type -->
+<source [src]="videoUrl" type="video/mp4" />

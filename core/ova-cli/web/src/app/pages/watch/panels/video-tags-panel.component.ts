@@ -1,15 +1,20 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import { LucideAngularModule, Tag } from 'lucide-angular';
+
+import { TagLinkComponent } from '../../../components/video/tag-link/tag-link.component';
 
 @Component({
   selector: 'app-video-tags-panel',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TagLinkComponent, LucideAngularModule],
   templateUrl: './video-tags-panel.component.html',
 })
 export class VideoTagsPanelComponent {
   @Input() tags: string[] = [];
+
+  readonly TagIcon = Tag;
 
   constructor(private router: Router) {}
 

@@ -1,0 +1,44 @@
+<div class="flex flex-col gap-4 mt-4">
+  <div class="font-semibold flex items-center gap-2">
+    <i-lucide [img]="AdminIcon" class="w-4 h-4"></i-lucide>
+    <span>Admin</span>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs tabs-lift w-full">
+    <!-- Tag Editor -->
+    <input
+      type="radio"
+      name="watch_tabs"
+      class="tab"
+      aria-label="Tag Editor"
+      [(ngModel)]="selectedTab"
+      [value]="'tag'"
+      (change)="persistTab('tag')"
+    />
+    <div class="tab-content bg-base-100 border-base-300 p-6">
+      <app-tag-management-panel
+        [videoId]="videoId"
+        [currentTags]="currentTags"
+        (tagsUpdated)="tagsUpdated.emit($event)"
+      ></app-tag-management-panel>
+    </div>
+
+    <!-- Marker Editor -->
+    <input
+      type="radio"
+      name="watch_tabs"
+      class="tab"
+      aria-label="Marker Editor"
+      [(ngModel)]="selectedTab"
+      [value]="'marker'"
+      (change)="persistTab('marker')"
+    />
+    <div class="tab-content bg-base-100 border-base-300 p-6">
+      <app-marker-edit-panel
+        [videoId]="videoId"
+        (addMarkerClicked)="addMarkerClicked.emit()"
+      ></app-marker-edit-panel>
+    </div>
+  </div>
+</div>
