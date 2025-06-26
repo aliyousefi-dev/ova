@@ -53,6 +53,11 @@
           [videoResolution]="video.resolution"
         ></app-video-metadata-panel>
 
+        <app-video-download-panel
+          [videoId]="video.videoId"
+          [getCurrentTimeFn]="getCurrentTimeFromPlayer"
+        ></app-video-download-panel>
+
         <app-video-tags-panel [tags]="video.tags"></app-video-tags-panel>
 
         <app-video-admin-tabs

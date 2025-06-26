@@ -220,17 +220,3 @@ func deleteMarker(storage interfaces.StorageService) gin.HandlerFunc {
 		}, "Marker deleted successfully")
 	}
 }
-
-// respondError and respondSuccess are placeholder functions.
-// You should ensure these functions are accessible from your API package,
-// likely from a common `utils` package as suggested in the original code.
-// For example:
-/*
-func respondError(c *gin.Context, code int, message string) {
-	c.JSON(code, gin.H{"error": message})
-}
-
-func respondSuccess(c *gin.Context, code int, data interface{}, message string) {
-	c.JSON(code, gin.H{"data": data, "message": message})
-}
-*/

@@ -17,7 +17,7 @@ import { MarkerApiService } from '../../services/api/marker-api.service';
 import { VideoActionBarComponent } from './panels/video-action-bar.component'; // Path assuming it's in the same directory as watch.page.ts
 import { VideoMetadataPanelComponent } from './panels/video-metadata-panel.component'; // Path assuming it's in the same directory as watch.page.ts
 import { SimilarVideosPanelComponent } from './panels/similar-videos-panel.component';
-import { MarkerEditPanelComponent } from './panels/marker-edit-panel.component';
+import { VideoDownloadPanelComponent } from './panels/video-download-panel.component';
 import { VideoTagsPanelComponent } from './panels/video-tags-panel.component';
 import { VideoAdminTabsComponent } from './panels/video-admin-tabs.component';
 
@@ -39,6 +39,7 @@ import { ViewChild } from '@angular/core';
     SimilarVideosPanelComponent,
     VideoAdminTabsComponent,
     VideoTagsPanelComponent,
+    VideoDownloadPanelComponent,
   ],
   templateUrl: './watch.page.html',
   styleUrls: ['./watch.page.css'],
@@ -68,6 +69,8 @@ export class WatchPage implements AfterViewInit {
 
     this.adminTabs.addMarkerBySeconds(currentTime);
   }
+
+  getCurrentTimeFromPlayer = () => this.vidstackPlayer.getCurrentTime();
 
   constructor(
     private route: ActivatedRoute,

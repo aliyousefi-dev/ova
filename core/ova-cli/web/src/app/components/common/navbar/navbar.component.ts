@@ -4,24 +4,10 @@ import { CommonModule } from '@angular/common';
 import { AuthApiService } from '../../../services/api/auth-api.service';
 import { SettingsModalComponent } from '../../settings/setting-modal/settings-modal.component';
 
-import {
-  LucideAngularModule,
-  Settings, // Gear icon for settings button
-  Search, // Search icon
-  BookOpen, // Library icon (closest)
-  Bookmark, // Saved icon
-  List, // Playlists icon (closest)
-} from 'lucide-angular';
-
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    SettingsModalComponent,
-    LucideAngularModule,
-  ],
+  imports: [CommonModule, RouterModule, SettingsModalComponent],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
@@ -30,13 +16,6 @@ export class NavBarComponent implements OnInit {
 
   username = '';
   isSettingsModalOpen = false;
-
-  // Expose lucide icons here:
-  readonly Settings = Settings;
-  readonly Search = Search;
-  readonly BookOpen = BookOpen;
-  readonly Bookmark = Bookmark;
-  readonly List = List;
 
   constructor(private authapi: AuthApiService, private router: Router) {}
 

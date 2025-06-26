@@ -159,9 +159,9 @@ func (s *LocalStorage) saveMarkersToVTT(videoID string, markers []datatypes.Vide
 		// Convert marker's H,M,S to VTT string for the start time.
 		startVTT := datatypes.FormatHMSToVTT(marker.Hour, marker.Minute, marker.Second)
 
-		// Calculate end time by adding 15 seconds and converting back to H,M,S, then to VTT string.
+		// Calculate end time by adding 10 seconds and converting back to H,M,S, then to VTT string.
 		totalSeconds := marker.ConvertToSeconds()
-		endSeconds := totalSeconds + 15.0
+		endSeconds := totalSeconds + 10.0
 		// Convert endSeconds back to H,M,S for formatting
 		d := time.Duration(endSeconds * float64(time.Second))
 		endH := int(d.Hours())

@@ -29,7 +29,8 @@ func downloadVideo(storage interfaces.StorageService) gin.HandlerFunc {
 		}
 
 		videoPath := video.FilePath
-		if _, err := os.Stat(videoPath); os.IsNotExist(err) {
+		info, err := os.Stat(videoPath)
+		if os.IsNotExist(err) {
 			respondError(c, http.StatusNotFound, "Video file not found on disk")
 			return
 		} else if err != nil {
@@ -37,15 +38,16 @@ func downloadVideo(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		// Set header to force download
-		c.Header("Content-Disposition", "attachment; filename=\""+video.Title+".mp4\"")
+		// Set headers
+		c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s.mp4\"", video.Title))
 		c.Header("Content-Type", "application/octet-stream")
+		c.Header("Content-Length", fmt.Sprintf("%d", info.Size()))
+
+		// Serve the file efficiently using Gin helper
 		c.File(videoPath)
 	}
 }
 
-// downloadTrimmedVideo serves a trimmed segment of a video using ffmpeg and streams it directly.
-// downloadTrimmedVideo streams a trimmed video segment using ffmpeg, with full debug logs.
 func downloadTrimmedVideo(storage interfaces.StorageService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoId := c.Param("videoId")
@@ -60,7 +62,14 @@ func downloadTrimmedVideo(storage interfaces.StorageService) gin.HandlerFunc {
 
 		end, err := strconv.ParseFloat(endStr, 64)
 		if err != nil || end <= start {
-			endStr = "" // no end, stream till end
+			respondError(c, http.StatusBadRequest, "Invalid end time")
+			return
+		}
+
+		duration := end - start
+		if duration <= 0 {
+			respondError(c, http.StatusBadRequest, "Trim duration must be positive")
+			return
 		}
 
 		video, err := storage.GetVideoByID(videoId)
@@ -84,25 +93,19 @@ func downloadTrimmedVideo(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		// Build ffmpeg args: input first, then -ss/-to for accurate trimming (re-encode)
 		args := []string{
+			"-ss", fmt.Sprintf("%.2f", start),
 			"-i", videoPath,
-		}
-
-		if start > 0 {
-			args = append(args, "-ss", fmt.Sprintf("%.2f", start))
-		}
-		if endStr != "" {
-			args = append(args, "-to", fmt.Sprintf("%.2f", end))
-		}
-
-		args = append(args,
+			"-t", fmt.Sprintf("%.2f", duration),
 			"-c:v", "libx264",
 			"-c:a", "aac",
 			"-preset", "fast",
+			"-movflags", "frag_keyframe+empty_moov",
 			"-f", "mp4",
 			"pipe:1",
-		)
+		}
+
+		fmt.Println("Running FFmpeg:", ffmpegPath, args)
 
 		cmd := exec.Command(ffmpegPath, args...)
 
@@ -118,40 +121,63 @@ func downloadTrimmedVideo(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
+		// Set headers BEFORE starting to write any data!
+		c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s_trimmed.mp4\"", video.Title))
+		c.Header("Content-Type", "video/mp4")
+
 		if err := cmd.Start(); err != nil {
 			respondError(c, http.StatusInternalServerError, "Failed to start ffmpeg")
 			return
 		}
 
-		// Log ffmpeg stderr asynchronously for debugging
+		// Read ffmpeg stderr asynchronously to log any errors
 		go func() {
 			errOutput, _ := io.ReadAll(stderr)
 			if len(errOutput) > 0 {
-				fmt.Println("FFmpeg stderr output:\n", string(errOutput))
+				fmt.Println("FFmpeg stderr:\n", string(errOutput))
 			}
 		}()
 
-		// Set response headers for download
-		c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s_trimmed.mp4\"", video.Title))
-		c.Header("Content-Type", "video/mp4")
-
-		// Handle client disconnect: kill ffmpeg process to avoid orphaned processes
+		// Kill ffmpeg if client disconnects
 		clientGone := c.Request.Context().Done()
 		go func() {
 			<-clientGone
+			fmt.Println("Client disconnected, killing ffmpeg")
 			if cmd.Process != nil {
 				_ = cmd.Process.Kill()
 			}
 		}()
 
-		// Stream ffmpeg output to response writer
-		_, err = io.Copy(c.Writer, stdout)
-		if err != nil {
-			fmt.Println("Error copying ffmpeg output:", err)
+		flusher, ok := c.Writer.(http.Flusher)
+		if !ok {
+			fmt.Println("ResponseWriter does not implement http.Flusher")
 		}
 
-		if err := cmd.Wait(); err != nil {
-			fmt.Println("FFmpeg process exited with error:", err)
+		buf := make([]byte, 32*1024)
+		for {
+			n, err := stdout.Read(buf)
+			if n > 0 {
+				if _, wErr := c.Writer.Write(buf[:n]); wErr != nil {
+					fmt.Println("Error writing to client:", wErr)
+					break
+				}
+				if ok {
+					flusher.Flush()
+				}
+			}
+			if err != nil {
+				if err != io.EOF {
+					fmt.Println("Error reading ffmpeg output:", err)
+				}
+				break
+			}
+		}
+
+		waitErr := cmd.Wait()
+		if waitErr != nil {
+			fmt.Println("FFmpeg exited with error:", waitErr)
+		} else {
+			fmt.Println("FFmpeg finished successfully.")
 		}
 	}
 }

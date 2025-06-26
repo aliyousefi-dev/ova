@@ -41,13 +41,4 @@ export class VideoMetadataPanelComponent {
     if (s > 0 || parts.length === 0) parts.push(`${s}s`);
     return parts.join(' ');
   }
-
-  downloadVideo(): void {
-    if (!this.videoId) return;
-    const url = this.videoApi.getDownloadUrl(this.videoId);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = ''; // will trigger browser default filename behavior
-    a.click();
-  }
 }

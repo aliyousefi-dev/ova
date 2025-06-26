@@ -93,6 +93,15 @@ export class VideoApiService {
     return `${this.baseUrl}/storyboards/${videoId}/thumbnails.vtt`;
   }
 
+  getTrimmedDownloadUrl(videoId: string, start: number, end?: number): string {
+    const params = new URLSearchParams();
+    params.set('start', start.toString());
+    if (end !== undefined) {
+      params.set('end', end.toString());
+    }
+    return `${this.baseUrl}/download/${videoId}/trim?${params.toString()}`;
+  }
+
   // Remove whole update of tags; instead add & remove individual tags
 
   addVideoTag(

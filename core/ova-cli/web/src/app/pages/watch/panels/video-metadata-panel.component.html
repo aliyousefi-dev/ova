@@ -32,15 +32,4 @@
       <span>30 fps</span>
     </span>
   </div>
-
-  <!-- Right side: Download button -->
-  <div *ngIf="videoId">
-    <button
-      class="btn btn-sm btn-primary rounded-full px-4 gap-2"
-      (click)="downloadVideo()"
-    >
-      <i-lucide [img]="DownloadIcon" class="w-5 h-5"></i-lucide>
-      Download
-    </button>
-  </div>
 </div>

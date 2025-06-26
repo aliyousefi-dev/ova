@@ -13,12 +13,23 @@ import { PlaylistAPIService } from '../../../services/api/playlist-api.service';
 import { VideoApiService } from '../../../services/api/video-api.service';
 import { SavedApiService } from '../../../services/api/saved-api.service';
 import { VideoData } from '../../../data-types/video-data';
+import { TagLinkComponent } from '../tag-link/tag-link.component';
 
 @Component({
   selector: 'app-video-card',
   templateUrl: './video-card.component.html',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, PlaylistModalComponent],
+  styles: `.filled-icon {
+  fill: #fff !important;
+  stroke: none !important; /* or set stroke color if you want */
+}`,
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    PlaylistModalComponent,
+    TagLinkComponent,
+  ],
 })
 export class VideoCardComponent implements OnChanges {
   @Input() video!: VideoData;
