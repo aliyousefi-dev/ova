@@ -11,13 +11,15 @@ import { PlaylistAPIService } from '../../services/api/playlist-api.service';
 import { WatchedApiService } from '../../services/api/watched-api.service';
 import { VidstackPlayerComponent } from '../../components/video-player/vidstack-player/vidstack-player.component';
 import { DefaultVideoPlayerComponent } from '../../components/video-player/default-video-player/default-video-player.component';
+import { MarkerApiService } from '../../services/api/chapter-api.service';
 
 // Updated: Import new child components
 import { VideoActionBarComponent } from './panels/video-action-bar.component'; // Path assuming it's in the same directory as watch.page.ts
 import { VideoMetadataPanelComponent } from './panels/video-metadata-panel.component'; // Path assuming it's in the same directory as watch.page.ts
 import { TagManagementPanelComponent } from './panels/tag-management-panel.component';
 import { SimilarVideosPanelComponent } from './panels/similar-videos-panel.component';
-import { ChapterEditPanelComponent } from './panels/chapter-edit-panel.component';
+import { MarkerEditPanelComponent } from './panels/marker-edit-panel.component';
+import { VideoTagsPanelComponent } from './panels/video-tags-panel.component';
 
 @Component({
   selector: 'app-watch',
@@ -34,7 +36,8 @@ import { ChapterEditPanelComponent } from './panels/chapter-edit-panel.component
     VideoMetadataPanelComponent,
     TagManagementPanelComponent,
     SimilarVideosPanelComponent,
-    ChapterEditPanelComponent,
+    MarkerEditPanelComponent,
+    VideoTagsPanelComponent,
   ],
   templateUrl: './watch.page.html',
   styleUrls: ['./watch.page.css'],
@@ -60,6 +63,7 @@ export class WatchPage implements AfterViewInit {
     public videoapi: VideoApiService,
     private playlistapi: PlaylistAPIService,
     private watchedapi: WatchedApiService,
+    private markerapi: MarkerApiService,
     private cd: ChangeDetectorRef
   ) {
     this.videoId = this.route.snapshot.paramMap.get('videoId');
@@ -133,8 +137,8 @@ export class WatchPage implements AfterViewInit {
     return this.videoapi.getStoryboardVttUrl(this.video.videoId);
   }
 
-  get chapterFileUrl(): string {
-    return this.videoapi.getChapterFileUrl(this.video.videoId);
+  get markerFileUrl(): string {
+    return this.markerapi.getMarkerFileUrl(this.video.videoId);
   }
 
   checkIfVideoSaved() {

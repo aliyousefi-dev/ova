@@ -1,99 +1,250 @@
-<app-navbar title="Profile "></app-navbar>
+<app-navbar title="Profile"></app-navbar>
 
-<div class="p-4 max-w-2xl mx-auto space-y-4">
-  <h1 class="text-2xl font-bold">Your Profile</h1>
-
-  <div class="card bg-base-200 p-4 shadow space-y-4">
-    <div>
-      <p><strong>Username:</strong> {{ username }}</p>
-      <p><strong>Roles:</strong> {{ roles.join(', ') }}</p>
+<div class="flex max-w-7xl mx-auto px-4 pt-6 gap-6">
+  <!-- Sidebar -->
+  <div class="w-64 flex-shrink-0 space-y-4">
+    <div class="card bg-base-100 shadow-md items-center p-6">
+      <div class="avatar">
+        <div
+          class="w-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
+        >
+          <img
+            src="https://img.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3383.jpg"
+            alt="Profile Picture"
+          />
+        </div>
+      </div>
+      <h2 class="mt-4 text-xl font-bold text-center">{{ username }}</h2>
+      <p class="text-sm text-center text-base-content/70">
+        {{ roles.join(', ') }}
+      </p>
     </div>
   </div>
 
-  <div class="flex justify-end">
-    <button class="btn btn-error" (click)="openClearWatchHistoryConfirm()">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-4 w-4 mr-2"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
+  <!-- Main Content -->
+  <div class="flex-1">
+    <!-- Tabs -->
+    <div role="tablist" class="tabs tabs-boxed mb-4">
+      <a
+        role="tab"
+        class="tab tab-active"
+        (click)="activeTab = 'overview'"
+        [class.tab-active]="activeTab === 'overview'"
+        >Overview</a
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M6 18L18 6M6 6l12 12"
-        />
-      </svg>
-      Clear Watch History </button>
-  </div>
-</div>
+      <a
+        role="tab"
+        class="tab"
+        (click)="activeTab = 'security'"
+        [class.tab-active]="activeTab === 'security'"
+        >Security</a
+      >
+      <a
+        role="tab"
+        class="tab"
+        (click)="activeTab = 'sessions'"
+        [class.tab-active]="activeTab === 'sessions'"
+        >Sessions</a
+      >
+      <a
+        role="tab"
+        class="tab"
+        (click)="activeTab = 'history'"
+        [class.tab-active]="activeTab === 'history'"
+        >History</a
+      >
+    </div>
 
-<div class="p-4 max-w-2xl mx-auto space-y-4">
-  <h1 class="text-2xl font-bold">Active Sessions</h1>
-  </div>
-
-
-
-
-<div class="p-4 max-w-2xl mx-auto space-y-4">
-    <h1 class="text-2xl font-bold">Change Password</h1>
-  <form (ngSubmit)="onConfirm()" id="editForm" novalidate>
-    <div class="space-y-3">
-      <label for="oldPassword">Old Password</label>
-      <input
-        id="title"
-        type="password"
-        class="input input-bordered w-full mb-2"
-        [(ngModel)]="oldPassword"
-        name="oldPassword"
-        required
-        placeholder="Enter your current password"
-      />
-      
-      <div class="space-y-1">
-        <label for="newPassword">New Password</label>
-        <input
-          id="title" 
-          type="password"
-          class="input input-bordered w-full"
-          [(ngModel)]="newPassword"
-          name="newPassword"
-          required
-          placeholder="Enter your new password"
-        />
-        
-        <label for="rewritePassword">Confirm New Password</label>
-        <input
-          id="title" 
-          type="password"
-          class="input input-bordered w-full" 
-          [(ngModel)]="rewritePassword" 
-          name="rewritePassword"
-          required
-          placeholder="Type the new password again to confirm"
-        />
+    <!-- Tab Content -->
+    <div
+      *ngIf="activeTab === 'overview'"
+      class="grid grid-cols-1 md:grid-cols-2 gap-6"
+    >
+      <!-- Subscription Stat -->
+      <div class="card bg-base-100 shadow-md">
+        <div class="card-body flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class="font-medium">Subscription</span>
+            <div
+              class="radial-progress text-primary"
+              style="--value: 80; --size: 3rem"
+              role="progressbar"
+            >
+              20
+            </div>
+          </div>
+          <div class="text-2xl font-bold">
+            20 <span class="text-sm">/ 30</span>
+          </div>
+          <div class="text-sm text-success flex items-center gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              class="size-4"
+              viewBox="0 0 16 16"
+            >
+              <path fill-rule="evenodd" d="..." clip-rule="evenodd" />
+            </svg>
+            Left Days
+          </div>
+        </div>
       </div>
-      
-      <button 
-        type="submit" 
-        class="btn btn-primary" 
-        disabled="!oldPassword.trim() || !newPassword || !rewritePassword"
-        >
-          Change Password
+
+      <!-- Joined -->
+      <div class="card bg-base-100 shadow-md">
+        <div class="card-body">
+          <div class="font-medium">Joined</div>
+          <div class="text-2xl font-bold">12 Jun 2025</div>
+          <div class="text-sm text-success flex items-center gap-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              class="size-4"
+              viewBox="0 0 16 16"
+            >
+              <path fill-rule="evenodd" d="..." clip-rule="evenodd" />
+            </svg>
+            21% more than last month
+          </div>
+        </div>
+      </div>
+
+      <!-- Uploaded Videos -->
+      <div class="card bg-base-100 shadow-md md:col-span-2">
+        <div class="card-body">
+          <div class="font-medium">Uploaded Videos</div>
+          <div class="text-2xl font-bold">25</div>
+          <div class="text-sm text-success flex items-center gap-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              class="size-4"
+              viewBox="0 0 16 16"
+            >
+              <path fill-rule="evenodd" d="..." clip-rule="evenodd" />
+            </svg>
+            21% more than last month
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security Tab -->
+    <div *ngIf="activeTab === 'security'" class="card bg-base-100 shadow-md">
+      <div class="card-body space-y-4">
+        <h2 class="text-lg font-bold flex items-center gap-2">
+          🔒 Change Password
+        </h2>
+
+        <label class="input input-bordered flex items-center gap-2">
+          <input
+            type="password"
+            class="grow"
+            placeholder="Current Password"
+            [(ngModel)]="oldPassword"
+          />
+        </label>
+
+        <label class="input input-bordered flex items-center gap-2">
+          <input
+            type="password"
+            class="grow"
+            placeholder="New Password"
+            [(ngModel)]="newPassword"
+          />
+        </label>
+
+        <label class="input input-bordered flex items-center gap-2">
+          <input
+            type="password"
+            class="grow"
+            placeholder="Repeat New Password"
+            [(ngModel)]="rewritePassword"
+          />
+        </label>
+
+        <p class="text-xs text-base-content/60 flex items-center gap-2">
+          <span class="status status-error inline-block"></span>
+          Password must be at least 8 characters
+        </p>
+
+        <div class="card-actions justify-between pt-2">
+          <button class="btn btn-primary" (click)="submitPasswordChange()">
+            Change Password
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sessions Tab -->
+    <div *ngIf="activeTab === 'sessions'" class="card bg-base-100 shadow-md">
+      <div class="card-body">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold">Active Sessions</h2>
+          <button
+            class="btn btn-sm btn-error"
+            (click)="terminateAllSessions()"
+            [disabled]="sessions.length <= 1"
+          >
+            Terminate All
+          </button>
+        </div>
+
+        <table class="table w-full">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Session ID</th>
+              <th>IP</th>
+              <th>Device</th>
+              <th class="text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let session of sessions; let i = index"
+              [ngClass]="{ 'bg-primary/10': session.id === currentSessionId }"
+            >
+              <th>{{ i + 1 }}</th>
+              <td>
+                {{ session.id }}
+                <span
+                  *ngIf="session.id === currentSessionId"
+                  class="badge badge-sm badge-info ml-2"
+                  >Current</span
+                >
+              </td>
+              <td>{{ session.ip }}</td>
+              <td>{{ session.device }}</td>
+              <td class="text-right">
+                <button
+                  class="btn btn-xs btn-outline btn-error"
+                  (click)="terminateSession(session.id)"
+                  [disabled]="session.id === currentSessionId"
+                >
+                  Terminate
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- History Tab -->
+    <div *ngIf="activeTab === 'history'" class="card bg-base-100 shadow-md">
+      <div class="card-body">
+        <h2 class="text-lg font-bold mb-4">Watch History</h2>
+        <p class="text-sm mb-4">
+          You can clear your entire watch history here.
+        </p>
+        <button class="btn btn-error" (click)="openClearWatchHistoryConfirm()">
+          🗑️ Clear Watch History
         </button>
       </div>
-  </form>
+    </div>
+  </div>
 </div>
-
-
-<!-- Add error message divs -->
-<div class="p-4 space-y-2">
-  <div class=" rounded" *ngIf="!oldPassword.trim()">Please enter your current password.</div>
-  <div class=" rounded" multiLine="true" *ngIf="newPassword !== rewritePassword">Passwords do not match. Please try again.</div>
-</div>
-
 
 <app-confirm-modal
   #confirmClearHistoryModal

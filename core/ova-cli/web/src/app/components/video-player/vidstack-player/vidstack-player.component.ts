@@ -23,8 +23,8 @@ import 'vidstack/player/ui';
 export class VidstackPlayerComponent implements OnInit, AfterViewInit {
   @Input() videoUrl!: string;
   @Input() posterUrl?: string;
-  @Input() vttUrl?: string; // new optional input
-  @Input() vttChapters?: string; // new optional input
+  @Input() vttUrl?: string; // sprite thumbnails URL (optional)
+  @Input() vttMarkers?: string; // VTT markers URL (optional)
 
   isMuted = false;
   volume = 1;
@@ -32,7 +32,7 @@ export class VidstackPlayerComponent implements OnInit, AfterViewInit {
   @ViewChild('mediaPlayer', { static: false }) mediaPlayerRef!: ElementRef;
 
   ngOnInit() {
-    // Read saved settings early
+    // Restore saved volume/mute settings
     this.isMuted = localStorage.getItem('playerMuted') === 'true';
     const vol = parseFloat(localStorage.getItem('playerVolume') || '');
     if (!isNaN(vol)) this.volume = vol;
@@ -40,8 +40,6 @@ export class VidstackPlayerComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     const mediaPlayer: any = this.mediaPlayerRef.nativeElement;
-
-    console.log(this.vttUrl);
 
     mediaPlayer.addEventListener('loadedmetadata', () => {
       mediaPlayer.muted = this.isMuted;

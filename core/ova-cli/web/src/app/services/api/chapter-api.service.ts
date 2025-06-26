@@ -4,35 +4,56 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../data-types/responses';
 
-export interface VttChapter {
-  startTime: number; // seconds from video start, e.g. 0, 60.5
+export interface VideoMarker {
+  timestamp: number; // seconds from video start, e.g. 0, 60.5
   title: string;
 }
 
 @Injectable({
   providedIn: 'root',
 })
-export class ChapterApiService {
+export class MarkerApiService {
   private baseUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) {}
 
-  getChapters(
+  getMarkerFileUrl(videoId: string): string {
+    return `${this.baseUrl}/video/markers/${videoId}/file`;
+  }
+
+  getMarkers(
     videoId: string
-  ): Observable<ApiResponse<{ chapters: VttChapter[] }>> {
-    return this.http.get<ApiResponse<{ chapters: VttChapter[] }>>(
-      `${this.baseUrl}/video/chapters/${videoId}`,
+  ): Observable<ApiResponse<{ markers: VideoMarker[] }>> {
+    return this.http.get<ApiResponse<{ markers: VideoMarker[] }>>(
+      `${this.baseUrl}/video/markers/${videoId}`,
       { withCredentials: true }
     );
   }
 
-  updateChapters(
+  updateMarkers(
     videoId: string,
-    chapters: VttChapter[]
+    markers: VideoMarker[]
   ): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<any>>(
-      `${this.baseUrl}/video/chapters/${videoId}`,
-      { chapters },
+      `${this.baseUrl}/video/markers/${videoId}`,
+      { markers },
+      { withCredentials: true }
+    );
+  }
+
+  deleteAllMarkers(videoId: string): Observable<ApiResponse<any>> {
+    return this.http.delete<ApiResponse<any>>(
+      `${this.baseUrl}/video/markers/${videoId}`,
+      { withCredentials: true }
+    );
+  }
+
+  deleteMarker(
+    videoId: string,
+    timestamp: number
+  ): Observable<ApiResponse<any>> {
+    return this.http.delete<ApiResponse<any>>(
+      `${this.baseUrl}/video/markers/${videoId}/${timestamp}`,
       { withCredentials: true }
     );
   }

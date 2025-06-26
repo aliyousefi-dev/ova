@@ -1,25 +1,46 @@
 <div
   *ngIf="videoDurationSeconds !== undefined"
-  class="flex flex-wrap gap-2 text-sm"
+  class="flex flex-wrap items-center justify-between gap-2 text-sm"
 >
-  <span
-    class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium"
-  >
-    <i-lucide [img]="Clock" class="w-6 h-6"></i-lucide>
-    <span>{{ formatDuration(videoDurationSeconds) }}</span>
-  </span>
+  <!-- Left side: Metadata badges -->
+  <div class="flex flex-wrap gap-2">
+    <span
+      class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium"
+    >
+      <i-lucide [img]="UploadTimeIcon" class="w-5 h-5"></i-lucide>
+      <span>{{ videoUploadedAt | date : "mediumDate" }}</span>
+    </span>
 
-  <span
-    class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium"
-  >
-    <i-lucide [img]="Calendar" class="w-6 h-6"></i-lucide>
-    <span>{{ videoUploadedAt | date : "mediumDate" }}</span>
-  </span>
+    <span
+      class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium"
+    >
+      <i-lucide [img]="ResolutionIcon" class="w-5 h-5"></i-lucide>
+      <span>{{ videoResolution?.width }} x {{ videoResolution?.height }}</span>
+    </span>
 
-  <span
-    class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium"
-  >
-    <i-lucide [img]="Square" class="w-6 h-6"></i-lucide>
-    <span>{{ videoResolution?.width }} x {{ videoResolution?.height }}</span>
-  </span>
+    <span
+      class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium"
+    >
+      <i-lucide [img]="VideoDurationIcon" class="w-5 h-5"></i-lucide>
+      <span>{{ formatDuration(videoDurationSeconds) }}</span>
+    </span>
+
+    <span
+      class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 text-xs font-medium"
+    >
+      <i-lucide [img]="FPSIcon" class="w-5 h-5"></i-lucide>
+      <span>30 fps</span>
+    </span>
+  </div>
+
+  <!-- Right side: Download button -->
+  <div *ngIf="videoId">
+    <button
+      class="btn btn-sm btn-primary rounded-full px-4 gap-2"
+      (click)="downloadVideo()"
+    >
+      <i-lucide [img]="DownloadIcon" class="w-5 h-5"></i-lucide>
+      Download
+    </button>
+  </div>
 </div>

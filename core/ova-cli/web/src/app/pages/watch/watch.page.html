@@ -31,7 +31,7 @@
             [videoUrl]="videoUrl"
             [posterUrl]="thumbnailUrl"
             [vttUrl]="storyboardVttUrl"
-            [vttChapters]="chapterFileUrl"
+            [vttMarkers]="markerFileUrl"
           ></app-vidstack-player>
         </ng-container>
 
@@ -43,24 +43,47 @@
         </ng-template>
       </div>
 
-      <div class="flex flex-col gap-6 p-5">
+      <div class="flex flex-col gap-6 pt-2">
         <!-- Use the new VideoMetadataPanelComponent -->
         <app-video-metadata-panel
+          [videoId]="video.videoId"
           [videoDurationSeconds]="video.durationSeconds"
           [videoUploadedAt]="video.uploadedAt"
           [videoResolution]="video.resolution"
         ></app-video-metadata-panel>
 
-        <!-- Use the TagManagementPanelComponent (already renamed) -->
-        <app-tag-management-panel
-          [videoId]="video.videoId"
-          [currentTags]="video.tags"
-          (tagsUpdated)="video.tags = $event"
-        ></app-tag-management-panel>
+        <app-video-tags-panel [tags]="video.tags"></app-video-tags-panel>
 
-        <app-chapter-edit-panel
-          [videoId]="video.videoId"
-        ></app-chapter-edit-panel>
+        <!-- name of each tab group should be unique -->
+        <div class="tabs tabs-lift w-full">
+          <input
+            type="radio"
+            name="my_tabs_6"
+            class="tab"
+            aria-label="Tag Editor"
+            checked="checked"
+          />
+          <div class="tab-content bg-base-100 border-base-300 p-6">
+            <!-- Use the TagManagementPanelComponent (already renamed) -->
+            <app-tag-management-panel
+              [videoId]="video.videoId"
+              [currentTags]="video.tags"
+              (tagsUpdated)="video.tags = $event"
+            ></app-tag-management-panel>
+          </div>
+
+          <input
+            type="radio"
+            name="my_tabs_6"
+            class="tab"
+            aria-label="Marker Editor"
+          />
+          <div class="tab-content bg-base-100 border-base-300 p-6">
+            <app-marker-edit-panel
+              [videoId]="video.videoId"
+            ></app-marker-edit-panel>
+          </div>
+        </div>
       </div>
     </div>
 

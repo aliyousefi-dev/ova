@@ -82,7 +82,7 @@ func (s *OvaServer) initRoutes() {
 	api.RegisterFolderRoutes(v1, s.StorageService)
 	api.RegisterUserWatchedRoutes(v1, s.StorageService)
 	api.RegisterStoryboardRoutes(v1, s.StorageService)
-	api.RegisterVttChapterRoutes(v1, s.StorageService)
+	api.RegisterMarkerRoutes(v1, s.StorageService)
 	api.RegisterStatusRoute(v1)
 
 	if s.ServeFrontend {

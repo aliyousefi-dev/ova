@@ -1,6 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { LucideAngularModule, Clock, Calendar, Square } from 'lucide-angular';
+import {
+  LucideAngularModule,
+  Clock,
+  CalendarArrowDown,
+  FileVideo,
+  Film,
+  Download,
+} from 'lucide-angular';
+import { VideoApiService } from '../../../services/api/video-api.service';
 
 @Component({
   selector: 'app-video-metadata-panel',
@@ -10,13 +18,18 @@ import { LucideAngularModule, Clock, Calendar, Square } from 'lucide-angular';
   styles: [],
 })
 export class VideoMetadataPanelComponent {
+  @Input() videoId?: string;
   @Input() videoDurationSeconds?: number;
   @Input() videoUploadedAt?: string;
   @Input() videoResolution?: { width: number; height: number };
 
-  readonly Clock = Clock;
-  readonly Calendar = Calendar;
-  readonly Square = Square;
+  readonly VideoDurationIcon = Clock;
+  readonly UploadTimeIcon = CalendarArrowDown;
+  readonly ResolutionIcon = FileVideo;
+  readonly FPSIcon = Film;
+  readonly DownloadIcon = Download;
+
+  constructor(private videoApi: VideoApiService) {}
 
   formatDuration(seconds: number): string {
     const h = Math.floor(seconds / 3600);
@@ -27,5 +40,14 @@ export class VideoMetadataPanelComponent {
     if (m > 0) parts.push(`${m}m`);
     if (s > 0 || parts.length === 0) parts.push(`${s}s`);
     return parts.join(' ');
+  }
+
+  downloadVideo(): void {
+    if (!this.videoId) return;
+    const url = this.videoApi.getDownloadUrl(this.videoId);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = ''; // will trigger browser default filename behavior
+    a.click();
   }
 }

@@ -1,0 +1,59 @@
+[changelog]
+header = """
+# Changelog
+
+All notable changes to this project will be documented in this file.
+"""
+
+# The body uses Tera templates to group commits by type and optionally by scope
+body = """
+{% if version %}\
+## [{{ version | trim_start_matches(pat="v") }}](https://github.com/your-org/your-repo/releases/tag/{{ version }}) ({{ timestamp | date(format="%Y-%m-%d") }})
+{% else %}\
+## [Unreleased]
+{% endif %}
+
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group | upper_first }}
+{% for scope, scoped_commits in commits | group_by(attribute="scope") %}
+#### {{ scope | upper_first | replace(from="/react", to=" (React)") | replace(from="/cdn", to=" (CDN)") }}
+{% for commit in scoped_commits %}
+- {{ commit.message }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/your-org/your-repo/commit/{{ commit.id }}))
+{% endfor %}
+{% endfor %}
+{% endfor %}
+"""
+
+trim = true
+footer = ""
+postprocessors = []
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+commit_preprocessors = []
+
+# Define how commits are grouped by types
+commit_parsers = [
+  { message = "^feat", group = "Features" },
+  { message = "^fix", group = "Bug Fixes" },
+  { message = "^perf", group = "Performance" },
+  { message = "^refactor", group = "Refactor", skip = true },
+  { message = "^style", group = "Styling", skip = true },
+  { message = "^test", group = "Testing", skip = true },
+  { message = "^chore", skip = true },
+  { message = "^docs", skip = true },
+  { body = ".*security", group = "Security" },
+  { message = "^revert", group = "Revert" },
+]
+
+protect_breaking_commits = false
+filter_commits = false
+
+# Tags to look for when generating changelogs
+tag_pattern = "v[0-9].*"
+skip_tags = "v0"
+ignore_tags = ""
+topo_order = false
+sort_commits = "oldest"

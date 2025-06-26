@@ -7,8 +7,9 @@
 ></app-search-bar>
 
 <div class="max-w-7xl mx-auto px-4 mt-6 space-y-4">
-  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
+  <div
+    class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+  >
     <div class="w-full md:w-auto">
       <div class="flex flex-wrap items-center gap-2">
         <label class="btn btn-sm" [class.btn-active]="resolutionFilter === ''">
@@ -22,7 +23,10 @@
             hidden
           />All
         </label>
-        <label class="btn btn-sm" [class.btn-active]="resolutionFilter === '720p'">
+        <label
+          class="btn btn-sm"
+          [class.btn-active]="resolutionFilter === '720p'"
+        >
           <input
             type="radio"
             name="resolution"
@@ -33,7 +37,10 @@
             hidden
           />720p
         </label>
-        <label class="btn btn-sm" [class.btn-active]="resolutionFilter === '1080p'">
+        <label
+          class="btn btn-sm"
+          [class.btn-active]="resolutionFilter === '1080p'"
+        >
           <input
             type="radio"
             name="resolution"
@@ -44,7 +51,10 @@
             hidden
           />1080p
         </label>
-        <label class="btn btn-sm" [class.btn-active]="resolutionFilter === '4K'">
+        <label
+          class="btn btn-sm"
+          [class.btn-active]="resolutionFilter === '4K'"
+        >
           <input
             type="radio"
             name="resolution"
@@ -58,19 +68,19 @@
       </div>
     </div>
 
-<div class="w-full md:w-auto">
-  <div class="flex items-center gap-2">
-    <label class="label cursor-pointer">
-      <span class="label-text text-sm font-medium">Advanced Filters</span>
-      <input
-        type="checkbox"
-        class="toggle toggle-sm"
-        [(ngModel)]="advancedSearchEnabled"
-        (ngModelChange)="onAdvancedSearchToggle()"
-        />
-    </label>
-  </div>
-</div>
+    <div class="w-full md:w-auto">
+      <div class="flex items-center gap-2">
+        <label class="label cursor-pointer">
+          <span class="label-text text-sm font-medium">Advanced Filters</span>
+          <input
+            type="checkbox"
+            class="toggle toggle-sm"
+            [(ngModel)]="advancedSearchEnabled"
+            (ngModelChange)="onAdvancedSearchToggle()"
+          />
+        </label>
+      </div>
+    </div>
 
     <div class="w-full md:w-auto">
       <div class="flex items-center gap-2">
@@ -92,7 +102,10 @@
     </div>
   </div>
 
-  <div *ngIf="advancedSearchEnabled" class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-4">
+  <div
+    *ngIf="advancedSearchEnabled"
+    class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-4"
+  >
     <div class="w-full md:w-auto">
       <div class="flex flex-wrap items-center gap-2">
         <label class="btn btn-sm" [class.btn-active]="durationFilter === ''">
@@ -106,7 +119,10 @@
             hidden
           />All
         </label>
-        <label class="btn btn-sm" [class.btn-active]="durationFilter === 'short'">
+        <label
+          class="btn btn-sm"
+          [class.btn-active]="durationFilter === 'short'"
+        >
           <input
             type="radio"
             name="duration"
@@ -117,7 +133,10 @@
             hidden
           />≤ 5 min
         </label>
-        <label class="btn btn-sm" [class.btn-active]="durationFilter === 'medium'">
+        <label
+          class="btn btn-sm"
+          [class.btn-active]="durationFilter === 'medium'"
+        >
           <input
             type="radio"
             name="duration"
@@ -128,7 +147,10 @@
             hidden
           />5 – 15 min
         </label>
-        <label class="btn btn-sm" [class.btn-active]="durationFilter === 'long'">
+        <label
+          class="btn btn-sm"
+          [class.btn-active]="durationFilter === 'long'"
+        >
           <input
             type="radio"
             name="duration"
@@ -139,7 +161,10 @@
             hidden
           />15 – 30 min
         </label>
-        <label class="btn btn-sm" [class.btn-active]="durationFilter === 'veryLong'">
+        <label
+          class="btn btn-sm"
+          [class.btn-active]="durationFilter === 'veryLong'"
+        >
           <input
             type="radio"
             name="duration"
@@ -150,7 +175,10 @@
             hidden
           />30 – 60 min
         </label>
-        <label class="btn btn-sm" [class.btn-active]="durationFilter === 'extraLong'">
+        <label
+          class="btn btn-sm"
+          [class.btn-active]="durationFilter === 'extraLong'"
+        >
           <input
             type="radio"
             name="duration"
@@ -164,25 +192,30 @@
       </div>
     </div>
 
-<div class="flex flex-row gap-2 mx-20 items-center">
-  <label class="text-sm font-medium"> Date Range:</label>
-  <div class="flex items-center gap-2">
-    <input
-      type="date"
-      class="input input-sm input-bordered"
-      [value]="uploadFrom"
-      (change)="setUploadFrom($event)"
-    />
-    <span>to</span>
-    <input
-      type="date"
-      class="input input-sm input-bordered"
-      [value]="uploadTo"
-      (change)="setUploadTo($event)"
-    />
-    <button class="btn btn-xs btn-outline" (click)="clearUploadDateFilter()">Clear</button>
-  </div>
-</div>
+    <div class="flex flex-row gap-2 mx-20 items-center">
+      <label class="text-sm font-medium"> Date Range:</label>
+      <div class="flex items-center gap-2">
+        <input
+          type="date"
+          class="input input-sm input-bordered"
+          [value]="uploadFrom"
+          (change)="setUploadFrom($event)"
+        />
+        <span>to</span>
+        <input
+          type="date"
+          class="input input-sm input-bordered"
+          [value]="uploadTo"
+          (change)="setUploadTo($event)"
+        />
+        <button
+          class="btn btn-xs btn-outline"
+          (click)="clearUploadDateFilter()"
+        >
+          Clear
+        </button>
+      </div>
+    </div>
 
     <div class="w-full md:w-auto">
       <div class="flex items-center gap-2">
@@ -197,14 +230,10 @@
         </label>
       </div>
     </div>
-
   </div>
 
   <div class="flex flex-wrap items-center justify-between mt-20 w-full">
-
-    <div class="text-sm md:text-base">
-      Result: {{ totalCount }} videos
-    </div>
+    <div class="text-sm md:text-base">Result: {{ totalCount }} videos</div>
 
     <div class="pagination-wrapper overflow-x-auto mt-4">
       <div *ngIf="totalPages > 1 && !loading" class="overflow-x-auto">
@@ -249,7 +278,10 @@
       Please enter a search term to find videos.
     </p>
 
-    <p *ngIf="!loading && filteredVideos.length === 0 && searchTerm" class="text-center mt-4">
+    <p
+      *ngIf="!loading && filteredVideos.length === 0 && searchTerm"
+      class="text-center mt-4"
+    >
       No videos found for "{{ searchTerm }}"
     </p>
   </div>

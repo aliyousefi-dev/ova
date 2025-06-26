@@ -1,41 +1,41 @@
-<h2 class="text-lg font-semibold mb-4">Similar Videos</h2>
+<div class="bg-base-200">
+  <h2 class="text-lg font-semibold mb-4">Similar Videos</h2>
 
-    <div *ngIf="similarVideosLoading" class="text-center py-4">
-      Loading similar videos...
-    </div>
+  <div *ngIf="similarVideosLoading" class="text-center py-4">
+    Loading similar videos...
+  </div>
 
-    <div *ngIf="similarVideosError" class="text-center py-4">
-      Failed to load similar videos.
-    </div>
+  <div *ngIf="similarVideosError" class="text-center py-4">
+    Failed to load similar videos.
+  </div>
 
+  <div
+    *ngIf="
+      !similarVideosLoading && !similarVideosError && similarVideos.length > 0
+    "
+    class="grid grid-cols-2 gap-4"
+  >
     <div
-      *ngIf="
-        !similarVideosLoading && !similarVideosError && similarVideos.length > 0
-      "
-      class="grid grid-cols-2 gap-4"
+      *ngFor="let sv of similarVideos"
+      class="cursor-pointer hover:scale-[1.02] transition-transform"
+      (click)="navigateToVideo.emit(sv.videoId)"
     >
-      <div
-        *ngFor="let sv of similarVideos"
-        class="cursor-pointer hover:scale-[1.02] transition-transform"
-        (click)="navigateToVideo.emit(sv.videoId)"
-      >
-        <img
-          [src]="videoapi.getThumbnailUrl(sv.videoId)"
-          [alt]="sv.title"
-          class="w-full aspect-video object-cover"
-        />
-        <div class="mt-1 text-xs font-medium truncate" [title]="sv.title">
-          {{ sv.title }}
-        </div>
+      <img
+        [src]="videoapi.getThumbnailUrl(sv.videoId)"
+        [alt]="sv.title"
+        class="w-full aspect-video object-cover"
+      />
+      <div class="mt-1 text-xs font-medium truncate" [title]="sv.title">
+        {{ sv.title }}
       </div>
     </div>
-    <div
-      *ngIf="
-        !similarVideosLoading &&
-        !similarVideosError &&
-        similarVideos.length === 0
-      "
-      class="text-center py-4"
-    >
-      No similar videos found.
+  </div>
+  <div
+    *ngIf="
+      !similarVideosLoading && !similarVideosError && similarVideos.length === 0
+    "
+    class="text-center py-4"
+  >
+    No similar videos found.
+  </div>
 </div>

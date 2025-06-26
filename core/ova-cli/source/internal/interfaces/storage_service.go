@@ -59,7 +59,9 @@ type StorageService interface {
 	GetUserWatchedVideos(username string) ([]datatypes.VideoData, error)
 	ClearUserWatchedHistory(username string) error
 
-	// New methods for VTT chapters management
-	UpdateVttChapters(videoID string, chapters []datatypes.VttChapter) error
-	GetVttChapters(videoID string) ([]datatypes.VttChapter, error)
+	// Marker management (added)
+	AddMarkerToVideo(videoID string, marker datatypes.VideoMarker) error
+	GetMarkersForVideo(videoID string) ([]datatypes.VideoMarker, error)
+	DeleteMarkerFromVideo(videoID string, marker datatypes.VideoMarker) error
+	DeleteAllMarkersFromVideo(videoID string) error
 }

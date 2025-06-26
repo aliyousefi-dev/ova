@@ -93,10 +93,6 @@ export class VideoApiService {
     return `${this.baseUrl}/storyboards/${videoId}/thumbnails.vtt`;
   }
 
-  getChapterFileUrl(videoId: string): string {
-    return `${this.baseUrl}/video/chapters/${videoId}/file`;
-  }
-
   // Remove whole update of tags; instead add & remove individual tags
 
   addVideoTag(

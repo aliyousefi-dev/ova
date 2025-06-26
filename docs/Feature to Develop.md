@@ -85,3 +85,39 @@ and how we can mange the for hte chapter what we want
 i wnat a start and ending 
 
 i thinking about the markers not chapters 
+
+i thinking about the split mechanig
+we split the video from a time and then can title the 
+
+this feature is very good for the bazbin 
+for example it Mark that time and tell what is the problem of that 
+
+adding the folder that this video exist on that 
+
+
+instead of chapter just implemtn the marker 
+
+but i thinking about marker with title nad wihotu title 
+
+ok now i thinking about the Add Marker not the Chapters with 20 sec space
+
+we need 
+Add Marker API
+Get Markers
+and Delete Marker 
+and delete All Markers
+
+
+adding the ctrl K insiide the Serach box that showing 
+
+telegram have differnet web ui we can also doing that .
+
+i thinking more baout hte addons 
+
+
+no i thinking how i cna add the from the js not the vtts 
+
+
+
+Disable the Editor for the Admin if want.
+and it show the Same

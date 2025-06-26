@@ -1,15 +1,5 @@
-<div class="mt-4">
-  <h2 class="text-sm font-semibold mb-2">Tags:</h2>
-  <div class="flex flex-wrap gap-2 items-center">
-    <app-tag-chip
-      *ngFor="let tag of currentTags"
-      [tag]="tag"
-      [videoId]="videoId"
-      (removed)="onTagRemoved($event)"
-    ></app-tag-chip>
-  </div>
-
-  <div class="mt-4 flex gap-2">
+<div>
+  <div class="flex gap-2">
     <input
       [(ngModel)]="newTag"
       type="text"
@@ -25,6 +15,16 @@
       {{ updatingTags ? "Adding..." : "Add" }}
     </button>
   </div>
+
+  <div class="mt-5 flex flex-wrap gap-2 items-center">
+    <app-tag-chip
+      *ngFor="let tag of currentTags"
+      [tag]="tag"
+      [videoId]="videoId"
+      (removed)="onTagRemoved($event)"
+    ></app-tag-chip>
+  </div>
+
   <p *ngIf="tagUpdateError" class="text-error text-sm mt-1">
     Failed to update tags.
   </p>
