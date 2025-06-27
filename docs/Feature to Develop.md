@@ -123,3 +123,6 @@ Disable the Editor for the Admin if want.
 and it show the Same
 
 Having a Worker that listen for video added uploaded or anything and make the Vtts for that.
+
+
+i think the comment can be good feature also

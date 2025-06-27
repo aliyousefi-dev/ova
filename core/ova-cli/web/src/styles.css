@@ -2,6 +2,7 @@
 @import "video.js/dist/video-js.css";
 @import "@videojs/themes/dist/fantasy/index.css";
 
+@import 'vidstack/player/styles/base.css';
 @import 'vidstack/player/styles/default/theme.css';
 @import "vidstack/player/styles/default/layouts/video.css";
 
@@ -21,4 +22,24 @@ html, body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+}
+
+
+:root:has(
+  :is(
+    .modal-open,
+    .modal:target,
+    .modal-toggle:checked + .modal,
+    .modal[open]
+  )
+) {
+  scrollbar-gutter: unset; /* or auto */
+}
+
+media-google-cast-button {
+display: none;
+}
+
+media-pip-button {
+  display: none;
 }

@@ -14,7 +14,7 @@
       "width": 1920,
       "height": 1080
     },
-    "uploadedAt": "2025-06-25T22:35:45.6147709Z",
+    "uploadedAt": "2025-06-26T20:50:19.9331041Z",
     "codecs": {
       "format": "video/mp4",
       "video": "avc1.64002A",
@@ -36,7 +36,7 @@
       "width": 720,
       "height": 406
     },
-    "uploadedAt": "2025-06-25T22:35:45.0973388Z",
+    "uploadedAt": "2025-06-26T20:50:19.4062773Z",
     "codecs": {
       "format": "video/mp4",
       "video": "avc1.64001F",
@@ -52,15 +52,13 @@
     "durationSeconds": 7,
     "thumbnailPath": ".ova-repo\\storage\\thumbnails\\905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290.jpg",
     "previewPath": ".ova-repo\\storage\\previews\\905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290.webm",
-    "tags": [
-      "asddd"
-    ],
+    "tags": [],
     "views": 0,
     "resolution": {
       "width": 1280,
       "height": 720
     },
-    "uploadedAt": "2025-06-25T22:35:45.9727559Z",
+    "uploadedAt": "2025-06-26T20:50:20.2847348Z",
     "codecs": {
       "format": "video/mp4",
       "video": "avc1.640020",

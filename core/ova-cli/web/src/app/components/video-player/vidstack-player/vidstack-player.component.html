@@ -2,7 +2,6 @@
   #mediaPlayer
   view-type="video"
   stream-type="on-demand"
-  log-level="warn"
   crossorigin
   playsinline
   [muted]="isMuted"
@@ -16,8 +15,6 @@
     <track
       kind="chapters"
       [src]="vttMarkersUrl ? vttMarkersUrl : null"
-      label="Fake Chapters"
-      language="en-US"
       default
     />
   </media-provider>
@@ -25,5 +22,3 @@
   <media-audio-layout></media-audio-layout>
   <media-video-layout [thumbnails]="vttUrl || null"></media-video-layout>
 </media-player>
-<!-- Video source with explicit type -->
-<source [src]="videoUrl" type="video/mp4" />

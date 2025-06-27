@@ -1,15 +1,10 @@
-<app-navbar title="Playlists"></app-navbar>
-
 <!-- Loading Spinner -->
 <div *ngIf="loading" class="py-10 text-center text-base-content/70">
   Loading playlists...
 </div>
 
-
 <!-- Playlist Manager -->
-<app-playlist-manager>
-</app-playlist-manager>
-
+<app-playlist-manager> </app-playlist-manager>
 
 <!-- Toast -->
 <app-toast
@@ -18,10 +13,3 @@
   type="error"
   (close)="creationError = null"
 ></app-toast>
-
-
-
-
-
-
-

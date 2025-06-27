@@ -1,38 +1,112 @@
-<div
-  class="flex items-center justify-between pt-5 pb-5 bg-base-100 sm:px-3 md:px-6 lg:px-0 xl:px-0 2xl:px-0 px-3"
->
+<div *ngIf="videoId" class="flex flex-col items-end gap-3 w-full">
+  <!-- One row: metadata badges + action buttons -->
   <div
-    *ngIf="videoTitle"
-    class="text-lg font-semibold leading-tight truncate flex-1"
-    [title]="videoTitle"
+    class="flex flex-wrap items-center justify-end gap-3 w-full text-xs text-gray-600"
   >
-    {{ videoTitle }}
+    <!-- Metadata badges -->
+    <div class="flex flex-wrap gap-2 flex-grow min-w-[200px]">
+      <span
+        *ngIf="videoUploadedAt"
+        class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 font-medium"
+        [title]="videoUploadedAt"
+      >
+        <i-lucide [img]="UploadTimeIcon" class="w-4 h-4"></i-lucide>
+        <span>{{ videoUploadedAt | date : "mediumDate" }}</span>
+      </span>
+
+      <span
+        *ngIf="videoResolution"
+        class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 font-medium"
+        [title]="videoResolution.width + 'x' + videoResolution.height"
+      >
+        <i-lucide [img]="ResolutionIcon" class="w-4 h-4"></i-lucide>
+        <span>{{ videoResolution.width }} x {{ videoResolution.height }}</span>
+      </span>
+
+      <span
+        *ngIf="videoDurationSeconds !== undefined"
+        class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 font-medium"
+        [title]="formatTime(videoDurationSeconds)"
+      >
+        <i-lucide [img]="VideoDurationIcon" class="w-4 h-4"></i-lucide>
+        <span>{{ formatTime(videoDurationSeconds) }}</span>
+      </span>
+
+      <span
+        class="inline-flex items-center gap-1 bg-base-200 rounded-full px-3 py-1 font-medium"
+      >
+        <i-lucide [img]="FPSIcon" class="w-4 h-4"></i-lucide>
+        <span>30 fps</span>
+      </span>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="flex gap-2 flex-shrink-0 items-center">
+      <!-- Add to Playlist -->
+      <button
+        class="btn btn-sm btn-outline btn-primary gap-2 flex items-center"
+        (click)="addToPlaylist.emit($event)"
+        aria-label="Add to Playlist"
+      >
+        <i-lucide [img]="PlusSquare" class="w-5 h-5"></i-lucide>
+        <span>Add to Playlist</span>
+      </button>
+
+      <!-- Save/Unsave -->
+      <button
+        class="btn btn-sm gap-2 flex items-center"
+        [ngClass]="
+          isSaved ? 'btn-error' : 'btn-outline btn-error hover:btn-error'
+        "
+        (click)="toggleSaved.emit()"
+        [disabled]="loadingSavedVideo"
+        [attr.aria-label]="
+          isSaved ? 'Unsave from favorites' : 'Save to favorites'
+        "
+      >
+        <ng-container *ngIf="isSaved; else notFavoriteIcon">
+          <i-lucide [img]="BookmarkPlus" class="w-5 h-5"></i-lucide>
+          <span>Saved</span>
+        </ng-container>
+        <ng-template #notFavoriteIcon>
+          <i-lucide [img]="Bookmark" class="w-5 h-5"></i-lucide>
+          <span>Save</span>
+        </ng-template>
+      </button>
+
+      <!-- Download -->
+      <button
+        class="btn btn-sm btn-primary rounded-full px-4 gap-2"
+        (click)="downloadVideo()"
+      >
+        <i-lucide [img]="DownloadIcon" class="w-5 h-5"></i-lucide>
+        Download
+      </button>
+
+      <!-- Trim Mode Toggle -->
+      <button
+        class="btn btn-sm btn-outline rounded-full px-4"
+        (click)="toggleTrimMode()"
+      >
+        {{ trimMode ? "Cancel Trim" : "Trim Download" }}
+      </button>
+    </div>
   </div>
 
-  <button
-    class="ml-2 rounded-full border transition-all duration-300 ease-in-out shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:px-3 px-2 py-2 sm:btn-md btn-sm flex items-center justify-center bg-base-100 text-primary border-primary hover:bg-primary hover:text-white"
-    (click)="addToPlaylist.emit($event)"
-    aria-label="Add to Playlist"
-  >
-    <i-lucide [img]="PlusSquare" class="w-5 h-5"></i-lucide>
-  </button>
-
-  <button
-    class="ml-2 rounded-full border transition-all duration-300 ease-in-out shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-error sm:px-3 px-2 py-2 sm:btn-md btn-sm flex items-center justify-center hover:text-white"
-    [ngClass]="
-      isSaved
-        ? 'bg-error border-error'
-        : 'bg-base-100 text-error border-error hover:bg-error'
-    "
-    (click)="toggleSaved.emit()"
-    [disabled]="loadingSavedVideo"
-    [attr.aria-label]="isSaved ? 'Unsave from favorites' : 'Save to favorites'"
-  >
-    <ng-container *ngIf="isSaved; else notFavoriteIcon">
-      <i-lucide [img]="BookmarkPlus" class="w-5 h-5"></i-lucide>
-    </ng-container>
-    <ng-template #notFavoriteIcon>
-      <i-lucide [img]="Bookmark" class="w-5 h-5"></i-lucide>
-    </ng-template>
-  </button>
+  <!-- Trim controls below -->
+  <div *ngIf="trimMode" class="flex gap-2 items-center mt-2 text-xs">
+    <span class="text-gray-500">
+      Start: {{ formatTime(trimStart) }}, End: {{ formatTime(trimEnd) }},
+      Duration: {{ formatTime(trimmedDuration) }}
+    </span>
+    <button class="btn btn-xs btn-accent" (click)="setTrimStart()">
+      Set Start
+    </button>
+    <button class="btn btn-xs btn-accent" (click)="setTrimEnd()">
+      Set End
+    </button>
+    <button class="btn btn-xs btn-success" (click)="downloadTrimmed()">
+      Trim Download
+    </button>
+  </div>
 </div>

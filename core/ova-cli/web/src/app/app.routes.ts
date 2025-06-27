@@ -1,4 +1,5 @@
 import { Routes, UrlSegment, UrlMatchResult } from '@angular/router';
+import { NavBarComponent } from './components/common/navbar/navbar.component';
 import { LibraryPage } from './pages/library/library.page';
 import { WatchPage } from './pages/watch/watch.page';
 import { NotFoundPage } from './pages/NotFoundComponent/not-found.page';
@@ -23,7 +24,6 @@ export function libraryFolderMatcher(
     return null;
   }
 
-  // Join everything after 'library' as a single param
   const folderPath =
     segments.length > 1
       ? segments
@@ -31,6 +31,7 @@ export function libraryFolderMatcher(
           .map((s) => s.path)
           .join('/')
       : '';
+
   return {
     consumed: segments,
     posParams: {
@@ -42,48 +43,49 @@ export function libraryFolderMatcher(
 export const routes: Routes = [
   {
     path: '',
-    component: HomePage,
-    canActivate: [AuthGuard], // protected
-  },
-  {
-    matcher: libraryFolderMatcher,
-    component: LibraryPage,
-    canActivate: [AuthGuard], // protected
-  },
-  {
-    path: 'watch/:videoId',
-    component: WatchPage,
-    canActivate: [AuthGuard], // protected
-  },
-  {
-    path: 'dashboard',
-    component: DashboardPage,
+    component: NavBarComponent,
     canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: HomePage,
+      },
+      {
+        matcher: libraryFolderMatcher,
+        component: LibraryPage,
+      },
+      {
+        path: 'watch/:videoId',
+        component: WatchPage,
+      },
+      {
+        path: 'dashboard',
+        component: DashboardPage,
+      },
+      {
+        path: 'profile',
+        component: ProfilePage,
+      },
+      {
+        path: 'saved',
+        component: SavedPage,
+      },
+      {
+        path: 'discover',
+        component: DiscoverPage,
+      },
+      {
+        path: 'playlists',
+        component: PlaylistsPage,
+      },
+      {
+        path: 'playlists/:title',
+        component: PlaylistDetailPage,
+      },
+    ],
   },
-  {
-    path: 'profile',
-    component: ProfilePage,
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'saved',
-    component: SavedPage,
-    canActivate: [AuthGuard], // protected
-  },
-  {
-    path: 'discover',
-    component: DiscoverPage,
-    canActivate: [AuthGuard], // protected
-  },
-  {
-    path: 'playlists',
-    component: PlaylistsPage,
-    canActivate: [AuthGuard], // protected
-  },
-  {
-    path: 'playlists/:title',
-    component: PlaylistDetailPage,
-  },
+
+  // Public routes outside the layout shell
   {
     path: 'login',
     component: LoginPage,

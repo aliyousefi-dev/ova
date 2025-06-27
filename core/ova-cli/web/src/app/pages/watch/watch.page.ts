@@ -14,10 +14,9 @@ import { DefaultVideoPlayerComponent } from '../../components/video-player/defau
 import { MarkerApiService } from '../../services/api/marker-api.service';
 
 // Updated: Import new child components
-import { VideoActionBarComponent } from './panels/video-action-bar.component'; // Path assuming it's in the same directory as watch.page.ts
-import { VideoMetadataPanelComponent } from './panels/video-metadata-panel.component'; // Path assuming it's in the same directory as watch.page.ts
+import { VideoTitleBarComponent } from './panels/video-title-bar.component'; // Path assuming it's in the same directory as watch.page.ts
 import { SimilarVideosPanelComponent } from './panels/similar-videos-panel.component';
-import { VideoDownloadPanelComponent } from './panels/video-download-panel.component';
+import { VideoActionBarComponent } from './panels/video-action-bar.component';
 import { VideoTagsPanelComponent } from './panels/video-tags-panel.component';
 import { VideoAdminTabsComponent } from './panels/video-admin-tabs.component';
 
@@ -34,12 +33,12 @@ import { ViewChild } from '@angular/core';
     VidstackPlayerComponent,
     DefaultVideoPlayerComponent,
     // Updated: Add new child components and remove the old VideoDetailsComponent
-    VideoActionBarComponent,
-    VideoMetadataPanelComponent,
+    VideoTitleBarComponent,
     SimilarVideosPanelComponent,
     VideoAdminTabsComponent,
     VideoTagsPanelComponent,
-    VideoDownloadPanelComponent,
+    VideoActionBarComponent,
+    VideoTitleBarComponent,
   ],
   templateUrl: './watch.page.html',
   styleUrls: ['./watch.page.css'],

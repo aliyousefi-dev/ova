@@ -17,6 +17,7 @@ import 'vidstack/player/ui';
   selector: 'app-vidstack-player',
   standalone: true,
   templateUrl: './vidstack-player.component.html',
+  styleUrl: './vidstack-player.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [CommonModule],
 })

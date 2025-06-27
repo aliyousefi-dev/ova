@@ -1,5 +1,3 @@
-<app-navbar [title]="'Videos'"></app-navbar>
-
 <!-- Search Bar -->
 <app-search-bar
   [(value)]="searchTerm"
@@ -9,10 +7,10 @@
 
 <!-- Folder Tree + spacer -->
 <div class="max-w-7xl mx-auto px-5">
-    <app-folder-tree
-      [currentFolder]="currentFolder"
-      (folderSelected)="onFolderSelected($event)"
-    ></app-folder-tree>
+  <app-folder-tree
+    [currentFolder]="currentFolder"
+    (folderSelected)="onFolderSelected($event)"
+  ></app-folder-tree>
 </div>
 
 <!-- Top Pagination -->
@@ -25,7 +23,7 @@
       *ngFor="let page of [].constructor(totalPages); let i = index"
       class="join-item btn btn-square"
       type="radio"
-      name="paginationTop"     
+      name="paginationTop"
       [attr.aria-label]="i + 1"
       [checked]="currentPage === i + 1"
       (change)="goToPage(i + 1)"
@@ -37,9 +35,7 @@
 <div
   class="max-w-7xl mx-auto px-5 mt-5 flex justify-between items-center gap-2"
 >
-  <div class="font-medium">
-    Total videos: {{ filteredVideosCount }}
-  </div>
+  <div class="font-medium">Total videos: {{ filteredVideosCount }}</div>
 
   <div class="flex items-center gap-2">
     <label for="sort" class="text-sm font-medium">Sort by:</label>
@@ -61,12 +57,7 @@
 
 <!-- Videos -->
 <div class="max-w-7xl mx-auto px-4 mt-6">
-  <p *ngIf="loading" class=" font-medium text-center">
-    Loading videos...
-  </p>
-
-
-  
+  <p *ngIf="loading" class="font-medium text-center">Loading videos...</p>
 
   <app-video-grid *ngIf="!loading" [videos]="videos"></app-video-grid>
 </div>

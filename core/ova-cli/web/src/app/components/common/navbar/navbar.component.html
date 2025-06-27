@@ -1,96 +1,73 @@
-<div class="w-full">
-  <nav class="navbar bg-base-300 px-4 z-50 nav-sticky">
-    <div class="navbar-start">
-      <a class="btn btn-ghost normal-case text-xl">{{ title }}</a>
-    </div>
+<!-- Sidebar -->
+<app-desktop-sidebar
+  class="fixed left-0 top-0 bottom-0 w-64 bg-base-300 flex flex-col justify-between hidden md:flex"
+  [title]="title"
+></app-desktop-sidebar>
 
-    <div class="navbar-center hidden md:flex">
-      <ul class="menu menu-horizontal px-1">
-        <li><a routerLink="/">Home</a></li>
-        <li><a routerLink="/discover">Discover</a></li>
-        <li><a routerLink="/library">Library</a></li>
-        <li><a routerLink="/saved">Saved</a></li>
-        <li><a routerLink="/playlists">Playlists</a></li>
+<!-- Top navbar -->
+<header
+  class="fixed top-0 left-0 right-0 h-14 bg-base-200 flex items-center px-4 md:px-8 z-50 gap-6 border-b border-base-300 md:left-64"
+>
+  <!-- Page Title on the left -->
+  <div class="font-semibold text-lg flex-shrink-0">
+    {{ pageTitle || "Home" }}
+  </div>
+
+  <div class="flex-grow"></div>
+
+  <!-- Right: Settings + Profile -->
+  <div class="flex items-center gap-5 flex-shrink-0 ml-6">
+    <!-- Settings button -->
+    <button
+      class="btn btn-ghost btn-circle"
+      title="Settings"
+      (click)="openSettingsModal()"
+      aria-label="Settings"
+    >
+      <i class="bx bx-cog text-3xl"></i>
+    </button>
+
+    <!-- User dropdown -->
+    <div
+      class="dropdown dropdown-bottom dropdown-end"
+      [ngClass]="{ 'dropdown-open': dropdownOpen }"
+    >
+      <div
+        tabindex="0"
+        role="button"
+        class="btn btn-ghost btn-circle avatar dropdown-anchor"
+        (click)="toggleDropdown()"
+        (blur)="closeDropdown()"
+        aria-label="User menu"
+      >
+        <div
+          class="w-10 h-10 rounded-full bg-base-300 font-semibold text-lg flex items-center justify-center"
+        >
+          <span class="leading-[2.5rem]">{{ userInitial }}</span>
+        </div>
+      </div>
+      <ul
+        class="menu menu-sm dropdown-content bg-base-200 rounded-box z-50 w-52 p-3 shadow"
+      >
+        <li><a routerLink="/profile">Profile</a></li>
+        <li>
+          <button (click)="onLogout()" class="text-left w-full">Logout</button>
+        </li>
       </ul>
     </div>
+  </div>
+</header>
 
-    <div class="navbar-end flex items-center space-x-2 md:space-x-4">
-      <a routerLink="/dashboard" class="btn btn-sm">Dashboard</a>
-
-      <button
-        class="btn btn-ghost btn-circle"
-        title="Settings"
-        (click)="openSettingsModal()"
-      >
-        <i class="bx bx-cog text-2xl"></i>
-      </button>
-
-      <div class="dropdown dropdown-end">
-        <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-          <div
-            class="w-10 h-10 rounded-full bg-base-100 font-semibold text-lg flex items-center justify-center"
-          >
-            <span class="block leading-[2.5rem]">{{ userInitial }}</span>
-          </div>
-        </div>
-        <ul
-          class="menu menu-sm dropdown-content bg-base-200 rounded-box z-[1] mt-3 w-52 p-2 shadow"
-        >
-          <li><a routerLink="/profile">Profile</a></li>
-          <li>
-            <button (click)="onLogout()" class="text-left w-full">
-              Logout
-            </button>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
+<!-- Main content area -->
+<div class="pt-14 pl-0 md:pl-64 h-screen overflow-hidden flex flex-col">
   <app-settings-modal
     [isOpen]="isSettingsModalOpen"
     (close)="closeSettingsModal()"
   ></app-settings-modal>
 
-  <div class="z-50 dock md:hidden bg-base-300 flex justify-around p-2">
-    <button
-      routerLink="/discover"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      class="flex flex-col items-center"
-    >
-      <i class="bx bx-search text-2xl"></i>
-      <span class="dock-label text-xs">Discover</span>
-    </button>
-
-    <button
-      routerLink="/library"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      class="flex flex-col items-center"
-    >
-      <i class="bx bx-folder text-2xl"></i>
-      <span class="dock-label text-xs">Library</span>
-    </button>
-
-    <button
-      routerLink="/saved"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      class="flex flex-col items-center"
-    >
-      <i class="bx bx-bookmark text-2xl"></i>
-      <span class="dock-label text-xs">Saved</span>
-    </button>
-
-    <button
-      routerLink="/playlists"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      class="flex flex-col items-center"
-    >
-      <i class="bx bx-list-ul text-2xl"></i>
-      <span class="dock-label text-xs">Playlists</span>
-    </button>
+  <div class="flex-1 overflow-y-auto">
+    <router-outlet></router-outlet>
   </div>
+
+  <app-mobile-dock></app-mobile-dock>
 </div>

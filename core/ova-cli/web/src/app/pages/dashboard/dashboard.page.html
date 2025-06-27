@@ -1,11 +1,12 @@
-<app-navbar title="Upload" (menuToggle)="sidebarOpen = !sidebarOpen"></app-navbar>
-
-<div class="drawer lg:drawer-open ">
+<div class="drawer lg:drawer-open">
   <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
 
   <!-- Main Content -->
   <div class="drawer-content flex flex-col">
-    <label for="my-drawer-2" class="btn btn-soft btn-neutral drawer-button lg:hidden">
+    <label
+      for="my-drawer-2"
+      class="btn btn-soft btn-neutral drawer-button lg:hidden"
+    >
       Menu
     </label>
 
@@ -16,7 +17,8 @@
           <app-upload-video
             *ngSwitchCase="'upload'"
             [selectedFolder]="selectedFolder"
-            (folderSelected)="onFolderSelected($event)">
+            (folderSelected)="onFolderSelected($event)"
+          >
           </app-upload-video>
 
           <div *ngSwitchCase="'folder-manager'" class="text-center">
@@ -37,60 +39,65 @@
 
   <!-- Sidebar Menu -->
   <div class="drawer-side z-100">
-    <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
-<ul class="menu bg-base-100 h-full w-80 p-5 pl-10 pt-20 text-base-content">
+    <label
+      for="my-drawer-2"
+      aria-label="close sidebar"
+      class="drawer-overlay"
+    ></label>
+    <ul class="menu bg-base-100 h-full w-80 p-5 pl-10 pt-20 text-base-content">
+      <!-- Menu Heading -->
+      <h2 class="menu-title">Repository Settings</h2>
 
-  <!-- Menu Heading -->
-<h2 class="menu-title">Repository Settings</h2>
-
-  <!-- USERS SECTION -->
-  <li>
-    <a class="font-semibold cursor-default">Users</a>
-    <ul>
+      <!-- USERS SECTION -->
       <li>
-        <a
-          class="cursor-pointer"
-          [class.font-bold]="activeTab === 'users-list'"
-          (click)="activeTab = 'users-list'"
-        >List</a>
+        <a class="font-semibold cursor-default">Users</a>
+        <ul>
+          <li>
+            <a
+              class="cursor-pointer"
+              [class.font-bold]="activeTab === 'users-list'"
+              (click)="activeTab = 'users-list'"
+              >List</a
+            >
+          </li>
+          <li>
+            <a
+              class="cursor-pointer"
+              [class.font-bold]="activeTab === 'create-user'"
+              (click)="activeTab = 'create-user'"
+              >Create User</a
+            >
+          </li>
+        </ul>
       </li>
+
+      <!-- VIDEOS SECTION -->
       <li>
-  <a
-    class="cursor-pointer"
-    [class.font-bold]="activeTab === 'create-user'"
-    (click)="activeTab = 'create-user'"
-  >Create User</a>
-</li>
+        <a class="font-semibold">Videos</a>
+        <ul>
+          <li>
+            <a
+              class="cursor-pointer"
+              [class.font-bold]="activeTab === 'upload'"
+              (click)="activeTab = 'upload'"
+              >Upload</a
+            >
+          </li>
+          <li>
+            <a
+              class="cursor-pointer"
+              [class.font-bold]="activeTab === 'folder-manager'"
+              (click)="activeTab = 'folder-manager'"
+              >Folders</a
+            >
+          </li>
+        </ul>
+      </li>
+
+      <!-- CONFIG SECTION -->
+      <li>
+        <a>Config</a>
+      </li>
     </ul>
-  </li>
-
-  <!-- VIDEOS SECTION -->
-  <li>
-    <a class="font-semibold">Videos</a>
-    <ul>
-      <li>
-        <a
-          class="cursor-pointer"
-          [class.font-bold]="activeTab === 'upload'"
-          (click)="activeTab = 'upload'"
-        >Upload</a>
-      </li>
-      <li>
-        <a
-          class="cursor-pointer"
-          [class.font-bold]="activeTab === 'folder-manager'"
-          (click)="activeTab = 'folder-manager'"
-        >Folders</a>
-      </li>
-    </ul>
-  </li>
-
-  <!-- CONFIG SECTION -->
-  <li>
-    <a>Config</a>
-  </li>
-
-</ul>
-
   </div>
 </div>
