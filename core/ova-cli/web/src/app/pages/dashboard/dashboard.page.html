@@ -1,12 +1,9 @@
-<div class="drawer lg:drawer-open">
+<div class="drawer lg:drawer-open h-full">
   <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
 
   <!-- Main Content -->
   <div class="drawer-content flex flex-col">
-    <label
-      for="my-drawer-2"
-      class="btn btn-soft btn-neutral drawer-button lg:hidden"
-    >
+    <label for="my-drawer-2" class="btn btn-soft drawer-button lg:hidden mb-4">
       Menu
     </label>
 
@@ -18,8 +15,7 @@
             *ngSwitchCase="'upload'"
             [selectedFolder]="selectedFolder"
             (folderSelected)="onFolderSelected($event)"
-          >
-          </app-upload-video>
+          ></app-upload-video>
 
           <div *ngSwitchCase="'folder-manager'" class="text-center">
             Folder Manager tab content...
@@ -38,66 +34,94 @@
   </div>
 
   <!-- Sidebar Menu -->
-  <div class="drawer-side z-100">
+  <div class="drawer-side z-100 h-full">
     <label
       for="my-drawer-2"
       aria-label="close sidebar"
       class="drawer-overlay"
     ></label>
-    <ul class="menu bg-base-100 h-full w-80 p-5 pl-10 pt-20 text-base-content">
-      <!-- Menu Heading -->
-      <h2 class="menu-title">Repository Settings</h2>
 
-      <!-- USERS SECTION -->
-      <li>
-        <a class="font-semibold cursor-default">Users</a>
-        <ul>
-          <li>
-            <a
-              class="cursor-pointer"
-              [class.font-bold]="activeTab === 'users-list'"
-              (click)="activeTab = 'users-list'"
-              >List</a
-            >
-          </li>
-          <li>
-            <a
-              class="cursor-pointer"
-              [class.font-bold]="activeTab === 'create-user'"
-              (click)="activeTab = 'create-user'"
-              >Create User</a
-            >
-          </li>
-        </ul>
-      </li>
+    <aside
+      class="w-64 h-full p-6 bg-base-100 border-r border-base-100 flex flex-col overflow-y-auto"
+    >
+      <!-- Navigation -->
+      <nav class="flex flex-col gap-8 flex-grow">
+        <!-- Users Section -->
+        <section>
+          <h3 class="font-semibold text-lg mb-3 border-b border-base-300 pb-1">
+            Users
+          </h3>
+          <ul class="space-y-2">
+            <li>
+              <button
+                class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center"
+                [class.btn-active]="activeTab === 'users-list'"
+                (click)="activeTab = 'users-list'"
+                role="tab"
+                tabindex="0"
+              >
+                <i class="bx bx-user text-xl"></i>
+                List
+              </button>
+            </li>
+            <li>
+              <button
+                class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center"
+                [class.btn-active]="activeTab === 'create-user'"
+                (click)="activeTab = 'create-user'"
+                role="tab"
+                tabindex="0"
+              >
+                <i class="bx bx-user-plus text-xl"></i>
+                Create User
+              </button>
+            </li>
+          </ul>
+        </section>
 
-      <!-- VIDEOS SECTION -->
-      <li>
-        <a class="font-semibold">Videos</a>
-        <ul>
-          <li>
-            <a
-              class="cursor-pointer"
-              [class.font-bold]="activeTab === 'upload'"
-              (click)="activeTab = 'upload'"
-              >Upload</a
-            >
-          </li>
-          <li>
-            <a
-              class="cursor-pointer"
-              [class.font-bold]="activeTab === 'folder-manager'"
-              (click)="activeTab = 'folder-manager'"
-              >Folders</a
-            >
-          </li>
-        </ul>
-      </li>
+        <!-- Videos Section -->
+        <section>
+          <h3 class="font-semibold text-lg mb-3 border-b border-base-300 pb-1">
+            Videos
+          </h3>
+          <ul class="space-y-2">
+            <li>
+              <button
+                class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center"
+                [class.btn-active]="activeTab === 'upload'"
+                (click)="activeTab = 'upload'"
+                role="tab"
+                tabindex="0"
+              >
+                <i class="bx bx-upload text-xl"></i>
+                Upload
+              </button>
+            </li>
+            <li>
+              <button
+                class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center"
+                [class.btn-active]="activeTab === 'folder-manager'"
+                (click)="activeTab = 'folder-manager'"
+                role="tab"
+                tabindex="0"
+              >
+                <i class="bx bx-folder text-xl"></i>
+                Folders
+              </button>
+            </li>
+          </ul>
+        </section>
 
-      <!-- CONFIG SECTION -->
-      <li>
-        <a>Config</a>
-      </li>
-    </ul>
+        <!-- Config Section -->
+        <section>
+          <h3 class="font-semibold text-lg mb-3 border-b border-base-300 pb-1">
+            Config
+          </h3>
+          <p class="text-sm text-neutral-600">
+            Settings and configuration go here.
+          </p>
+        </section>
+      </nav>
+    </aside>
   </div>
 </div>

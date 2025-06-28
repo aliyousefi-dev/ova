@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Developer Guid.md",
+                "file": "OVA Desktop Features.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Developer Guid"
+              "title": "OVA Desktop Features"
             }
           },
           {
@@ -252,23 +252,24 @@
   },
   "active": "08cca70206ef7f8a",
   "lastOpenFiles": [
+    "Rule Auth.md",
+    "Untitled.md",
+    "Feature Tree.canvas",
+    "Developer Guid.md",
+    "Web Feature Tree.canvas",
     "Authentication.md",
     "Client Connections.md",
     "OVA Mobile/Untitled.md",
     "Adding Video to Storage.md",
     "OVA Desktop/Untitled.md",
-    "Feature Tree.canvas",
     "Folder Tree.md",
-    "Web Feature Tree.canvas",
     "Cli Feature Tree.md",
     "Feature to Develop.md",
     "OVA Desktop Features.md",
     "Overview.md",
     "OVA Overview.md",
     "OVA Mobile.md",
-    "Untitled.md",
     "Software Versioning.md",
-    "Rule Auth.md",
     "OVA CLI/Configs.md",
     "OVA CLI/Runtime Watcher.md",
     "Frontend/App Views/Folders.md",
@@ -279,8 +280,6 @@
     "Frontend/Web Pages/Collection-html.md",
     "Frontend/Web API.md",
     "OVA CLI/Console Commands.md",
-    "OVA CLI/Console Command/video.md",
-    "OVA CLI/Console Command/version.md",
     "OVA Desktop",
     "OVA Mobile",
     "OVA CLI/Untitled",

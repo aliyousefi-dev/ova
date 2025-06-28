@@ -1,7 +1,71 @@
-<div>
-  <div class="text-base-content pt-6 transition-colors duration-500">
-    <div class="flex items-center justify-between gap-4 px-8 ps-10">
-      <h2 class="font-title text-lg md:max-lg:hidden">Home</h2>
-    </div>
+<div class="p-6 min-h-screen">
+  <div class="mx-auto space-y-16 max-w-7xl">
+    <header class="mb-8 px-8 ps-10">
+      <h2 class="font-title text-3xl font-semibold text-primary">Home</h2>
+    </header>
+
+    <!-- Recommended Videos -->
+    <section aria-label="Recommended Videos" class="space-y-4">
+      <h3 class="text-2xl font-semibold text-primary px-8 ps-10">
+        Recommended Videos
+      </h3>
+      <div
+        class="flex gap-6 overflow-x-auto px-8 ps-10 scrollbar-thin scrollbar-thumb-primary scrollbar-track-base-200 snap-x snap-mandatory"
+      >
+        <article
+          *ngFor="let video of recommendedVideos"
+          class="bg-base-200 rounded-lg shadow-md p-4 flex-shrink-0 w-64 flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-300 snap-start"
+          tabindex="0"
+          role="button"
+          (click)="goTo(video.route)"
+        >
+          <img
+            [src]="video.image"
+            alt="{{ video.title }} thumbnail"
+            class="rounded-lg mb-4 h-40 w-full object-cover hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+            decoding="async"
+          />
+          <h4 class="text-lg font-semibold text-primary mb-2">
+            {{ video.title }}
+          </h4>
+          <p class="text-sm text-base-content/80 flex-grow">
+            {{ video.description }}
+          </p>
+          <button class="btn btn-primary mt-4 self-start">Watch</button>
+        </article>
+      </div>
+    </section>
+
+    <!-- Top Rated -->
+    <section aria-label="Top Rated Videos" class="space-y-4">
+      <h3 class="text-2xl font-semibold text-primary px-8 ps-10">Top Rated</h3>
+      <div
+        class="flex gap-6 overflow-x-auto px-8 ps-10 scrollbar-thin scrollbar-thumb-primary scrollbar-track-base-200 snap-x snap-mandatory"
+      >
+        <article
+          *ngFor="let video of topRatedVideos"
+          class="bg-base-200 rounded-lg shadow-md p-4 flex-shrink-0 w-64 flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-300 snap-start"
+          tabindex="0"
+          role="button"
+          (click)="goTo(video.route)"
+        >
+          <img
+            [src]="video.image"
+            alt="{{ video.title }} thumbnail"
+            class="rounded-lg mb-4 h-40 w-full object-cover hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+            decoding="async"
+          />
+          <h4 class="text-lg font-semibold text-primary mb-2">
+            {{ video.title }}
+          </h4>
+          <p class="text-sm text-base-content/80 flex-grow">
+            {{ video.description }}
+          </p>
+          <button class="btn btn-primary mt-4 self-start">Watch</button>
+        </article>
+      </div>
+    </section>
   </div>
 </div>

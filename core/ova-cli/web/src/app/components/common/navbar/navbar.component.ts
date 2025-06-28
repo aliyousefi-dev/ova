@@ -49,6 +49,7 @@ export class NavBarComponent implements OnInit {
     if (url.startsWith('/discover')) return 'Discover';
     if (url.startsWith('/library')) return 'Library';
     if (url.startsWith('/saved')) return 'Saved';
+    if (url.startsWith('/history')) return 'History';
     if (url.startsWith('/playlists')) return 'Playlists';
     if (url.startsWith('/profile')) return 'Profile';
     if (url.startsWith('/dashboard')) return 'Dashboard';

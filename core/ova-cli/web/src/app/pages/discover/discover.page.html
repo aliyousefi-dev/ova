@@ -248,39 +248,39 @@
       </div>
     </div>
   </div>
+</div>
 
-  <div class="max-w-7xl mx-auto mt-6 pb-2">
-    <p *ngIf="loading" class="font-medium text-center">Loading videos...</p>
+<div class="mx-auto px-4 mt-6">
+  <p *ngIf="loading" class="font-medium text-center">Loading videos...</p>
 
-    <app-video-grid
-      *ngIf="!loading && filteredVideos.length > 0"
-      [videos]="filteredVideos"
-    ></app-video-grid>
+  <app-video-grid
+    *ngIf="!loading && filteredVideos.length > 0"
+    [videos]="filteredVideos"
+  ></app-video-grid>
 
-    <div class="w-full mb-30 overflow-x-auto">
-      <div *ngIf="totalPages > 1 && !loading" class="w-max mx-auto">
-        <div class="join whitespace-nowrap">
-          <button
-            *ngFor="let _ of [].constructor(totalPages); let i = index"
-            class="join-item btn btn-sm"
-            [class.btn-active]="currentPage === i + 1"
-            (click)="goToPage(i + 1)"
-          >
-            {{ i + 1 }}
-          </button>
-        </div>
+  <div class="w-full mb-30 overflow-x-auto">
+    <div *ngIf="totalPages > 1 && !loading" class="w-max mx-auto">
+      <div class="join whitespace-nowrap">
+        <button
+          *ngFor="let _ of [].constructor(totalPages); let i = index"
+          class="join-item btn btn-sm"
+          [class.btn-active]="currentPage === i + 1"
+          (click)="goToPage(i + 1)"
+        >
+          {{ i + 1 }}
+        </button>
       </div>
     </div>
-
-    <p *ngIf="!loading && !searchTerm" class="text-center mt-4">
-      Please enter a search term to find videos.
-    </p>
-
-    <p
-      *ngIf="!loading && filteredVideos.length === 0 && searchTerm"
-      class="text-center mt-4"
-    >
-      No videos found for "{{ searchTerm }}"
-    </p>
   </div>
+
+  <p *ngIf="!loading && !searchTerm" class="text-center mt-4">
+    Please enter a search term to find videos.
+  </p>
+
+  <p
+    *ngIf="!loading && filteredVideos.length === 0 && searchTerm"
+    class="text-center mt-4"
+  >
+    No videos found for "{{ searchTerm }}"
+  </p>
 </div>

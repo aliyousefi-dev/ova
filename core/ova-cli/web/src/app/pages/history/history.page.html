@@ -1,13 +1,13 @@
+<!-- Watch History Header and Search -->
 <app-search-bar
   [(value)]="searchTerm"
   (valueChange)="goToPage(1)"
-  placeholder="Search videos..."
+  placeholder="Search watch history..."
 ></app-search-bar>
 
+<!-- Stats and Sort Menu -->
 <div class="max-w-7xl mx-auto px-4 mt-4 flex items-center justify-between">
-  <div class="font-medium">
-    Total videos: {{ filteredVideosUnpaginated.length }}
-  </div>
+  <div class="font-medium">Total videos: {{ filteredVideosCount }}</div>
 
   <!-- Sort Menu -->
   <div class="flex justify-end items-center gap-2">
@@ -48,8 +48,10 @@
 
 <!-- Videos Block -->
 <div class="mx-auto px-4 mt-6">
-  <p *ngIf="loading" class="font-medium text-center">Loading favorites...</p>
-  <app-video-grid *ngIf="!loading" [videos]="filteredVideos"></app-video-grid>
+  <p *ngIf="loading" class="font-medium text-center">
+    Loading watched videos...
+  </p>
+  <app-video-grid *ngIf="!loading" [videos]="videos"></app-video-grid>
 </div>
 
 <!-- Bottom Pagination -->
@@ -63,7 +65,7 @@
       class="join-item btn btn-square btn-sm"
       type="radio"
       name="paginationBottom"
-      [attr.aria-label]=" (i + 1)"
+      [attr.aria-label]="(i + 1)"
       [checked]="currentPage === i + 1"
       (change)="goToPage(i + 1)"
     />

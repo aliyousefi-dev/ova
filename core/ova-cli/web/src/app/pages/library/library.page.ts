@@ -2,11 +2,11 @@ import {
   Component,
   OnInit,
   OnDestroy,
-  HostListener,
   AfterViewInit,
   ElementRef,
   ViewChild,
-} from '@angular/core'; // Import ElementRef and ViewChild
+  HostListener,
+} from '@angular/core'; // Import HostListener
 import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -15,7 +15,6 @@ import { VideoData } from '../../data-types/video-data';
 import { VideoApiService } from '../../services/api/video-api.service';
 
 import { FolderTreeComponent } from '../../components/advance/folder-tree/folder-tree.component';
-import { NavBarComponent } from '../../components/common/navbar/navbar.component';
 import { SearchBarComponent } from '../../components/advance/search-bar/search-bar';
 import { VideoGridComponent } from '../../components/video/video-grid/video-grid.component';
 import { FormsModule } from '@angular/forms';
@@ -26,7 +25,6 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [
     FolderTreeComponent,
-    NavBarComponent,
     SearchBarComponent,
     VideoGridComponent,
     FormsModule,
@@ -57,6 +55,8 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
   // Reference to the main content div for scrolling
   @ViewChild('videoGridContainer') videoGridContainer!: ElementRef;
 
+  isMobile = false;
+
   constructor(
     private videoapi: VideoApiService,
     private router: Router,
@@ -65,6 +65,7 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.loadUsername();
+    this.updateIsMobile();
 
     this.route.queryParamMap.subscribe((params) => {
       this.currentPage = +(params.get('page') ?? 1);
@@ -90,13 +91,12 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
     const scrollY = sessionStorage.getItem('videoListScroll');
     if (scrollY) {
       setTimeout(() => {
-        // Use window.scrollTo with 'smooth' behavior
         window.scrollTo({
           top: +scrollY!,
-          behavior: 'smooth', // This makes the scroll smooth
+          behavior: 'smooth',
         });
-        sessionStorage.removeItem('videoListScroll'); // Clear it after use
-      }, 50); // Small delay for rendering
+        sessionStorage.removeItem('videoListScroll');
+      }, 50);
     }
   }
 
@@ -104,6 +104,12 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
+  }
+
+  // Listen to window resize to update isMobile flag
+  @HostListener('window:resize')
+  updateIsMobile() {
+    this.isMobile = window.innerWidth < 1024; // Adjust breakpoint if needed
   }
 
   loadUsername() {
@@ -152,10 +158,9 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
       this.currentPage = page;
       this.paginateVideos();
       this.updateQueryParams();
-      // Scroll to the top of the content smoothly when changing pages manually
       window.scrollTo({
         top: 0,
-        behavior: 'smooth', // Smooth scroll to top
+        behavior: 'smooth',
       });
     }
   }
@@ -184,6 +189,16 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
         queryParams: { folder: null, page: 1 },
         queryParamsHandling: 'merge',
       });
+    }
+
+    // Close drawer on mobile by unchecking drawer toggle
+    if (this.isMobile) {
+      const drawerCheckbox = document.getElementById(
+        'my-drawer-2'
+      ) as HTMLInputElement | null;
+      if (drawerCheckbox) {
+        drawerCheckbox.checked = false;
+      }
     }
   }
 

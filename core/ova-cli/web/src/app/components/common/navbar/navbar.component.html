@@ -1,12 +1,14 @@
-<!-- Sidebar -->
+<!-- GLOBAL APP LAYOUT -->
+
+<!-- Sidebar (desktop only) -->
 <app-desktop-sidebar
-  class="fixed left-0 top-0 bottom-0 w-64 bg-base-300 flex flex-col justify-between hidden md:flex"
+  class="fixed left-0 top-0 bottom-0 w-64 bg-base-100 flex flex-col justify-between hidden md:flex"
   [title]="title"
 ></app-desktop-sidebar>
 
 <!-- Top navbar -->
 <header
-  class="fixed top-0 left-0 right-0 h-14 bg-base-200 flex items-center px-4 md:px-8 z-50 gap-6 border-b border-base-300 md:left-64"
+  class="fixed top-0 left-0 right-0 h-14 bg-base-100 flex items-center px-4 md:px-8 z-50 gap-6 border-b border-base-100 md:left-64"
 >
   <!-- Page Title on the left -->
   <div class="font-semibold text-lg flex-shrink-0">
@@ -17,7 +19,6 @@
 
   <!-- Right: Settings + Profile -->
   <div class="flex items-center gap-5 flex-shrink-0 ml-6">
-    <!-- Settings button -->
     <button
       class="btn btn-ghost btn-circle"
       title="Settings"
@@ -27,7 +28,6 @@
       <i class="bx bx-cog text-3xl"></i>
     </button>
 
-    <!-- User dropdown -->
     <div
       class="dropdown dropdown-bottom dropdown-end"
       [ngClass]="{ 'dropdown-open': dropdownOpen }"
@@ -41,13 +41,13 @@
         aria-label="User menu"
       >
         <div
-          class="w-10 h-10 rounded-full bg-base-300 font-semibold text-lg flex items-center justify-center"
+          class="w-10 h-10 rounded-full bg-base-100 font-semibold text-lg flex items-center justify-center"
         >
           <span class="leading-[2.5rem]">{{ userInitial }}</span>
         </div>
       </div>
       <ul
-        class="menu menu-sm dropdown-content bg-base-200 rounded-box z-50 w-52 p-3 shadow"
+        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 w-52 p-3 shadow"
       >
         <li><a routerLink="/profile">Profile</a></li>
         <li>
@@ -59,15 +59,18 @@
 </header>
 
 <!-- Main content area -->
-<div class="pt-14 pl-0 md:pl-64 h-screen overflow-hidden flex flex-col">
+<div class="pt-14 pl-0 md:pl-64 min-h-screen flex flex-col">
+  <!-- Settings modal -->
   <app-settings-modal
     [isOpen]="isSettingsModalOpen"
     (close)="closeSettingsModal()"
   ></app-settings-modal>
 
-  <div class="flex-1 overflow-y-auto">
+  <!-- Main content with mobile dock padding -->
+  <div class="flex-1 bg-base-200 pb-20 md:pb-0">
     <router-outlet></router-outlet>
   </div>
 
+  <!-- Mobile dock (fixed at bottom) -->
   <app-mobile-dock></app-mobile-dock>
 </div>

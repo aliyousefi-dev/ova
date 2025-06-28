@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { NavBarComponent } from '../../components/common/navbar/navbar.component';
-
 import { PlaylistAPIService } from '../../services/api/playlist-api.service';
 import { PlaylistData } from '../../data-types/playlist-data';
 
@@ -14,12 +12,7 @@ import { PlaylistManagerComponent } from '../../components/playlist/playlist-man
 @Component({
   selector: 'app-playlists',
   standalone: true,
-  imports: [
-    CommonModule,
-    NavBarComponent,
-    PlaylistManagerComponent,
-    ToastComponent,
-  ],
+  imports: [CommonModule, PlaylistManagerComponent, ToastComponent],
   templateUrl: './playlists.page.html',
 })
 export class PlaylistsPage implements OnInit {

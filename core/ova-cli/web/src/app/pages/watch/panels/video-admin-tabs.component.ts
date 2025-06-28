@@ -35,22 +35,17 @@ export class VideoAdminTabsComponent implements OnInit {
 
   selectedTab: 'tag' | 'marker' = 'tag';
 
-  showAdminPanel = false;
+  // Remove toggle state
+  // showAdminPanel = false;
 
   persistTab(tab: 'tag' | 'marker') {
     this.selectedTab = tab;
     localStorage.setItem('admin_tab', tab);
   }
 
-  toggleAdminPanel() {
-    this.showAdminPanel = !this.showAdminPanel;
-    localStorage.setItem(
-      'show_admin_panel',
-      this.showAdminPanel ? 'true' : 'false'
-    );
-  }
+  // Remove toggle method
+  // toggleAdminPanel() { ... }
 
-  // Public method to add marker by seconds
   addMarkerBySeconds(seconds: number) {
     if (this.markerPanel) {
       this.markerPanel.addMarkerBySeconds(seconds);
@@ -63,7 +58,6 @@ export class VideoAdminTabsComponent implements OnInit {
       this.selectedTab = savedTab;
     }
 
-    const savedPanel = localStorage.getItem('show_admin_panel');
-    this.showAdminPanel = savedPanel === 'true';
+    // Always show admin panel, so no need to read from localStorage
   }
 }

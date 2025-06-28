@@ -1,0 +1,123 @@
+<div
+  class="relative h-[600px] bg-base-100 rounded-xl shadow-lg flex flex-col overflow-hidden"
+>
+  <!-- Sticky Header -->
+  <header
+    class="sticky top-0 z-30 bg-base-100 p-5 border-b border-base-200 shadow-sm flex items-center justify-between"
+  >
+    <h3 class="font-semibold text-xl tracking-wide">💬 Comments</h3>
+    <button
+      type="button"
+      class="btn btn-ghost btn-sm btn-circle tooltip tooltip-top"
+      aria-label="Refresh comments"
+      title="Refresh comments"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 text-primary"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M4 4v5h.582M20 20v-5h-.581M5.518 9a7.002 7.002 0 0 1 13.028 0M12 17v1m0 0v1m0-1h-1m1 0h1"
+        />
+      </svg>
+    </button>
+  </header>
+
+  <!-- Comment List -->
+  <section
+    #commentListContainer
+    class="flex-1 overflow-y-auto p-6 flex flex-col gap-6 bg-base-100 scrollbar-thin scrollbar-thumb-primary scrollbar-track-base-200"
+  >
+    <div
+      *ngFor="let comment of comments"
+      class="chat max-w-[85%]"
+      [ngClass]="'chat-' + comment.position"
+    >
+      <!-- Avatar -->
+      <div class="chat-image avatar self-start">
+        <div
+          class="w-10 h-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 hover:scale-105 transition-transform duration-300"
+          [title]="comment.user"
+        >
+          <img
+            [src]="comment.avatar"
+            alt="{{ comment.user }}'s avatar"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </div>
+
+      <!-- Message container -->
+      <div
+        class="flex flex-col min-w-0 max-w-full break-words"
+        [ngClass]="{ 'items-end': comment.position === 'end' }"
+        [attr.aria-label]="'Comment from ' + comment.user"
+      >
+        <!-- Header -->
+        <div
+          class="chat-header flex items-center space-x-3 mb-1"
+          [ngClass]="{ 'justify-end': comment.position === 'end' }"
+        >
+          <span class="font-semibold text-base text-primary">
+            {{ comment.user }}
+          </span>
+          <time class="text-xs opacity-60">{{ comment.time }}</time>
+        </div>
+
+        <!-- Message Bubble -->
+        <div
+          class="chat-bubble whitespace-pre-line break-words text-sm leading-relaxed shadow-md max-w-[480px]"
+          [ngClass]="{
+            'bg-primary text-primary-content': comment.position === 'end',
+            'bg-base-300 text-base-content': comment.position === 'start'
+          }"
+          role="article"
+        >
+          {{ comment.text }}
+        </div>
+
+        <!-- Footer -->
+        <div
+          class="chat-footer opacity-50 text-xs mt-1 select-none"
+          [ngClass]="{ 'text-right': comment.position === 'end' }"
+        >
+          {{ comment.status }}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Send Message Box -->
+  <form
+    (submit)="sendComment()"
+    class="border-t border-base-200 p-4 bg-base-100 flex gap-3 items-center"
+    aria-label="Send new comment"
+  >
+    <input
+      type="text"
+      [(ngModel)]="newCommentText"
+      name="comment"
+      placeholder="Write a comment..."
+      class="input input-md input-bordered w-full rounded-lg focus:outline-primary focus:ring-2 focus:ring-primary"
+      autocomplete="off"
+      autofocus
+      spellcheck="false"
+      aria-required="true"
+    />
+    <button
+      class="btn btn-primary btn-md rounded-lg disabled:opacity-50"
+      type="submit"
+      [disabled]="!newCommentText.trim()"
+      [attr.aria-disabled]="!newCommentText.trim()"
+    >
+      Send
+    </button>
+  </form>
+</div>

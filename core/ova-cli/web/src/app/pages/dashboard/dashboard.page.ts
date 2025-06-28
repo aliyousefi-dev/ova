@@ -1,8 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { FolderApiService } from '../../services/api/folder=api.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { NavBarComponent } from '../../components/common/navbar/navbar.component';
 import { UploadVideoComponent } from './upload-video.component';
 import { UserListComponent } from './user-list.component';
 import { CreateUserComponent } from './create-user.component';
@@ -13,7 +11,6 @@ import { CreateUserComponent } from './create-user.component';
   standalone: true,
   imports: [
     CommonModule,
-    NavBarComponent,
     UploadVideoComponent,
     UserListComponent,
     CreateUserComponent,

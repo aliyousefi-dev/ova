@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { NavBarComponent } from '../../components/common/navbar/navbar.component';
 import { ConfirmModalComponent } from '../../components/common/confirm-modal/confirm-modal.component';
 
 import {
@@ -21,7 +20,7 @@ interface SessionEntry {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavBarComponent, ConfirmModalComponent],
+  imports: [CommonModule, FormsModule, ConfirmModalComponent],
   templateUrl: './profile.page.html',
 })
 export class ProfilePage implements OnInit {

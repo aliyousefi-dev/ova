@@ -2,7 +2,6 @@ import { Component, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavBarComponent } from '../../components/common/navbar/navbar.component';
 import { VideoData } from '../../data-types/video-data';
 import { VideoApiService } from '../../services/api/video-api.service';
 import { SavedApiService } from '../../services/api/saved-api.service';
@@ -19,6 +18,7 @@ import { SimilarVideosPanelComponent } from './panels/similar-videos-panel.compo
 import { VideoActionBarComponent } from './panels/video-action-bar.component';
 import { VideoTagsPanelComponent } from './panels/video-tags-panel.component';
 import { VideoAdminTabsComponent } from './panels/video-admin-tabs.component';
+import { VideoCommentPanelComponent } from './panels/video-comment-panel.component';
 
 import { ViewChild } from '@angular/core';
 
@@ -28,7 +28,6 @@ import { ViewChild } from '@angular/core';
   imports: [
     CommonModule,
     FormsModule,
-    NavBarComponent,
     PlaylistModalComponent,
     VidstackPlayerComponent,
     DefaultVideoPlayerComponent,
@@ -39,6 +38,7 @@ import { ViewChild } from '@angular/core';
     VideoTagsPanelComponent,
     VideoActionBarComponent,
     VideoTitleBarComponent,
+    VideoCommentPanelComponent,
   ],
   templateUrl: './watch.page.html',
   styleUrls: ['./watch.page.css'],
@@ -89,6 +89,17 @@ export class WatchPage implements AfterViewInit {
       this.error = true;
       this.loading = false;
     }
+  }
+
+  formatTime(seconds: number | null | undefined): string {
+    if (seconds == null || isNaN(seconds)) return '–';
+
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.floor(seconds % 60);
+
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    return `${pad(h)}:${pad(m)}:${pad(s)}`;
   }
 
   ngAfterViewInit(): void {

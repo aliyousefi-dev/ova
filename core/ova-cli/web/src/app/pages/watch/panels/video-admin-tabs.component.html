@@ -1,23 +1,12 @@
-<!-- Toggle Admin Panel Button -->
-<div class="mb-4">
-  <button
-    class="btn btn-sm btn-primary"
-    (click)="toggleAdminPanel()"
-    type="button"
-  >
-    {{ showAdminPanel ? "Hide Admin Panel" : "Show Admin Panel" }}
-  </button>
-</div>
-
 <!-- Admin Panel -->
-<div *ngIf="showAdminPanel" class="flex flex-col gap-4 mt-4 w-full">
+<div class="flex flex-col gap-4 w-full">
   <div class="font-semibold flex items-center gap-2">
     <i-lucide [img]="AdminIcon" class="w-4 h-4"></i-lucide>
     <span>Admin</span>
   </div>
 
   <!-- Tabs -->
-  <div class="tabs tabs-lift w-full">
+  <div class="tabs w-full">
     <!-- Tag Editor Tab -->
     <input
       type="radio"
@@ -28,10 +17,7 @@
       [value]="'tag'"
       (change)="persistTab('tag')"
     />
-    <div
-      class="tab-content bg-base-100 border-base-300 p-6"
-      *ngIf="selectedTab === 'tag'"
-    >
+    <div class="tab-content bg-base-100 p-6" *ngIf="selectedTab === 'tag'">
       <app-tag-management-panel
         [videoId]="videoId"
         [currentTags]="currentTags"
@@ -49,10 +35,7 @@
       [value]="'marker'"
       (change)="persistTab('marker')"
     />
-    <div
-      class="tab-content bg-base-100 border-base-300 p-6"
-      *ngIf="selectedTab === 'marker'"
-    >
+    <div class="tab-content bg-base-100 p-6" *ngIf="selectedTab === 'marker'">
       <app-marker-edit-panel
         [videoId]="videoId"
         (addMarkerClicked)="addMarkerClicked.emit()"

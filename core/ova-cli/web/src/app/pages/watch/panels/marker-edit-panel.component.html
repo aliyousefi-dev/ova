@@ -2,7 +2,7 @@
 <div class="flex justify-between items-center space-x-4 mb-6">
   <button
     type="button"
-    class="btn btn-outline btn-primary"
+    class="btn btn-outline btn-primary btn-sm sm:btn-md"
     (click)="addMarker()"
   >
     + Add Marker
@@ -10,7 +10,7 @@
   <div class="flex space-x-3">
     <button
       type="button"
-      class="btn btn-neutral"
+      class="btn btn-neutral btn-sm sm:btn-md"
       (click)="confirmAndDeleteAllMarkers()"
       [disabled]="loading || saving"
     >
@@ -18,7 +18,7 @@
     </button>
     <button
       type="button"
-      class="btn btn-primary"
+      class="btn btn-primary btn-sm sm:btn-md"
       (click)="saveMarkers()"
       [disabled]="saving || hasMarkerErrors()"
     >
@@ -27,8 +27,6 @@
     </button>
   </div>
 </div>
-
-<!-- ...rest unchanged -->
 
 <!-- Scrollable Marker List -->
 <div class="overflow-y-auto max-h-[400px]">
