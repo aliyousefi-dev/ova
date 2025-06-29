@@ -3,6 +3,6 @@
   "serverHost": "0.0.0.0",
   "serverPort": 4040,
   "enableAuthentication": true,
-  "dataStorageType": "jsondb",
-  "createdAt": "2025-06-29T05:06:32.1905628+03:30"
+  "dataStorageType": "boltdb",
+  "createdAt": "2025-06-29T06:35:59.4656449+03:30"
 }

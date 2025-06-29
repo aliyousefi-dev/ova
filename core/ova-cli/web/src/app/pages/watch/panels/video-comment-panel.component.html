@@ -5,90 +5,55 @@
   <header
     class="sticky top-0 z-30 bg-base-100 p-5 border-b border-base-200 shadow-sm flex items-center justify-between"
   >
-    <h3 class="font-semibold text-xl tracking-wide">💬 Comments</h3>
+    <h3 class="font-semibold text-xl inline-flex items-center gap-4">
+      <i class="bx bx-message-minus"></i>
+      Comments
+    </h3>
     <button
       type="button"
-      class="btn btn-ghost btn-sm btn-circle tooltip tooltip-top"
+      class="btn btn-sm btn-circle tooltip tooltip-top"
       aria-label="Refresh comments"
       title="Refresh comments"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5 text-primary"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M4 4v5h.582M20 20v-5h-.581M5.518 9a7.002 7.002 0 0 1 13.028 0M12 17v1m0 0v1m0-1h-1m1 0h1"
-        />
-      </svg>
+      <i class="bx bx-refresh text-xl"></i>
     </button>
   </header>
 
   <!-- Comment List -->
   <section
-    #commentListContainer
-    class="flex-1 overflow-y-auto p-6 flex flex-col gap-6 bg-base-100 scrollbar-thin scrollbar-thumb-primary scrollbar-track-base-200"
+    class="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-6 bg-base-100 scrollbar-thin scrollbar-thumb-primary scrollbar-track-base-200"
   >
-    <div
-      *ngFor="let comment of comments"
-      class="chat max-w-[85%]"
-      [ngClass]="'chat-' + comment.position"
-    >
+    <div *ngFor="let comment of comments" class="flex gap-4 items-start">
       <!-- Avatar -->
-      <div class="chat-image avatar self-start">
-        <div
-          class="w-10 h-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 hover:scale-105 transition-transform duration-300"
-          [title]="comment.user"
-        >
-          <img
-            [src]="comment.avatar"
-            alt="{{ comment.user }}'s avatar"
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
+      <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+        <img
+          [src]="comment.avatar"
+          [alt]="comment.user + ' avatar'"
+          class="w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
 
-      <!-- Message container -->
-      <div
-        class="flex flex-col min-w-0 max-w-full break-words"
-        [ngClass]="{ 'items-end': comment.position === 'end' }"
-        [attr.aria-label]="'Comment from ' + comment.user"
-      >
+      <!-- Comment Content -->
+      <div class="flex flex-col">
         <!-- Header -->
-        <div
-          class="chat-header flex items-center space-x-3 mb-1"
-          [ngClass]="{ 'justify-end': comment.position === 'end' }"
-        >
-          <span class="font-semibold text-base text-primary">
-            {{ comment.user }}
-          </span>
-          <time class="text-xs opacity-60">{{ comment.time }}</time>
+        <div class="flex items-center gap-2">
+          <span class="font-semibold text-sm text-base-content">{{
+            comment.user
+          }}</span>
         </div>
 
-        <!-- Message Bubble -->
-        <div
-          class="chat-bubble whitespace-pre-line break-words text-sm leading-relaxed shadow-md max-w-[480px]"
-          [ngClass]="{
-            'bg-primary text-primary-content': comment.position === 'end',
-            'bg-base-300 text-base-content': comment.position === 'start'
-          }"
-          role="article"
+        <!-- Text -->
+        <p
+          class="text-sm mt-1 leading-relaxed break-words whitespace-pre-line text-base-content"
         >
           {{ comment.text }}
-        </div>
+        </p>
 
         <!-- Footer -->
-        <div
-          class="chat-footer opacity-50 text-xs mt-1 select-none"
-          [ngClass]="{ 'text-right': comment.position === 'end' }"
-        >
-          {{ comment.status }}
+        <div class="text-xs opacity-50 mt-1 select-none">
+          <time class="text-xs opacity-60">{{ comment.time }}</time>
         </div>
       </div>
     </div>

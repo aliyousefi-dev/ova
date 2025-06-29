@@ -1,120 +1,99 @@
-<div class="drawer lg:drawer-open h-screen flex">
-  <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
-
-  <!-- Sidebar / Drawer -->
-  <div
-    class="drawer-side bg-base-100 border-r border-base-200 z-40 flex-shrink-0"
-    style="width: 320px"
-  >
-    <!-- Clicking this overlay closes drawer -->
-    <label
-      for="my-drawer-2"
-      class="drawer-overlay"
-      aria-label="Close sidebar"
-    ></label>
-
-    <aside class="flex flex-col p-6 sticky top-0 flex-grow overflow-y-auto">
-      <!-- Folder tree with event that closes drawer on mobile -->
+<!-- Wrapper: vertical stack on mobile, horizontal split on desktop -->
+<div class="flex flex-col lg:flex-row w-full">
+  <!-- Mobile Folder Tree (scrolls with content) -->
+  <div class="bg-base-100 border-b border-base-200 lg:hidden">
+    <aside class="p-4">
       <app-folder-tree
         [currentFolder]="currentFolder"
         (folderSelected)="onFolderSelected($event)"
-        class="flex-grow bg-base-100 h-full w-full"
+        class="w-full"
       ></app-folder-tree>
     </aside>
   </div>
 
-  <!-- Main Content -->
-  <div class="drawer-content flex flex-col flex-grow p-6 overflow-y-auto">
-    <!-- Mobile menu button toggles drawer -->
-    <label
-      for="my-drawer-2"
-      class="btn btn-soft drawer-button lg:hidden mb-6 self-start"
-      aria-label="Toggle sidebar menu"
-      title="Toggle sidebar menu"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
+  <!-- Desktop Folder Tree: Fixed and offset beside main sidebar and below top navbar -->
+  <div
+    class="hidden lg:block bg-base-100 w-[280px] fixed left-64 top-14 h-[calc(100vh-56px)] overflow-y-auto z-30 p-3 border-base-200"
+  >
+    <aside class="p-4">
+      <app-folder-tree
+        [currentFolder]="currentFolder"
+        (folderSelected)="onFolderSelected($event)"
+        class="w-full"
+      ></app-folder-tree>
+    </aside>
+  </div>
+
+  <!-- Main Content (with left margin to clear both sidebars) -->
+  <div class="flex flex-col flex-grow w-full lg:ml-[280px]">
+    <div class="p-6">
+      <!-- Search Bar -->
+      <app-search-bar
+        [(value)]="searchTerm"
+        (valueChange)="setSearchTerm($event)"
+        placeholder="Search videos..."
+        class="mb-6"
+      ></app-search-bar>
+
+      <!-- Top Pagination -->
+      <div class="flex justify-center mb-5" *ngIf="totalPages > 1 && !loading">
+        <div class="join">
+          <input
+            *ngFor="let page of [].constructor(totalPages); let i = index"
+            class="join-item btn btn-square"
+            type="radio"
+            name="paginationTop"
+            [attr.aria-label]="i + 1"
+            [checked]="currentPage === i + 1"
+            (change)="goToPage(i + 1)"
+          />
+        </div>
+      </div>
+
+      <!-- Sort & Count -->
+      <div
+        class="flex justify-between items-center gap-4 mb-6 max-w-7xl mx-auto px-4"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M4 6h16M4 12h16M4 18h16"
-        />
-      </svg>
-    </label>
-
-    <!-- Search Bar -->
-    <app-search-bar
-      [(value)]="searchTerm"
-      (valueChange)="setSearchTerm($event)"
-      placeholder="Search videos..."
-      class="mb-6"
-    ></app-search-bar>
-
-    <!-- Top Pagination -->
-    <div class="flex justify-center mb-5" *ngIf="totalPages > 1 && !loading">
-      <div class="join">
-        <input
-          *ngFor="let page of [].constructor(totalPages); let i = index"
-          class="join-item btn btn-square"
-          type="radio"
-          name="paginationTop"
-          [attr.aria-label]="i + 1"
-          [checked]="currentPage === i + 1"
-          (change)="goToPage(i + 1)"
-        />
+        <div class="font-medium text-base-content">
+          Total videos: {{ filteredVideosCount }}
+        </div>
+        <div class="flex items-center gap-2">
+          <label for="sort" class="text-sm font-medium">Sort by:</label>
+          <select
+            id="sort"
+            [(ngModel)]="sortOption"
+            (change)="setSortOption(sortOption)"
+            class="select select-sm select-bordered w-44"
+          >
+            <option value="titleAsc">Title (A–Z)</option>
+            <option value="titleDesc">Title (Z–A)</option>
+            <option value="durationAsc">Duration (Short → Long)</option>
+            <option value="durationDesc">Duration (Long → Short)</option>
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+          </select>
+        </div>
       </div>
-    </div>
 
-    <!-- Sort + Video Count -->
-    <div
-      class="flex justify-between items-center gap-4 mb-6 max-w-7xl mx-auto px-4"
-    >
-      <div class="font-medium text-base-content">
-        Total videos: {{ filteredVideosCount }}
+      <!-- Videos Grid -->
+      <div class="mx-auto px-4 flex-grow w-full">
+        <p *ngIf="loading" class="font-medium text-center">Loading videos...</p>
+        <app-video-grid *ngIf="!loading" [videos]="videos"></app-video-grid>
       </div>
-      <div class="flex items-center gap-2">
-        <label for="sort" class="text-sm font-medium">Sort by:</label>
-        <select
-          id="sort"
-          [(ngModel)]="sortOption"
-          (change)="setSortOption(sortOption)"
-          class="select select-sm select-bordered w-44"
-        >
-          <option value="titleAsc">Title (A–Z)</option>
-          <option value="titleDesc">Title (Z–A)</option>
-          <option value="durationAsc">Duration (Short → Long)</option>
-          <option value="durationDesc">Duration (Long → Short)</option>
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
-        </select>
-      </div>
-    </div>
 
-    <!-- Videos Grid -->
-    <div class="mx-auto px-4 flex-grow w-full">
-      <p *ngIf="loading" class="font-medium text-center">Loading videos...</p>
-
-      <app-video-grid *ngIf="!loading" [videos]="videos"></app-video-grid>
-    </div>
-
-    <!-- Bottom Pagination -->
-    <div class="flex justify-center mt-6" *ngIf="totalPages > 1 && !loading">
-      <div class="join">
-        <input
-          *ngFor="let page of [].constructor(totalPages); let i = index"
-          class="join-item btn btn-square"
-          type="radio"
-          name="paginationBottom"
-          [attr.aria-label]="i + 1"
-          [checked]="currentPage === i + 1"
-          (change)="goToPage(i + 1)"
-        />
+      <!-- Bottom Pagination -->
+      <div class="flex justify-center mt-6" *ngIf="totalPages > 1 && !loading">
+        <div class="join">
+          <input
+            *ngFor="let page of [].constructor(totalPages); let i = index"
+            class="join-item btn btn-square"
+            type="radio"
+            name="paginationBottom"
+            [attr.aria-label]="i + 1"
+            [checked]="currentPage === i + 1"
+            (change)="goToPage(i + 1)"
+          />
+        </div>
       </div>
     </div>
   </div>

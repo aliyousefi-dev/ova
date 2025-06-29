@@ -26,7 +26,7 @@ func (r *RepoManager) CreateRepoFolder() error {
 	return nil
 }
 
-func (r *RepoManager) CreateRepoWithUser(username, password string) error {
+func (r *RepoManager) CreateRepoWithUser(username, password string, useBoltDB bool) error {
 	// Check if repo exists (no error means exists)
 	err := r.IsRepoExists()
 	if err != nil {
@@ -34,9 +34,22 @@ func (r *RepoManager) CreateRepoWithUser(username, password string) error {
 		if err := r.CreateRepoFolder(); err != nil {
 			return err
 		}
-		if err := r.CreateDefaultConfigFile(); err != nil {
+
+		// Set config based on useBoltDB flag
+		storageType := "jsondb"
+		if useBoltDB {
+			storageType = "boltdb"
+		}
+
+		// Create default config with desired storage type
+		if err := r.CreateDefaultConfigFileWithStorageType(storageType); err != nil {
 			return err
 		}
+	}
+
+	// Initialize repository (loads config and data storage)
+	if err := r.Init(); err != nil {
+		return err
 	}
 
 	// Create admin user

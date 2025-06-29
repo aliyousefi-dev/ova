@@ -4,10 +4,6 @@ import "ova-cli/source/internal/datatypes"
 
 // DataStorage defines methods for user and video data operations without context.
 type DataStorage interface {
-	// Initialization
-	PrepareStorage() error
-	GetStoragePath() string
-	GetVideoMarkerDir() string
 
 	// User management
 	CreateUser(user *datatypes.UserData) error
@@ -56,10 +52,4 @@ type DataStorage interface {
 	AddVideoToWatched(username, videoID string) error
 	GetUserWatchedVideos(username string) ([]datatypes.VideoData, error)
 	ClearUserWatchedHistory(username string) error
-
-	// Marker management (added)
-	AddMarkerToVideo(videoID string, marker datatypes.VideoMarker) error
-	GetMarkersForVideo(videoID string) ([]datatypes.VideoMarker, error)
-	DeleteMarkerFromVideo(videoID string, marker datatypes.VideoMarker) error
-	DeleteAllMarkersFromVideo(videoID string) error
 }

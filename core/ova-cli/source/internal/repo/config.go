@@ -64,3 +64,14 @@ func (r *RepoManager) SaveRepoConfig(cfg *datatypes.Config) error {
 func (r *RepoManager) GetConfigs() *datatypes.Config {
 	return &r.configs
 }
+
+func (r *RepoManager) CreateDefaultConfigFileWithStorageType(storageType string) error {
+	defaultCfg := GetDefaultConfig()
+	defaultCfg.DataStorageType = storageType
+	r.configs = *defaultCfg
+
+	if err := r.SaveRepoConfig(defaultCfg); err != nil {
+		return fmt.Errorf("failed to create new config: %w", err)
+	}
+	return nil
+}

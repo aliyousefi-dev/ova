@@ -1,23 +1,20 @@
-<!-- GLOBAL APP LAYOUT -->
-
-<!-- Sidebar (desktop only) -->
+<!-- Fixed desktop sidebar (width 256px) -->
 <app-desktop-sidebar
   class="fixed left-0 top-0 bottom-0 w-64 bg-base-100 flex flex-col justify-between hidden md:flex"
   [title]="title"
 ></app-desktop-sidebar>
 
-<!-- Top navbar -->
+<!-- Top navbar (height 56px) -->
 <header
-  class="fixed top-0 left-0 right-0 h-14 bg-base-100 flex items-center px-4 md:px-8 z-50 gap-6 border-b border-base-100 md:left-64"
+  class="fixed top-0 left-0 right-0 h-14 bg-base-300 flex items-center px-4 md:px-8 z-50 gap-6 border-b border-base-100 md:left-64"
 >
-  <!-- Page Title on the left -->
   <div class="font-semibold text-lg flex-shrink-0">
     {{ pageTitle || "Home" }}
   </div>
 
   <div class="flex-grow"></div>
 
-  <!-- Right: Settings + Profile -->
+  <!-- Settings and profile buttons -->
   <div class="flex items-center gap-5 flex-shrink-0 ml-6">
     <button
       class="btn btn-ghost btn-circle"
@@ -58,19 +55,19 @@
   </div>
 </header>
 
-<!-- Main content area -->
-<div class="pt-14 pl-0 md:pl-64 min-h-screen flex flex-col">
+<!-- Main content wrapper: padding-top for header, padding-left for sidebar -->
+<div class="pt-14 pl-0 md:pl-64 min-h-screen flex flex-col bg-base-200">
   <!-- Settings modal -->
   <app-settings-modal
     [isOpen]="isSettingsModalOpen"
     (close)="closeSettingsModal()"
   ></app-settings-modal>
 
-  <!-- Main content with mobile dock padding -->
-  <div class="flex-1 bg-base-200 pb-20 md:pb-0">
+  <!-- Main content area -->
+  <div class="flex-1 pb-20">
     <router-outlet></router-outlet>
   </div>
 
-  <!-- Mobile dock (fixed at bottom) -->
+  <!-- Mobile dock fixed bottom -->
   <app-mobile-dock></app-mobile-dock>
 </div>

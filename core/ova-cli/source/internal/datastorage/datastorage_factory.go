@@ -2,6 +2,7 @@ package datastorage
 
 import (
 	"fmt"
+	"ova-cli/source/internal/datastorage/boltdb"
 	"ova-cli/source/internal/datastorage/jsondb"
 	"ova-cli/source/internal/interfaces"
 )
@@ -13,6 +14,12 @@ func NewStorage(storageType, dataStoragePath string) (interfaces.DataStorage, er
 	switch storageType {
 	case "jsondb":
 		return jsondb.NewJsonDB(dataStoragePath), nil
+	case "boltdb":
+		storage, err := boltdb.NewBoltDB(dataStoragePath)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create boltdb storage: %w", err)
+		}
+		return storage, nil
 	default:
 		return nil, fmt.Errorf("unknown storage type: %s", storageType)
 	}

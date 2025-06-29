@@ -34,7 +34,7 @@ func (s *JsonDB) createEmptyJSONFileIfMissing(filePath string) error {
 }
 
 func (s *JsonDB) loadUsers() (map[string]datatypes.UserData, error) {
-	path := s.getUserStoragePath()
+	path := s.getUserDataFilePath()
 
 	// Ensure file exists with "{}" if missing
 	if err := s.createEmptyJSONFileIfMissing(path); err != nil {
@@ -58,12 +58,12 @@ func (s *JsonDB) saveUsers(users map[string]datatypes.UserData) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(s.getUserStoragePath(), data, 0644)
+	return os.WriteFile(s.getUserDataFilePath(), data, 0644)
 }
 
 // Load all videos (assuming videos stored in a map)
 func (s *JsonDB) loadVideos() (map[string]datatypes.VideoData, error) {
-	path := s.getVideoStoragePath()
+	path := s.getVideoDataFilePath()
 
 	// Ensure file exists with "{}" if missing
 	if err := s.createEmptyJSONFileIfMissing(path); err != nil {
@@ -90,5 +90,5 @@ func (s *JsonDB) saveVideos(videos map[string]datatypes.VideoData) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(s.getVideoStoragePath(), data, 0644)
+	return os.WriteFile(s.getVideoDataFilePath(), data, 0644)
 }

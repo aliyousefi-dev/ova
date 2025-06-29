@@ -9,6 +9,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var useBoltDB bool // add a package-level variable to hold the flag value
+
 var initCmd = &cobra.Command{
 	Use:   "init [path]",
 	Short: "Initialize an ova repository in the specified folder",
@@ -40,13 +42,9 @@ var initCmd = &cobra.Command{
 		}
 
 		repository := repo.NewRepoManager(absPath)
-		if err := repository.Init(); err != nil {
-			pterm.Error.Printf("Repository init failed: %v\n", err)
-			return
-		}
 
-		// Initialize repository and create admin user
-		if err := repository.CreateRepoWithUser(username, password); err != nil {
+		// No need to call repository.Init() here because CreateRepoWithUser calls it internally
+		if err := repository.CreateRepoWithUser(username, password, useBoltDB); err != nil {
 			pterm.Error.Printf("Error initializing repository with user: %v\n", err)
 			return
 		}
@@ -59,5 +57,8 @@ var initCmd = &cobra.Command{
 }
 
 func InitCommandInit(rootCmd *cobra.Command) {
+	// Add a flag to the initCmd to allow selecting boltDB usage
+	initCmd.Flags().BoolVar(&useBoltDB, "boltdb", false, "Use BoltDB as data storage backend")
+
 	rootCmd.AddCommand(initCmd)
 }
