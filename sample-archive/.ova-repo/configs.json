@@ -3,5 +3,6 @@
   "serverHost": "0.0.0.0",
   "serverPort": 4040,
   "enableAuthentication": true,
-  "createdAt": "2025-06-29T04:29:01.25372+03:30"
+  "dataStorageType": "jsondb",
+  "createdAt": "2025-06-29T05:06:32.1905628+03:30"
 }

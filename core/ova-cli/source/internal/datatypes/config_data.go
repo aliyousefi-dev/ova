@@ -6,8 +6,9 @@ import (
 
 type Config struct {
 	Version              string    `json:"version"`
-	ServerHost           string    `json:"serverHost"`           // backend API host
-	ServerPort           int       `json:"serverPort"`           // backend API port
-	EnableAuthentication bool      `json:"enableAuthentication"` // new field for auth toggle
+	ServerHost           string    `json:"serverHost"`
+	ServerPort           int       `json:"serverPort"`
+	EnableAuthentication bool      `json:"enableAuthentication"`
+	DataStorageType      string    `json:"dataStorageType"` // "jsondb", "boltdb", etc.
 	CreatedAt            time.Time `json:"createdAt"`
 }

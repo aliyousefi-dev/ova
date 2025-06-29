@@ -1,28 +1,32 @@
 package repo
 
-import "ova-cli/source/internal/interfaces"
+import (
+	"fmt"
+	"ova-cli/source/internal/datastorage"
+)
 
-func (r *RepoManager) InitWithUser(username, password string) error {
-	// Check if repo exists (no error means exists)
-	err := r.IsRepoExists()
+// Init initializes the repository manager by loading the configuration file,
+// creating a default config if it doesn't exist, and initializing the data storage backend.
+func (r *RepoManager) Init() error {
+	// Ensure the repository folder exists
+	if err := r.CreateRepoFolder(); err != nil {
+		return fmt.Errorf("failed to ensure repo folder: %w", err)
+	}
+
+	// Attempt to load config (creates default if not present)
+	if err := r.LoadRepoConfig(); err != nil {
+		return fmt.Errorf("failed to initialize repo config: %w", err)
+	}
+
+	// Load data storage backend
+	storageType := r.configs.DataStorageType
+	storagePath := r.GetStoragePath()
+
+	storage, err := datastorage.NewStorage(storageType, storagePath)
 	if err != nil {
-		// Repo doesn't exist, create folder and config
-		if err := r.CreateRepoFolder(); err != nil {
-			return err
-		}
-		if err := r.CreateDefaultConfigFile(); err != nil {
-			return err
-		}
+		return fmt.Errorf("failed to initialize data storage (%s): %w", storageType, err)
 	}
 
-	// Create admin user
-	if err := r.CreateUser(username, password, true); err != nil {
-		return err
-	}
-
+	r.dataStorage = storage
 	return nil
-}
-
-func (r *RepoManager) SetDataStorage(datastorage interfaces.DataStorage) {
-	r.dataStorage = datastorage
 }

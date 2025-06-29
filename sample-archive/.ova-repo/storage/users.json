@@ -1,27 +1,15 @@
 {
   "user": {
     "username": "user",
-    "passwordHash": "$2a$10$lx7NH/OQywzgJnB9sZlKnunBObFCXcbn7hBj7nJBrlSye3iDwhGxy",
+    "passwordHash": "$2a$10$p.kxeewulAgqDKA8OA0DYef1/ey8TZJHjzbQseDFKkIQc6kRkQYxm",
     "roles": [
       "user",
       "admin"
     ],
-    "createdAt": "2025-06-29T00:59:01.2937229Z",
+    "createdAt": "2025-06-29T01:36:32.2329543Z",
     "lastLoginAt": "0001-01-01T00:00:00Z",
-    "favorites": [
-      "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290"
-    ],
-    "playlists": [
-      {
-        "title": "xfg",
-        "description": "",
-        "videoIds": [
-          "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290"
-        ],
-        "slug": "xfg",
-        "order": 1
-      }
-    ],
+    "favorites": [],
+    "playlists": [],
     "watched": [
       "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290"
     ]

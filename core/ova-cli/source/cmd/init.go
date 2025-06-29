@@ -3,7 +3,6 @@ package cmd
 import (
 	"path/filepath"
 
-	"ova-cli/source/internal/datastorage"
 	"ova-cli/source/internal/repo"
 
 	"github.com/pterm/pterm"
@@ -40,20 +39,14 @@ var initCmd = &cobra.Command{
 			return
 		}
 
-		// Initialize repo manager with the root path (repository folder)
 		repository := repo.NewRepoManager(absPath)
-
-		// Create data storage backend (JSON or BoltDB) via factory, based on repo-managed storage path
-		storage, err := datastorage.NewStorage("jsondb", repository.GetStoragePath())
-		if err != nil {
-			pterm.Error.Printf("Error creating storage backend: %v\n", err)
+		if err := repository.Init(); err != nil {
+			pterm.Error.Printf("Repository init failed: %v\n", err)
 			return
 		}
 
-		repository.SetDataStorage(storage)
-
 		// Initialize repository and create admin user
-		if err := repository.InitWithUser(username, password); err != nil {
+		if err := repository.CreateRepoWithUser(username, password); err != nil {
 			pterm.Error.Printf("Error initializing repository with user: %v\n", err)
 			return
 		}

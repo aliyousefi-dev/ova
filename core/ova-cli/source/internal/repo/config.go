@@ -14,6 +14,7 @@ func GetDefaultConfig() *datatypes.Config {
 		ServerHost:           "0.0.0.0",
 		ServerPort:           4040,
 		EnableAuthentication: true,
+		DataStorageType:      "jsondb",
 		CreatedAt:            time.Now(),
 	}
 }

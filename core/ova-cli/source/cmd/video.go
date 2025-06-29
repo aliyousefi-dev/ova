@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"time"
 
-	"ova-cli/source/internal/datastorage"
 	"ova-cli/source/internal/datastorage/jsondb"
 	"ova-cli/source/internal/logs"
 	"ova-cli/source/internal/repo"
@@ -37,14 +36,10 @@ var videoAddCmd = &cobra.Command{
 		}
 
 		repository := repo.NewRepoManager(repoRoot)
-		storagePath := repository.GetStoragePath()
-
-		storage, err := datastorage.NewStorage("jsondb", storagePath)
-		if err != nil {
-			pterm.Error.Println("Failed to initialize storage:", err)
+		if err := repository.Init(); err != nil {
+			pterm.Error.Println("Failed to initialize repository:", err)
 			return
 		}
-		repository.SetDataStorage(storage)
 
 		arg := args[0]
 		var videoPaths []string
@@ -123,12 +118,10 @@ var videoRemoveCmd = &cobra.Command{
 		}
 
 		repository := repo.NewRepoManager(repoRoot)
-		storage, err := datastorage.NewStorage("jsondb", repository.GetStoragePath())
-		if err != nil {
-			pterm.Error.Println("Failed to initialize storage:", err)
+		if err := repository.Init(); err != nil {
+			pterm.Error.Println("Failed to initialize repository:", err)
 			return
 		}
-		repository.SetDataStorage(storage)
 
 		arg := args[0]
 		var videoPaths []string
@@ -205,18 +198,19 @@ var videoListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all videos",
 	Run: func(cmd *cobra.Command, args []string) {
-
 		repoRoot, err := os.Getwd()
 		if err != nil {
 			pterm.Error.Println("Failed to get working directory:", err)
 			return
 		}
-		repoPath := filepath.Join(repoRoot, ".ova-repo")
-		storageDir := filepath.Join(repoPath, "storage")
 
-		st := jsondb.NewJsonDB(storageDir)
+		repository := repo.NewRepoManager(repoRoot)
+		if err := repository.Init(); err != nil {
+			pterm.Error.Println("Failed to initialize repository:", err)
+			return
+		}
 
-		videos, err := st.GetAllVideos()
+		videos, err := repository.GetAllVideos()
 		if err != nil {
 			pterm.Error.Printf("Error loading videos: %v\n", err)
 			return
@@ -227,7 +221,6 @@ var videoListCmd = &cobra.Command{
 			return
 		}
 
-		// Use pterm table to display videos
 		rows := pterm.TableData{{"ID", "Path"}}
 		for _, v := range videos {
 			rows = append(rows, []string{v.VideoID, v.FilePath})

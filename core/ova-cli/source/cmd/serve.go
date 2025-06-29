@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"ova-cli/source/internal/datastorage"
 	"ova-cli/source/internal/logs"
 	"ova-cli/source/internal/repo"
 	"ova-cli/source/internal/server"
@@ -65,31 +64,21 @@ var serveCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		repoPath := args[0]
 
-		// Create RepoManager instance
+		// Initialize RepoManager with config and storage
 		repository := repo.NewRepoManager(repoPath)
-
-		// Load config
-		if err := repository.LoadRepoConfig(); err != nil {
-			serveLogger.Error("Failed to load config from %s: %v", repoPath, err)
+		if err := repository.Init(); err != nil {
+			serveLogger.Error("Failed to initialize repository at %s: %v", repoPath, err)
 			os.Exit(1)
 		}
+
 		cfg := repository.GetConfigs()
 
-		// Initialize storage
-		storage, err := datastorage.NewStorage("jsondb", repository.GetStoragePath())
-		if err != nil {
-			serveLogger.Error("Failed to create storage: %v", err)
-			os.Exit(1)
-		}
-		repository.SetDataStorage(storage)
-
-		// Determine paths
+		// Determine current directory and executable path
 		cwd, err := os.Getwd()
 		if err != nil {
 			serveLogger.Error("Failed to get current working directory: %v", err)
 			os.Exit(1)
 		}
-
 		exePath, err := os.Executable()
 		if err != nil {
 			serveLogger.Error("Failed to get executable path: %v", err)
@@ -97,9 +86,11 @@ var serveCmd = &cobra.Command{
 		}
 		exeDir := filepath.Dir(exePath)
 
+		// Server address
 		addr := fmt.Sprintf("%s:%d", cfg.ServerHost, cfg.ServerPort)
-		webPath := filepath.Join(exeDir, "web", "browser")
 
+		// Web UI check
+		webPath := filepath.Join(exeDir, "web", "browser")
 		serveweb := false
 		if !serveBackendOnly {
 			if _, err := os.Stat(webPath); err == nil {
@@ -114,6 +105,7 @@ var serveCmd = &cobra.Command{
 
 		serveLogger.Info("Serving API at %s/api/v1/", addr)
 
+		// Print local IPs
 		localIPs, err := GetLocalIPs()
 		if err != nil {
 			serveLogger.Warn("Could not determine local IP addresses: %v", err)
@@ -123,9 +115,19 @@ var serveCmd = &cobra.Command{
 			}
 		}
 
-		// Create and run the server
-		s := server.NewBackendServer(repository, addr, exeDir, cwd, serveweb, webPath, serveDisableAuth, serveUseHttps)
-		if err := s.Run(); err != nil {
+		// Launch server
+		serverInstance := server.NewBackendServer(
+			repository,
+			addr,
+			exeDir,
+			cwd,
+			serveweb,
+			webPath,
+			serveDisableAuth,
+			serveUseHttps,
+		)
+
+		if err := serverInstance.Run(); err != nil {
 			serveLogger.Error("Server failed to start: %v", err)
 			os.Exit(1)
 		}
