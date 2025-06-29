@@ -7,18 +7,17 @@ import (
 	"strings"
 
 	"ova-cli/source/internal/datatypes"
-	"ova-cli/source/internal/interfaces"
-	"ova-cli/source/internal/repository"
+	"ova-cli/source/internal/repo"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
-func RegisterUploadRoutes(rg *gin.RouterGroup, storage interfaces.StorageService) {
-	rg.POST("/upload", uploadVideo(storage))
+func RegisterUploadRoutes(rg *gin.RouterGroup, repoMgr *repo.RepoManager) {
+	rg.POST("/upload", uploadVideo(repoMgr))
 }
 
-func uploadVideo(storage interfaces.StorageService) gin.HandlerFunc {
+func uploadVideo(repoMgr *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Get folder from form
 		folder := strings.TrimSpace(c.PostForm("folder"))
@@ -29,7 +28,7 @@ func uploadVideo(storage interfaces.StorageService) gin.HandlerFunc {
 		fullFolderPath := basePath
 		if folder != "" {
 			fullFolderPath = filepath.Join(basePath, folder)
-			if !repository.FolderExists(fullFolderPath) {
+			if !repoMgr.FolderExists(fullFolderPath) {
 				respondError(c, http.StatusBadRequest, "Folder does not exist")
 				return
 			}

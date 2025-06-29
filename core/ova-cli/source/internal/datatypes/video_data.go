@@ -4,11 +4,11 @@ import (
 	"time"
 )
 
-// Codecs holds the full format (container + mime type) and separated video/audio codec strings.
-type Codecs struct {
-	Format string `json:"format"` // e.g., "video/mp4" (full mime type without codecs part)
-	Video  string `json:"video"`  // e.g., "avc1.64001F"
-	Audio  string `json:"audio"`  // e.g., "mp4a.40.2"
+// VideoCodecs holds the full format (container + mime type) and separated video/audio codec strings.
+type VideoCodecs struct {
+	Container   string `json:"format"` // e.g., "video/mp4" (full mime type without codecs part)
+	VideoCodect string `json:"video"`  // e.g., "avc1.64001F"
+	AudioCodect string `json:"audio"`  // e.g., "mp4a.40.2"
 }
 
 // VideoResolution defines the width and height of a video.
@@ -31,34 +31,25 @@ type VideoData struct {
 	Views           int             `json:"views"`                   // Number of views
 	Resolution      VideoResolution `json:"resolution"`              // Video resolution (width, height)
 	UploadedAt      time.Time       `json:"uploadedAt"`              // Timestamp of upload
-	Codecs          Codecs          `json:"codecs"`                  // Codec information
+	Codecs          VideoCodecs     `json:"codecs"`                  // Codec information
 }
 
 // NewVideoData returns an initialized VideoData struct.
 // Renamed for clarity and added 'Description' field.
-func NewVideoData(
-	videoID string,
-	title string,
-	duration int,
-	filePath string,
-	thumbnailPath *string,
-	previewPath *string,
-	resolution VideoResolution,
-	codecs Codecs,
-) VideoData {
+func NewVideoData(videoID string) VideoData {
 	return VideoData{
 		VideoID:         videoID,
-		Title:           title,
-		Description:     "", // Initialize with empty description
-		FilePath:        filePath,
-		Rating:          0, // Default rating
-		DurationSeconds: duration,
-		ThumbnailPath:   thumbnailPath,
-		PreviewPath:     previewPath,
-		Tags:            []string{},       // Initialize with empty slice
-		UploadedAt:      time.Now().UTC(), // Set upload time to now in UTC
-		Views:           0,                // Initial views
-		Resolution:      resolution,
-		Codecs:          codecs,
+		Title:           "",
+		Description:     "",
+		FilePath:        "",
+		Rating:          0,
+		DurationSeconds: 0,
+		ThumbnailPath:   nil,
+		PreviewPath:     nil,
+		Tags:            []string{},
+		UploadedAt:      time.Now().UTC(),
+		Views:           0,
+		Resolution:      VideoResolution{}, // zero value
+		Codecs:          VideoCodecs{},     // zero value
 	}
 }

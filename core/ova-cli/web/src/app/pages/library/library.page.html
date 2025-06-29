@@ -97,7 +97,7 @@
     </div>
 
     <!-- Videos Grid -->
-    <div class="mx-auto px-4 flex-grow">
+    <div class="mx-auto px-4 flex-grow w-full">
       <p *ngIf="loading" class="font-medium text-center">Loading videos...</p>
 
       <app-video-grid *ngIf="!loading" [videos]="videos"></app-video-grid>

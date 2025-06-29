@@ -2,22 +2,21 @@ package cmd
 
 import (
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
-	"ova-cli/source/internal/repository"
+	"ova-cli/source/internal/repo"
 
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 )
 
-// configCmd is the parent: ovacli config
 var configCmd = &cobra.Command{
 	Use:   "config",
 	Short: "Configuration related commands",
 }
 
-// configServerCmd handles: ovacli config server <host:port>
 var configServerCmd = &cobra.Command{
 	Use:   "server [host:port]",
 	Short: "Set the server host and port in the config",
@@ -40,23 +39,33 @@ var configServerCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		// Load current config
-		cfg, err := repository.LoadRepoConfig(".")
+		// Create RepoManager instance
+		repoPath, err := filepath.Abs(".")
 		if err != nil {
+			pterm.Error.Println("Failed to resolve path:", err)
+			os.Exit(1)
+		}
+
+		repoManager := repo.NewRepoManager(repoPath)
+
+		// Load config from disk (or create default if not exists)
+		if err := repoManager.LoadRepoConfig(); err != nil {
 			pterm.Error.Printf("Failed to load config: %v\n", err)
 			os.Exit(1)
 		}
 
+		// Update config values
+		cfg := repoManager.GetConfigs()
 		cfg.ServerHost = host
 		cfg.ServerPort = port
 
-		err = repository.SaveRepoConfig(".", cfg)
-		if err != nil {
+		// Save updated config
+		if err := repoManager.SaveRepoConfig(cfg); err != nil {
 			pterm.Error.Printf("Failed to save config: %v\n", err)
 			os.Exit(1)
 		}
 
-		pterm.Success.Printf("Server address set to %s:%d\n", host, port)
+		pterm.Success.Printf("✅ Server address set to %s:%d\n", host, port)
 	},
 }
 

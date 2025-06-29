@@ -5,23 +5,23 @@ import (
 	"net/http"
 	"os"
 
-	"ova-cli/source/internal/interfaces"
+	"ova-cli/source/internal/repo"
 
 	"github.com/gin-gonic/gin"
 )
 
-// RegisterStreamRoutes registers the streaming endpoint using the provided Storagestorage.
-func RegisterStreamRoutes(rg *gin.RouterGroup, storage interfaces.StorageService) {
-	rg.GET("/stream/:videoId", streamVideo(storage))
-	rg.HEAD("/stream/:videoId", streamVideo(storage)) // vidstack need this for load the video
+// RegisterStreamRoutes registers the streaming endpoint using the provided RepoManager.
+func RegisterStreamRoutes(rg *gin.RouterGroup, repoManager *repo.RepoManager) {
+	rg.GET("/stream/:videoId", streamVideo(repoManager))
+	rg.HEAD("/stream/:videoId", streamVideo(repoManager)) // vidstack needs this for loading the video
 }
 
 // streamVideo returns a handler function that streams a video file by its ID.
-func streamVideo(storage interfaces.StorageService) gin.HandlerFunc {
+func streamVideo(repoManager *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoId := c.Param("videoId")
 
-		video, err := storage.GetVideoByID(videoId)
+		video, err := repoManager.GetVideoByID(videoId)
 		if err != nil {
 			respondError(c, http.StatusNotFound, "Video not found")
 			return

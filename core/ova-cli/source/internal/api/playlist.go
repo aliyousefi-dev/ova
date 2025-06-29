@@ -2,35 +2,32 @@ package api
 
 import (
 	"net/http"
-
 	"ova-cli/source/internal/datatypes"
-	"ova-cli/source/internal/interfaces"
+	"ova-cli/source/internal/repo"
 	"ova-cli/source/internal/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
 // RegisterUserPlaylistRoutes registers playlist routes under the user scope.
-func RegisterUserPlaylistRoutes(rg *gin.RouterGroup, storage interfaces.StorageService) {
+func RegisterUserPlaylistRoutes(rg *gin.RouterGroup, rm *repo.RepoManager) {
 	users := rg.Group("/users")
 	{
-		users.GET("/:username/playlists", getUserPlaylists(storage))
-		users.POST("/:username/playlists", createUserPlaylist(storage))
-		users.GET("/:username/playlists/:slug", getUserPlaylistBySlug(storage))
-		users.DELETE("/:username/playlists/:slug", deleteUserPlaylistBySlug(storage))
-		users.POST("/:username/playlists/:slug/videos", addVideoToPlaylist(storage))
-		users.DELETE("/:username/playlists/:slug/videos/:videoId", deleteVideoFromPlaylist(storage))
-		users.PUT("/:username/playlists/order", setPlaylistsOrder(storage))
-		users.PUT("/:username/playlists/:slug", updateUserPlaylistInfo(storage))
-
+		users.GET("/:username/playlists", getUserPlaylists(rm))
+		users.POST("/:username/playlists", createUserPlaylist(rm))
+		users.GET("/:username/playlists/:slug", getUserPlaylistBySlug(rm))
+		users.DELETE("/:username/playlists/:slug", deleteUserPlaylistBySlug(rm))
+		users.POST("/:username/playlists/:slug/videos", addVideoToPlaylist(rm))
+		users.DELETE("/:username/playlists/:slug/videos/:videoId", deleteVideoFromPlaylist(rm))
+		users.PUT("/:username/playlists/order", setPlaylistsOrder(rm))
+		users.PUT("/:username/playlists/:slug", updateUserPlaylistInfo(rm))
 	}
 }
 
-// GET /users/:username/playlists
-func getUserPlaylists(storage interfaces.StorageService) gin.HandlerFunc {
+func getUserPlaylists(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
-		user, err := storage.GetUserByUsername(username)
+		user, err := rm.GetUserByUsername(username)
 		if err != nil {
 			respondError(c, http.StatusNotFound, "User not found")
 			return
@@ -39,8 +36,7 @@ func getUserPlaylists(storage interfaces.StorageService) gin.HandlerFunc {
 	}
 }
 
-// POST /users/:username/playlists
-func createUserPlaylist(storage interfaces.StorageService) gin.HandlerFunc {
+func createUserPlaylist(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
 		var newPl datatypes.PlaylistData
@@ -56,14 +52,12 @@ func createUserPlaylist(storage interfaces.StorageService) gin.HandlerFunc {
 
 		newPl.Slug = utils.ToSlug(newPl.Title)
 
-		// Only proceed if user exists
-		if _, err := storage.GetUserByUsername(username); err != nil {
+		if _, err := rm.GetUserByUsername(username); err != nil {
 			respondError(c, http.StatusNotFound, "User not found")
 			return
 		}
 
-		// Try to add the playlist
-		if err := storage.AddPlaylistToUser(username, &newPl); err != nil {
+		if err := rm.AddPlaylistToUser(username, &newPl); err != nil {
 			respondError(c, http.StatusConflict, err.Error())
 			return
 		}
@@ -72,41 +66,34 @@ func createUserPlaylist(storage interfaces.StorageService) gin.HandlerFunc {
 	}
 }
 
-// GET /users/:username/playlists/:slug
-func getUserPlaylistBySlug(storage interfaces.StorageService) gin.HandlerFunc {
+func getUserPlaylistBySlug(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
 		slug := c.Param("slug")
 
-		pl, err := storage.GetUserPlaylist(username, slug)
+		pl, err := rm.GetUserPlaylist(username, slug)
 		if err != nil {
 			respondError(c, http.StatusNotFound, "Playlist not found")
 			return
 		}
-
 		respondSuccess(c, http.StatusOK, pl, "Playlist retrieved")
 	}
 }
 
-// DELETE /users/:username/playlists/:slug
-func deleteUserPlaylistBySlug(storage interfaces.StorageService) gin.HandlerFunc {
+func deleteUserPlaylistBySlug(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
 		slug := c.Param("slug")
 
-		err := storage.DeleteUserPlaylist(username, slug)
-		if err != nil {
+		if err := rm.DeleteUserPlaylist(username, slug); err != nil {
 			respondError(c, http.StatusNotFound, "Playlist not found")
 			return
 		}
-
 		respondSuccess(c, http.StatusOK, gin.H{}, "Playlist deleted")
 	}
 }
 
-// POST /users/:username/playlists/:slug/videos
-// Request body: { "videoId": "some-video-id" }
-func addVideoToPlaylist(storage interfaces.StorageService) gin.HandlerFunc {
+func addVideoToPlaylist(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
 		slug := c.Param("slug")
@@ -114,88 +101,60 @@ func addVideoToPlaylist(storage interfaces.StorageService) gin.HandlerFunc {
 		var body struct {
 			VideoID string `json:"videoId"`
 		}
-
 		if err := c.ShouldBindJSON(&body); err != nil || body.VideoID == "" {
 			respondError(c, http.StatusBadRequest, "Invalid or missing videoId")
 			return
 		}
 
-		err := storage.AddVideoToPlaylist(username, slug, body.VideoID)
+		err := rm.AddVideoToPlaylist(username, slug, body.VideoID)
 		if err != nil {
-			if err.Error() == "user not found" || err.Error() == "playlist not found" {
-				respondError(c, http.StatusNotFound, err.Error())
-				return
-			}
 			respondError(c, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		pl, _ := storage.GetUserPlaylist(username, slug) // retrieve updated playlist
-
+		pl, _ := rm.GetUserPlaylist(username, slug)
 		respondSuccess(c, http.StatusOK, pl, "Video added to playlist")
 	}
 }
 
-// DELETE /users/:username/playlists/:slug/videos/:videoId
-func deleteVideoFromPlaylist(storage interfaces.StorageService) gin.HandlerFunc {
+func deleteVideoFromPlaylist(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
 		slug := c.Param("slug")
 		videoId := c.Param("videoId")
 
-		err := storage.RemoveVideoFromPlaylist(username, slug, videoId)
+		err := rm.RemoveVideoFromPlaylist(username, slug, videoId)
 		if err != nil {
-			switch err.Error() {
-			case "user not found", "playlist not found", "video not found in playlist":
-				respondError(c, http.StatusNotFound, err.Error())
-			default:
-				respondError(c, http.StatusInternalServerError, err.Error())
-			}
+			respondError(c, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		pl, err := storage.GetUserPlaylist(username, slug)
-		if err != nil {
-			respondError(c, http.StatusInternalServerError, "Failed to get updated playlist")
-			return
-		}
-
+		pl, _ := rm.GetUserPlaylist(username, slug)
 		respondSuccess(c, http.StatusOK, pl, "Video removed from playlist")
 	}
 }
 
-// PUT /users/:username/playlists/order
-// Request JSON: { "order": ["slug1", "slug2", "slug3", ...] }
-func setPlaylistsOrder(storage interfaces.StorageService) gin.HandlerFunc {
+func setPlaylistsOrder(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
 
 		var body struct {
 			Order []string `json:"order"`
 		}
-
 		if err := c.ShouldBindJSON(&body); err != nil || len(body.Order) == 0 {
 			respondError(c, http.StatusBadRequest, "Invalid or missing order array")
 			return
 		}
 
-		err := storage.SetPlaylistsOrder(username, body.Order)
-		if err != nil {
-			if err.Error() == "user not found" || err.Error() == "playlist not found" {
-				respondError(c, http.StatusNotFound, err.Error())
-				return
-			}
+		if err := rm.SetPlaylistsOrder(username, body.Order); err != nil {
 			respondError(c, http.StatusInternalServerError, err.Error())
 			return
 		}
-
 		respondSuccess(c, http.StatusOK, nil, "Playlist order updated")
 	}
 }
 
-// PUT /users/:username/playlists/:slug
-// Request JSON: { "title": "new title", "description": "new description" }
-func updateUserPlaylistInfo(storage interfaces.StorageService) gin.HandlerFunc {
+func updateUserPlaylistInfo(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
 		slug := c.Param("slug")
@@ -204,29 +163,23 @@ func updateUserPlaylistInfo(storage interfaces.StorageService) gin.HandlerFunc {
 			Title       string `json:"title"`
 			Description string `json:"description"`
 		}
-
 		if err := c.ShouldBindJSON(&body); err != nil {
 			respondError(c, http.StatusBadRequest, "Invalid JSON: "+err.Error())
 			return
 		}
 
-		// Validate that at least one of title or description is provided
 		if body.Title == "" && body.Description == "" {
 			respondError(c, http.StatusBadRequest, "At least one of title or description must be provided")
 			return
 		}
 
-		err := storage.UpdatePlaylistInfo(username, slug, body.Title, body.Description)
+		err := rm.UpdatePlaylistInfo(username, slug, body.Title, body.Description)
 		if err != nil {
-			if err.Error() == "user not found" || err.Error() == "playlist not found" {
-				respondError(c, http.StatusNotFound, err.Error())
-				return
-			}
 			respondError(c, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		pl, err := storage.GetUserPlaylist(username, slug)
+		pl, err := rm.GetUserPlaylist(username, slug)
 		if err != nil {
 			respondError(c, http.StatusInternalServerError, "Failed to retrieve updated playlist")
 			return

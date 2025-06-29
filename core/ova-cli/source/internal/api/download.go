@@ -6,23 +6,25 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"ova-cli/source/internal/interfaces"
-	"ova-cli/source/internal/thirdparty"
 	"strconv"
+
+	"ova-cli/source/internal/repo"
+	"ova-cli/source/internal/thirdparty"
 
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterDownloadRoutes(rg *gin.RouterGroup, storage interfaces.StorageService) {
-	rg.GET("/download/:videoId", downloadVideo(storage))
-	rg.GET("/download/:videoId/trim", downloadTrimmedVideo(storage))
+// RegisterDownloadRoutes registers download endpoints using RepoManager
+func RegisterDownloadRoutes(rg *gin.RouterGroup, rm *repo.RepoManager) {
+	rg.GET("/download/:videoId", downloadVideo(rm))
+	rg.GET("/download/:videoId/trim", downloadTrimmedVideo(rm))
 }
 
-func downloadVideo(storage interfaces.StorageService) gin.HandlerFunc {
+func downloadVideo(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoId := c.Param("videoId")
 
-		video, err := storage.GetVideoByID(videoId)
+		video, err := rm.GetVideoByID(videoId)
 		if err != nil {
 			respondError(c, http.StatusNotFound, "Video not found")
 			return
@@ -38,17 +40,17 @@ func downloadVideo(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		// Set headers
+		// Set headers for download
 		c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s.mp4\"", video.Title))
 		c.Header("Content-Type", "application/octet-stream")
 		c.Header("Content-Length", fmt.Sprintf("%d", info.Size()))
 
-		// Serve the file efficiently using Gin helper
+		// Serve file using Gin helper
 		c.File(videoPath)
 	}
 }
 
-func downloadTrimmedVideo(storage interfaces.StorageService) gin.HandlerFunc {
+func downloadTrimmedVideo(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoId := c.Param("videoId")
 
@@ -72,7 +74,7 @@ func downloadTrimmedVideo(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		video, err := storage.GetVideoByID(videoId)
+		video, err := rm.GetVideoByID(videoId)
 		if err != nil {
 			respondError(c, http.StatusNotFound, "Video not found")
 			return
@@ -121,7 +123,6 @@ func downloadTrimmedVideo(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		// Set headers BEFORE starting to write any data!
 		c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s_trimmed.mp4\"", video.Title))
 		c.Header("Content-Type", "video/mp4")
 
@@ -130,7 +131,6 @@ func downloadTrimmedVideo(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		// Read ffmpeg stderr asynchronously to log any errors
 		go func() {
 			errOutput, _ := io.ReadAll(stderr)
 			if len(errOutput) > 0 {
@@ -138,7 +138,6 @@ func downloadTrimmedVideo(storage interfaces.StorageService) gin.HandlerFunc {
 			}
 		}()
 
-		// Kill ffmpeg if client disconnects
 		clientGone := c.Request.Context().Done()
 		go func() {
 			<-clientGone

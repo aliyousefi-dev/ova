@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "serverHost": "0.0.0.0",
+  "serverPort": 4040,
+  "enableAuthentication": true,
+  "createdAt": "2025-06-29T04:29:01.25372+03:30"
+}

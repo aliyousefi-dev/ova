@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"ova-cli/source/internal/datatypes"
-	"ova-cli/source/internal/interfaces"
+	"ova-cli/source/internal/repo"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,12 +19,12 @@ type SearchRequest struct {
 }
 
 // RegisterSearchRoutes adds the /search endpoint to the router group.
-func RegisterSearchRoutes(rg *gin.RouterGroup, storage interfaces.StorageService) {
-	rg.POST("/search", searchVideos(storage))
+func RegisterSearchRoutes(rg *gin.RouterGroup, repoManager *repo.RepoManager) {
+	rg.POST("/search", searchVideos(repoManager))
 }
 
 // searchVideos handles POST /search with a JSON body containing search criteria.
-func searchVideos(storage interfaces.StorageService) gin.HandlerFunc {
+func searchVideos(repoManager *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req SearchRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -45,7 +45,7 @@ func searchVideos(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		results, err := storage.SearchVideos(criteria)
+		results, err := repoManager.SearchVideos(criteria)
 		if err != nil {
 			respondError(c, http.StatusInternalServerError, "Failed to search videos")
 			return

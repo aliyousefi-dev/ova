@@ -7,29 +7,22 @@ import (
 	"strconv"
 	"strings"
 
-	"ova-cli/source/internal/datatypes"  // Import the updated datatypes package
-	"ova-cli/source/internal/interfaces" // Assuming interfaces.StorageService is defined here
-
-	// Ensure common response functions like respondError and respondSuccess are accessible
-	// from your API package or utility functions.
-	// For example:
-	// "ova-cli/source/internal/utils" // If respondError/respondSuccess are here
+	"ova-cli/source/internal/datatypes"
+	"ova-cli/source/internal/repo"
 
 	"github.com/gin-gonic/gin"
 )
 
-// RegisterMarkerRoutes sets up the API endpoints for marker management.
-func RegisterMarkerRoutes(rg *gin.RouterGroup, storage interfaces.StorageService) {
-	rg.POST("/video/markers/:videoId", updateMarkers(storage))
-	rg.GET("/video/markers/:videoId", getMarkers(storage))
-	rg.GET("/video/markers/:videoId/file", getMarkerFile(storage))
-	rg.DELETE("/video/markers/:videoId", deleteAllMarkers(storage))
-	// Updated DELETE route to accept hour, minute, and second as parameters for precise deletion
-	rg.DELETE("/video/markers/:videoId/:hour/:minute/:second", deleteMarker(storage))
+// RegisterMarkerRoutes sets up the API endpoints for marker management using RepoManager.
+func RegisterMarkerRoutes(rg *gin.RouterGroup, rm *repo.RepoManager) {
+	rg.POST("/video/markers/:videoId", updateMarkers(rm))
+	rg.GET("/video/markers/:videoId", getMarkers(rm))
+	rg.GET("/video/markers/:videoId/file", getMarkerFile(rm))
+	rg.DELETE("/video/markers/:videoId", deleteAllMarkers(rm))
+	rg.DELETE("/video/markers/:videoId/:hour/:minute/:second", deleteMarker(rm))
 }
 
-// updateMarkers handles POST requests to update markers for a specific video.
-func updateMarkers(storage interfaces.StorageService) gin.HandlerFunc {
+func updateMarkers(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoId := c.Param("videoId")
 		if videoId == "" {
@@ -37,47 +30,41 @@ func updateMarkers(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		var req datatypes.UpdateMarkersRequest // Use datatypes.UpdateMarkersRequest
+		var req datatypes.UpdateMarkersRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
 			respondError(c, http.StatusBadRequest, "Invalid JSON payload: "+err.Error())
 			return
 		}
 
 		var markersToSave []datatypes.VideoMarker
-		for _, vm := range req.Markers { // Loop using the VideoMarker struct
-			// Validate incoming hour, minute, second
+		for _, vm := range req.Markers {
 			if vm.Hour < 0 || vm.Minute < 0 || vm.Second < 0 {
-				respondError(c, http.StatusBadRequest, "Marker hour, minute, and second cannot be negative")
+				respondError(c, http.StatusBadRequest, "Marker time values cannot be negative")
 				return
 			}
 			if vm.Minute >= 60 || vm.Second >= 60 {
-				respondError(c, http.StatusBadRequest, "Minute and second values must be less than 60")
+				respondError(c, http.StatusBadRequest, "Minute and second must be less than 60")
 				return
 			}
 			if strings.TrimSpace(vm.Title) == "" {
 				respondError(c, http.StatusBadRequest, "Marker title cannot be empty")
 				return
 			}
-			// Markers are already in the desired datatypes.VideoMarker format (H,M,S,Title)
 			markersToSave = append(markersToSave, vm)
 		}
 
-		// Delete all existing markers and add the new list.
-		if err := storage.DeleteAllMarkersFromVideo(videoId); err != nil {
+		if err := rm.DeleteAllMarkersFromVideo(videoId); err != nil {
 			respondError(c, http.StatusInternalServerError, "Failed to clear existing markers: "+err.Error())
 			return
 		}
 		for _, marker := range markersToSave {
-			// storage.AddMarkerToVideo now directly accepts datatypes.VideoMarker (H,M,S,Title)
-			if err := storage.AddMarkerToVideo(videoId, marker); err != nil {
+			if err := rm.AddMarkerToVideo(videoId, marker); err != nil {
 				respondError(c, http.StatusInternalServerError, "Failed to add marker: "+err.Error())
 				return
 			}
 		}
 
-		// Prepare response for frontend: get markers from storage
-		// storage.GetMarkersForVideo now returns datatypes.VideoMarker (H,M,S,Title)
-		markersForResponse, err := storage.GetMarkersForVideo(videoId)
+		markersForResponse, err := rm.GetMarkersForVideo(videoId)
 		if err != nil {
 			respondError(c, http.StatusInternalServerError, "Failed to retrieve updated markers: "+err.Error())
 			return
@@ -85,13 +72,12 @@ func updateMarkers(storage interfaces.StorageService) gin.HandlerFunc {
 
 		respondSuccess(c, http.StatusOK, gin.H{
 			"videoId": videoId,
-			"markers": markersForResponse, // Send datatypes.VideoMarker (H,M,S,Title) directly
+			"markers": markersForResponse,
 		}, "Markers updated successfully")
 	}
 }
 
-// getMarkers handles GET requests to retrieve markers data in JSON format.
-func getMarkers(storage interfaces.StorageService) gin.HandlerFunc {
+func getMarkers(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoId := c.Param("videoId")
 		if videoId == "" {
@@ -99,8 +85,7 @@ func getMarkers(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		// Get markers from storage (which now returns datatypes.VideoMarker with H,M,S,Title)
-		markersForResponse, err := storage.GetMarkersForVideo(videoId)
+		markersForResponse, err := rm.GetMarkersForVideo(videoId)
 		if err != nil {
 			respondError(c, http.StatusInternalServerError, "Failed to get markers: "+err.Error())
 			return
@@ -108,13 +93,12 @@ func getMarkers(storage interfaces.StorageService) gin.HandlerFunc {
 
 		respondSuccess(c, http.StatusOK, gin.H{
 			"videoId": videoId,
-			"markers": markersForResponse, // Send datatypes.VideoMarker (H,M,S,Title) directly
+			"markers": markersForResponse,
 		}, "Markers fetched successfully")
 	}
 }
 
-// getMarkerFile serves the VTT file for markers for the given videoId.
-func getMarkerFile(storage interfaces.StorageService) gin.HandlerFunc {
+func getMarkerFile(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoId := c.Param("videoId")
 		if videoId == "" {
@@ -122,7 +106,7 @@ func getMarkerFile(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		dir := storage.GetVideoMarkerDir() // Use the dedicated method to get the markers directory
+		dir := filepath.Join(rm.GetStoragePath(), "video_markers")
 		filePath := filepath.Join(dir, videoId+".vtt")
 
 		if _, err := os.Stat(filePath); err != nil {
@@ -134,20 +118,17 @@ func getMarkerFile(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		// Set appropriate headers for VTT file
 		c.Header("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate")
 		c.Header("Pragma", "no-cache")
 		c.Header("Expires", "0")
 		c.Header("Surrogate-Control", "no-store")
-
-		c.Header("Content-Type", "text/vtt") // Set Content-Type to text/vtt
+		c.Header("Content-Type", "text/vtt")
 
 		c.File(filePath)
 	}
 }
 
-// deleteAllMarkers deletes all markers associated with a video.
-func deleteAllMarkers(storage interfaces.StorageService) gin.HandlerFunc {
+func deleteAllMarkers(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoId := c.Param("videoId")
 		if videoId == "" {
@@ -155,7 +136,7 @@ func deleteAllMarkers(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		if err := storage.DeleteAllMarkersFromVideo(videoId); err != nil {
+		if err := rm.DeleteAllMarkersFromVideo(videoId); err != nil {
 			respondError(c, http.StatusInternalServerError, "Failed to delete all markers: "+err.Error())
 			return
 		}
@@ -166,9 +147,7 @@ func deleteAllMarkers(storage interfaces.StorageService) gin.HandlerFunc {
 	}
 }
 
-// deleteMarker handles DELETE requests to remove a single marker from a video.
-// It accepts hour, minute, and second in the URL parameters.
-func deleteMarker(storage interfaces.StorageService) gin.HandlerFunc {
+func deleteMarker(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoId := c.Param("videoId")
 		hourStr := c.Param("hour")
@@ -180,34 +159,29 @@ func deleteMarker(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		// Convert incoming hour, minute, second URL params to integers.
 		hour, err := strconv.Atoi(hourStr)
 		if err != nil {
-			respondError(c, http.StatusBadRequest, "Invalid hour parameter, must be an integer: "+err.Error())
+			respondError(c, http.StatusBadRequest, "Invalid hour parameter: "+err.Error())
 			return
 		}
 		minute, err := strconv.Atoi(minuteStr)
 		if err != nil {
-			respondError(c, http.StatusBadRequest, "Invalid minute parameter, must be an integer: "+err.Error())
+			respondError(c, http.StatusBadRequest, "Invalid minute parameter: "+err.Error())
 			return
 		}
 		second, err := strconv.Atoi(secondStr)
 		if err != nil {
-			respondError(c, http.StatusBadRequest, "Invalid second parameter, must be an integer: "+err.Error())
+			respondError(c, http.StatusBadRequest, "Invalid second parameter: "+err.Error())
 			return
 		}
 
-		// Create a VideoMarker instance with the values to delete
 		markerToDelete := datatypes.VideoMarker{
 			Hour:   hour,
 			Minute: minute,
 			Second: second,
-			// Title is not available from URL, so it's not included in deletion criteria.
-			// The storage layer will need to match solely on the timestamp (H,M,S).
 		}
 
-		// Call storage delete using the new datatypes.VideoMarker (with H,M,S).
-		if err := storage.DeleteMarkerFromVideo(videoId, markerToDelete); err != nil {
+		if err := rm.DeleteMarkerFromVideo(videoId, markerToDelete); err != nil {
 			respondError(c, http.StatusInternalServerError, "Failed to delete marker: "+err.Error())
 			return
 		}

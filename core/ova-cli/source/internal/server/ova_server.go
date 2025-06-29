@@ -6,15 +6,13 @@ import (
 	"path/filepath"
 
 	"ova-cli/source/internal/api"
-	"ova-cli/source/internal/interfaces"
-	"ova-cli/source/internal/localstorage"
+	"ova-cli/source/internal/repo"
 
 	"github.com/gin-gonic/gin"
 )
 
 type OvaServer struct {
-	Addr           string
-	StorageService interfaces.StorageService
+	RepoManager    *repo.RepoManager
 	SessionManager *api.SessionManager
 	router         *gin.Engine
 	BaseDir        string
@@ -22,13 +20,14 @@ type OvaServer struct {
 	FrontendPath   string
 	ExeDir         string
 	UseHttps       bool
+	Addr           string
 }
 
 // NewBackendServer creates and configures the unified server.
 func NewBackendServer(
+	repoManager *repo.RepoManager,
 	addr string,
-	exedir string,
-	storageDir string,
+	exeDir string,
 	basedir string,
 	serveFrontend bool,
 	frontendPath string,
@@ -37,20 +36,19 @@ func NewBackendServer(
 ) *OvaServer {
 	gin.SetMode(gin.ReleaseMode)
 
-	storageService := localstorage.NewLocalStorage(storageDir)
 	sessionManager := api.NewSessionManager()
 	sessionManager.DisableAuth = disableAuth
 
 	return &OvaServer{
-		Addr:           addr,
-		StorageService: storageService,
+		RepoManager:    repoManager,
 		SessionManager: sessionManager,
 		router:         gin.Default(),
 		BaseDir:        basedir,
 		ServeFrontend:  serveFrontend,
 		FrontendPath:   frontendPath,
-		ExeDir:         exedir,
+		ExeDir:         exeDir,
 		UseHttps:       useHttps,
+		Addr:           addr,
 	}
 }
 
@@ -68,21 +66,21 @@ func (s *OvaServer) initRoutes() {
 	v1 := s.router.Group("/api/v1")
 	v1.Use(api.AuthMiddleware(s.SessionManager, publicPaths, publicPrefixes))
 
-	api.RegisterAuthRoutes(v1, s.StorageService, s.SessionManager)
-	api.RegisterUserPlaylistRoutes(v1, s.StorageService)
-	api.RegisterUserSavedRoutes(v1, s.StorageService)
-	api.RegisterVideoRoutes(v1, s.StorageService)
-	api.RegisterSearchRoutes(v1, s.StorageService)
-	api.RegisterVideoTagRoutes(v1, s.StorageService)
-	api.RegisterStreamRoutes(v1, s.StorageService)
-	api.RegisterDownloadRoutes(v1, s.StorageService)
-	api.RegisterUploadRoutes(v1, s.StorageService)
-	api.RegisterThumbnailRoutes(v1, s.StorageService)
-	api.RegisterPreviewRoutes(v1, s.StorageService)
-	api.RegisterFolderRoutes(v1, s.StorageService)
-	api.RegisterUserWatchedRoutes(v1, s.StorageService)
-	api.RegisterStoryboardRoutes(v1, s.StorageService)
-	api.RegisterMarkerRoutes(v1, s.StorageService)
+	api.RegisterAuthRoutes(v1, s.RepoManager, s.SessionManager)
+	api.RegisterUserPlaylistRoutes(v1, s.RepoManager)
+	api.RegisterUserSavedRoutes(v1, s.RepoManager)
+	api.RegisterVideoRoutes(v1, s.RepoManager)
+	api.RegisterSearchRoutes(v1, s.RepoManager)
+	api.RegisterVideoTagRoutes(v1, s.RepoManager)
+	api.RegisterStreamRoutes(v1, s.RepoManager)
+	api.RegisterDownloadRoutes(v1, s.RepoManager)
+	api.RegisterUploadRoutes(v1, s.RepoManager)
+	api.RegisterThumbnailRoutes(v1, s.RepoManager)
+	api.RegisterPreviewRoutes(v1, s.RepoManager)
+	api.RegisterFolderRoutes(v1, s.RepoManager)
+	api.RegisterUserWatchedRoutes(v1, s.RepoManager)
+	api.RegisterStoryboardRoutes(v1, s.RepoManager)
+	api.RegisterMarkerRoutes(v1, s.RepoManager)
 	api.RegisterStatusRoute(v1)
 
 	if s.ServeFrontend {

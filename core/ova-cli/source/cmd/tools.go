@@ -5,7 +5,6 @@ import (
 	"os"
 	"ova-cli/source/internal/logs"
 	"ova-cli/source/internal/thirdparty"
-	videotools "ova-cli/source/internal/thirdparty"
 	"path/filepath"
 	"strings"
 	"time"
@@ -30,7 +29,7 @@ var toolsMimeCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		filePath := args[0]
-		mimeType, err := videotools.GetCodecsForFile(filePath)
+		mimeType, err := thirdparty.GetCodecsForFile(filePath)
 		if err != nil {
 			toolsLogger.Error("Failed to detect MIME type: %v", err)
 			return
@@ -52,7 +51,7 @@ var toolsThumbnailCmd = &cobra.Command{
 		// Default time
 		timePos, _ := cmd.Flags().GetFloat64("time")
 
-		err := videotools.GenerateImageFromVideo(videoPath, thumbnailPath, timePos)
+		err := thirdparty.GenerateImageFromVideo(videoPath, thumbnailPath, timePos)
 		if err != nil {
 			toolsLogger.Error("Failed to generate thumbnail: %v", err)
 			return
@@ -74,7 +73,7 @@ var toolsPreviewCmd = &cobra.Command{
 		startTime, _ := cmd.Flags().GetFloat64("start")
 		duration, _ := cmd.Flags().GetFloat64("duration")
 
-		err := videotools.GenerateWebMFromVideo(videoPath, outputPath, startTime, duration)
+		err := thirdparty.GenerateWebMFromVideo(videoPath, outputPath, startTime, duration)
 		if err != nil {
 			toolsLogger.Error("Failed to generate preview: %v", err)
 			return
@@ -92,7 +91,7 @@ var toolsMp4FragCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		filePath := args[0]
 
-		err := videotools.ConvertMP4ToFragmentedMP4InPlace(filePath)
+		err := thirdparty.ConvertMP4ToFragmentedMP4InPlace(filePath)
 		if err != nil {
 			toolsLogger.Error("Failed to convert to fragmented MP4: %v", err)
 			return
@@ -110,7 +109,7 @@ var toolsInfoCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		videoPath := args[0]
 
-		info, err := videotools.GetMP4Info(videoPath)
+		info, err := thirdparty.GetMP4Info(videoPath)
 		if err != nil {
 			toolsLogger.Error("Failed to get MP4 info: %v", err)
 			return
@@ -127,7 +126,7 @@ var toolsIsFragCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		videoPath := args[0]
 
-		isFrag, err := videotools.IsFragmentedMP4(videoPath)
+		isFrag, err := thirdparty.IsFragmentedMP4(videoPath)
 		if err != nil {
 			// Still print false on failure, as per your minimal output style
 			fmt.Println("false")
@@ -150,7 +149,7 @@ var toolsConvertCmd = &cobra.Command{
 		inputPath := args[0]
 		outputPath := args[1]
 
-		err := videotools.ConvertToMP4(inputPath, outputPath)
+		err := thirdparty.ConvertToMP4(inputPath, outputPath)
 		if err != nil {
 			toolsLogger.Error("Failed to convert to MP4: %v", err)
 			return
@@ -168,7 +167,7 @@ var toolsMp4UnfragCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		filePath := args[0]
 
-		err := videotools.ConvertFragmentedMP4ToUnfragmentedMP4InPlace(filePath)
+		err := thirdparty.ConvertFragmentedMP4ToUnfragmentedMP4InPlace(filePath)
 		if err != nil {
 			toolsLogger.Error("Failed to convert to unfragmented MP4: %v", err)
 			return

@@ -20,7 +20,7 @@ Ideal for efficiently hosting online video libraries.`,
 	cmd.InitCommandInit(rootCmd)
 	cmd.InitCommandDebug(rootCmd)
 	cmd.InitCommandTools(rootCmd)
-	cmd.InitCommandRepo(rootCmd)
+	cmd.InitCommandCook(rootCmd)
 
 	// server commands
 	cmd.InitCommandServe(rootCmd)

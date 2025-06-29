@@ -2,8 +2,9 @@ package api
 
 import (
 	"net/http"
-	"ova-cli/source/internal/interfaces"
 	"time"
+
+	"ova-cli/source/internal/repo"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -26,27 +27,27 @@ type ChangePasswordRequest struct {
 	NewPassword string `json:"newpassword"`
 }
 
-// RegisterAuthRoutes sets up the /auth routes with session and user storage.
-func RegisterAuthRoutes(rg *gin.RouterGroup, storage interfaces.StorageService, sm *SessionManager) {
+// RegisterAuthRoutes sets up the /auth routes with session and repo manager.
+func RegisterAuthRoutes(rg *gin.RouterGroup, repoMgr *repo.RepoManager, sm *SessionManager) {
 	auth := rg.Group("/auth")
 	{
-		auth.POST("/login", func(c *gin.Context) { loginHandler(c, sm, storage) })
+		auth.POST("/login", func(c *gin.Context) { loginHandler(c, sm, repoMgr) })
 		auth.POST("/logout", sm.logoutHandler)
 		auth.GET("/status", sm.authStatusHandler)
-		auth.GET("/profile", sm.profileHandler(storage))
-		auth.POST("/password", sm.passwordHandler(storage))
+		auth.GET("/profile", sm.profileHandler(repoMgr))
+		auth.POST("/password", sm.passwordHandler(repoMgr))
 	}
 }
 
 // loginHandler authenticates the user and issues a session.
-func loginHandler(c *gin.Context, sm *SessionManager, storage interfaces.StorageService) {
+func loginHandler(c *gin.Context, sm *SessionManager, repoMgr *repo.RepoManager) {
 	var req LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		respondError(c, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 
-	user, err := storage.GetUserByUsername(req.Username)
+	user, err := repoMgr.GetUserByUsername(req.Username)
 	if err != nil {
 		respondError(c, http.StatusUnauthorized, "Invalid username or password")
 		return
@@ -60,7 +61,6 @@ func loginHandler(c *gin.Context, sm *SessionManager, storage interfaces.Storage
 	sessionID := uuid.NewString()
 	sm.sessions[sessionID] = req.Username
 
-	// Set cookie manually with SameSite=None and Secure for cross-origin cookies
 	http.SetCookie(c.Writer, &http.Cookie{
 		Name:     "session_id",
 		Value:    sessionID,
@@ -74,7 +74,6 @@ func loginHandler(c *gin.Context, sm *SessionManager, storage interfaces.Storage
 	respondSuccess(c, http.StatusOK, LoginResponse{SessionID: sessionID}, "Login successful")
 }
 
-// logoutHandler clears the session.
 func (sm *SessionManager) logoutHandler(c *gin.Context) {
 	sessionID, err := c.Cookie("session_id")
 	if err != nil {
@@ -89,7 +88,6 @@ func (sm *SessionManager) logoutHandler(c *gin.Context) {
 
 	delete(sm.sessions, sessionID)
 
-	// Clear cookie by setting expired cookie with SameSite=None and Secure
 	clearCookie := "session_id=; Path=/; Max-Age=0; HttpOnly; SameSite=None;"
 	c.Writer.Header().Add("Set-Cookie", clearCookie)
 
@@ -98,7 +96,6 @@ func (sm *SessionManager) logoutHandler(c *gin.Context) {
 
 func (sm *SessionManager) authStatusHandler(c *gin.Context) {
 	if sm.DisableAuth {
-		// Auth is disabled, always respond successful
 		respondSuccess(c, http.StatusOK, gin.H{
 			"authenticated": true,
 			"username":      "guest",
@@ -123,7 +120,7 @@ func (sm *SessionManager) authStatusHandler(c *gin.Context) {
 	}
 }
 
-func (sm *SessionManager) profileHandler(storage interfaces.StorageService) gin.HandlerFunc {
+func (sm *SessionManager) profileHandler(repoMgr *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sessionID, err := c.Cookie("session_id")
 		if err != nil {
@@ -137,7 +134,7 @@ func (sm *SessionManager) profileHandler(storage interfaces.StorageService) gin.
 			return
 		}
 
-		user, err := storage.GetUserByUsername(username)
+		user, err := repoMgr.GetUserByUsername(username)
 		if err != nil {
 			respondError(c, http.StatusNotFound, "User not found")
 			return
@@ -150,7 +147,7 @@ func (sm *SessionManager) profileHandler(storage interfaces.StorageService) gin.
 	}
 }
 
-func (sm *SessionManager) passwordHandler(storage interfaces.StorageService) gin.HandlerFunc {
+func (sm *SessionManager) passwordHandler(repoMgr *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req ChangePasswordRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -166,10 +163,11 @@ func (sm *SessionManager) passwordHandler(storage interfaces.StorageService) gin
 
 		username, exists := sm.sessions[sessionID]
 		if !exists {
-			respondError(c, http.StatusUnauthorized, "not Authenticated!")
+			respondError(c, http.StatusUnauthorized, "Not authenticated")
+			return
 		}
 
-		user, err := storage.GetUserByUsername(username)
+		user, err := repoMgr.GetUserByUsername(username)
 		if err != nil {
 			respondError(c, http.StatusUnauthorized, "Invalid username")
 			return
@@ -180,21 +178,17 @@ func (sm *SessionManager) passwordHandler(storage interfaces.StorageService) gin
 			return
 		}
 
-		// Hash the password securely using bcrypt
 		hashBytes, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
 		if err != nil {
-			respondError(c, http.StatusInternalServerError, "Can not Create Hash from password")
+			respondError(c, http.StatusInternalServerError, "Cannot create hash from password")
 			return
 		}
 		hashedPassword := string(hashBytes)
 
-		storageerr := storage.UpdateUserPassword(username, hashedPassword)
-		if storageerr != nil {
-			respondError(c, http.StatusForbidden, storageerr.Error())
+		if err := repoMgr.UpdateUserPassword(username, hashedPassword); err != nil {
+			respondError(c, http.StatusForbidden, err.Error())
 		} else {
-			respondSuccess(c, http.StatusOK, gin.H{
-				"status": "ok",
-			}, "Password Changed!")
+			respondSuccess(c, http.StatusOK, gin.H{"status": "ok"}, "Password changed!")
 		}
 	}
 }

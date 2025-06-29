@@ -1,31 +1,29 @@
 {
   "user": {
     "username": "user",
-    "passwordHash": "$2a$10$q3ocv4ZZqzyR./u3wE2sC.06KbwuVnc3k3LHrt7P1pkBOtuv4aB9e",
+    "passwordHash": "$2a$10$lx7NH/OQywzgJnB9sZlKnunBObFCXcbn7hBj7nJBrlSye3iDwhGxy",
     "roles": [
+      "user",
       "admin"
     ],
-    "createdAt": "2025-06-26T20:50:14.8223212Z",
+    "createdAt": "2025-06-29T00:59:01.2937229Z",
     "lastLoginAt": "0001-01-01T00:00:00Z",
     "favorites": [
       "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290"
     ],
     "playlists": [
       {
-        "title": "321",
+        "title": "xfg",
         "description": "",
         "videoIds": [
-          "41168d2b2b047e7657a2491cde2e3484aae4c8d20423170f79e4b5278b7a4f37",
           "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290"
         ],
-        "slug": "321",
+        "slug": "xfg",
         "order": 1
       }
     ],
     "watched": [
-      "41168d2b2b047e7657a2491cde2e3484aae4c8d20423170f79e4b5278b7a4f37",
-      "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290",
-      "087be485e0acad6fb1ba026e75542fed5f52e073496c649bc4a3ce345a63f48f"
+      "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290"
     ]
   }
 }

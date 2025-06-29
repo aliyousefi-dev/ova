@@ -5,22 +5,21 @@ import (
 	"os"
 	"path/filepath"
 
-	"ova-cli/source/internal/interfaces"
+	"ova-cli/source/internal/repo"
 
 	"github.com/gin-gonic/gin"
 )
 
 // RegisterStoryboardRoutes registers the route to serve storyboard VTT files.
-// It uses the StorageService to get the root storage path dynamically.
-func RegisterStoryboardRoutes(rg *gin.RouterGroup, storage interfaces.StorageService) {
+// It uses the RepoManager to get the root storage path dynamically.
+func RegisterStoryboardRoutes(rg *gin.RouterGroup, repoManager *repo.RepoManager) {
 
-	// Serve individual thumbnail Elements
+	// Serve individual thumbnail elements
 	rg.GET("/storyboards/:videoId/:filename", func(c *gin.Context) {
 		videoId := c.Param("videoId")
 		filename := c.Param("filename")
 
-		storageRoot := storage.GetStoragePath()
-		thumbPath := filepath.Join(storageRoot, "sprite_vtt", videoId, filename)
+		thumbPath := filepath.Join(repoManager.GetStoryboardDir(), videoId, filename)
 
 		info, err := os.Stat(thumbPath)
 		if err != nil {

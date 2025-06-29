@@ -3,31 +3,31 @@ package api
 import (
 	"net/http"
 
-	"ova-cli/source/internal/interfaces"
+	"ova-cli/source/internal/repo"
 
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterUserSavedRoutes(rg *gin.RouterGroup, storage interfaces.StorageService) {
+func RegisterUserSavedRoutes(rg *gin.RouterGroup, repoManager *repo.RepoManager) {
 	users := rg.Group("/users")
 	{
-		users.GET("/:username/saved", getUserSaved(storage))
-		users.POST("/:username/saved/:videoId", addUserSaved(storage))
-		users.DELETE("/:username/saved/:videoId", removeUserSaved(storage))
+		users.GET("/:username/saved", getUserSaved(repoManager))
+		users.POST("/:username/saved/:videoId", addUserSaved(repoManager))
+		users.DELETE("/:username/saved/:videoId", removeUserSaved(repoManager))
 	}
 }
 
 // GET /users/:username/saved
-func getUserSaved(storage interfaces.StorageService) gin.HandlerFunc {
+func getUserSaved(repoManager *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
 
-		videos, err := storage.GetUserSavedVideos(username) // storage method name can remain or be renamed later
+		videos, err := repoManager.GetUserSavedVideos(username)
 		if err != nil {
 			if err.Error() == "user not found" {
 				respondError(c, http.StatusNotFound, "User not found")
 			} else {
-				respondError(c, http.StatusInternalServerError, "Failed to retrieve saved videos")
+				respondError(c, http.StatusInternalServerError, "Failed to retrieve saved videos: "+err.Error())
 			}
 			return
 		}
@@ -45,20 +45,19 @@ func getUserSaved(storage interfaces.StorageService) gin.HandlerFunc {
 }
 
 // POST /users/:username/saved/:videoId
-func addUserSaved(storage interfaces.StorageService) gin.HandlerFunc {
+func addUserSaved(repoManager *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
 		videoID := c.Param("videoId")
 
-		_, err := storage.GetVideoByID(videoID)
-		if err != nil {
+		// Check video existence via RepoManager
+		if _, err := repoManager.GetVideoByID(videoID); err != nil {
 			respondError(c, http.StatusNotFound, "Video not found")
 			return
 		}
 
-		err = storage.AddVideoToSaved(username, videoID) // rename storage method later if needed
-		if err != nil {
-			respondError(c, http.StatusInternalServerError, "Failed to add saved video")
+		if err := repoManager.AddVideoToSaved(username, videoID); err != nil {
+			respondError(c, http.StatusInternalServerError, "Failed to add saved video: "+err.Error())
 			return
 		}
 
@@ -70,14 +69,13 @@ func addUserSaved(storage interfaces.StorageService) gin.HandlerFunc {
 }
 
 // DELETE /users/:username/saved/:videoId
-func removeUserSaved(storage interfaces.StorageService) gin.HandlerFunc {
+func removeUserSaved(repoManager *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
 		videoID := c.Param("videoId")
 
-		err := storage.RemoveVideoFromSaved(username, videoID) // rename storage method later if needed
-		if err != nil {
-			respondError(c, http.StatusInternalServerError, "Failed to remove saved video")
+		if err := repoManager.RemoveVideoFromSaved(username, videoID); err != nil {
+			respondError(c, http.StatusInternalServerError, "Failed to remove saved video: "+err.Error())
 			return
 		}
 

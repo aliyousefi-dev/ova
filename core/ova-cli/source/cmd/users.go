@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	datatypes "ova-cli/source/internal/datatypes"
-	"ova-cli/source/internal/localstorage"
+	"ova-cli/source/internal/datastorage/jsondb"
+	"ova-cli/source/internal/datatypes"
 	"ova-cli/source/internal/logs"
 
 	"github.com/pterm/pterm"
@@ -206,13 +206,13 @@ var userInfoCmd = &cobra.Command{
 }
 
 // initLocalStorage is a helper function to avoid code duplication.
-func initLocalStorage() (*localstorage.LocalStorage, error) {
+func initLocalStorage() (*jsondb.JsonDB, error) {
 	repoRoot, err := os.Getwd()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get current working directory: %w", err)
 	}
 	storageDir := filepath.Join(repoRoot, ".ova-repo", "storage")
-	return localstorage.NewLocalStorage(storageDir), nil
+	return jsondb.NewJsonDB(storageDir), nil
 }
 
 // InitCommandUsers initializes the 'users' command and its subcommands.

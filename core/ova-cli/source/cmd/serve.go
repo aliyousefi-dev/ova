@@ -6,8 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
+	"ova-cli/source/internal/datastorage"
 	"ova-cli/source/internal/logs"
-	"ova-cli/source/internal/repository"
+	"ova-cli/source/internal/repo"
 	"ova-cli/source/internal/server"
 
 	"github.com/spf13/cobra"
@@ -26,7 +27,6 @@ func GetLocalIPs() ([]string, error) {
 		return ips, err
 	}
 	for _, iface := range ifaces {
-		// Skip interfaces that are down or loopback
 		if iface.Flags&net.FlagUp == 0 || iface.Flags&net.FlagLoopback != 0 {
 			continue
 		}
@@ -47,7 +47,7 @@ func GetLocalIPs() ([]string, error) {
 			}
 			ip = ip.To4()
 			if ip == nil {
-				continue // not IPv4
+				continue
 			}
 			ips = append(ips, ip.String())
 		}
@@ -65,12 +65,25 @@ var serveCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		repoPath := args[0]
 
-		cfg, err := repository.LoadRepoConfig(repoPath)
-		if err != nil {
+		// Create RepoManager instance
+		repository := repo.NewRepoManager(repoPath)
+
+		// Load config
+		if err := repository.LoadRepoConfig(); err != nil {
 			serveLogger.Error("Failed to load config from %s: %v", repoPath, err)
 			os.Exit(1)
 		}
+		cfg := repository.GetConfigs()
 
+		// Initialize storage
+		storage, err := datastorage.NewStorage("jsondb", repository.GetStoragePath())
+		if err != nil {
+			serveLogger.Error("Failed to create storage: %v", err)
+			os.Exit(1)
+		}
+		repository.SetDataStorage(storage)
+
+		// Determine paths
 		cwd, err := os.Getwd()
 		if err != nil {
 			serveLogger.Error("Failed to get current working directory: %v", err)
@@ -84,21 +97,19 @@ var serveCmd = &cobra.Command{
 		}
 		exeDir := filepath.Dir(exePath)
 
-		metadataDir := filepath.Join(repoPath, ".ova-repo", "storage")
 		addr := fmt.Sprintf("%s:%d", cfg.ServerHost, cfg.ServerPort)
-
 		webPath := filepath.Join(exeDir, "web", "browser")
-		serveweb := false
 
+		serveweb := false
 		if !serveBackendOnly {
 			if _, err := os.Stat(webPath); err == nil {
 				serveweb = true
 				serveLogger.Info("Serving web at %s", addr)
 			} else {
-				serveLogger.Warn("web build not found at %s. Only backend will be served.", webPath)
+				serveLogger.Warn("Web build not found at %s. Only backend will be served.", webPath)
 			}
 		} else {
-			serveLogger.Info("Backend only mode enabled. web will not be served.")
+			serveLogger.Info("Backend-only mode enabled. Web will not be served.")
 		}
 
 		serveLogger.Info("Serving API at %s/api/v1/", addr)
@@ -112,8 +123,8 @@ var serveCmd = &cobra.Command{
 			}
 		}
 
-		s := server.NewBackendServer(addr, exeDir, metadataDir, cwd, serveweb, webPath, serveDisableAuth, serveUseHttps)
-
+		// Create and run the server
+		s := server.NewBackendServer(repository, addr, exeDir, cwd, serveweb, webPath, serveDisableAuth, serveUseHttps)
 		if err := s.Run(); err != nil {
 			serveLogger.Error("Server failed to start: %v", err)
 			os.Exit(1)

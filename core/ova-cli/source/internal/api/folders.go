@@ -3,20 +3,20 @@ package api
 import (
 	"net/http"
 
-	"ova-cli/source/internal/interfaces"
+	"ova-cli/source/internal/repo"
 
 	"github.com/gin-gonic/gin"
 )
 
-// RegisterFolderRoutes sets up the GET /folders route.
-func RegisterFolderRoutes(rg *gin.RouterGroup, storage interfaces.StorageService) {
-	rg.GET("/folders", getFolderList(storage))
+// RegisterFolderRoutes sets up the GET /folders route using RepoManager.
+func RegisterFolderRoutes(rg *gin.RouterGroup, rm *repo.RepoManager) {
+	rg.GET("/folders", getFolderList(rm))
 }
 
 // getFolderList returns a list of unique folder paths containing videos.
-func getFolderList(storage interfaces.StorageService) gin.HandlerFunc {
+func getFolderList(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		folders, err := storage.GetFolderList()
+		folders, err := rm.ScanDiskForFolders()
 		if err != nil {
 			respondError(c, http.StatusInternalServerError, "Failed to load folders")
 			return

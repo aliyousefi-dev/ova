@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"ova-cli/source/internal/datatypes"
-	"ova-cli/source/internal/interfaces"
+	"ova-cli/source/internal/repo"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,22 +24,22 @@ func parseQueryInt(c *gin.Context, name string, defaultVal int) int {
 }
 
 // RegisterVideoRoutes adds video-related endpoints including folder listing.
-func RegisterVideoRoutes(rg *gin.RouterGroup, storage interfaces.StorageService) {
+func RegisterVideoRoutes(rg *gin.RouterGroup, repoMgr *repo.RepoManager) {
 	videos := rg.Group("/videos")
 	{
-		videos.GET("/:videoId", getVideoByID(storage)) // GET /api/v1/videos/{videoId}
-		videos.GET("/:videoId/similar", getSimilarVideos(storage))
-		videos.GET("", getVideosByFolder(storage))     // GET /api/v1/videos?folder=...
-		videos.POST("/batch", getVideosByIds(storage)) // POST /api/v1/videos/batch
+		videos.GET("/:videoId", getVideoByID(repoMgr)) // GET /api/v1/videos/{videoId}
+		videos.GET("/:videoId/similar", getSimilarVideos(repoMgr))
+		videos.GET("", getVideosByFolder(repoMgr))     // GET /api/v1/videos?folder=...
+		videos.POST("/batch", getVideosByIds(repoMgr)) // POST /api/v1/videos/batch
 	}
 }
 
 // getVideoByID returns details of a single video by ID.
-func getVideoByID(storage interfaces.StorageService) gin.HandlerFunc {
+func getVideoByID(repoMgr *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoId := c.Param("videoId")
 
-		video, err := storage.GetVideoByID(videoId)
+		video, err := repoMgr.GetVideoByID(videoId)
 		if err != nil {
 			respondError(c, http.StatusNotFound, "Video not found")
 			return
@@ -48,19 +48,18 @@ func getVideoByID(storage interfaces.StorageService) gin.HandlerFunc {
 	}
 }
 
-// getVideosByFolder returns a paginated list of videos inside the given folder path.
-func getVideosByFolder(storage interfaces.StorageService) gin.HandlerFunc {
+// getVideosByFolder returns a list of videos inside the given folder path.
+func getVideosByFolder(repoMgr *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		folderQuery := c.Query("folder")
 		requestedPath := filepath.ToSlash(strings.Trim(folderQuery, "/"))
 
-		videosInFolder, err := storage.GetVideosByFolder(requestedPath)
+		videosInFolder, err := repoMgr.GetVideosByFolder(requestedPath)
 		if err != nil {
 			respondError(c, http.StatusInternalServerError, "Failed to load videos")
 			return
 		}
 
-		// Return all videos, no pagination here
 		response := gin.H{
 			"videos": videosInFolder,
 		}
@@ -70,7 +69,7 @@ func getVideosByFolder(storage interfaces.StorageService) gin.HandlerFunc {
 }
 
 // getVideosByIds returns a batch of videos by IDs.
-func getVideosByIds(storage interfaces.StorageService) gin.HandlerFunc {
+func getVideosByIds(repoMgr *repo.RepoManager) gin.HandlerFunc {
 	type requestBody struct {
 		IDs []string `json:"ids"`
 	}
@@ -83,7 +82,8 @@ func getVideosByIds(storage interfaces.StorageService) gin.HandlerFunc {
 
 		var matched []datatypes.VideoData
 		for _, id := range body.IDs {
-			if video, err := storage.GetVideoByID(id); err == nil {
+			video, err := repoMgr.GetVideoByID(id)
+			if err == nil && video != nil {
 				matched = append(matched, *video)
 			}
 		}
@@ -92,11 +92,11 @@ func getVideosByIds(storage interfaces.StorageService) gin.HandlerFunc {
 	}
 }
 
-func getSimilarVideos(storage interfaces.StorageService) gin.HandlerFunc {
+func getSimilarVideos(repoMgr *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoId := c.Param("videoId")
 
-		similarVideos, err := storage.GetSimilarVideos(videoId)
+		similarVideos, err := repoMgr.GetSimilarVideos(videoId)
 		if err != nil {
 			respondError(c, http.StatusNotFound, "Video not found or no similar videos")
 			return

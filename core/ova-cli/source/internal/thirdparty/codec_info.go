@@ -7,10 +7,10 @@ import (
 )
 
 // GetMimeTypeForFile uses Bento4's mp4info to extract codec info and return a Codecs struct
-func GetCodecsForFile(filePath string) (datatypes.Codecs, error) {
+func GetCodecsForFile(filePath string) (datatypes.VideoCodecs, error) {
 	infoText, err := GetMP4Info(filePath)
 	if err != nil {
-		return datatypes.Codecs{}, err
+		return datatypes.VideoCodecs{}, err
 	}
 
 	// Regex to capture codec strings from the mp4info output
@@ -27,12 +27,12 @@ func GetCodecsForFile(filePath string) (datatypes.Codecs, error) {
 	}
 
 	if videoCodec == "" && audioCodec == "" {
-		return datatypes.Codecs{}, fmt.Errorf("no supported video/audio codec found in mp4info output")
+		return datatypes.VideoCodecs{}, fmt.Errorf("no supported video/audio codec found in mp4info output")
 	}
 
-	return datatypes.Codecs{
-		Format: "video/mp4", // hardcoded container format since using mp4info
-		Video:  videoCodec,
-		Audio:  audioCodec,
+	return datatypes.VideoCodecs{
+		Container:   "video/mp4", // hardcoded container format since using mp4info
+		VideoCodect: videoCodec,
+		AudioCodect: audioCodec,
 	}, nil
 }

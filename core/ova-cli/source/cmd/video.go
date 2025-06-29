@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
-	"ova-cli/source/internal/localstorage"
+	"ova-cli/source/internal/datastorage"
+	"ova-cli/source/internal/datastorage/jsondb"
 	"ova-cli/source/internal/logs"
-	"ova-cli/source/internal/repository"
+	"ova-cli/source/internal/repo"
 
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
@@ -36,15 +36,21 @@ var videoAddCmd = &cobra.Command{
 			return
 		}
 
-		repoPath := filepath.Join(repoRoot, ".ova-repo")
-		storageDir := filepath.Join(repoPath, "storage")
-		st := localstorage.NewLocalStorage(storageDir)
+		repository := repo.NewRepoManager(repoRoot)
+		storagePath := repository.GetStoragePath()
+
+		storage, err := datastorage.NewStorage("jsondb", storagePath)
+		if err != nil {
+			pterm.Error.Println("Failed to initialize storage:", err)
+			return
+		}
+		repository.SetDataStorage(storage)
 
 		arg := args[0]
 		var videoPaths []string
 
 		if arg == "all" {
-			videoPaths, err = repository.GetAllVideoPaths(repoRoot)
+			videoPaths, err = repository.ScanDiskForVideos()
 			if err != nil || len(videoPaths) == 0 {
 				pterm.Warning.Println("No videos found in the repository.")
 				return
@@ -62,45 +68,28 @@ var videoAddCmd = &cobra.Command{
 		successCount := 0
 		var warnings []string
 
-		// Setup multi-line terminal UI
 		multi := pterm.DefaultMultiPrinter
 		processSpinner, _ := pterm.DefaultSpinner.WithWriter(multi.NewWriter()).Start("Initializing...")
 		progressbar, _ := pterm.DefaultProgressbar.WithTotal(total).WithWriter(multi.NewWriter()).Start("Adding videos")
 		warningStatus, _ := pterm.DefaultSpinner.WithWriter(multi.NewWriter()).Start("Warnings: 0")
-
 		multi.Start()
 
 		for i, absPath := range videoPaths {
 			fileName := filepath.Base(absPath)
-
 			processSpinner.UpdateText(fmt.Sprintf("Processing (%d/%d): %s", i+1, total, fileName))
 
-			videoData, err := st.RegisterVideoForStorage(absPath)
+			_, err := repository.RegisterVideo(absPath)
 			if err != nil {
 				warnings = append(warnings, fmt.Sprintf("❌ %s: %v", fileName, err))
 				warningStatus.UpdateText(fmt.Sprintf("Warnings: %d", len(warnings)))
-				progressbar.Increment()
-				continue
-			}
-
-			if videoData.VideoID != "" {
-				err := st.AddVideo(videoData)
-				if err != nil {
-					// Skip printing if it's just "already exists"
-					if !strings.Contains(err.Error(), "already exists") {
-						warnings = append(warnings, fmt.Sprintf("⚠️  %s: failed to add to index: %v", fileName, err))
-						warningStatus.UpdateText(fmt.Sprintf("Warnings: %d", len(warnings)))
-					}
-					continue
-				}
+			} else {
 				successCount++
 			}
 
 			progressbar.Increment()
-			time.Sleep(30 * time.Millisecond) // Optional smoothing
+			time.Sleep(30 * time.Millisecond)
 		}
 
-		// Wrap up spinners
 		processSpinner.Success("All videos processed.")
 		progressbar.Stop()
 		if len(warnings) > 0 {
@@ -110,7 +99,6 @@ var videoAddCmd = &cobra.Command{
 		}
 		multi.Stop()
 
-		// Final summary
 		pterm.Println()
 		pterm.Success.Printf("✅ Successfully processed %d of %d videos.\n", successCount, total)
 
@@ -134,21 +122,25 @@ var videoRemoveCmd = &cobra.Command{
 			return
 		}
 
-		repoPath := filepath.Join(repoRoot, ".ova-repo")
-		storageDir := filepath.Join(repoPath, "storage")
-		st := localstorage.NewLocalStorage(storageDir)
+		repository := repo.NewRepoManager(repoRoot)
+		storage, err := datastorage.NewStorage("jsondb", repository.GetStoragePath())
+		if err != nil {
+			pterm.Error.Println("Failed to initialize storage:", err)
+			return
+		}
+		repository.SetDataStorage(storage)
 
 		arg := args[0]
 		var videoPaths []string
 
 		if arg == "all" {
-			// Confirm removal
 			confirm, _ := pterm.DefaultInteractiveConfirm.Show("⚠️  Are you sure you want to remove ALL videos?")
 			if !confirm {
 				pterm.Info.Println("Operation cancelled.")
 				return
 			}
-			videoPaths, err = repository.GetAllVideoPaths(repoRoot)
+
+			videoPaths, err = repository.ScanDiskForVideos()
 			if err != nil {
 				pterm.Error.Println("Failed to retrieve video paths:", err)
 				return
@@ -166,20 +158,17 @@ var videoRemoveCmd = &cobra.Command{
 		successCount := 0
 		var warnings []string
 
-		// Setup terminal UI
 		multi := pterm.DefaultMultiPrinter
 		processSpinner, _ := pterm.DefaultSpinner.WithWriter(multi.NewWriter()).Start("Initializing...")
 		progressbar, _ := pterm.DefaultProgressbar.WithTotal(total).WithWriter(multi.NewWriter()).Start("Removing videos")
 		warningStatus, _ := pterm.DefaultSpinner.WithWriter(multi.NewWriter()).Start("Warnings: 0")
-
 		multi.Start()
 
 		for i, absPath := range videoPaths {
 			fileName := filepath.Base(absPath)
 			processSpinner.UpdateText(fmt.Sprintf("Removing (%d/%d): %s", i+1, total, fileName))
 
-			// Use UnregisterVideoFromStorage directly with the video path
-			err := st.UnregisterVideoFromStorage(absPath)
+			err := repository.UnregisterVideo(absPath)
 			if err != nil {
 				warnings = append(warnings, fmt.Sprintf("⚠️  %s: failed to remove: %v", fileName, err))
 				warningStatus.UpdateText(fmt.Sprintf("Warnings: %d", len(warnings)))
@@ -200,7 +189,6 @@ var videoRemoveCmd = &cobra.Command{
 		}
 		multi.Stop()
 
-		// Final summary
 		pterm.Println()
 		pterm.Success.Printf("✅ Successfully removed %d of %d videos.\n", successCount, total)
 
@@ -226,7 +214,7 @@ var videoListCmd = &cobra.Command{
 		repoPath := filepath.Join(repoRoot, ".ova-repo")
 		storageDir := filepath.Join(repoPath, "storage")
 
-		st := localstorage.NewLocalStorage(storageDir)
+		st := jsondb.NewJsonDB(storageDir)
 
 		videos, err := st.GetAllVideos()
 		if err != nil {
@@ -263,7 +251,7 @@ var videoInfoCmd = &cobra.Command{
 		repoPath := filepath.Join(repoRoot, ".ova-repo")
 		storageDir := filepath.Join(repoPath, "storage")
 
-		st := localstorage.NewLocalStorage(storageDir)
+		st := jsondb.NewJsonDB(storageDir)
 
 		video, err := st.GetVideoByID(videoID)
 		if err != nil {

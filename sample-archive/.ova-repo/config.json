@@ -1,7 +1,0 @@
-{
-  "version": "1.0.0",
-  "serverHost": "127.0.0.1",
-  "serverPort": 4040,
-  "enableAuthentication": false,
-  "createdAt": "0001-01-01T00:00:00Z"
-}

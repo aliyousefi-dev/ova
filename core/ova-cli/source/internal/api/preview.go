@@ -3,22 +3,23 @@ package api
 import (
 	"net/http"
 	"os"
-	"ova-cli/source/internal/interfaces"
+
+	"ova-cli/source/internal/repo"
 
 	"github.com/gin-gonic/gin"
 )
 
-// RegisterPreviewRoutes registers the preview endpoint using the provided Storagestorage.
-func RegisterPreviewRoutes(rg *gin.RouterGroup, storage interfaces.StorageService) {
-	rg.GET("/preview/:videoId", getPreview(storage))
+// RegisterPreviewRoutes registers the preview endpoint using the provided RepoManager.
+func RegisterPreviewRoutes(rg *gin.RouterGroup, rm *repo.RepoManager) {
+	rg.GET("/preview/:videoId", getPreview(rm))
 }
 
 // getPreview returns a handler function that serves a preview video file for a given video ID.
-func getPreview(storage interfaces.StorageService) gin.HandlerFunc {
+func getPreview(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoId := c.Param("videoId")
 
-		video, err := storage.GetVideoByID(videoId)
+		video, err := rm.GetVideoByID(videoId)
 		if err != nil {
 			respondError(c, http.StatusNotFound, "Video not found")
 			return

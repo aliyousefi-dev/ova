@@ -3,22 +3,22 @@ package api
 import (
 	"fmt"
 	"net/http"
-	"ova-cli/source/internal/interfaces" // Assuming this path is correct
+	"ova-cli/source/internal/repo"
 
 	"github.com/gin-gonic/gin"
 )
 
 // RegisterUserWatchedRoutes adds watched video endpoints for users.
-func RegisterUserWatchedRoutes(rg *gin.RouterGroup, storage interfaces.StorageService) {
+func RegisterUserWatchedRoutes(rg *gin.RouterGroup, repoMgr *repo.RepoManager) {
 	users := rg.Group("/users/:username")
 	{
-		users.POST("/watched", addVideoToWatched(storage))         // POST /api/v1/users/:username/watched
-		users.GET("/watched", getUserWatchedVideos(storage))       // GET  /api/v1/users/:username/watched
-		users.DELETE("/watched", clearUserWatchedHistory(storage)) // DELETE /api/v1/users/:username/watched
+		users.POST("/watched", addVideoToWatched(repoMgr))         // POST /api/v1/users/:username/watched
+		users.GET("/watched", getUserWatchedVideos(repoMgr))       // GET  /api/v1/users/:username/watched
+		users.DELETE("/watched", clearUserWatchedHistory(repoMgr)) // DELETE /api/v1/users/:username/watched
 	}
 }
 
-func addVideoToWatched(storage interfaces.StorageService) gin.HandlerFunc {
+func addVideoToWatched(r *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
 
@@ -30,7 +30,7 @@ func addVideoToWatched(storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		err := storage.AddVideoToWatched(username, req.VideoID)
+		err := r.AddVideoToWatched(username, req.VideoID)
 		if err != nil {
 			respondError(c, http.StatusBadRequest, err.Error())
 			return
@@ -40,11 +40,11 @@ func addVideoToWatched(storage interfaces.StorageService) gin.HandlerFunc {
 	}
 }
 
-func getUserWatchedVideos(storage interfaces.StorageService) gin.HandlerFunc {
+func getUserWatchedVideos(r *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
 
-		videos, err := storage.GetUserWatchedVideos(username)
+		videos, err := r.GetUserWatchedVideos(username)
 		if err != nil {
 			respondError(c, http.StatusBadRequest, err.Error())
 			return
@@ -54,15 +54,14 @@ func getUserWatchedVideos(storage interfaces.StorageService) gin.HandlerFunc {
 	}
 }
 
-// clearUserWatchedHistory handles the DELETE request to clear a user's watched history.
-func clearUserWatchedHistory(storage interfaces.StorageService) gin.HandlerFunc {
+func clearUserWatchedHistory(r *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
 
-		err := storage.ClearUserWatchedHistory(username)
+		err := r.ClearUserWatchedHistory(username)
 		if err != nil {
 			// A 404 Not Found is appropriate if the user doesn't exist
-			if err.Error() == fmt.Sprintf("user %q not found", username) { // Assuming storage returns this specific error message
+			if err.Error() == fmt.Sprintf("user %q not found", username) {
 				respondError(c, http.StatusNotFound, err.Error())
 			} else {
 				respondError(c, http.StatusInternalServerError, "Failed to clear watched history: "+err.Error())

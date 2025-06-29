@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"ova-cli/source/internal/interfaces"
+	"ova-cli/source/internal/repo"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,21 +20,21 @@ type TagRemoveRequest struct {
 }
 
 // RegisterVideoTagRoutes registers routes to get, add, or remove video tags.
-func RegisterVideoTagRoutes(rg *gin.RouterGroup, Storage interfaces.StorageService) {
+func RegisterVideoTagRoutes(rg *gin.RouterGroup, repo *repo.RepoManager) {
 	videos := rg.Group("/videos/tags")
 	{
-		videos.GET("/:videoID", getVideoTags(Storage))
-		videos.POST("/:videoID/add", addVideoTag(Storage))
-		videos.POST("/:videoID/remove", removeVideoTag(Storage))
+		videos.GET("/:videoID", getVideoTags(repo))
+		videos.POST("/:videoID/add", addVideoTag(repo))
+		videos.POST("/:videoID/remove", removeVideoTag(repo))
 	}
 }
 
 // getVideoTags handles GET /videos/tags/:videoID
-func getVideoTags(storage interfaces.StorageService) gin.HandlerFunc {
+func getVideoTags(repo *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoID := strings.TrimSpace(c.Param("videoID"))
 
-		video, err := storage.GetVideoByID(videoID)
+		video, err := repo.GetVideoByID(videoID)
 		if err != nil {
 			respondError(c, http.StatusNotFound, "Video not found")
 			return
@@ -45,7 +45,7 @@ func getVideoTags(storage interfaces.StorageService) gin.HandlerFunc {
 }
 
 // addVideoTag handles POST /videos/tags/:videoID/add
-func addVideoTag(Storage interfaces.StorageService) gin.HandlerFunc {
+func addVideoTag(repo *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoID := strings.TrimSpace(c.Param("videoID"))
 		var req TagAddRequest
@@ -55,13 +55,12 @@ func addVideoTag(Storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		if err := Storage.AddTagToVideo(videoID, req.Tag); err != nil {
+		if err := repo.AddTagToVideo(videoID, req.Tag); err != nil {
 			respondError(c, http.StatusInternalServerError, "Failed to add tag")
 			return
 		}
 
-		// Optionally fetch updated video to get latest tags
-		video, err := Storage.GetVideoByID(videoID)
+		video, err := repo.GetVideoByID(videoID)
 		if err != nil {
 			respondError(c, http.StatusInternalServerError, "Failed to fetch updated video")
 			return
@@ -72,7 +71,7 @@ func addVideoTag(Storage interfaces.StorageService) gin.HandlerFunc {
 }
 
 // removeVideoTag handles POST /videos/tags/:videoID/remove
-func removeVideoTag(Storage interfaces.StorageService) gin.HandlerFunc {
+func removeVideoTag(repo *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoID := strings.TrimSpace(c.Param("videoID"))
 		var req TagRemoveRequest
@@ -82,13 +81,12 @@ func removeVideoTag(Storage interfaces.StorageService) gin.HandlerFunc {
 			return
 		}
 
-		if err := Storage.RemoveTagFromVideo(videoID, req.Tag); err != nil {
+		if err := repo.RemoveTagFromVideo(videoID, req.Tag); err != nil {
 			respondError(c, http.StatusInternalServerError, "Failed to remove tag")
 			return
 		}
 
-		// Optionally fetch updated video to get latest tags
-		video, err := Storage.GetVideoByID(videoID)
+		video, err := repo.GetVideoByID(videoID)
 		if err != nil {
 			respondError(c, http.StatusInternalServerError, "Failed to fetch updated video")
 			return

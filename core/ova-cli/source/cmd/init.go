@@ -3,9 +3,8 @@ package cmd
 import (
 	"path/filepath"
 
-	"ova-cli/source/internal/interfaces"
-	"ova-cli/source/internal/localstorage"
-	"ova-cli/source/internal/repository"
+	"ova-cli/source/internal/datastorage"
+	"ova-cli/source/internal/repo"
 
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
@@ -22,30 +21,40 @@ var initCmd = &cobra.Command{
 			return
 		}
 
-		repoPath := filepath.Join(absPath, ".ova-repo")
-		storagePath := filepath.Join(repoPath, "storage")
-
-		// Prompt for username (default: user)
-		username, _ := pterm.DefaultInteractiveTextInput.
+		// Prompt for admin username & password, with default values
+		username, err := pterm.DefaultInteractiveTextInput.
 			WithDefaultText("user").
 			WithMultiLine(false).
 			Show("Enter admin username")
+		if err != nil {
+			pterm.Error.Printf("Failed to read username: %v\n", err)
+			return
+		}
 
-		// Prompt for password (default: pass)
-		password, _ := pterm.DefaultInteractiveTextInput.
+		password, err := pterm.DefaultInteractiveTextInput.
 			WithDefaultText("pass").
 			WithMultiLine(false).
 			Show("Enter admin password")
+		if err != nil {
+			pterm.Error.Printf("Failed to read password: %v\n", err)
+			return
+		}
 
-		// If user pressed Enter without input, default values are already used.
-		var storage interfaces.StorageService = localstorage.NewLocalStorage(storagePath)
-		repo := repository.NewRepository(repoPath, storage)
+		// Initialize repo manager with the root path (repository folder)
+		repository := repo.NewRepoManager(absPath)
 
-		pterm.Info.Printf("Initializing ova repository at: %s\n", repoPath)
+		// Create data storage backend (JSON or BoltDB) via factory, based on repo-managed storage path
+		storage, err := datastorage.NewStorage("jsondb", repository.GetStoragePath())
+		if err != nil {
+			pterm.Error.Printf("Error creating storage backend: %v\n", err)
+			return
+		}
 
-		// Inject credentials into Init
-		if err := repo.InitWithUser(username, password); err != nil {
-			pterm.Error.Printf("Error initializing repository: %v\n", err)
+		repository.SetDataStorage(storage)
+
+		// Initialize repository and create admin user
+		if err := repository.InitWithUser(username, password); err != nil {
+			pterm.Error.Printf("Error initializing repository with user: %v\n", err)
 			return
 		}
 

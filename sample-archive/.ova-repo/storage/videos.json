@@ -14,7 +14,7 @@
       "width": 1920,
       "height": 1080
     },
-    "uploadedAt": "2025-06-26T20:50:19.9331041Z",
+    "uploadedAt": "2025-06-29T00:59:08.9629232Z",
     "codecs": {
       "format": "video/mp4",
       "video": "avc1.64002A",
@@ -25,7 +25,7 @@
     "videoId": "41168d2b2b047e7657a2491cde2e3484aae4c8d20423170f79e4b5278b7a4f37",
     "title": "Pexels Videos 1452688",
     "description": "",
-    "filePath": "Pexels Videos 1452688.mp4",
+    "filePath": "New folder\\Pexels Videos 1452688.mp4",
     "rating": 0,
     "durationSeconds": 9,
     "thumbnailPath": ".ova-repo\\storage\\thumbnails\\41168d2b2b047e7657a2491cde2e3484aae4c8d20423170f79e4b5278b7a4f37.jpg",
@@ -36,7 +36,7 @@
       "width": 720,
       "height": 406
     },
-    "uploadedAt": "2025-06-26T20:50:19.4062773Z",
+    "uploadedAt": "2025-06-29T00:59:08.3814246Z",
     "codecs": {
       "format": "video/mp4",
       "video": "avc1.64001F",
@@ -52,13 +52,15 @@
     "durationSeconds": 7,
     "thumbnailPath": ".ova-repo\\storage\\thumbnails\\905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290.jpg",
     "previewPath": ".ova-repo\\storage\\previews\\905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290.webm",
-    "tags": [],
+    "tags": [
+      "asd"
+    ],
     "views": 0,
     "resolution": {
       "width": 1280,
       "height": 720
     },
-    "uploadedAt": "2025-06-26T20:50:20.2847348Z",
+    "uploadedAt": "2025-06-29T00:59:09.551183Z",
     "codecs": {
       "format": "video/mp4",
       "video": "avc1.640020",

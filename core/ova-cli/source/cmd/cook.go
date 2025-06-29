@@ -2,10 +2,8 @@ package cmd
 
 import (
 	"os"
-	"ova-cli/source/internal/filehash"
 	"ova-cli/source/internal/logs"
-	"ova-cli/source/internal/repository"
-	"ova-cli/source/internal/thirdparty"
+	"ova-cli/source/internal/repo"
 	"path/filepath"
 	"runtime"
 	"sync"
@@ -35,15 +33,13 @@ var cookVTTsCmd = &cobra.Command{
 			return
 		}
 
-		repoPath := filepath.Join(repoRoot, ".ova-repo")
-		storageDir := filepath.Join(repoPath, "storage")
-		spriteVTTDir := filepath.Join(storageDir, "sprite_vtt")
+		repoManager := repo.NewRepoManager(repoRoot)
 
 		arg := args[0]
 		var videoPaths []string
 
 		if arg == "all" {
-			videoPaths, err = repository.GetAllVideoPaths(repoRoot)
+			videoPaths, err = repoManager.ScanDiskForVideos()
 			if err != nil || len(videoPaths) == 0 {
 				pterm.Warning.Println("No videos found in the repository.")
 				return
@@ -67,7 +63,7 @@ var cookVTTsCmd = &cobra.Command{
 		var wg sync.WaitGroup
 		var mu sync.Mutex
 
-		workerCount := runtime.NumCPU() // Number of parallel workers; you can adjust this
+		workerCount := runtime.NumCPU()
 
 		worker := func(jobs <-chan job) {
 			defer wg.Done()
@@ -75,105 +71,22 @@ var cookVTTsCmd = &cobra.Command{
 				absPath := j.absPath
 				fileName := filepath.Base(absPath)
 
-				fileHash, err := filehash.ComputeFileHash(absPath)
-				if err != nil {
-					mu.Lock()
-					pterm.Warning.Printf("❌ Failed to hash %s: %v\n", fileName, err)
-					progressbar.Increment()
-					mu.Unlock()
-					continue
-				}
-
-				videoSpriteDir := filepath.Join(spriteVTTDir, fileHash)
-				if err := os.MkdirAll(videoSpriteDir, 0755); err != nil {
-					mu.Lock()
-					pterm.Warning.Printf("⚠️ Failed to create directory for %s: %v\n", fileName, err)
-					progressbar.Increment()
-					mu.Unlock()
-					continue
-				}
-
-				vttPath := filepath.Join(videoSpriteDir, "thumbnails.vtt")
-				if _, err := os.Stat(vttPath); err == nil {
-					mu.Lock()
-					pterm.Warning.Printf("ℹ️ Skipping %s: thumbnails.vtt already exists.\n", fileName)
-					progressbar.Increment()
-					mu.Unlock()
-					continue
-				}
-
-				keyframeDir := filepath.Join(videoSpriteDir, "keyframes")
-				if err := os.MkdirAll(keyframeDir, 0755); err != nil {
-					mu.Lock()
-					pterm.Warning.Printf("⚠️ Failed to create keyframe dir for %s: %v\n", fileName, err)
-					progressbar.Increment()
-					mu.Unlock()
-					continue
-				}
-
-				if err := thirdparty.ExtractKeyframes(absPath, keyframeDir, 160, 90); err != nil {
-					mu.Lock()
-					pterm.Warning.Printf("⚠️ Keyframe extraction error for %s: %v\n", fileName, err)
-					progressbar.Increment()
-					mu.Unlock()
-					continue
-				}
-
-				spritePattern := filepath.Join(videoSpriteDir, "thumb_L0_%03d.jpg")
-
-				if err := thirdparty.GenerateSpriteSheetsFromFolder(keyframeDir, spritePattern, "5x5", 160, 90); err != nil {
-					mu.Lock()
-					pterm.Warning.Printf("⚠️ Sprite generation error for %s: %v\n", fileName, err)
-					progressbar.Increment()
-					mu.Unlock()
-					continue
-				}
-
-				keyframeTimes, err := thirdparty.GetKeyframePacketTimestamps(absPath)
-				if err != nil {
-					mu.Lock()
-					pterm.Warning.Printf("⚠️ Failed to get keyframe timestamps for %s: %v\n", fileName, err)
-					progressbar.Increment()
-					mu.Unlock()
-					continue
-				}
-				if len(keyframeTimes) == 0 {
-					mu.Lock()
-					pterm.Warning.Printf("⚠️ No keyframes found for %s, skipping VTT generation.\n", fileName)
-					progressbar.Increment()
-					mu.Unlock()
-					continue
-				}
-
-				vttPattern := filepath.Join("/api/v1/storyboards", fileHash, "thumb_L0_%03d.jpg")
-				if err := thirdparty.GenerateVTT(keyframeTimes, "5x5", 160, 90, vttPattern, vttPath, ""); err != nil {
-					mu.Lock()
-					pterm.Warning.Printf("⚠️ VTT generation error for %s: %v\n", fileName, err)
-					progressbar.Increment()
-					mu.Unlock()
-					continue
-				}
-
-				// <-- DELETE KEYFRAME DIRECTORY HERE -->
-				if err := os.RemoveAll(keyframeDir); err != nil {
-					mu.Lock()
-					pterm.Warning.Printf("⚠️ Failed to delete keyframe dir for %s: %v\n", fileName, err)
-					mu.Unlock()
-				}
-
+				// Use the repoManager method here:
+				err := repoManager.GenerateStoryboardForVideo(absPath)
 				mu.Lock()
+				if err != nil {
+					pterm.Warning.Printf("⚠️ Failed processing %s: %v\n", fileName, err)
+				}
 				progressbar.Increment()
 				mu.Unlock()
 			}
 		}
 
-		// Start multiple workers
 		wg.Add(workerCount)
 		for i := 0; i < workerCount; i++ {
 			go worker(jobs)
 		}
 
-		// Feed the jobs
 		go func() {
 			defer close(jobs)
 			for _, path := range videoPaths {
@@ -190,5 +103,5 @@ var cookVTTsCmd = &cobra.Command{
 func InitCommandCook(rootCmd *cobra.Command) {
 	cookCmd.AddCommand(cookVTTsCmd)
 
-	rootCmd.AddCommand(videoCmd)
+	rootCmd.AddCommand(cookCmd)
 }
