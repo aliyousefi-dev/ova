@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-	"time"
 )
 
 func (r *RepoManager) AddMarkerToVideo(videoID string, marker datatypes.VideoMarker) error {
@@ -22,7 +21,7 @@ func (r *RepoManager) AddMarkerToVideo(videoID string, marker datatypes.VideoMar
 }
 
 func (r *RepoManager) GetMarkersForVideo(videoID string) ([]datatypes.VideoMarker, error) {
-	filePath := filepath.Join(r.GetStoragePath(), videoID+".vtt")
+	filePath := filepath.Join(r.GetVideoMarkerDir(), videoID+".vtt")
 	data, err := os.ReadFile(filePath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -59,14 +58,14 @@ func (r *RepoManager) GetMarkersForVideo(videoID string) ([]datatypes.VideoMarke
 				if len(parts) != 2 {
 					return nil, fmt.Errorf("invalid cue timing: %s", line)
 				}
-				currentStartVTT = parts[0] // Directly store the VTT timestamp string for parsing
-				state = 2                  // Next state is to read the title
+				currentStartVTT = parts[0]
+				state = 2
 			} else {
 				continue // Skip cue id or other non-timing lines
 			}
 		case 2: // Expecting marker title
 			currentTitle = line
-			h, m, s, err := datatypes.ParseVTTToHMS(currentStartVTT) // Use helper from datatypes
+			h, m, s, err := datatypes.ParseVTTToHMS(currentStartVTT)
 			if err != nil {
 				return nil, fmt.Errorf("failed to parse VTT timestamp '%s': %w", currentStartVTT, err)
 			}
@@ -76,7 +75,7 @@ func (r *RepoManager) GetMarkersForVideo(videoID string) ([]datatypes.VideoMarke
 				Second: s,
 				Title:  currentTitle,
 			})
-			state = 1 // Go back to expecting the next cue timing or blank line
+			state = 1
 		}
 	}
 
@@ -89,17 +88,14 @@ func (r *RepoManager) DeleteMarkerFromVideo(videoID string, markerToDelete datat
 		return err
 	}
 
-	// Convert the markerToDelete's H,M,S to a VTT string for comparison
 	targetVTTTimestamp := datatypes.FormatHMSToVTT(markerToDelete.Hour, markerToDelete.Minute, markerToDelete.Second)
 
 	filtered := make([]datatypes.VideoMarker, 0, len(markers))
-	deleted := false // Flag to ensure only the first exact timestamp match is deleted
+	deleted := false
 	for _, m := range markers {
-		// Convert the stored marker's H,M,S to a VTT string for comparison
 		storedVTTTimestamp := datatypes.FormatHMSToVTT(m.Hour, m.Minute, m.Second)
 		if !deleted && storedVTTTimestamp == targetVTTTimestamp {
-			// If titles also need to match for deletion, add: && m.Title == markerToDelete.Title
-			deleted = true // Mark as deleted and skip adding this one to filtered list
+			deleted = true
 			continue
 		}
 		filtered = append(filtered, m)
@@ -113,7 +109,7 @@ func (r *RepoManager) DeleteMarkerFromVideo(videoID string, markerToDelete datat
 }
 
 func (r *RepoManager) DeleteAllMarkersFromVideo(videoID string) error {
-	filePath := filepath.Join(r.GetStoragePath(), videoID+".vtt")
+	filePath := filepath.Join(r.GetVideoMarkerDir(), videoID+".vtt")
 	if err := os.Remove(filePath); err != nil && !os.IsNotExist(err) {
 		return err
 	}
@@ -121,34 +117,62 @@ func (r *RepoManager) DeleteAllMarkersFromVideo(videoID string) error {
 }
 
 func (r *RepoManager) saveMarkersToVTT(videoID string, markers []datatypes.VideoMarker) error {
-
-	// Sort markers by converting their H,M,S to a comparable numerical value (total seconds).
+	// Sort markers by total seconds
 	sort.Slice(markers, func(i, j int) bool {
-		// Use the new ConvertToSeconds method from datatypes.VideoMarker
-		secondsI := markers[i].ConvertToSeconds()
-		secondsJ := markers[j].ConvertToSeconds()
-		return secondsI < secondsJ
+		return markers[i].ConvertToSeconds() < markers[j].ConvertToSeconds()
 	})
 
-	filePath := filepath.Join(r.GetStoryboardDir(), videoID+".vtt")
+	dir := r.GetVideoMarkerDir()
+
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return fmt.Errorf("failed to create directory %s: %w", dir, err)
+	}
+
+	filePath := filepath.Join(dir, videoID+".vtt")
+
+	// Get video duration in seconds from video data
+	var videoDuration float64 = 600 // fallback default to 10 minutes
+	videoData, err := r.GetVideoByID(videoID)
+	if err == nil && videoData != nil {
+		if videoData.DurationSeconds > 0 {
+			videoDuration = float64(videoData.DurationSeconds)
+		}
+	}
+
+	// Calculate offset based on a ratio of video duration (e.g., 3%)
+	const ratio = 0.03
+	const minOffset = 0.2  // minimum 0.2 seconds offset
+	const maxOffset = 15.0 // max 15 seconds offset
+
+	offsetSeconds := videoDuration * ratio
+	if offsetSeconds < minOffset {
+		offsetSeconds = minOffset
+	} else if offsetSeconds > maxOffset {
+		offsetSeconds = maxOffset
+	}
 
 	var sb strings.Builder
 	sb.WriteString("WEBVTT\n\n")
 
 	for _, marker := range markers {
-		// Convert marker's H,M,S to VTT string for the start time.
-		startVTT := datatypes.FormatHMSToVTT(marker.Hour, marker.Minute, marker.Second)
+		startSeconds := marker.ConvertToSeconds()
+		endSeconds := startSeconds + offsetSeconds
 
-		// Calculate end time by adding 10 seconds and converting back to H,M,S, then to VTT string.
-		totalSeconds := marker.ConvertToSeconds()
-		endSeconds := totalSeconds + 10.0
-		// Convert endSeconds back to H,M,S for formatting
-		d := time.Duration(endSeconds * float64(time.Second))
-		endH := int(d.Hours())
-		endM := int(d.Minutes()) % 60
-		endS := int(d.Seconds()) % 60
-		// We use 000 milliseconds for consistency with input, even if float precision might suggest otherwise
-		endVTT := fmt.Sprintf("%02d:%02d:%02d.000", endH, endM, endS)
+		// Format start time with milliseconds
+		totalStartMillis := int(startSeconds * 1000)
+		startH := totalStartMillis / (3600 * 1000)
+		startM := (totalStartMillis % (3600 * 1000)) / (60 * 1000)
+		startS := (totalStartMillis % (60 * 1000)) / 1000
+		startMS := totalStartMillis % 1000
+		startVTT := fmt.Sprintf("%02d:%02d:%02d.%03d", startH, startM, startS, startMS)
+
+		// Format end time with milliseconds
+		totalEndMillis := int(endSeconds * 1000)
+		endH := totalEndMillis / (3600 * 1000)
+		endM := (totalEndMillis % (3600 * 1000)) / (60 * 1000)
+		endS := (totalEndMillis % (60 * 1000)) / 1000
+		endMS := totalEndMillis % 1000
+		endVTT := fmt.Sprintf("%02d:%02d:%02d.%03d", endH, endM, endS, endMS)
 
 		sb.WriteString(fmt.Sprintf("%s --> %s\n", startVTT, endVTT))
 		sb.WriteString(marker.Title + "\n\n")
