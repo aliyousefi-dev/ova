@@ -1,7 +1,9 @@
 
-Users:[
-PASSWORD: new
-USERNAME: new
-]
-SECRET_KEY: your_secret_key
-VIDEO_DIR: H:\PP\OnlineVideoArchive\ova-server\Archive
+```
+- version
+- server host
+- server port
+- enableAuth
+- dataStorageType
+- createdAt
+```

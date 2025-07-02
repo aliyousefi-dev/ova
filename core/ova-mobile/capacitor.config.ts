@@ -1,20 +1,9 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.ova.mobile',
-  appName: 'ova-mobile',
-  webDir: 'www',
-  android: {
-    buildOptions: {
-      keystorePath: 'h:sign\new.jks',
-      keystoreAlias: 'key0',
-    },
-    allowMixedContent: true,
-  },
-  server: {
-    androidScheme: 'http',
-    cleartext: true,
-  },
+  appId: 'come.ova.mobile',
+  appName: 'ova mobile',
+  webDir: 'dist/ova-mobile/browser'
 };
 
 export default config;

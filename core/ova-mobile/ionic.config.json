@@ -1,7 +1,0 @@
-{
-  "name": "ova-mobile",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular-standalone"
-}
