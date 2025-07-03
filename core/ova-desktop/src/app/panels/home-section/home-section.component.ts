@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';  // Import DomSanitizer and SafeResourceUrl
 
 @Component({
   selector: 'app-home-section',
@@ -18,6 +19,9 @@ export class HomeSectionComponent {
   isLoading: boolean = false;
   isServerUp: boolean = false;
   isRestarting: boolean = false; // Added
+  safeUrl: SafeResourceUrl = '';  // Store sanitized URL
+
+  constructor(private sanitizer: DomSanitizer) {} // Inject DomSanitizer
 
   runNewRepo() {
     this.runNewRepoEvent.emit();
@@ -47,6 +51,12 @@ export class HomeSectionComponent {
     await this.delay(500); // Simulate a delay for restart
     this.restartServerEvent.emit();
     this.isRestarting = false;
+  }
+
+  openUI() {
+    if (this.isServerUp) {
+      this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('http://127.0.0.1:4040');  // Sanitize the URL
+    }
   }
 
   delay(ms: number) {

@@ -1,0 +1,1 @@
+import{j as i,m as t}from"./chunk-H2T75OZR.js";var s=class{#i;#t;constructor(r){this.#t=r}start(){i(this.#i)&&this.#s()}stop(){t(this.#i)&&window.cancelAnimationFrame(this.#i),this.#i=void 0}#s(){this.#i=window.requestAnimationFrame(()=>{i(this.#i)||(this.#t(),this.#s())})}};export{s as a};

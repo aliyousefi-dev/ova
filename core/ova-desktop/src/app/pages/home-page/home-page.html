@@ -1,0 +1,48 @@
+
+
+<div class="flex flex-col h-[calc(100vh-2.5rem)] overflow-hidden">
+  <!-- Main Content Area with Sidebar and Body -->
+  <div class="flex flex-1 overflow-hidden">
+
+    <!-- Sidebar -->
+    <app-sidebar
+      [recentRepos]="recentRepos"
+      [selectedSection]="selectedSection"
+      (setSelectedSection)="setSelectedSection($event)"
+    ></app-sidebar>
+
+    <!-- Main Content -->
+    <main class="flex-1 bg-base-100 overflow-auto" tabindex="0">
+      
+      <!-- Top buttons -->
+      <div class="flex items-center bg-base-300 justify-between"></div>
+  
+      <!-- Home Section -->
+      <app-home-section
+        *ngIf="selectedSection === 'home'"
+        [newRepoPath]="newRepoPath"
+        (runNewRepoEvent)="runNewRepo()"
+        (chooseFolderEvent)="chooseFolder()"
+      ></app-home-section>
+
+      <!-- Videos Section -->
+      <app-videos-section *ngIf="selectedSection === 'videos'"></app-videos-section>
+
+      <!-- Users Section -->
+      <app-users-section *ngIf="selectedSection === 'users'"></app-users-section>
+
+      <!-- Settings Section -->
+      <app-settings-section
+        *ngIf="selectedSection === 'settings'"
+        [settings]="settings"
+        (saveSettingsEvent)="saveSettings()"
+      ></app-settings-section>
+    </main>
+  </div>
+</div>
+
+
+
+<dialog id="settings_modal" class="modal" [open]="showSettingsModal" style="overflow: hidden;">
+  <app-settings-modal (closeSettingsEvent)="closeSettings()"></app-settings-modal>
+</dialog>

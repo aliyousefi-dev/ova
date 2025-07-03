@@ -1,0 +1,2 @@
+import{h as c,j as e,k as r}from"./chunk-G5DLJN6I.js";import"./chunk-4CLCTAJ7.js";var n=/,/g,u="-->",h=class extends r{parse(s,i){if(s==="")this.c&&(this.l.push(this.c),this.h.onCue?.(this.c),this.c=null),this.e=e.None;else if(this.e===e.Cue)this.c.text+=(this.c.text?`
+`:"")+s;else if(s.includes(u)){let t=this.q(s,i);t&&(this.c=new c(t[0],t[1],t[2].join(" ")),this.c.id=this.n,this.e=e.Cue)}this.n=s}q(s,i){return super.q(s.replace(n,"."),i)}};function f(){return new h}export{h as SRTParser,f as default};

@@ -1,4 +1,5 @@
 <div class="w-full flex justify-end p-4 bg-base-200">
+
   <button (click)="serveRepo()" class="btn btn-outline" type="button" [disabled]="isLoading || isRestarting">
     <ng-container *ngIf="isLoading">
       <span class="loading loading-spinner"></span>
@@ -11,6 +12,8 @@
       Stop
     </ng-container>
   </button>
+
+
   <button
     *ngIf="isServerUp && !isLoading && !isRestarting"
     (click)="restartServer()"
@@ -26,6 +29,12 @@
       Restart Server
     </ng-container>
   </button>
+
+<button *ngIf="isServerUp && !isLoading && !isRestarting" class="btn btn-outline mx-2" type="button" [disabled]="isLoading || isRestarting" (click)="openUI()">
+  Open UI
+</button>
+
+
 </div>
 
 <section class="px-10 py-6 container mx-auto">
@@ -36,9 +45,13 @@
     </div>
     <div class="ml-5 mr-5">
       Server is {{ isServerUp ? 'up' : 'down' }}
-      <a href="http://localhost:4200" target="_blank" class="ml-2 text-blue-500">Open Frontend</a>
     </div>
   </div>
+
+
+<!-- Add iframe to show the UI -->
+<iframe *ngIf="isServerUp && !isLoading && !isRestarting" [src]="safeUrl" class="w-full h-96 mt-4"></iframe>
+
 
   <div class="mt-4">
     <p>

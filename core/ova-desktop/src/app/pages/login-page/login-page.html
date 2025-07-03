@@ -1,0 +1,71 @@
+<div class="h-full flex justify-center items-center bg-base-200">
+    <div class="flex w-full h-full bg-base-100">
+
+        <!-- Left section: form -->
+        <div class="w-full h-full sm:w-1/2 flex flex-col justify-center p-20">
+            <!-- Back Button (Angular Router Navigation) -->
+
+            <h1 class="text-3xl font-semibold mb-4">Connect to Repository</h1>
+
+            <form>
+                <!-- Server Name field -->
+                <div class="mb-4">
+                    <label for="server-name" class="label">Server Name</label>
+                    <input type="text" id="server-name" name="server-name" class="input input-bordered w-full"
+                        placeholder="Enter your server name" />
+                </div>
+
+                <!-- Server Host and Port fields -->
+                <div class="mb-4">
+                    <label for="server-host" class="label">Server Host</label>
+                    <div class="flex items-center">
+                        <input type="text" id="server-host" name="server-host" class="input input-bordered w-3/4"
+                            placeholder="Enter your server host" />
+                        <span class="mx-2">:</span> <!-- Separator -->
+                        <input type="text" id="server-port" name="server-port" class="input input-bordered w-1/4"
+                            placeholder="Port" />
+                        <button type="button" class="btn btn-outline ml-2" (click)="searchLocalServer()"
+                            [disabled]="isSearching">
+                            <span *ngIf="!isSearching">Search On Local</span>
+                            <span *ngIf="isSearching" class="loading loading-dots loading-sm"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Username field -->
+                <div class="mb-4">
+                    <label for="username" class="label">Your username</label>
+                    <input type="text" id="username" name="username" class="input input-bordered w-full"
+                        placeholder="Enter your username" />
+                </div>
+
+                <!-- Password field -->
+                <div class="mb-4">
+                    <label for="password" class="label">Password</label>
+                    <input type="password" id="password" name="password" class="input input-bordered w-full"
+                        placeholder="Enter your password" />
+                </div>
+
+                <!-- Forgot password and Sign in button -->
+                <div class="flex justify-between items-center mb-6">
+                    <a href="#" class="text-sm">Forgot password?</a>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+            </form>
+
+            <!-- Sign up link -->
+            <div class="text-sm text-center">
+                <span>Don't have an account? <a href="#" class="link link-primary">Sign up</a></span>
+            </div>
+        </div>
+
+        <!-- Right section: background -->
+        <div
+            class="hidden sm:flex w-1/2 bg-gradient-to-tl from-indigo-500 via-purple-500 to-pink-500 items-center justify-center text-white text-center">
+            <div>
+                <h2 class="text-4xl font-bold">comet</h2>
+                <p class="mt-2 text-lg">A minimalist space-themed login page</p>
+            </div>
+        </div>
+    </div>
+</div>

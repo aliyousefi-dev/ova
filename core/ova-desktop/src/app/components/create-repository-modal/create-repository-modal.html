@@ -1,0 +1,51 @@
+<dialog id="server-setup-modal" class="modal" [open]="showModal" (click)="closeModal()">
+    <div class="modal-box flex flex-col" (click)="$event.stopPropagation()">
+        <!-- Modal Header with Close Button -->
+        <div class="w-full dark:border-gray-700 relative">
+            <div class="p-4 flex items-center justify-start">
+                <h3 class="font-bold text-lg">Repository Setup</h3>
+            </div>
+            <!-- Close Button -->
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="closeModal()">✕</button>
+        </div>
+
+        <!-- Modal Content Section (Scrollable) -->
+        <div class="p-4 space-y-4 overflow-auto" style="flex-grow: 1;">
+            <form (ngSubmit)="saveConfig()" (click)="$event.stopPropagation()">
+                <!-- Directory for Server -->
+                <div class="mb-4">
+                    <label for="server-directory" class="label">Directory for Server</label>
+                    <div class="flex items-center">
+                        <!-- Display the folder path in the input field -->
+                        <input type="text" id="server-directory" name="server-directory"
+                            class="input input-bordered w-full" placeholder="Enter directory for server"
+                            [(ngModel)]="config.serverDirectory" readonly required />
+                        <button type="button" class="btn btn-secondary ml-4"
+                            (click)="selectDirectory()">Browse...</button>
+                    </div>
+                </div>
+
+                <!-- Server Host and Port in a single row -->
+                <div class="mb-4 flex gap-4">
+                    <div class="w-1/2">
+                        <label for="server-host" class="label">Server Host</label>
+                        <input type="text" id="server-host" name="server-host" class="input input-bordered w-full"
+                            placeholder="Enter server host (IP or URL)" [(ngModel)]="config.serverHost" required />
+                    </div>
+                    <div class="w-1/2">
+                        <label for="server-port" class="label">Port</label>
+                        <input type="number" id="server-port" name="server-port" class="input input-bordered w-full"
+                            placeholder="Enter server port" [(ngModel)]="config.serverPort" required />
+                    </div>
+                </div>
+
+                <!-- Save Config Button with loading state -->
+                <button type="submit" class="btn btn-primary w-full py-3 my-8"
+                    [disabled]="isSaving || !isValidConfig()">
+                    <span *ngIf="!isSaving">Generate Repository</span>
+                    <span *ngIf="isSaving" class="loading loading-dots loading-sm"></span>
+                </button>
+            </form>
+        </div>
+    </div>
+</dialog>

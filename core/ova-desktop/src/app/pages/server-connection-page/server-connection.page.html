@@ -1,0 +1,76 @@
+<div class="h-full flex justify-center items-center">
+    <div class="flex w-full h-full bg-base-100">
+        <!-- Left section: form -->
+        <div class="w-full h-full sm:w-1/2 flex flex-col justify-center p-20 bg-base-100">
+            <h1 class="text-3xl font-semibold mb-4">Repository</h1>
+            <div class="mb-6">
+                <button class="btn btn-primary w-full mb-4" (click)="openServerSetupModal()">New Repository</button>
+                <button class="btn btn-primary w-full mb-4" (click)="openImportRepositoryModal()">Add Local
+                    Repository</button>
+                <button class="btn btn-secondary w-full mb-4" (click)="connectServer()">Connect</button>
+            </div>
+
+            <div *ngIf="importedServer">
+                <h2 class="text-xl mb-4">Imported Server</h2>
+                <p><strong>Name:</strong> {{ importedServer.name }}</p>
+                <p><strong>Location:</strong> {{ importedServer.location }}</p>
+                <button class="btn btn-xs btn-outline" (click)="addImportedServer()">Add to Recent Connections</button>
+            </div>
+
+            <div *ngIf="isLoading" class="loading-spinner">
+                <span>Loading...</span> <!-- You can replace this with an actual spinner if needed -->
+            </div>
+        </div>
+
+        <!-- Right section: gradient with recent servers -->
+        <div class="hidden sm:flex w-1/2 bg-base-300 justify-center text-center p-10">
+            <div class="w-full">
+                <h2 class="text-xl mb-4">Recent Repositories</h2>
+                <div *ngIf="recentServers.length > 0">
+                    <ul>
+                        <li *ngFor="let server of recentServers"
+                            class="mb-4 bg-base-100 p-4 rounded-lg shadow-md transition-all duration-300 hover:bg-base-200 hover:shadow-xl">
+                            <div class="flex items-center justify-between">
+                                <div class="flex flex-col w-3/4 text-left pl-5">
+                                    <span class="text-xl font-semibold ">{{ server.name }}</span>
+                                    <span class="text-sm mt-1">{{ server.location }}</span>
+                                </div>
+
+                                <!-- Buttons for connect and manage -->
+                                <div class="flex items-center space-x-2">
+                                    <button class="btn btn-soft btn-primary mx-2"
+                                        (click)="setAsDefault(server)">Connect</button>
+                                    <button class="btn btn-soft btn-primary"
+                                        (click)="setAsDefault(server)">Manage</button>
+
+                                    <!-- DaisyUI Dropdown (three dots) -->
+                                    <div class="dropdown dropdown-end">
+                                        <button class="btn btn-ghost btn-sm" tabindex="0">
+                                            <i class="text-lg bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <ul class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-48">
+                                            <li><a>Edit</a></li>
+                                            <li><a>Delete</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div *ngIf="recentServers.length === 0">
+                    <p>No recent connections.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Server Setup Modal -->
+<app-server-setup-modal [showModal]="showServerSetupModal"
+    (closeServerSetupEvent)="closeModal()"></app-server-setup-modal>
+
+<!-- Import Local Repository Modal -->
+<app-import-repository-modal [showModal]="showImportRepositoryModal"
+    (closeImportRepositoryEvent)="closeImportRepositoryModal()"></app-import-repository-modal>

@@ -1,100 +1,39 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "Build OvaCli (Go)",
-        "type": "shell",
-        "command": "go build -o ../builds/ovacli.exe",
-        "options": {
-          "cwd": "${workspaceFolder}/source"
-        },
-        "problemMatcher": [
-          "$go"
-        ],
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        }
-      },
-      {
-        "label": "Serve Web (Angular)",
-        "type": "shell",
-        "command": "npm start",
-        "options": {
-          "cwd": "${workspaceFolder}/web"
-        },
-        "problemMatcher": [],
-        "isBackground": true,
-        "presentation": {
-          "echo": true,
-          "reveal": "always",
-          "focus": false,
-          "panel": "shared"
-        },
-        "group": {
-          "kind": "test",
-          "isDefault": true
-        }
-      },
-      {
-        "label": "Build Sprites Tool (Python)",
-        "type": "shell",
-        "command": "powershell",
-        "args": [
-          "-Command",
-          "pyinstaller --onefile generate_sprites.py; if ($?) { Copy-Item -Path dist\\generate_sprites.exe -Destination ..\\builds\\generate_sprites.exe -Force }"
-        ],
-        "options": {
-          "cwd": "${workspaceFolder}/python_tools"
-        },
-        "problemMatcher": [],
-        "group": "build",
-        "presentation": {
-          "reveal": "always"
-        }
-      },
-      {
-        "label": "Build Web (Angular)",
-        "type": "shell",
-        "command": "npm run build",
-        "options": {
-          "cwd": "${workspaceFolder}/web"
-        },
-        "problemMatcher": [],
-        "group": "build"
-      },
-      {
-        "label": "Copy ThirdParty to Build",
-        "type": "shell",
-        "windows": {
-          "command": "powershell -Command \"Copy-Item -Path thirdparty\\* -Destination builds\\ -Recurse -Force\""
-        },
-        "linux": {
-          "command": "cp -r thirdparty/. builds/"
-        },
-        "osx": {
-          "command": "cp -r thirdparty/. builds/"
-        },
-        "options": {
-          "cwd": "${workspaceFolder}"
-        },
-        "problemMatcher": [],
-        "group": "build",
-        "presentation": {
-          "reveal": "silent"
-        }
-      },
-      {
-        "label": "Build All",
-        "dependsOrder": "sequence",
-        "dependsOn": [
-          "Build Web (Angular)",
-          "Build OvaCli (Go)",
-          "Copy ThirdParty to Build"
-        ],
-        "group": "build",
-        "problemMatcher": []
-      }
-    ]
-  }
-  
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build OvaCli (Go)",
+			"type": "shell",
+			"command": "go build -o ../builds/ovacli.exe",
+			"options": {
+				"cwd": "${workspaceFolder}/source"
+			},
+			"problemMatcher": ["$go"],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "Copy ThirdParty to Build",
+			"type": "shell",
+			"windows": {
+				"command": "powershell -Command \"Copy-Item -Path thirdparty\\* -Destination builds\\ -Recurse -Force\""
+			},
+			"linux": {
+				"command": "cp -r thirdparty/. builds/"
+			},
+			"osx": {
+				"command": "cp -r thirdparty/. builds/"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [],
+			"group": "build",
+			"presentation": {
+				"reveal": "silent"
+			}
+		}
+	]
+}

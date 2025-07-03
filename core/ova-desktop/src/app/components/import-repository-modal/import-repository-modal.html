@@ -1,0 +1,38 @@
+<!-- import-repository-modal.html -->
+<dialog id="import-repository-modal" class="modal" [open]="showModal" (click)="closeModal()">
+    <div class="modal-box flex flex-col" (click)="$event.stopPropagation()">
+        <!-- Modal Header with Close Button -->
+        <div class="w-full dark:border-gray-700 relative">
+            <div class="p-4 flex items-center justify-start">
+                <h3 class="font-bold text-lg">Import Local Repository</h3>
+            </div>
+            <!-- Close Button -->
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="closeModal()">✕</button>
+        </div>
+
+        <!-- Modal Content Section (Scrollable) -->
+        <div class="p-4 space-y-4 overflow-auto" style="flex-grow: 1;">
+            <form (ngSubmit)="importRepository()" (click)="$event.stopPropagation()">
+                <!-- Local Repository Address -->
+                <div class="mb-4">
+                    <label for="repository-address" class="label">Repository Address</label>
+                    <div class="flex items-center">
+                        <!-- Display the folder path in the input field -->
+                        <input type="text" id="repository-address" name="repository-address"
+                            class="input input-bordered w-full" placeholder="Enter repository address"
+                            [(ngModel)]="repositoryAddress" required />
+                        <button type="button" class="btn btn-secondary ml-4"
+                            (click)="selectRepository()">Browse...</button>
+                    </div>
+                </div>
+
+                <!-- Import Button -->
+                <button type="submit" class="btn btn-primary w-full py-3 my-8"
+                    [disabled]="isImporting || !repositoryAddress">
+                    <span *ngIf="!isImporting">Import Repository</span>
+                    <span *ngIf="isImporting" class="loading loading-dots loading-sm"></span>
+                </button>
+            </form>
+        </div>
+    </div>
+</dialog>

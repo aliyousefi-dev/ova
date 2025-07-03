@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"fmt"
-	"net"
 	"os"
 	"path/filepath"
 
 	"ova-cli/source/internal/logs"
 	"ova-cli/source/internal/repo"
 	"ova-cli/source/internal/server"
+	"ova-cli/source/internal/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -18,44 +18,10 @@ var serveBackendOnly bool
 var serveDisableAuth bool
 var serveUseHttps bool
 
-// GetLocalIPs returns a slice of all non-loopback IPv4 addresses on the host.
-func GetLocalIPs() ([]string, error) {
-	var ips []string
-	ifaces, err := net.Interfaces()
-	if err != nil {
-		return ips, err
-	}
-	for _, iface := range ifaces {
-		if iface.Flags&net.FlagUp == 0 || iface.Flags&net.FlagLoopback != 0 {
-			continue
-		}
-		addrs, err := iface.Addrs()
-		if err != nil {
-			continue
-		}
-		for _, addr := range addrs {
-			var ip net.IP
-			switch v := addr.(type) {
-			case *net.IPNet:
-				ip = v.IP
-			case *net.IPAddr:
-				ip = v.IP
-			}
-			if ip == nil || ip.IsLoopback() {
-				continue
-			}
-			ip = ip.To4()
-			if ip == nil {
-				continue
-			}
-			ips = append(ips, ip.String())
-		}
-	}
-	if len(ips) == 0 {
-		return ips, fmt.Errorf("no connected network interface found")
-	}
-	return ips, nil
-}
+// Version of the UI, which you can set dynamically or statically
+var ovaUIVersion = "0.1.0"
+
+
 
 var serveCmd = &cobra.Command{
 	Use:   "serve <repo-path>",
@@ -90,7 +56,7 @@ var serveCmd = &cobra.Command{
 		addr := fmt.Sprintf("%s:%d", cfg.ServerHost, cfg.ServerPort)
 
 		// Web UI check
-		webPath := filepath.Join(exeDir, "web", "browser")
+		webPath := filepath.Join(exeDir, fmt.Sprintf("ovaui-%s", ovaUIVersion))
 		serveweb := false
 		if !serveBackendOnly {
 			if _, err := os.Stat(webPath); err == nil {
@@ -106,7 +72,7 @@ var serveCmd = &cobra.Command{
 		serveLogger.Info("Serving API at %s/api/v1/", addr)
 
 		// Print local IPs
-		localIPs, err := GetLocalIPs()
+		localIPs, err := utils.GetLocalIPs()
 		if err != nil {
 			serveLogger.Warn("Could not determine local IP addresses: %v", err)
 		} else {

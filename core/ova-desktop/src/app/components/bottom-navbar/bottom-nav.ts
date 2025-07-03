@@ -9,6 +9,7 @@ import {
 } from 'lucide-angular';
 import { LogsPanelComponent } from '../../panels/logs-panel/logs-panel';
 import { TerminalPanelComponent } from '../../panels/terminal-panel/terminal-panel';
+import { SettingsModalComponent } from '../settings-modal/settings-modal.component';
 
 @Component({
   selector: 'app-bottom-nav',
@@ -18,19 +19,21 @@ import { TerminalPanelComponent } from '../../panels/terminal-panel/terminal-pan
     LucideAngularModule,
     LogsPanelComponent,
     TerminalPanelComponent,
+    SettingsModalComponent, // Import settings modal here
   ],
   templateUrl: 'bottom-nav.html',
 })
 export class BottomNavComponent {
   @Output() settingsClicked = new EventEmitter<void>();
 
-  showLogs = true;
+  showLogs = false;
   showTerminal = false;
   logPanelHeight = 300;
   terminalPanelHeight = 300;
   resizing = false;
   resizingTerminal = false;
   navbarHeight = 40; // px, matches h-10
+  showSettingsModal = false; // Flag to control visibility of the settings modal
 
   eye = Eye;
   eyeOff = EyeOff;
@@ -91,8 +94,16 @@ export class BottomNavComponent {
     }
   }
 
+  // Open the settings modal
   openSettings() {
-    this.settingsClicked.emit();
+    console.log('Open Settings clicked');
+    this.showSettingsModal = true; // Open the dialog
+  }
+
+  // Close the settings modal
+  closeSettings() {
+    console.log('Closing Settings');
+    this.showSettingsModal = false; // Close the dialog
   }
 
   openTerminal() {

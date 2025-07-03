@@ -1,0 +1,39 @@
+<div class="h-full flex justify-center items-center bg-base-200">
+    <div class="flex w-full h-full bg-base-100">
+        <!-- Left section: form -->
+        <div class="w-full h-full flex flex-col justify-center p-100">
+            <h1 class="text-3xl font-semibold mb-4">Set Up Server</h1>
+
+            <form (ngSubmit)="saveConfig()">
+                <!-- Directory for Server -->
+                <div class="mb-4">
+                    <label for="server-directory" class="label">Directory for Server</label>
+                    <div class="flex items-center">
+                        <input type="text" id="server-directory" name="server-directory"
+                            class="input input-bordered w-full" placeholder="Enter directory for server"
+                            [(ngModel)]="config.serverDirectory" readonly required />
+                        <button type="button" class="btn btn-secondary ml-4"
+                            (click)="selectDirectory()">Browse...</button>
+                    </div>
+                </div>
+
+                <!-- Server Host and Port in a single row -->
+                <div class="mb-4 flex gap-4">
+                    <div class="w-1/2">
+                        <label for="server-host" class="label">Server Host</label>
+                        <input type="text" id="server-host" name="server-host" class="input input-bordered w-full"
+                            placeholder="Enter server host (IP or URL)" [(ngModel)]="config.serverHost" required />
+                    </div>
+                    <div class="w-1/2">
+                        <label for="server-port" class="label">Port</label>
+                        <input type="number" id="server-port" name="server-port" class="input input-bordered w-full"
+                            placeholder="Enter server port" [(ngModel)]="config.serverPort" required />
+                    </div>
+                </div>
+
+                <!-- Save Config Button -->
+                <button type="submit" class="btn btn-primary w-full my-10">Generate Repository</button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -29,6 +29,7 @@ function createWindow() {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
             nodeIntegration: false,
+                  webviewTag: true, // Enable webview tag
         },
     });
 
@@ -39,7 +40,7 @@ function createWindow() {
 
     const isDev = !app.isPackaged;
     const url = isDev
-        ? 'http://localhost:4200/#/my-route'
+        ? 'http://localhost:4200/'
         : `file://${path.join(__dirname, 'dist/ova-desktop/browser/index.html').replace(/\\/g, '/') }#/my-route`;
 
     mainWindow.loadURL(url);
