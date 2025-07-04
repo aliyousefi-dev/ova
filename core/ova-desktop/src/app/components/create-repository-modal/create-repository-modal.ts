@@ -30,6 +30,8 @@ export class CreateRepositoryModalComponent implements OnChanges {
   };
 
   isSaving = false; // Flag to track the saving/loading state
+  errorMessage: string = ''; // Error message to show if .ova-repo folder exists
+  successMessage: string = ''; // Success message for valid directory
 
   @ViewChild(ConfirmModalComponent) confirmModal!: ConfirmModalComponent;
   private pendingSave = false;
@@ -47,9 +49,26 @@ export class CreateRepositoryModalComponent implements OnChanges {
   selectDirectory() {
     this.electronService
       .pickFolder()
-      .then((folderPath) => {
+      .then(async (folderPath) => {
         if (folderPath) {
-          this.config.serverDirectory = folderPath; // Update the server directory with the full path
+          // Check if the .ova-repo folder already exists in the selected directory
+          const ovaRepoPath = await this.electronService.joinPaths(
+            folderPath,
+            '.ova-repo'
+          );
+          const exists = await this.electronService.folderExists(ovaRepoPath);
+
+          if (exists) {
+            // Display error if .ova-repo exists
+            this.showErrorMessage(
+              'The selected directory already contains a repository (.ova-repo folder). Please choose another folder.'
+            );
+            this.config.serverDirectory = ''; // Clear the folder path
+          } else {
+            // Otherwise, set the directory path
+            this.config.serverDirectory = folderPath;
+            this.clearErrorMessage(); // Clear any previous error messages
+          }
         } else {
           console.log('No folder selected');
         }
@@ -57,6 +76,19 @@ export class CreateRepositoryModalComponent implements OnChanges {
       .catch((err) => {
         console.error('Error picking folder:', err);
       });
+  }
+
+  // Show error message when .ova-repo folder exists
+  showErrorMessage(message: string) {
+    this.errorMessage = message; // Update error message
+    this.successMessage = ''; // Clear success message
+  }
+
+  // Clear the error message
+  clearErrorMessage() {
+    this.errorMessage = ''; // Clear the error message
+    this.successMessage =
+      'Valid directory selected. Proceed to Generate Repository.'; // Optional success message
   }
 
   // Handle closing the modal
@@ -72,6 +104,8 @@ export class CreateRepositoryModalComponent implements OnChanges {
       serverHost: '127.0.0.1',
       serverPort: 4040,
     };
+    this.errorMessage = ''; // Reset any error messages
+    this.successMessage = ''; // Reset success message
   }
 
   // Replace saveConfig button with this handler

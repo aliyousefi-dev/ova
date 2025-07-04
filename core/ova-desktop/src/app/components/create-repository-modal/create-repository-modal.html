@@ -25,6 +25,8 @@
                     </div>
                 </div>
 
+
+
                 <!-- Server Host and Port in a single row -->
                 <div class="mb-4 flex gap-4">
                     <div class="w-1/2">
@@ -37,6 +39,16 @@
                         <input type="number" id="server-port" name="server-port" class="input input-bordered w-full"
                             placeholder="Enter server port" [(ngModel)]="config.serverPort" required />
                     </div>
+                </div>
+
+                <!-- Error Message Display -->
+                <div *ngIf="errorMessage" class="text-red-500 text-sm">
+                    {{ errorMessage }}
+                </div>
+
+                <!-- Success Message Display -->
+                <div *ngIf="successMessage" class="text-green-500 text-sm">
+                    {{ successMessage }}
                 </div>
 
                 <!-- Save Config Button with loading state -->
