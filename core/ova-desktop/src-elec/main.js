@@ -31,7 +31,7 @@ function createWindow() {
     frame: false, // Custom frame (no OS default)
     autoHideMenuBar: true, // Hide menu bar
     webPreferences: {
-      preload: path.join(__dirname, "electron-bridge.js"),
+      preload: path.join(__dirname, "ipc-bridge.js"),
       contextIsolation: true,
       nodeIntegration: false,
       webviewTag: true, // Enable webview tag
