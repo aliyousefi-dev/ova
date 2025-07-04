@@ -1,4 +1,3 @@
-<!-- import-repository-modal.html -->
 <dialog id="import-repository-modal" class="modal" [open]="showModal" (click)="closeModal()">
     <div class="modal-box flex flex-col" (click)="$event.stopPropagation()">
         <!-- Modal Header with Close Button -->
@@ -26,13 +25,24 @@
                     </div>
                 </div>
 
+                <!-- Error Message Display -->
+                <div *ngIf="errorMessage" class="text-red-500 text-sm">
+                    {{ errorMessage }}
+                </div>
+
+                <!-- Success Message Display -->
+                <div *ngIf="successMessage" class="text-green-500 text-sm">
+                    {{ successMessage }}
+                </div>
+
                 <!-- Import Button -->
                 <button type="submit" class="btn btn-primary w-full py-3 my-8"
-                    [disabled]="isImporting || !repositoryAddress">
+                    [disabled]="isImporting || !repositoryAddress || errorMessage">
                     <span *ngIf="!isImporting">Import Repository</span>
                     <span *ngIf="isImporting" class="loading loading-dots loading-sm"></span>
                 </button>
             </form>
         </div>
+
     </div>
 </dialog>
