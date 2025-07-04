@@ -1,7 +1,7 @@
 {
   "name": "ova-desktop",
   "version": "0.0.0",
-  "main": "main.js",
+  "main": "src-elec/main.js",
   "scripts": {
     "build:frontend": "ng build --configuration production",
     "electron:dev": "concurrently \"ng serve\" \"wait-on http://localhost:4200 && electron .\"",
@@ -43,21 +43,26 @@
     "wait-on": "^8.0.3"
   },
   "build": {
-    "appId": "com.example.myapp",
+    "appId": "com.ova.desktop",
     "productName": "ova-desktop",
     "files": [
-      "main.js",
-      "preload.js",
       "package.json",
       {
-        "from": "dist/ova-desktop",
-        "to": "dist/ova-desktop",
+        "from": "src-elec",
+        "to": "src-elec",
         "filter": [
           "**/*"
         ]
       },
       {
-        "from": "ova-cli",
+        "from": "builds/ova-desktop-ui",
+        "to": "ova-desktop-ui",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "thirdparty/ova-cli",
         "to": "ova-cli",
         "filter": [
           "**/*"
@@ -65,10 +70,10 @@
       }
     ],
     "asarUnpack": [
-      "ova-cli/**"
+      "thirdparty/ova-cli/**"
     ],
     "directories": {
-      "output": "release"
+      "output": "builds/release"
     }
   }
 }

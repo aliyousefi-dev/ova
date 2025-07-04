@@ -1,16 +1,17 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { CreateRepositoryModalComponent } from '../create-repository-modal/create-repository-modal';
+import { ElectronService } from '../../services/electron.service';
 
 @Component({
   standalone: true,
   selector: 'app-navbar',
-  imports: [CommonModule],
+  imports: [CommonModule, CreateRepositoryModalComponent],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent {
   openMenu: 'file' | 'view' | 'help' | 'repository' | null = null;
-
-  @Output() newRepositoryClicked = new EventEmitter<void>();
+  showServerSetupModal = false;
 
   toggleMenu(menu: 'file' | 'view' | 'help' | 'repository') {
     if (this.openMenu === menu) {
@@ -20,7 +21,7 @@ export class NavbarComponent {
     }
   }
 
-  constructor() {
+  constructor(private electronService: ElectronService) {
     window.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;
       if (!target.closest('.menu-button') && !target.closest('.menu-content')) {
@@ -30,19 +31,23 @@ export class NavbarComponent {
   }
 
   minimize() {
-    window.electronAPI.windowControl('minimize');
+    this.electronService.minimizeWindow();
   }
 
   maximize() {
-    window.electronAPI.windowControl('maximize');
+    this.electronService.maximizeWindow();
   }
 
   close() {
-    window.electronAPI.windowControl('close');
+    this.electronService.closeWindow();
   }
 
   onNewRepositoryClick() {
-    this.newRepositoryClicked.emit();
-    this.openMenu = null; // Optionally close the menu after click
+    this.openMenu = null;
+    this.showServerSetupModal = true;
+  }
+
+  closeModal() {
+    this.showServerSetupModal = false;
   }
 }

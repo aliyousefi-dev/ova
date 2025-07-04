@@ -10,12 +10,4 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.html',
   styleUrls: ['./app.css'],
 })
-export class App {
-  openSettingsFromMenu() {
-    // Logic to open settings from the menu
-  }
-
-  openSettings() {
-    // Logic to open settings
-  }
-}
+export class App {}

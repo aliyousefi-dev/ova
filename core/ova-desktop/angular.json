@@ -19,6 +19,10 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
+            "outputPath": {
+              "base": "builds/ova-desktop-ui",
+              "browser": ""
+            },
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "assets": [

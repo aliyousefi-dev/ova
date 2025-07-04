@@ -12,7 +12,8 @@
             <div *ngIf="openMenu === 'file'"
                 class="absolute text-sm left-0 mt-1 w-40 bg-base-100 border border-base-300 rounded shadow-lg z-10 menu-content">
                 <a href="#" class="block px-4 py-2 hover:bg-base-300"
-                    (click)="onNewRepositoryClick(); $event.preventDefault()">New Repository</a>
+                    (click)="onNewRepositoryClick(); $event.stopPropagation();">New
+                    Repository</a>
                 <a href="#" class="block px-4 py-2 hover:bg-base-300">Import Repositories</a>
                 <a href="#" class="block px-4 py-2 hover:bg-base-300">Open Recents</a>
                 <a href="#" class="block px-4 py-2 hover:bg-base-300">Options</a>
@@ -73,3 +74,7 @@
         </button>
     </div>
 </nav>
+
+<!-- Create Repository Modal -->
+<app-create-repository-modal [showModal]="showServerSetupModal"
+    (closeSettingsEvent)="closeModal()"></app-create-repository-modal>

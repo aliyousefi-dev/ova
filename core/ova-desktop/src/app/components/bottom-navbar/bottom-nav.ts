@@ -10,8 +10,6 @@ import { SettingsModalComponent } from '../settings-modal/settings-modal.compone
   templateUrl: 'bottom-nav.html',
 })
 export class BottomNavComponent {
-  @Output() settingsClicked = new EventEmitter<void>();
-
   navbarHeight = 40; // px, matches h-10
   showSettingsModal = false; // Flag to control visibility of the settings modal
 

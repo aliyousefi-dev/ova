@@ -40,8 +40,8 @@
                 </div>
 
                 <!-- Save Config Button with loading state -->
-                <button type="submit" class="btn btn-primary w-full py-3 my-8"
-                    [disabled]="isSaving || !isValidConfig()">
+                <button type="button" class="btn btn-primary w-full py-3 my-8" [disabled]="isSaving || !isValidConfig()"
+                    (click)="onGenerateRepository()">
                     <span *ngIf="!isSaving">Generate Repository</span>
                     <span *ngIf="isSaving" class="loading loading-dots loading-sm"></span>
                 </button>
@@ -49,3 +49,7 @@
         </div>
     </div>
 </dialog>
+
+<!-- Confirm Modal -->
+<app-confirm-modal (confirmed)="onConfirmGenerateRepository()"
+    (cancelled)="onCancelGenerateRepository()"></app-confirm-modal>

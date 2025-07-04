@@ -5,15 +5,17 @@ import {
   EventEmitter,
   OnChanges,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ElectronService } from '../../services/electron.service';
+import { ConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 
 @Component({
-  selector: 'app-server-setup-modal',
+  selector: 'app-create-repository-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ConfirmModalComponent],
   templateUrl: './create-repository-modal.html',
 })
 export class CreateRepositoryModalComponent implements OnChanges {
@@ -28,6 +30,9 @@ export class CreateRepositoryModalComponent implements OnChanges {
   };
 
   isSaving = false; // Flag to track the saving/loading state
+
+  @ViewChild(ConfirmModalComponent) confirmModal!: ConfirmModalComponent;
+  private pendingSave = false;
 
   constructor(private electronService: ElectronService) {}
 
@@ -69,6 +74,27 @@ export class CreateRepositoryModalComponent implements OnChanges {
     };
   }
 
+  // Replace saveConfig button with this handler
+  onGenerateRepository() {
+    if (this.isValidConfig() && !this.isSaving) {
+      this.confirmModal.open(
+        'Are you sure you want to generate the repository with this configuration?'
+      );
+      this.pendingSave = true;
+    }
+  }
+
+  onConfirmGenerateRepository() {
+    if (this.pendingSave) {
+      this.pendingSave = false;
+      this.saveConfig();
+    }
+  }
+
+  onCancelGenerateRepository() {
+    this.pendingSave = false;
+  }
+
   // Handle form submission with delay and loading state
   saveConfig() {
     if (this.isValidConfig()) {
@@ -77,7 +103,6 @@ export class CreateRepositoryModalComponent implements OnChanges {
       // Simulate a delay (e.g., a network request or some background process)
       setTimeout(() => {
         console.log('Server Configuration:', this.config);
-        // localStorage.setItem('serverConfig', JSON.stringify(this.config)); // Removed
         alert('Server configuration saved successfully!');
         this.isSaving = false; // End loading state
       }, 2000); // 2-second delay (adjust as needed)
