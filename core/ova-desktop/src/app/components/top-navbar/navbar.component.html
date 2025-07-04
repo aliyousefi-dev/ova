@@ -1,4 +1,4 @@
-<nav class="bg-base-100 flex items-center pl-4 h-10 select-none text-base-content" style="-webkit-app-region: drag">
+<nav class="bg-base-100 flex items-center pl-4 h-8 select-none text-base-content" style="-webkit-app-region: drag">
     <!-- Left: Title -->
     <div class=" font-bold mr-6 flex-shrink-0">ova</div>
 
@@ -11,7 +11,8 @@
             </button>
             <div *ngIf="openMenu === 'file'"
                 class="absolute text-sm left-0 mt-1 w-40 bg-base-100 border border-base-300 rounded shadow-lg z-10 menu-content">
-                <a href="#" class="block px-4 py-2 hover:bg-base-300">New Repository</a>
+                <a href="#" class="block px-4 py-2 hover:bg-base-300"
+                    (click)="onNewRepositoryClick(); $event.preventDefault()">New Repository</a>
                 <a href="#" class="block px-4 py-2 hover:bg-base-300">Import Repositories</a>
                 <a href="#" class="block px-4 py-2 hover:bg-base-300">Open Recents</a>
                 <a href="#" class="block px-4 py-2 hover:bg-base-300">Options</a>
@@ -62,13 +63,13 @@
     <!-- Right: Window Controls -->
     <div class="window-controls flex " style="-webkit-app-region: no-drag">
         <button (click)="minimize()" title="Minimize" class="btn btn-sm btn-ghost">
-            <lucide-icon [img]="Minus" class="w-4 h-4"></lucide-icon>
+            <i class="bx bx-minus text-lg"></i>
         </button>
         <button (click)="maximize()" title="Maximize" class="btn btn-sm btn-ghost">
-            <lucide-icon [img]="Square" class="w-4 h-4"></lucide-icon>
+            <i class="bx bx-fullscreen text-lg"></i>
         </button>
         <button (click)="close()" title="Close" class="btn btn-sm btn-soft btn-error">
-            <lucide-icon [img]="X" class="w-4 h-4"></lucide-icon>
+            <i class="bx bx-x text-lg"></i>
         </button>
     </div>
 </nav>

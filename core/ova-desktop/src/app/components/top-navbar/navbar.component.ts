@@ -1,28 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  LucideAngularModule,
-  Minimize,
-  Maximize2,
-  Square,
-  X,
-  Minus,
-} from 'lucide-angular';
 
 @Component({
   standalone: true,
   selector: 'app-navbar',
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent {
-  Minimize = Minimize;
-  Maximize2 = Maximize2;
-  Minus = Minus;
-  Square = Square;
-  X = X;
-
   openMenu: 'file' | 'view' | 'help' | 'repository' | null = null;
+
+  @Output() newRepositoryClicked = new EventEmitter<void>();
 
   toggleMenu(menu: 'file' | 'view' | 'help' | 'repository') {
     if (this.openMenu === menu) {
@@ -51,5 +39,10 @@ export class NavbarComponent {
 
   close() {
     window.electronAPI.windowControl('close');
+  }
+
+  onNewRepositoryClick() {
+    this.newRepositoryClicked.emit();
+    this.openMenu = null; // Optionally close the menu after click
   }
 }
