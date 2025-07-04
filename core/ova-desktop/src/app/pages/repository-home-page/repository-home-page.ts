@@ -5,15 +5,15 @@ import { CreateRepositoryModalComponent } from '../../components/create-reposito
 import { ImportRepositoryModalComponent } from '../../components/import-repository-modal/import-repository-modal';
 
 @Component({
-  selector: 'app-server-connection',
-  templateUrl: './server-connection.page.html',
+  selector: 'app-repository-home-page',
+  templateUrl: './repository-home-page.html',
   imports: [
     CommonModule,
     CreateRepositoryModalComponent,
     ImportRepositoryModalComponent,
   ],
 })
-export class ServerConnectionPage {
+export class RepositoryHomePage {
   @ViewChild(CreateRepositoryModalComponent)
   createRepositoryModal!: CreateRepositoryModalComponent;
 

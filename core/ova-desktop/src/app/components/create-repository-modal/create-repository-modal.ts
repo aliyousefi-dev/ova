@@ -57,11 +57,7 @@ export class CreateRepositoryModalComponent implements OnChanges {
   // Handle closing the modal
   closeModal() {
     this.resetConfig(); // Reset the config before closing
-    const modal = document.getElementById(
-      'server-setup-modal'
-    ) as HTMLDialogElement;
-    modal.close();
-    this.closeSettingsEvent.emit();
+    this.closeSettingsEvent.emit(); // This will trigger the parent to set showModal to false
   }
 
   // Reset the config to default values

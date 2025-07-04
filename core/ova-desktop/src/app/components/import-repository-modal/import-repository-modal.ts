@@ -5,7 +5,6 @@ import {
   EventEmitter,
   OnChanges,
   SimpleChanges,
-  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -24,15 +23,11 @@ export class ImportRepositoryModalComponent implements OnChanges {
   repositoryAddress: string = ''; // To store the repository address (path)
   isImporting: boolean = false; // Flag to track the importing/loading state
 
-  constructor(
-    private electronService: ElectronService,
-    private cdr: ChangeDetectorRef
-  ) {}
+  constructor(private electronService: ElectronService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['showModal']) {
+    if (changes['showModal'] && this.showModal) {
       this.resetRepositoryAddress();
-      this.cdr.detectChanges(); // Manually trigger change detection to update the modal state
     }
   }
 
@@ -60,7 +55,6 @@ export class ImportRepositoryModalComponent implements OnChanges {
     ) as HTMLDialogElement;
     modal.close();
     this.closeImportRepositoryEvent.emit();
-    this.cdr.detectChanges(); // Manually trigger change detection after closing
   }
 
   // Reset the repository address to an empty string

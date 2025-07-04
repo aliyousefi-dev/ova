@@ -68,8 +68,7 @@
 </div>
 
 <!-- Server Setup Modal -->
-<app-server-setup-modal [showModal]="showServerSetupModal"
-    (closeServerSetupEvent)="closeModal()"></app-server-setup-modal>
+<app-server-setup-modal [showModal]="showServerSetupModal" (closeSettingsEvent)="closeModal()"></app-server-setup-modal>
 
 <!-- Import Local Repository Modal -->
 <app-import-repository-modal [showModal]="showImportRepositoryModal"

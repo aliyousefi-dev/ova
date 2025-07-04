@@ -32,3 +32,5 @@ Ctrl + K Open Settings
 i think the native is better 
 
 Set as Default Server
+
+Show the New Videos Added
