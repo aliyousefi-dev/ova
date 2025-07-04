@@ -1,39 +1,8 @@
-<section class="fixed left-0 right-0 bg-base-100 z-40 pointer-events-auto"
-  [style.bottom.px]="navbarHeight + (showLogs ? logPanelHeight : 0)" [style.height.px]="terminalPanelHeight"
-  *ngIf="showTerminal" aria-live="polite" aria-atomic="true" (window:mousemove)="onMouseMove($event)"
-  (window:mouseup)="stopResize()">
-  <!-- Resize handle -->
-  <div class="w-full h-1 cursor-ns-resize" (mousedown)="startResizeTerminal($event)"></div>
-  <!-- Actual terminal panel -->
-  <div class="h-[calc(100%-0.25rem)]">
-    <app-terminal-panel></app-terminal-panel>
-  </div>
-</section>
-
-<section class="fixed left-0 right-0 bg-base-100 z-40 pointer-events-auto" [style.bottom.px]="navbarHeight"
-  [style.height.px]="logPanelHeight" *ngIf="showLogs" aria-live="polite" aria-atomic="true"
-  (window:mousemove)="onMouseMove($event)" (window:mouseup)="stopResize()">
-  <!-- Resize handle -->
-  <div class="w-full h-1 cursor-ns-resize" (mousedown)="startResize($event)"></div>
-  <!-- Actual logs panel -->
-  <div class="h-[calc(100%-0.25rem)]">
-    <app-logs-panel class="panel"></app-logs-panel>
-  </div>
-</section>
-
 <nav
   class="bottom-nav fixed bottom-0 left-0 right-0 h-10 flex justify-between items-center bg-base-100 px-4 space-x-2 z-50">
   <div class="flex justify-between w-full items-center space-x-2">
     <div class="flex items-center space-x-2">
-      <button (click)="toggleLogs()" class="btn btn-sm btn-ghost flex items-center space-x-1" aria-label="Toggle Logs">
-        <lucide-icon [img]="showLogs ? eyeOff : eye" class="w-5 h-5"></lucide-icon>
-        <span>{{ showLogs ? 'Hide Logs' : 'Show Logs' }}</span>
-      </button>
-      <button (click)="toggleTerminal()" class="btn btn-sm btn-ghost flex items-center" aria-label="Toggle Terminal"
-        title="Toggle Terminal">
-        <lucide-icon [img]="terminal" class="w-5 h-5"></lucide-icon>
-        <span>{{ showTerminal ? 'Hide Terminal' : 'Show Terminal' }}</span>
-      </button>
+      <!-- Remove log and terminal toggle buttons if desired, or keep if you want -->
     </div>
 
     <div class="flex items-center space-x-2">
@@ -46,6 +15,5 @@
     </div>
   </div>
 </nav>
-
 
 <app-settings-modal [showModal]="showSettingsModal" (closeSettingsEvent)="closeSettings()"></app-settings-modal>
