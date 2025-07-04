@@ -1,0 +1,26 @@
+<dialog id="app-info-modal" class="modal" [open]="showModal" (click)="closeModal()">
+    <div class="modal-box flex flex-col" (click)="$event.stopPropagation()">
+        <!-- Modal Header with Close Button -->
+        <div class="w-full dark:border-gray-700 relative">
+            <div class="p-4 flex items-center justify-start">
+                <h3 class="font-bold text-lg text-primary">{{ appName }}</h3>
+            </div>
+            <!-- Close Button -->
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="closeModal()">✕</button>
+        </div>
+
+        <!-- Modal Content Section -->
+        <div class="p-4 space-y-4">
+            <!-- App Info -->
+            <div class="space-y-2">
+                <p><strong>Version:</strong> {{ appVersion }}</p>
+                <p><strong>Electron Version:</strong> {{ electronVersion }}</p>
+                <p><strong>Node.js Version:</strong> {{ nodeVersion }}</p>
+                <p><strong>Angular Version:</strong> {{ angularVersion }}</p>
+
+                <!-- Additional information -->
+                <p class="mt-4 text-sm text-gray-500">This app is built with Angular and Electron.</p>
+            </div>
+        </div>
+    </div>
+</dialog>

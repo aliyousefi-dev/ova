@@ -34,3 +34,6 @@ i think the native is better
 Set as Default Server
 
 Show the New Videos Added
+
+i think a good feature is inside the .ova-repo add the folder ova-desktop
+that handle the data 

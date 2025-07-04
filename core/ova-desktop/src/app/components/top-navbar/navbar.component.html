@@ -10,15 +10,28 @@
                 File
             </button>
             <div *ngIf="openMenu === 'file'"
-                class="absolute text-sm left-0 mt-1 w-40 bg-base-100 border border-base-300 rounded shadow-lg z-10 menu-content">
-                <a href="#" class="block px-4 py-2 hover:bg-base-300"
-                    (click)="onNewRepositoryClick(); $event.stopPropagation();">New
-                    Repository</a>
-                <a href="#" class="block px-4 py-2 hover:bg-base-300">Import Repositories</a>
-                <a href="#" class="block px-4 py-2 hover:bg-base-300">Open Recents</a>
-                <a href="#" class="block px-4 py-2 hover:bg-base-300">Options</a>
-                <a href="#" class="block px-4 py-2 hover:bg-base-300">Exit</a>
+                class="absolute text-sm left-0 mt-1 w-70 bg-base-100 border border-base-300 rounded shadow-lg z-10 menu-content">
+
+                <a href="#" class="block px-6 py-2 hover:bg-base-300 flex justify-between items-center"
+                    (click)="onNewRepositoryClick(); $event.stopPropagation();">
+                    New Repository
+                    <span class="text-xs text-gray-500 ml-2">Ctrl + N</span>
+                </a>
+
+                <a href="#" class="block px-6 py-2 hover:bg-base-300 flex justify-between items-center"
+                    (click)="onImportRepositoryClick(); $event.stopPropagation();">
+                    Import Repositories
+                    <span class="text-xs text-gray-500 ml-2">Ctrl + O</span>
+                </a>
+
+                <a href="#" class="block px-6 py-2 hover:bg-base-300">Open Recents</a>
+                <a href="#" class="block px-6 py-2 hover:bg-base-300 flex justify-between items-center"
+                    (click)="openSettingsModal(); $event.stopPropagation();">
+                    Options <span class="text-xs text-gray-500 ml-2">Ctrl + K</span> </a>
+                <a href="#" class="block px-6 py-2 hover:bg-base-300">Exit</a>
             </div>
+
+
         </div>
 
         <div class="relative" (click)="toggleMenu('view')">
@@ -56,7 +69,8 @@
                 <a href="#" class="block px-4 py-2 hover:bg-base-300">Documentation</a>
                 <a href="#" class="block px-4 py-2 hover:bg-base-300">Keyboard Shortcuts</a>
                 <a href="#" class="block px-4 py-2 hover:bg-base-300">Check for Updates</a>
-                <a href="#" class="block px-4 py-2 hover:bg-base-300">About</a>
+                <!-- About link -->
+                <a href="#" class="block px-4 py-2 hover:bg-base-300" (click)="onAboutClick()">About</a>
             </div>
         </div>
     </nav>
@@ -75,6 +89,17 @@
     </div>
 </nav>
 
+<!-- App Info Modal -->
+<app-app-info-modal [showModal]="showAppInfoModal" (closeAppInfoEvent)="closeAppInfoModal()">
+</app-app-info-modal>
+
 <!-- Create Repository Modal -->
 <app-create-repository-modal [showModal]="showServerSetupModal"
     (closeSettingsEvent)="closeModal()"></app-create-repository-modal>
+
+<!-- Import Repository Modal -->
+<app-import-repository-modal [showModal]="showImportRepositoryModal"
+    (closeImportRepositoryEvent)="closeImportRepositoryModal()">
+</app-import-repository-modal>
+
+<app-settings-modal [showModal]="showSettingsModal" (closeSettingsEvent)="closeSettingsModal()"></app-settings-modal>

@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ElectronService } from '../../services/electron.service';
+import { ElectronService } from '../../services/common-electron.service';
 import { ConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 
 @Component({

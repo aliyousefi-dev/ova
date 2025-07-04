@@ -54,12 +54,6 @@ export class SettingsModalComponent {
   proxyUser: string = '';
   proxyPassword: string = '';
 
-  // Key Shortcuts Model
-  shortcutSave: string = 'Ctrl+S'; // Default keybinding for Save
-  shortcutOpen: string = 'Ctrl+O'; // Default keybinding for Open
-  shortcutClose: string = 'Ctrl+W'; // Default keybinding for Close
-  listeningForKey: string | null = null; // Store which shortcut is being edited
-
   // Close modal and emit event to parent
   closeModal(event: MouseEvent) {
     const modal = document.getElementById(
@@ -92,42 +86,6 @@ export class SettingsModalComponent {
       port: this.proxyPort,
       user: this.proxyUser,
       password: this.proxyPassword,
-    });
-    // Optionally, save these settings to localStorage or make an API call
-  }
-
-  // Start listening for key press
-  startListening(action: string) {
-    this.listeningForKey = action;
-    window.addEventListener('keydown', this.handleKeyPress);
-  }
-
-  // Handle key press
-  handleKeyPress = (event: KeyboardEvent) => {
-    if (this.listeningForKey) {
-      const key = `${event.ctrlKey ? 'Ctrl+' : ''}${event.key}`;
-      switch (this.listeningForKey) {
-        case 'save':
-          this.shortcutSave = key;
-          break;
-        case 'open':
-          this.shortcutOpen = key;
-          break;
-        case 'close':
-          this.shortcutClose = key;
-          break;
-      }
-      this.listeningForKey = null;
-      window.removeEventListener('keydown', this.handleKeyPress);
-    }
-  };
-
-  // Save Key Shortcuts
-  saveKeyShortcuts() {
-    console.log('Saving key shortcuts:', {
-      save: this.shortcutSave,
-      open: this.shortcutOpen,
-      close: this.shortcutClose,
     });
     // Optionally, save these settings to localStorage or make an API call
   }

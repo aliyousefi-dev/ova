@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ElectronService } from '../../services/electron.service';
+import { ElectronService } from '../../services/common-electron.service';
 
 @Component({
   selector: 'app-import-repository-modal',

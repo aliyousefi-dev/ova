@@ -15,8 +15,6 @@
       <a class="tab" [class.tab-active]="activeTab === 'general'" (click)="setActiveTab('general')">General</a>
       <a class="tab" [class.tab-active]="activeTab === 'theme'" (click)="setActiveTab('theme')">Theme</a>
       <a class="tab" [class.tab-active]="activeTab === 'proxy'" (click)="setActiveTab('proxy')">Proxy</a>
-      <a class="tab" [class.tab-active]="activeTab === 'keyshortcuts'" (click)="setActiveTab('keyshortcuts')">Key
-        Shortcuts</a>
     </div>
 
     <!-- Modal Content Section (Scrollable) -->
@@ -58,26 +56,6 @@
             placeholder="Enter password" />
 
           <button class="btn btn-primary mt-4" (click)="saveProxySettings()">Save Proxy Settings</button>
-        </div>
-      </div>
-
-      <!-- Key Shortcuts Tab Content -->
-      <div *ngIf="activeTab === 'keyshortcuts'" class="max-w-full">
-        <p class="py-4">Bind key shortcuts for common actions:</p>
-        <div class="form-control w-full max-w-xl p-4">
-          <label for="shortcut-save" class="label">Save Shortcut:</label>
-          <input type="text" id="shortcut-save" class="input input-bordered w-full" [(ngModel)]="shortcutSave"
-            placeholder="Enter shortcut for Save" (focus)="startListening('save')" />
-
-          <label for="shortcut-open" class="label">Open Shortcut:</label>
-          <input type="text" id="shortcut-open" class="input input-bordered w-full" [(ngModel)]="shortcutOpen"
-            placeholder="Enter shortcut for Open" (focus)="startListening('open')" />
-
-          <label for="shortcut-close" class="label">Close Shortcut:</label>
-          <input type="text" id="shortcut-close" class="input input-bordered w-full" [(ngModel)]="shortcutClose"
-            placeholder="Enter shortcut for Close" (focus)="startListening('close')" />
-
-          <button class="btn btn-primary mt-4" (click)="saveKeyShortcuts()">Save Key Shortcuts</button>
         </div>
       </div>
     </div>
