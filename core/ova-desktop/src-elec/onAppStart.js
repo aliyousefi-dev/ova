@@ -1,5 +1,5 @@
 // onAppStart.js
-const { registerShortcuts } = require("./shortcuts"); // Import registerShortcuts
+const { registerShortcuts } = require("./key-shortcuts"); // Import registerShortcuts
 
 function onAppStart(mainWindow) {
   // Additional startup logic if needed

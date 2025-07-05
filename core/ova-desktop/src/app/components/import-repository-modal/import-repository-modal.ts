@@ -8,7 +8,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ElectronService } from '../../services/common-electron.service';
+import { IndexedDBService } from '../../services/indexeddb-repository.service'; // Import IndexedDBService
+import { ElectronService } from '../../services/common-electron.service'; // Import ElectronService
 
 @Component({
   selector: 'app-import-repository-modal',
@@ -25,7 +26,10 @@ export class ImportRepositoryModalComponent implements OnChanges {
   errorMessage: string = ''; // To store error message
   successMessage: string = ''; // To store success message
 
-  constructor(private electronService: ElectronService) {}
+  constructor(
+    private indexedDBService: IndexedDBService, // Inject IndexedDBService
+    private electronService: ElectronService // Inject ElectronService
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['showModal'] && this.showModal) {
@@ -41,6 +45,7 @@ export class ImportRepositoryModalComponent implements OnChanges {
       .then((folderPath) => {
         if (folderPath) {
           this.repositoryAddress = folderPath; // Update the repository address with the selected folder
+          console.log('Folder selected:', folderPath);
           this.checkForOvaRepo(folderPath); // Check for .ova-repo folder
         } else {
           console.log('No folder selected');
@@ -68,7 +73,7 @@ export class ImportRepositoryModalComponent implements OnChanges {
           this.successMessage =
             'The selected folder contains a valid .ova-repo folder.';
           this.errorMessage = ''; // Reset error message
-          this.saveRepositoryInfo(folderPath); // Save the repository address
+          this.saveRepositoryInfo(folderPath); // Save the repository address using IndexedDB
         } else {
           this.successMessage = ''; // Clear success message if folder does not exist
           this.errorMessage =
@@ -82,26 +87,27 @@ export class ImportRepositoryModalComponent implements OnChanges {
     }
   }
 
-  // Save repository information to Electron's filesystem
+  // Save repository information to IndexedDB
   saveRepositoryInfo(folderPath: string) {
     const metadata = { repositoryAddress: folderPath };
-    this.electronService
-      .saveRepositoryInfo(metadata)
+    this.indexedDBService
+      .saveRepositoryInfo(metadata) // Use IndexedDB service to save the info
       .then(() => {
-        console.log('Repository info saved:', folderPath);
+        console.log('Repository info saved to IndexedDB:', folderPath);
       })
       .catch((err) => {
         console.error('Error saving repository info:', err);
       });
   }
 
-  // Load the saved repository information from Electron's filesystem
+  // Load the saved repository information from IndexedDB
   loadRepositoryInfo() {
-    this.electronService
-      .loadRepositoryInfo()
+    this.indexedDBService
+      .loadRepositoryInfo() // Use IndexedDB service to load the info
       .then((data) => {
-        if (data && data.repositoryAddress) {
-          this.repositoryAddress = data.repositoryAddress;
+        console.log('Loaded repository info:', data);
+        if (data && data.length > 0) {
+          this.repositoryAddress = data[0].repositoryAddress; // Assuming only one entry
           this.checkForOvaRepo(this.repositoryAddress); // Validate loaded repo
         }
       })
