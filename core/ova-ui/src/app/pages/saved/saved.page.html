@@ -1,8 +1,4 @@
-<app-search-bar
-  [(value)]="searchTerm"
-  (valueChange)="goToPage(1)"
-  placeholder="Search videos..."
-></app-search-bar>
+<app-search-bar [(value)]="searchTerm" (valueChange)="goToPage(1)" placeholder="Local Search ..."></app-search-bar>
 
 <div class="max-w-7xl mx-auto px-4 mt-4 flex items-center justify-between">
   <div class="font-medium">
@@ -12,12 +8,7 @@
   <!-- Sort Menu -->
   <div class="flex justify-end items-center gap-2">
     <label for="sort" class="text-sm font-medium">Sort by:</label>
-    <select
-      id="sort"
-      [(ngModel)]="sortOption"
-      (change)="goToPage(1)"
-      class="select select-sm select-bordered w-40"
-    >
+    <select id="sort" [(ngModel)]="sortOption" (change)="goToPage(1)" class="select select-sm select-bordered w-40">
       <option value="titleAsc">Title (A–Z)</option>
       <option value="titleDesc">Title (Z–A)</option>
       <option value="durationAsc">Duration (Short → Long)</option>
@@ -29,20 +20,11 @@
 </div>
 
 <!-- Top Pagination -->
-<div
-  class="max-w-7xl mx-auto px-4 mt-6 flex justify-center"
-  *ngIf="totalPages > 1 && !loading"
->
+<div class="max-w-7xl mx-auto px-4 mt-6 flex justify-center" *ngIf="totalPages > 1 && !loading">
   <div class="join">
-    <input
-      *ngFor="let page of [].constructor(totalPages); let i = index"
-      class="join-item btn btn-square btn-sm"
-      type="radio"
-      name="paginationTop"
-      [attr.aria-label]="(i + 1)"
-      [checked]="currentPage === i + 1"
-      (change)="goToPage(i + 1)"
-    />
+    <input *ngFor="let page of [].constructor(totalPages); let i = index" class="join-item btn btn-square btn-sm"
+      type="radio" name="paginationTop" [attr.aria-label]="(i + 1)" [checked]="currentPage === i + 1"
+      (change)="goToPage(i + 1)" />
   </div>
 </div>
 
@@ -53,19 +35,10 @@
 </div>
 
 <!-- Bottom Pagination -->
-<div
-  class="max-w-7xl mx-auto px-4 mt-10 flex justify-center"
-  *ngIf="totalPages > 1 && !loading"
->
+<div class="max-w-7xl mx-auto px-4 mt-10 flex justify-center" *ngIf="totalPages > 1 && !loading">
   <div class="join">
-    <input
-      *ngFor="let page of [].constructor(totalPages); let i = index"
-      class="join-item btn btn-square btn-sm"
-      type="radio"
-      name="paginationBottom"
-      [attr.aria-label]=" (i + 1)"
-      [checked]="currentPage === i + 1"
-      (change)="goToPage(i + 1)"
-    />
+    <input *ngFor="let page of [].constructor(totalPages); let i = index" class="join-item btn btn-square btn-sm"
+      type="radio" name="paginationBottom" [attr.aria-label]=" (i + 1)" [checked]="currentPage === i + 1"
+      (change)="goToPage(i + 1)" />
   </div>
 </div>
