@@ -27,13 +27,6 @@ export class PlaylistModalComponent implements OnChanges {
     Order?: number;
   }[] = [];
 
-  sortedPlaylists: {
-    title: string;
-    slug: string;
-    checked: boolean;
-    Order?: number;
-  }[] = [];
-
   @Output() close = new EventEmitter<
     { title: string; slug: string; checked: boolean }[]
   >();
@@ -44,19 +37,18 @@ export class PlaylistModalComponent implements OnChanges {
   constructor(private router: Router) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['playlists']) {
-      this.sortedPlaylists = [...this.playlists].sort(
-        (a, b) => (a.Order ?? 0) - (b.Order ?? 0)
-      );
-    }
+    // You can remove this entire method, as there's no need to sort
+    // this.sortedPlaylists = [...this.playlists].sort(
+    //   (a, b) => (a.Order ?? 0) - (b.Order ?? 0)
+    // );
   }
 
   closeModal() {
-    this.close.emit(this.sortedPlaylists);
+    this.close.emit(this.playlists); // Emit the original playlists array instead of sortedPlaylists
   }
 
   save() {
-    this.close.emit(this.sortedPlaylists);
+    this.close.emit(this.playlists); // Emit the original playlists array
   }
 
   trackBySlug(index: number, playlist: { slug: string }) {
