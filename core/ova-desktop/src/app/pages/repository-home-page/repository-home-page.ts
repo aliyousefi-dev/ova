@@ -1,8 +1,12 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CreateRepositoryModalComponent } from '../../components/create-repository-modal/create-repository-modal';
 import { ImportRepositoryModalComponent } from '../../components/import-repository-modal/import-repository-modal';
+import {
+  IndexedDBService,
+  RepositoryData,
+} from '../../services/indexeddb-repository.service';
 
 @Component({
   selector: 'app-repository-home-page',
@@ -13,29 +17,38 @@ import { ImportRepositoryModalComponent } from '../../components/import-reposito
     ImportRepositoryModalComponent,
   ],
 })
-export class RepositoryHomePage {
+export class RepositoryHomePage implements OnInit {
   @ViewChild(CreateRepositoryModalComponent)
   createRepositoryModal!: CreateRepositoryModalComponent;
 
   @ViewChild(ImportRepositoryModalComponent)
   importRepositoryModal!: ImportRepositoryModalComponent;
 
-  recentServers: any[] = [];
-  importedServer: any = null;
+  recentServers: RepositoryData[] = []; // Updated to use RepositoryData
+  importedServer: RepositoryData | null = null; // Ensure importedServer uses RepositoryData
   showServerSetupModal: boolean = false;
   showImportRepositoryModal: boolean = false;
-  isLoading: boolean = false; // New loading state
+  isLoading: boolean = false;
 
-  constructor(private router: Router) {
-    const fakeRecentServers = [
-      { name: 'Tom & Jerry', location: '/path/to/server1' },
-      { name: 'Black Server', location: 'localhost:2020' },
-      { name: 'Zino Movies', location: '192.168.1.1:4040' },
-      { name: 'Server 4', location: 'video.com:8080' },
-    ];
+  constructor(
+    private router: Router,
+    private indexedDBService: IndexedDBService // Inject the IndexedDB service
+  ) {}
 
-    this.recentServers = fakeRecentServers;
-    localStorage.setItem('recentServers', JSON.stringify(fakeRecentServers));
+  ngOnInit() {
+    this.loadRecentServers(); // Load recent repositories from IndexedDB on component initialization
+  }
+
+  // Load recent repositories from IndexedDB
+  loadRecentServers() {
+    this.indexedDBService
+      .loadRepositoryInfo()
+      .then((repositories: RepositoryData[]) => {
+        this.recentServers = repositories; // Set the recent servers from IndexedDB
+      })
+      .catch((error) => {
+        console.error('Error loading recent repositories:', error);
+      });
   }
 
   importServer() {
@@ -46,7 +59,7 @@ export class RepositoryHomePage {
     input.onchange = (event: any) => {
       const file = event.target.files[0];
       if (file && file.name.endsWith('.ova-repo')) {
-        this.isLoading = true; // Start loading state
+        this.isLoading = true;
 
         const reader = new FileReader();
         reader.onload = () => {
@@ -57,7 +70,7 @@ export class RepositoryHomePage {
             alert('There was an error processing the server file.');
             console.error(error);
           }
-          this.isLoading = false; // End loading state
+          this.isLoading = false;
         };
         reader.readAsText(file);
       } else {
@@ -68,30 +81,49 @@ export class RepositoryHomePage {
     input.click();
   }
 
+  // Add the imported server to IndexedDB
   addImportedServer() {
-    if (this.importedServer) {
-      let recentServers = JSON.parse(
-        localStorage.getItem('recentServers') || '[]'
-      );
-      if (
-        !recentServers.find(
-          (server: any) => server.name === this.importedServer.name
-        )
-      ) {
-        recentServers.push(this.importedServer);
-        localStorage.setItem('recentServers', JSON.stringify(recentServers));
-        this.recentServers = recentServers;
-      }
+    if (this.importedServer !== null) {
+      // Ensures importedServer is not null
+      // Check if the repository is already in IndexedDB
+      this.indexedDBService.loadRepositoryInfo().then((repositories) => {
+        const exists = repositories.some(
+          (repo: RepositoryData) =>
+            repo.repositoryAddress === this.importedServer!.repositoryAddress // Ensure non-null assertion on importedServer
+        );
+
+        if (!exists) {
+          this.indexedDBService
+            .saveRepositoryInfo(this.importedServer!) // Save to IndexedDB with non-null assertion
+            .then(() => {
+              this.loadRecentServers(); // Reload recent servers after adding the new one
+            })
+            .catch((error) => {
+              console.error('Error saving repository to IndexedDB:', error);
+            });
+        } else {
+          alert('This repository is already added.');
+        }
+      });
+    } else {
+      console.error('Imported server is null');
     }
   }
 
-  setAsDefault(server: any) {
-    localStorage.setItem('defaultServer', JSON.stringify(server));
+  // Method to navigate to the repo-manager page
+  goToRepoManager(server: RepositoryData) {
+    // Assuming you want to pass the repository address or any relevant info
+    this.router.navigate(['/repo-manager'], {
+      queryParams: { repositoryAddress: server.repositoryAddress },
+    });
+  }
+
+  setAsDefault(server: RepositoryData) {
     alert(`Server ${server.name} set as default`);
   }
 
   openServerSetupModal() {
-    this.showServerSetupModal = true; // Open modal
+    this.showServerSetupModal = true;
   }
 
   openImportRepositoryModal() {
@@ -99,7 +131,7 @@ export class RepositoryHomePage {
   }
 
   closeModal() {
-    this.showServerSetupModal = false; // Close modal
+    this.showServerSetupModal = false;
   }
 
   closeImportRepositoryModal() {

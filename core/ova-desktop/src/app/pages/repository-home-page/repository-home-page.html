@@ -5,7 +5,7 @@
             <h1 class="text-3xl font-semibold mb-8">Video Repository</h1>
             <div class="mb-6">
                 <button class="btn btn-primary w-full mb-4" (click)="openServerSetupModal()">New Repository</button>
-                <button class="btn btn-primary w-full mb-4" (click)="openImportRepositoryModal()">Add Local
+                <button class="btn btn-primary w-full mb-4" (click)="openImportRepositoryModal()">Open Local
                     Repository</button>
                 <button class="btn btn-secondary w-full mb-4" (click)="connectServer()">Connect</button>
             </div>
@@ -13,7 +13,7 @@
             <div *ngIf="importedServer">
                 <h2 class="text-xl mb-4">Imported Server</h2>
                 <p><strong>Name:</strong> {{ importedServer.name }}</p>
-                <p><strong>Location:</strong> {{ importedServer.location }}</p>
+                <p><strong>Location:</strong> {{ importedServer.repositoryAddress }}</p>
                 <button class="btn btn-xs btn-outline" (click)="addImportedServer()">Add to Recent Connections</button>
             </div>
 
@@ -32,8 +32,7 @@
                             class="mb-4 bg-base-100 p-4 rounded-lg shadow-md transition-all duration-300 hover:bg-base-200 hover:shadow-xl">
                             <div class="flex items-center justify-between">
                                 <div class="flex flex-col w-3/4 text-left pl-5">
-                                    <span class="text-xl font-semibold ">{{ server.name }}</span>
-                                    <span class="text-sm mt-1">{{ server.location }}</span>
+                                    <span class="text-sm mt-1">{{ server.repositoryAddress }}</span>
                                 </div>
 
                                 <!-- Buttons for connect and manage -->
@@ -41,7 +40,8 @@
                                     <button class="btn btn-soft btn-primary mx-2"
                                         (click)="setAsDefault(server)">Connect</button>
                                     <button class="btn btn-soft btn-primary"
-                                        (click)="setAsDefault(server)">Manage</button>
+                                        (click)="goToRepoManager(server)">Manage</button>
+
 
                                     <!-- DaisyUI Dropdown (three dots) -->
                                     <div class="dropdown dropdown-end">

@@ -11,17 +11,25 @@
 
         <!-- Modal Content Section (Scrollable) -->
         <div class="p-4 space-y-4 overflow-auto" style="flex-grow: 1;">
-            <form (ngSubmit)="saveConfig()" (click)="$event.stopPropagation()">
+            <!-- Removed (ngSubmit)="saveConfig()" as it's no longer needed -->
+            <form (click)="$event.stopPropagation()">
                 <!-- Directory for Server -->
                 <div class="mb-4">
                     <label for="server-directory" class="label">Directory for Server</label>
                     <div class="flex items-center">
                         <input type="text" id="server-directory" name="server-directory"
                             class="input input-bordered w-full" placeholder="Enter directory for server"
-                            [(ngModel)]="config.serverDirectory" readonly required />
+                            [(ngModel)]="config.repositoryAddress" readonly required />
                         <button type="button" class="btn btn-secondary ml-4"
                             (click)="selectDirectory()">Browse...</button>
                     </div>
+                </div>
+
+                <!-- Repository Name -->
+                <div class="mb-4">
+                    <label for="repository-name" class="label">Repository Name</label>
+                    <input type="text" id="repository-name" name="repository-name" class="input input-bordered w-full"
+                        placeholder="Enter repository name" [(ngModel)]="config.name" required />
                 </div>
 
                 <!-- Admin Username and Password in Column Layout -->
@@ -29,14 +37,14 @@
                     <div>
                         <label for="admin-username" class="label">Admin Username</label>
                         <input type="text" id="admin-username" name="admin-username" class="input input-bordered w-full"
-                            placeholder="Enter admin username" [(ngModel)]="config.adminUsername" required />
+                            placeholder="Enter admin username" [(ngModel)]="adminUsername" required />
                     </div>
                     <div>
                         <label for="admin-password" class="label">Admin Password</label>
                         <div class="relative">
                             <input [type]="passwordFieldType" id="admin-password" name="admin-password"
                                 class="input input-bordered w-full" placeholder="Enter admin password"
-                                [(ngModel)]="config.adminPassword" required />
+                                [(ngModel)]="adminPassword" required />
                             <button type="button" class="absolute right-2 top-1/2 transform -translate-y-1/2"
                                 (click)="togglePasswordVisibility()">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"

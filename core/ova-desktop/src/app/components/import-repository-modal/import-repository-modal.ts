@@ -8,7 +8,10 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IndexedDBService } from '../../services/indexeddb-repository.service'; // Import IndexedDBService
+import {
+  IndexedDBService,
+  RepositoryData,
+} from '../../services/indexeddb-repository.service'; // Import IndexedDBService
 import { ElectronService } from '../../services/common-electron.service'; // Import ElectronService
 
 @Component({
@@ -97,7 +100,11 @@ export class ImportRepositoryModalComponent implements OnChanges {
 
   // Save repository information to IndexedDB
   saveRepositoryInfo(folderPath: string) {
-    const metadata = { repositoryAddress: folderPath };
+    const metadata: RepositoryData = {
+      repositoryAddress: folderPath,
+      name: this.getRepositoryName(folderPath), // Set the name, could be extracted from the path or user input
+    };
+
     this.indexedDBService
       .saveRepositoryInfo(metadata) // Use IndexedDB service to save the info
       .then(() => {
@@ -161,5 +168,11 @@ export class ImportRepositoryModalComponent implements OnChanges {
         'Please provide a valid repository address and ensure it contains a .ova-repo folder.'
       );
     }
+  }
+
+  // Helper method to extract the name from the repository address
+  private getRepositoryName(address: string): string {
+    const parts = address.split('/');
+    return parts[parts.length - 1]; // Get the last part of the address as the name
   }
 }

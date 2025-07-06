@@ -12,6 +12,10 @@ import { FormsModule } from '@angular/forms';
 import { ElectronService } from '../../services/common-electron.service';
 import { ConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { OvacliService } from '../../services/ovacli.service'; // Import the OvacliService
+import {
+  IndexedDBService,
+  RepositoryData,
+} from '../../services/indexeddb-repository.service'; // Import IndexedDBService
 
 @Component({
   selector: 'app-create-repository-modal',
@@ -24,11 +28,15 @@ export class CreateRepositoryModalComponent implements OnChanges {
   @Output() closeSettingsEvent = new EventEmitter<void>();
   activeTab: string = 'setup'; // Default active tab
 
-  config = {
-    serverDirectory: '',
-    adminUsername: 'user', // Default admin username
-    adminPassword: 'pass', // Default admin password
+  // config now only holds data relevant to RepositoryData interface
+  config: RepositoryData = {
+    repositoryAddress: '', // This will be the server directory, initialized empty
+    name: '', // Repository name, initialized empty
   };
+
+  // Separate properties for admin username and password, with default values
+  adminUsername: string = 'user';
+  adminPassword: string = 'pass';
 
   isSaving = false; // Flag to track the saving/loading state
   errorMessage: string = ''; // Error message to show if .ova-repo folder exists
@@ -41,7 +49,8 @@ export class CreateRepositoryModalComponent implements OnChanges {
 
   constructor(
     private electronService: ElectronService,
-    private ovacliService: OvacliService // Inject the OvacliService
+    private ovacliService: OvacliService, // Inject the OvacliService
+    private indexedDBService: IndexedDBService // Inject the IndexedDBService
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -71,9 +80,9 @@ export class CreateRepositoryModalComponent implements OnChanges {
             this.showErrorMessage(
               'The selected directory already contains a repository (.ova-repo folder). Please choose another folder.'
             );
-            this.config.serverDirectory = '';
+            this.config.repositoryAddress = ''; // Reset the repository address if folder exists
           } else {
-            this.config.serverDirectory = folderPath;
+            this.config.repositoryAddress = folderPath;
             this.clearErrorMessage();
           }
         }
@@ -101,10 +110,11 @@ export class CreateRepositoryModalComponent implements OnChanges {
 
   resetConfig() {
     this.config = {
-      serverDirectory: '',
-      adminUsername: 'user', // Reset to default username
-      adminPassword: 'pass', // Reset to default password
+      repositoryAddress: '', // Reset to empty value
+      name: '', // Reset the name as well
     };
+    this.adminUsername = 'user'; // Reset admin username to default
+    this.adminPassword = 'pass'; // Reset admin password to default
     this.errorMessage = '';
     this.successMessage = '';
   }
@@ -121,54 +131,80 @@ export class CreateRepositoryModalComponent implements OnChanges {
   onConfirmGenerateRepository() {
     if (this.pendingSave) {
       this.pendingSave = false;
-      this.saveConfig();
+      this.isSaving = true; // Set saving state to true
+
+      const folderPath = this.config.repositoryAddress;
+      const name = this.config.name;
+
+      // Pass the folder path, name, and the component's adminUsername/adminPassword to the OvacliService
+      this.ovacliService
+        .runOvacliInit(folderPath, this.adminUsername, this.adminPassword)
+        .then((result) => {
+          if (result.success) {
+            console.log('Repository initialized:', result.output);
+            this.successMessage = 'Repository initialized successfully!';
+            this.saveRepositoryConfig(folderPath, name); // Save to IndexedDB
+          } else {
+            console.error('Error initializing repository:', result.error);
+            this.errorMessage = `Error: ${result.error}`;
+          }
+        })
+        .catch((error) => {
+          console.error('Error initializing repository:', error);
+          this.errorMessage = `Error: ${error.message}`;
+        })
+        .finally(() => {
+          this.isSaving = false; // Reset saving state
+        });
     }
-
-    const folderPath = this.config.serverDirectory;
-    const username = this.config.adminUsername;
-    const password = this.config.adminPassword;
-
-    // Pass the folder path, username, and password to the OvacliService
-    this.ovacliService
-      .runOvacliInit(folderPath, username, password) // Include username and password
-      .then((result) => {
-        if (result.success) {
-          console.log('Repository initialized:', result.output);
-          this.successMessage = 'Repository initialized successfully!';
-        } else {
-          console.error('Error initializing repository:', result.error);
-          this.errorMessage = `Error: ${result.error}`;
-        }
-      })
-      .catch((error) => {
-        console.error('Error initializing repository:', error);
-        this.errorMessage = `Error: ${error.message}`;
-      });
   }
 
   onCancelGenerateRepository() {
     this.pendingSave = false;
   }
 
-  saveConfig() {
-    if (this.isValidConfig()) {
-      this.isSaving = true;
+  // Save repository configuration to IndexedDB
+  saveRepositoryConfig(folderPath: string, name: string) {
+    const metadata: RepositoryData = {
+      repositoryAddress: folderPath,
+      name: name,
+    };
 
-      setTimeout(() => {
-        console.log('Server Configuration:', this.config);
-        alert('Server configuration saved successfully!');
-        this.isSaving = false;
-      }, 2000);
-    } else {
-      alert('Please fill all the required fields correctly.');
-    }
+    this.indexedDBService
+      .saveRepositoryInfo(metadata) // Use IndexedDB service to save the repository config
+      .then(() => {
+        console.log('Repository configuration saved to IndexedDB');
+        // No need to set successMessage here again, as it's set after ovacliInit
+      })
+      .catch((err) => {
+        console.error('Error saving repository configuration:', err);
+        this.errorMessage = `Error saving configuration: ${err.message}`;
+      });
   }
 
+  // Load the saved repository configuration from IndexedDB
+  loadRepositoryConfig() {
+    this.indexedDBService
+      .loadRepositoryInfo() // Use IndexedDB service to load the repository info
+      .then((data) => {
+        console.log('Loaded repository config:', data);
+        if (data && data.length > 0) {
+          this.config.repositoryAddress = data[0].repositoryAddress;
+          this.config.name = data[0].name;
+          // Note: adminUsername and adminPassword are not loaded from IndexedDB
+          // as they are not part of the RepositoryData interface.
+        }
+      })
+      .catch((err) => {
+        console.error('Error loading repository configuration:', err);
+      });
+  }
+
+  // Checks if the required fields for RepositoryData are filled
   isValidConfig(): boolean {
     return (
-      this.config.adminUsername.trim() !== '' &&
-      this.config.adminPassword.trim() !== '' &&
-      this.config.serverDirectory.trim() !== ''
+      this.config.repositoryAddress.trim() !== '' &&
+      this.config.name.trim() !== ''
     );
   }
 }

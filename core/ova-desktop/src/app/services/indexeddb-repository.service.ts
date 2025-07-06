@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
 
+export interface RepositoryData {
+  id?: number; // Optional because IndexedDB will auto-increment the ID
+  repositoryAddress: string; // Unique address for the repository
+  name: string; // Name of the repository
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -54,7 +60,7 @@ export class IndexedDBService {
         const request = store.getAll();
 
         request.onsuccess = () => {
-          const existingRepositories = request.result;
+          const existingRepositories: RepositoryData[] = request.result;
 
           // Check if any repository has the same address
           const exists = existingRepositories.some(
@@ -75,7 +81,7 @@ export class IndexedDBService {
   }
 
   // Save repository information
-  saveRepositoryInfo(metadata: any): Promise<void> {
+  saveRepositoryInfo(metadata: RepositoryData): Promise<void> {
     return this.openDB().then((db) => {
       return new Promise<void>((resolve, reject) => {
         const transaction = db.transaction(this.storeName, 'readwrite');
@@ -101,9 +107,9 @@ export class IndexedDBService {
   }
 
   // Load repository information
-  loadRepositoryInfo(): Promise<any[]> {
+  loadRepositoryInfo(): Promise<RepositoryData[]> {
     return this.openDB().then((db) => {
-      return new Promise<any[]>((resolve, reject) => {
+      return new Promise<RepositoryData[]>((resolve, reject) => {
         const transaction = db.transaction(this.storeName, 'readonly');
         const store = transaction.objectStore(this.storeName);
 
