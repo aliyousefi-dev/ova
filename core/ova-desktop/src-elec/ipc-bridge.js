@@ -16,7 +16,7 @@ contextBridge.exposeInMainWorld("IPCBridge", {
 
   // New method to listen for shortcut presses
   onShortcutPressed: (callback) => {
-    ipcRenderer.on("log-shortcut", (event, message) => {
+    ipcRenderer.on("key-shortcut", (event, message) => {
       callback(message); // Pass the message received from the main process
     });
   },

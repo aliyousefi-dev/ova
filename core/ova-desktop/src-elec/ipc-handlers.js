@@ -13,7 +13,7 @@ function registerIpcHandlers(mainWindow, getCliPath) {
   require("./ipc-handlers/load-repository-info")();
 
   // Register global shortcut handlers
-  require("./key-shortcuts").registerShortcuts(mainWindow);
+  require("./ipc-handlers/key-shortcuts").registerShortcuts(mainWindow);
 }
 
 module.exports = { registerIpcHandlers };

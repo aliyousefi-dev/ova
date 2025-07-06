@@ -7,8 +7,10 @@ declare var window: any;
   providedIn: 'root',
 })
 export class ShortcutService implements OnDestroy {
-  // Event emitter to notify components when a shortcut is pressed
-  shortcutPressed: EventEmitter<string> = new EventEmitter<string>();
+  // EventEmitters for each specific shortcut
+  ctrlEPressed: EventEmitter<void> = new EventEmitter<void>();
+  ctrlNPressed: EventEmitter<void> = new EventEmitter<void>();
+  ctrlOPressed: EventEmitter<void> = new EventEmitter<void>();
 
   constructor() {
     if (this.isElectron()) {
@@ -30,9 +32,25 @@ export class ShortcutService implements OnDestroy {
     if (this.isElectron()) {
       // Use IPCBridge to listen for the shortcut
       window.IPCBridge.onShortcutPressed((message: string) => {
-        // Emit the shortcut message to components
-        this.shortcutPressed.emit(message);
+        this.handleShortcut(message);
       });
+    }
+  }
+
+  private handleShortcut(message: string) {
+    switch (message) {
+      case 'Ctrl+E pressed!':
+        this.ctrlEPressed.emit();
+        break;
+      case 'Ctrl+N pressed!':
+        this.ctrlNPressed.emit();
+        break;
+      case 'Ctrl+O pressed!':
+        this.ctrlOPressed.emit();
+        break;
+      default:
+        console.log('No specific logic for this shortcut');
+        break;
     }
   }
 

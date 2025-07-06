@@ -24,27 +24,38 @@ export class App implements OnInit {
       document.documentElement.setAttribute('data-theme', 'luxury');
     }
 
-    // Subscribe to the shortcut service to listen for shortcut key presses
-    this.shortcutService.shortcutPressed.subscribe((message: string) => {
-      this.handleShortcut(message);
+    // Subscribe to the individual shortcut events
+    this.subscribeToShortcuts();
+  }
+
+  subscribeToShortcuts() {
+    // Subscribe to each specific shortcut
+    this.shortcutService.ctrlEPressed.subscribe(() => {
+      console.log('Ctrl+E shortcut pressed');
+      this.handleCtrlE();
+    });
+
+    this.shortcutService.ctrlNPressed.subscribe(() => {
+      console.log('Ctrl+N shortcut pressed');
+      this.handleCtrlN();
+    });
+
+    this.shortcutService.ctrlOPressed.subscribe(() => {
+      console.log('Ctrl+O shortcut pressed');
+      this.handleCtrlO();
     });
   }
 
-  // Custom logic to handle specific shortcuts
-  handleShortcut(message: string) {
-    switch (message) {
-      case 'Ctrl+E pressed!':
-        console.log('Handle Ctrl+E shortcut');
-        break;
-      case 'Ctrl+N pressed!':
-        console.log('Handle Ctrl+N shortcut');
-        break;
-      case 'Ctrl+O pressed!':
-        console.log('Handle Ctrl+O shortcut');
-        break;
-      default:
-        console.log('No specific logic for this shortcut');
-        break;
-    }
+  // Handle specific shortcuts
+  handleCtrlE() {
+    // Add custom logic here for Ctrl+E
+  }
+
+  handleCtrlN() {
+    // Add custom logic here for Ctrl+N
+  }
+
+  handleCtrlO() {
+    // Add custom logic here for Ctrl+O
   }
 }
