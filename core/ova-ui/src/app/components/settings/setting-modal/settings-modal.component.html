@@ -1,49 +1,63 @@
-<!-- Use ViewChild to access dialog -->
-<dialog #modal class="modal">
-  <div class="modal-box w-full max-w-5xl max-h-[90vh] overflow-auto relative">
-    <!-- Close Button -->
-    <form method="dialog">
-      <button class="btn btn-sm btn-circle absolute right-4 top-4" (click)="onClose()">✕</button>
-    </form>
+<dialog id="settings_modal" class="modal" [open]="showModal">
+  <div class="modal-box flex flex-col" style="width: 1200px; height: 600px; overflow: hidden;"
+    (click)="$event.stopPropagation()">
+    <!-- Modal Header with Close Button -->
+    <div class="w-full dark:border-gray-700 relative">
+      <div class="p-4 flex items-center justify-start">
+        <h3 class="font-bold text-lg">Settings</h3>
+      </div>
+      <!-- Close Button in top-right corner -->
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="closeModal($event)">✕</button>
+    </div>
 
-    <h2 class="text-2xl font-bold mb-4">Settings</h2>
+    <!-- Tabs for switching between settings -->
+    <div class="tabs tabs-boxed">
+      <a class="tab" [class.tab-active]="activeTab === 'general'" (click)="setActiveTab('general')">General</a>
+      <a class="tab" [class.tab-active]="activeTab === 'theme'" (click)="setActiveTab('theme')">Theme</a>
+      <a class="tab" [class.tab-active]="activeTab === 'proxy'" (click)="setActiveTab('proxy')">Proxy</a>
+    </div>
 
-    <div class="flex flex-col lg:flex-row lg:space-x-6 space-y-6 lg:space-y-0">
-      <!-- Sidebar -->
-      <nav class="lg:w-48 flex flex-col space-y-2 border-b lg:border-b-0 lg:border-r border-base-300 pb-4 lg:pb-0 lg:pr-4">
-        <button class="btn btn-ghost justify-start" [class.btn-primary]="activeTab === 'theme'" (click)="setActiveTab('theme')">Theme</button>
-        <button class="btn btn-ghost justify-start" [class.btn-primary]="activeTab === 'backend'" (click)="setActiveTab('backend')">Backend Config</button>
-      </nav>
+    <!-- Modal Content Section (Scrollable) -->
+    <div class="p-4 space-y-4 overflow-auto" style="flex-grow: 1;">
+      <!-- General Tab Content -->
+      <div *ngIf="activeTab === 'general'" class="max-w-full">
+        <p class="py-4">General settings content goes here.</p>
+      </div>
 
-      <!-- Content -->
-      <section class="flex-1 space-y-4">
-        <ng-container *ngIf="activeTab === 'theme'">
-          <h3 class="text-xl font-semibold">Theme</h3>
-          <p class="text-sm text-base-content/70">Choose your preferred theme for the app.</p>
-          <app-theme-card
-            [themes]="themes"
-            [selectedTheme]="selectedTheme"
-            (themeChange)="selectTheme($event)"
-          />
-        </ng-container>
+      <!-- Theme Tab Content -->
+      <div *ngIf="activeTab === 'theme'" class="max-w-full">
+        <p class="py-4">Choose your theme:</p>
+        <div class="form-control w-full max-w-xl p-4">
+          <div class="flex flex-wrap gap-2">
+            <button class="btn btn-sm" *ngFor="let theme of themes" (click)="setTheme(theme)"
+              [class.btn-active]="selectedTheme === theme">{{ theme }}</button>
+          </div>
+        </div>
+      </div>
 
-        <ng-container *ngIf="activeTab === 'backend'">
-          <h3 class="text-xl font-semibold">Backend Configuration</h3>
-          <p class="text-sm text-base-content/70">Set the base URL for the API server your app should connect to.</p>
+      <!-- Proxy Tab Content -->
+      <div *ngIf="activeTab === 'proxy'" class="max-w-full">
+        <p class="py-4">Configure your proxy settings:</p>
+        <div class="form-control w-full max-w-xl p-4">
+          <label for="proxy-address" class="label">Proxy Address:</label>
+          <input type="text" id="proxy-address" class="input input-bordered w-full" [(ngModel)]="proxyAddress"
+            placeholder="Enter proxy address" />
 
-          <label class="form-control w-full mt-2">
-            <span class="label-text">API Base URL</span>
-            <input class="input input-bordered w-full" [(ngModel)]="apiBaseUrl" placeholder="/api/v1" />
-          </label>
+          <label for="proxy-port" class="label">Proxy Port:</label>
+          <input type="number" id="proxy-port" class="input input-bordered w-full" [(ngModel)]="proxyPort"
+            placeholder="Enter proxy port" />
 
-          <button class="btn btn-primary mt-4" (click)="onSaveBackendConfig()">Save</button>
-        </ng-container>
-      </section>
+          <label for="proxy-user" class="label">Username:</label>
+          <input type="text" id="proxy-user" class="input input-bordered w-full" [(ngModel)]="proxyUser"
+            placeholder="Enter username" />
+
+          <label for="proxy-password" class="label">Password:</label>
+          <input type="password" id="proxy-password" class="input input-bordered w-full" [(ngModel)]="proxyPassword"
+            placeholder="Enter password" />
+
+          <button class="btn btn-primary mt-4" (click)="saveProxySettings()">Save Proxy Settings</button>
+        </div>
+      </div>
     </div>
   </div>
-
-  <!-- Backdrop -->
-  <form method="dialog" class="modal-backdrop">
-    <button (click)="onClose()">close</button>
-  </form>
 </dialog>

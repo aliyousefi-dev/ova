@@ -6,9 +6,9 @@
       <!-- Video action bar, title, player, metadata, panels -->
       <div class="flex flex-col py-3">
         <app-video-action-bar [videoId]="video.videoId" [isSaved]="isSaved" [loadingSavedVideo]="loadingSavedVideo"
-          (toggleSaved)="toggleSaved()" (addToPlaylist)="addToPlaylist($event)"
-          [getCurrentTimeFn]="getCurrentTimeFromPlayer" [videoDurationSeconds]="video.durationSeconds"
-          [videoUploadedAt]="video.uploadedAt" [videoResolution]="video.resolution"></app-video-action-bar>
+          (toggleSaved)="toggleSaved()" [getCurrentTimeFn]="getCurrentTimeFromPlayer"
+          [videoDurationSeconds]="video.durationSeconds" [videoUploadedAt]="video.uploadedAt"
+          [videoResolution]="video.resolution"></app-video-action-bar>
       </div>
 
       <app-video-title-bar [videoTitle]="video.title"></app-video-title-bar>

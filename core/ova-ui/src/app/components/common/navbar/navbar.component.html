@@ -14,7 +14,7 @@
   <!-- Settings and profile buttons -->
   <div class="flex items-center gap-5 flex-shrink-0 ml-6">
     <button class="btn btn-ghost btn-circle" title="inbox">
-      <i class='bx  bx-envelope text-2xl'></i>
+      <i class='bx bx-envelope text-2xl'></i>
     </button>
 
     <button class="btn btn-ghost btn-circle" title="Settings" (click)="openSettingsModal()" aria-label="Settings">
@@ -41,7 +41,7 @@
 <!-- Main content wrapper: padding-top for header, padding-left for sidebar -->
 <div class="pt-14 pl-0 md:pl-64 min-h-screen flex flex-col bg-base-200">
   <!-- Settings modal -->
-  <app-settings-modal [isOpen]="isSettingsModalOpen" (close)="closeSettingsModal()"></app-settings-modal>
+  <app-settings-modal [showModal]="showSettingsModal" (close)="closeSettingsModal()"></app-settings-modal>
 
   <!-- Main content area -->
   <div class="flex-1 pb-20">

@@ -7,25 +7,31 @@ import {
   ElementRef,
   OnChanges,
   SimpleChanges,
+  OnInit,
 } from '@angular/core';
-
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ThemeCardComponent } from '../theme-card/theme-card.component';
 
 @Component({
   selector: 'app-settings-modal',
   standalone: true,
   templateUrl: './settings-modal.component.html',
-  imports: [CommonModule, FormsModule, ThemeCardComponent],
-  styles: [``],
+  imports: [CommonModule, FormsModule], // Imports for Angular modules
+  styles: [
+    `
+      .success-message {
+        color: green;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+    `,
+  ],
 })
-export class SettingsModalComponent implements OnChanges {
-  @Input() isOpen = false;
+export class SettingsModalComponent implements OnChanges, OnInit {
+  @Input() showModal = false;
   @Output() close = new EventEmitter<void>();
 
-  @ViewChild('modal') modalRef!: ElementRef<HTMLDialogElement>;
-
+  // Remove modalRef usage since we're handling visibility via `showModal`
   themes = [
     'light',
     'dark',
@@ -63,10 +69,15 @@ export class SettingsModalComponent implements OnChanges {
   ];
 
   selectedTheme = 'light';
-  activeTab: 'theme' | 'backend' = 'theme';
+  activeTab: 'general' | 'theme' | 'proxy' = 'general'; // Default tab is 'general'
 
-  // Backend Config
-  apiBaseUrl = localStorage.getItem('apiBaseUrl') || '/api/v1';
+  // Proxy Config properties
+  proxyAddress = localStorage.getItem('proxyAddress') || '';
+  proxyPort = localStorage.getItem('proxyPort')
+    ? parseInt(localStorage.getItem('proxyPort')!, 10)
+    : null;
+  proxyUser = localStorage.getItem('proxyUser') || '';
+  proxyPassword = localStorage.getItem('proxyPassword') || '';
 
   ngOnInit() {
     const savedTheme = localStorage.getItem('theme') || 'light';
@@ -75,32 +86,46 @@ export class SettingsModalComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['isOpen'] && this.modalRef) {
-      if (this.isOpen) {
-        this.modalRef.nativeElement.showModal();
+    if (changes['showModal']) {
+      if (this.showModal) {
+        // Open the modal if showModal is true
+        this.showModal = true;
       } else {
-        this.modalRef.nativeElement.close();
+        // Close the modal if showModal is false
+        this.showModal = false;
       }
     }
   }
 
-  setActiveTab(tab: 'theme' | 'backend') {
+  setActiveTab(tab: 'general' | 'theme' | 'proxy') {
     this.activeTab = tab;
   }
 
-  selectTheme(theme: string) {
+  setTheme(theme: string) {
     this.selectedTheme = theme;
     localStorage.setItem('theme', theme);
     document.documentElement.setAttribute('data-theme', theme);
   }
 
-  onSaveBackendConfig() {
-    localStorage.setItem('apiBaseUrl', this.apiBaseUrl);
-    alert('API base URL saved!');
+  saveProxySettings() {
+    localStorage.setItem('proxyAddress', this.proxyAddress);
+    localStorage.setItem(
+      'proxyPort',
+      this.proxyPort ? this.proxyPort.toString() : ''
+    );
+    localStorage.setItem('proxyUser', this.proxyUser);
+    localStorage.setItem('proxyPassword', this.proxyPassword);
+    console.log('Proxy settings saved:', {
+      address: this.proxyAddress,
+      port: this.proxyPort,
+      user: this.proxyUser,
+      password: this.proxyPassword ? '********' : '',
+    });
   }
 
-  onClose() {
-    this.modalRef.nativeElement.close();
-    this.close.emit();
+  closeModal(event?: Event) {
+    event?.stopPropagation(); // Prevent the event from propagating
+    this.showModal = false; // Close the modal
+    this.close.emit(); // Emit close event to parent component
   }
 }

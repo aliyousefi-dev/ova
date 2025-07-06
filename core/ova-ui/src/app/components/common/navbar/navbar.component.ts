@@ -25,7 +25,7 @@ export class NavBarComponent implements OnInit {
   @Input() title = ''; // sidebar title
 
   username = '';
-  isSettingsModalOpen = false;
+  showSettingsModal = false; // Changed from isSettingsModalOpen to showSettingsModal
   dropdownOpen = false;
 
   // This will hold the dynamic page title like 'Discover', 'Library', etc.
@@ -63,12 +63,12 @@ export class NavBarComponent implements OnInit {
   }
 
   openSettingsModal(): void {
-    this.isSettingsModalOpen = true;
+    this.showSettingsModal = true; // Updated property name
     this.dropdownOpen = false; // close dropdown if open
   }
 
   closeSettingsModal(): void {
-    this.isSettingsModalOpen = false;
+    this.showSettingsModal = false; // Updated property name
     this.username = localStorage.getItem('username') || 'Guest';
   }
 
