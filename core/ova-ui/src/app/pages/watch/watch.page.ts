@@ -5,7 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { VideoData } from '../../data-types/video-data';
 import { VideoApiService } from '../../services/api/video-api.service';
 import { SavedApiService } from '../../services/api/saved-api.service';
-import { PlaylistModalComponent } from '../../components/playlist/playlist-modal/playlist-modal.component';
 import { PlaylistAPIService } from '../../services/api/playlist-api.service';
 import { WatchedApiService } from '../../services/api/watched-api.service';
 import { VidstackPlayerComponent } from '../../components/video-player/vidstack-player/vidstack-player.component';
@@ -28,7 +27,6 @@ import { ViewChild } from '@angular/core';
   imports: [
     CommonModule,
     FormsModule,
-    PlaylistModalComponent,
     VidstackPlayerComponent,
     DefaultVideoPlayerComponent,
     // Updated: Add new child components and remove the old VideoDetailsComponent

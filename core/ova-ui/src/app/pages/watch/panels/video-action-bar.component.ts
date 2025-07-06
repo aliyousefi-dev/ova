@@ -21,7 +21,7 @@ import { VideoApiService } from '../../../services/api/video-api.service';
   styles: [],
 })
 export class VideoActionBarComponent {
-  @Input() videoId?: string;
+  @Input() videoId?: string | null;
   @Input() getCurrentTimeFn?: () => number;
 
   @Input() videoDurationSeconds?: number;
