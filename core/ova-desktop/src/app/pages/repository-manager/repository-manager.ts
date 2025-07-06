@@ -1,35 +1,38 @@
 import { Component, OnInit } from '@angular/core';
-import { NgIf, NgClass } from '@angular/common'; // Import NgIf and NgClass
+import { ActivatedRoute } from '@angular/router'; // Import ActivatedRoute for query params
+import { CommonModule } from '@angular/common';
 
 @Component({
   standalone: true,
-  imports: [NgIf, NgClass], // Add NgIf and NgClass to imports
-  selector: 'selector-name',
+  imports: [CommonModule], // Import necessary modules
+  selector: 'app-repository-manager',
   templateUrl: 'repository-manager.html',
 })
 export class RepositoryManagerPage implements OnInit {
-  activeTab: string = 'general'; // Initialize with the default active tab
-  loading: boolean = false; // New property to track loading state
+  activeTab: string = 'general'; // Default active tab
+  loading: boolean = false; // Loading state
+  repositoryAddress: string = ''; // Repository address
+  videoCount: number = 500; // Example data
+  userCount: number = 2; // Example data
+  storageUsed: string = '200 GB'; // Example data
 
-  constructor() {}
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
-    // Optionally, you can trigger an initial load if 'general' tab requires data
-    // this.setActiveTab('general');
+    // Retrieve repository address from the query params
+    this.route.queryParams.subscribe((params) => {
+      this.repositoryAddress =
+        params['repositoryAddress'] || 'No repository selected'; // Default if no param
+    });
   }
 
   setActiveTab(tab: string) {
-    if (this.activeTab === tab) {
-      return; // Do nothing if the same tab is clicked
-    }
-
-    this.loading = true; // Set loading to true immediately
-    this.activeTab = ''; // Clear activeTab temporarily to hide current content
-
-    // Simulate a 1-second delay
+    if (this.activeTab === tab) return; // Prevent reloading if same tab is clicked
+    this.loading = true;
+    this.activeTab = ''; // Temporarily clear the active tab content
     setTimeout(() => {
-      this.activeTab = tab; // Set the new active tab after the delay
-      this.loading = false; // Set loading to false once content is ready
-    }, 300); // 1000 milliseconds = 1 second
+      this.activeTab = tab;
+      this.loading = false;
+    }, 300); // Simulate a loading time of 300ms
   }
 }
