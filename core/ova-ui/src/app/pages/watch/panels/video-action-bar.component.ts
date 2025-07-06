@@ -12,11 +12,12 @@ import {
   Film,
 } from 'lucide-angular';
 import { VideoApiService } from '../../../services/api/video-api.service';
+import { PlaylistModalComponent } from '../../../components/playlist/playlist-modal/playlist-modal.component';
 
 @Component({
   selector: 'app-video-action-bar',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, PlaylistModalComponent], // Add PlaylistModalComponent to imports
   templateUrl: './video-action-bar.component.html',
   styles: [],
 })
@@ -32,7 +33,7 @@ export class VideoActionBarComponent {
   @Input() loadingSavedVideo = false;
 
   @Output() toggleSaved = new EventEmitter<void>();
-  @Output() addToPlaylist = new EventEmitter<MouseEvent>();
+  // @Output() addToPlaylist = new EventEmitter<MouseEvent>(); // Removed: now handled internally
 
   readonly DownloadIcon = Download;
   readonly PlusSquare = PlusSquare;
@@ -47,6 +48,8 @@ export class VideoActionBarComponent {
   trimMode = false;
   trimStart: number | null = null;
   trimEnd: number | null = null;
+
+  playlistModalVisible = false; // New property to control modal visibility
 
   constructor(private videoApi: VideoApiService) {}
 
@@ -114,5 +117,19 @@ export class VideoActionBarComponent {
       this.trimStart = null;
       this.trimEnd = null;
     }
+  }
+
+  /**
+   * Opens the playlist modal.
+   */
+  openPlaylistModal(): void {
+    this.playlistModalVisible = true;
+  }
+
+  /**
+   * Closes the playlist modal.
+   */
+  closePlaylistModal(): void {
+    this.playlistModalVisible = false;
   }
 }

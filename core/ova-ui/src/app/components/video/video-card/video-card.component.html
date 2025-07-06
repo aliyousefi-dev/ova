@@ -46,7 +46,8 @@
 
       <div class="dropdown dropdown-end" (click)="$event.stopPropagation()">
         <div tabindex="0" role="button" class="btn btn-xs btn-ghost z-30">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" class="h-4 w-4" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12h.01M12 12h.01M18 12h.01" />
           </svg>
         </div>
@@ -68,5 +69,7 @@
   </div>
 </div>
 
-<app-playlist-modal [showModal]="playlistModalVisible" [playlists]="playlists" (close)="closePlaylistModal($event)">
+<!-- Updated app-playlist-modal usage -->
+<app-playlist-modal [showModal]="playlistModalVisible" [selectedVideoId]="this.video.videoId"
+  (close)="closePlaylistModal()">
 </app-playlist-modal>

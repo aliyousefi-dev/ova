@@ -6,14 +6,15 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router'; // Ensure Router is imported from @angular/router
+import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PlaylistModalComponent } from '../../playlist/playlist-modal/playlist-modal.component';
-import { PlaylistAPIService } from '../../../services/api/playlist-api.service';
+// Removed PlaylistAPIService as it's no longer directly used for playlist management here
 import { VideoApiService } from '../../../services/api/video-api.service';
 import { SavedApiService } from '../../../services/api/saved-api.service';
 import { VideoData } from '../../../data-types/video-data';
 import { TagLinkComponent } from '../tag-link/tag-link.component';
+import { UtilsService } from '../../../services/utils.service'; // Import UtilsService
 
 @Component({
   selector: 'app-video-card',
@@ -34,30 +35,28 @@ import { TagLinkComponent } from '../tag-link/tag-link.component';
 export class VideoCardComponent implements OnChanges {
   @Input() video!: VideoData;
   @Input() isSaved: boolean = false;
-  @Input() username: string = '';
-  @Input() isWatched: boolean = false; // Add the new input for 'isWatched'
+  @Input() username: string = ''; // Keep username input for other components that might use it
+  @Input() isWatched: boolean = false;
 
   hovering = false;
-  Saved = false;
+  // 'Saved' property is no longer needed as 'isSaved' directly reflects the state
+  // Saved = false;
 
   playlistModalVisible = false;
-  playlists: { title: string; slug: string; checked: boolean }[] = [];
-  originalPlaylists: { title: string; slug: string; checked: boolean }[] = [];
+  // Removed 'playlists' and 'originalPlaylists' as they are now managed inside PlaylistModalComponent
 
   constructor(
-    private playlistapi: PlaylistAPIService,
+    // Removed private playlistapi: PlaylistAPIService,
     private savedapi: SavedApiService,
     private videoapi: VideoApiService,
     private router: Router,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private utilsService: UtilsService // Inject UtilsService to get username for other API calls
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
-    // You might want to react to changes in `isWatched` here if needed,
-    // for example, to update the UI based on the new value.
     if (changes['isWatched']) {
       // console.log('isWatched changed to:', changes['isWatched'].currentValue);
-      // Perform any UI updates or logic based on the new isWatched value
     }
     this.cd.detectChanges(); // Ensure bindings update when video input changes
   }
@@ -81,99 +80,56 @@ export class VideoCardComponent implements OnChanges {
     return '';
   }
 
-  addToPlaylist(event: MouseEvent) {
+  addToPlaylist(event: MouseEvent): void {
     event.stopPropagation();
-    if (!this.username) return;
-
-    this.playlistapi.getUserPlaylists(this.username).subscribe((response) => {
-      const pls = response.data.playlists;
-      const checkList = pls.map((p) => ({ ...p, checked: false }));
-
-      Promise.all(
-        checkList.map(
-          (playlist) =>
-            new Promise<void>((resolve) => {
-              this.playlistapi
-                .getUserPlaylistBySlug(this.username, playlist.slug)
-                .subscribe((plData) => {
-                  playlist.checked = plData.data.videoIds.includes(
-                    this.video.videoId
-                  );
-                  resolve();
-                });
-            })
-        )
-      ).then(() => {
-        this.playlists = checkList;
-        this.originalPlaylists = checkList.map((p) => ({ ...p }));
-        this.playlistModalVisible = true;
-        this.cd.detectChanges();
-      });
-    });
+    // No need to check this.username here, the modal will fetch it
+    this.playlistModalVisible = true;
+    this.cd.detectChanges();
   }
 
-  closePlaylistModal(
-    updatedPlaylists: { title: string; slug: string; checked: boolean }[]
-  ) {
+  closePlaylistModal(): void {
     this.playlistModalVisible = false;
-    if (!this.username) return;
-
-    updatedPlaylists.forEach((playlist) => {
-      const original = this.originalPlaylists.find(
-        (p) => p.slug === playlist.slug
-      );
-      if (!original) return;
-
-      if (playlist.checked && !original.checked) {
-        this.playlistapi
-          .addVideoToPlaylist(this.username, playlist.slug, this.video.videoId)
-          .subscribe();
-      } else if (!playlist.checked && original.checked) {
-        this.playlistapi
-          .deleteVideoFromPlaylist(
-            this.username,
-            playlist.slug,
-            this.video.videoId
-          )
-          .subscribe();
-      }
-    });
+    this.cd.detectChanges();
   }
 
-  toggleSaved(event: MouseEvent) {
+  toggleSaved(event: MouseEvent): void {
     event.stopPropagation();
-    if (!this.username) return;
+    const username = this.utilsService.getUsername(); // Get username from UtilsService
+    if (!username) {
+      console.warn('Cannot save/unsave: Username is not available.');
+      return;
+    }
 
-    this.Saved = true;
+    // this.Saved = true; // No longer needed
 
     if (this.isSaved) {
-      this.savedapi
-        .removeUserSaved(this.username, this.video.videoId)
-        .subscribe({
-          next: () => {
-            this.isSaved = false;
-            this.Saved = false;
-            this.cd.detectChanges();
-          },
-          error: () => {
-            this.Saved = false;
-          },
-        });
-    } else {
-      this.savedapi.addUserSaved(this.username, this.video.videoId).subscribe({
+      this.savedapi.removeUserSaved(username, this.video.videoId).subscribe({
         next: () => {
-          this.isSaved = true;
-          this.Saved = false;
+          this.isSaved = false;
+          // this.Saved = false;
           this.cd.detectChanges();
         },
-        error: () => {
-          this.Saved = false;
+        error: (err) => {
+          console.error('Error removing from saved:', err);
+          // this.Saved = false;
+        },
+      });
+    } else {
+      this.savedapi.addUserSaved(username, this.video.videoId).subscribe({
+        next: () => {
+          this.isSaved = true;
+          // this.Saved = false;
+          this.cd.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error adding to saved:', err);
+          // this.Saved = false;
         },
       });
     }
   }
 
-  download(event: MouseEvent) {
+  download(event: MouseEvent): void {
     event.stopPropagation();
     const streamUrl = this.videoapi.getDownloadUrl(this.video.videoId);
     const anchor = document.createElement('a');
@@ -214,7 +170,7 @@ export class VideoCardComponent implements OnChanges {
     return 'just now';
   }
 
-  navigateToWatch() {
+  navigateToWatch(): void {
     this.router.navigate(['/watch', this.video.videoId]);
   }
 }
