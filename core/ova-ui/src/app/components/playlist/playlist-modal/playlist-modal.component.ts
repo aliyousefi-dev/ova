@@ -18,7 +18,7 @@ import { LucideAngularModule, Edit2 } from 'lucide-angular';
   templateUrl: './playlist-modal.component.html',
 })
 export class PlaylistModalComponent implements OnChanges {
-  @Input() visible = false;
+  @Input() showModal = false;
 
   @Input() playlists: {
     title: string;

@@ -1,70 +1,39 @@
-<div
-  class="h-full flex flex-col cursor-pointer overflow-visible relative rounded-lg"
-  (mouseenter)="hovering = true"
-  (mouseleave)="hovering = false"
->
-  <div
-    class="block w-full h-40 rounded-lg overflow-hidden relative"
-    (click)="navigateToWatch()"
-  >
-    <figure
-      class="relative w-full h-40 rounded-lg overflow-hidden bg-transparent"
-    >
+<div class="h-full flex flex-col cursor-pointer overflow-visible relative rounded-lg" (mouseenter)="hovering = true"
+  (mouseleave)="hovering = false">
+  <div class="block w-full h-40 rounded-lg overflow-hidden relative" (click)="navigateToWatch()">
+    <figure class="relative w-full h-40 rounded-lg overflow-hidden bg-transparent">
       <div *ngIf="isSaved" class="absolute bottom-2 left-2 z-30">
-        <button
-          class="btn btn-xs btn-circle bg-black/60 hover:bg-black text-yellow-500 border-none"
-          title="Add to Saved"
-          (click)="$event.preventDefault(); $event.stopPropagation()"
-        >
+        <button class="btn btn-xs btn-circle bg-black/60 hover:bg-black text-yellow-500 border-none"
+          title="Add to Saved" (click)="$event.preventDefault(); $event.stopPropagation()">
           <i class="bx bxs-star text-sm"></i>
         </button>
       </div>
 
-      <div
-        *ngIf="isWatched"
-        class="absolute top-2 right-2 bg-black text-white text-xs font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 z-30 shadow"
-      >
+      <div *ngIf="isWatched"
+        class="absolute top-2 right-2 bg-black text-white text-xs font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 z-30 shadow">
         <span>Watched</span>
       </div>
 
-      <img
-        [src]="getThumbnailUrl()"
-        [alt]="video.title"
+      <img [src]="getThumbnailUrl()" [alt]="video.title"
         class="w-full h-full object-cover absolute top-0 left-0 transition-opacity duration-200"
-        [class.opacity-0]="hovering"
-        [class.opacity-100]="!hovering"
-      />
-      <video
-        [src]="getPreviewUrl()"
-        autoplay
-        muted
-        loop
-        playsinline
+        [class.opacity-0]="hovering" [class.opacity-100]="!hovering" />
+      <video [src]="getPreviewUrl()" autoplay muted loop playsinline
         class="w-full h-full object-cover absolute top-0 left-0 transition-opacity duration-200"
-        [class.opacity-100]="hovering"
-        [class.opacity-0]="!hovering"
-        style="pointer-events: none"
-      ></video>
+        [class.opacity-100]="hovering" [class.opacity-0]="!hovering" style="pointer-events: none"></video>
 
-      <div
-        class="absolute bottom-2 right-2 bg-black text-white bg-opacity-60 text-xs px-2 py-1 rounded"
-      >
+      <div class="absolute bottom-2 right-2 bg-black text-white bg-opacity-60 text-xs px-2 py-1 rounded">
         {{ formatDuration(video.durationSeconds) }}
       </div>
 
-      <div
-        *ngIf="videoQuality"
-        class="absolute top-2 left-2 bg-black bg-opacity-60 text-white text-xs font-semibold px-2 py-0.5 rounded"
-      >
+      <div *ngIf="videoQuality"
+        class="absolute top-2 left-2 bg-black bg-opacity-60 text-white text-xs font-semibold px-2 py-0.5 rounded">
         {{ videoQuality }}
       </div>
     </figure>
   </div>
 
-  <div
-    class="flex flex-col gap-2 p-4 mt-2 rounded-lg shadow-sm hover:shadow-md bg-base-100 z-20"
-    (click)="$event.stopPropagation()"
-  >
+  <div class="flex flex-col gap-2 p-4 mt-2 rounded-lg shadow-sm hover:shadow-md bg-base-100 z-20"
+    (click)="$event.stopPropagation()">
     <div class="flex items-start justify-between">
       <div class="flex-1">
         <h2 class="font-semibold line-clamp-2 leading-snug">
@@ -77,25 +46,11 @@
 
       <div class="dropdown dropdown-end" (click)="$event.stopPropagation()">
         <div tabindex="0" role="button" class="btn btn-xs btn-ghost z-30">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 12h.01M12 12h.01M18 12h.01"
-            />
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12h.01M12 12h.01M18 12h.01" />
           </svg>
         </div>
-        <ul
-          tabindex="0"
-          class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-44 z-40"
-        >
+        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-44 z-40">
           <li><a (click)="download($event)">Download</a></li>
           <li>
             <a (click)="toggleSaved($event)">
@@ -108,18 +63,10 @@
     </div>
 
     <div class="flex flex-wrap gap-1 mt-2">
-      <app-tag-link
-        *ngFor="let tag of video.tags"
-        [tag]="tag"
-        class="mr-1"
-      ></app-tag-link>
+      <app-tag-link *ngFor="let tag of video.tags" [tag]="tag" class="mr-1"></app-tag-link>
     </div>
   </div>
 </div>
 
-<app-playlist-modal
-  [visible]="playlistModalVisible"
-  [playlists]="playlists"
-  (close)="closePlaylistModal($event)"
->
+<app-playlist-modal [showModal]="playlistModalVisible" [playlists]="playlists" (close)="closePlaylistModal($event)">
 </app-playlist-modal>
