@@ -11,7 +11,7 @@ function getCliPath() {
       "ovacli.exe"
     );
   } else {
-    return path.join(__dirname, "ova-cli", "ovacli.exe");
+    return path.join(__dirname, "..", "thirdparty", "ova-cli", "ovacli.exe");
   }
 }
 

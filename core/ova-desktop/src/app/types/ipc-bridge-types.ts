@@ -1,3 +1,4 @@
+// ipc-bridge-types.ts
 export {}; // This makes it a module and allows "declare global"
 
 declare global {
@@ -9,6 +10,7 @@ declare global {
       joinPaths: (folderPath: string, folderName: string) => Promise<string>;
       saveRepositoryInfo: (metadata: any) => Promise<void>; // New method
       loadRepositoryInfo: () => Promise<any>; // New method
+      runOvacli: (args: string[]) => Promise<any>; // <-- Add this method
     };
   }
 }

@@ -112,7 +112,7 @@ export class CreateRepositoryModalComponent implements OnChanges {
   onGenerateRepository() {
     if (this.isValidConfig() && !this.isSaving) {
       this.confirmModal.open(
-        'Are you sure you want to generate the repository with this configuration?'
+        'Are you sure you want to generate the repository on this folder?'
       );
       this.pendingSave = true;
     }

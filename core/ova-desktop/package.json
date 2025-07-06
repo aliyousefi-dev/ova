@@ -63,7 +63,7 @@
       },
       {
         "from": "thirdparty/ova-cli",
-        "to": "ova-cli",
+        "to": "thirdparty/ova-cli",
         "filter": [
           "**/*"
         ]

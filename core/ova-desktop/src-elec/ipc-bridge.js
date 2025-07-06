@@ -1,5 +1,4 @@
 // ipc-bridge.js
-
 const { contextBridge, ipcRenderer } = require("electron");
 
 console.log("IPC Bridge is loaded on Web and ready.");
@@ -20,4 +19,7 @@ contextBridge.exposeInMainWorld("IPCBridge", {
       callback(message); // Pass the message received from the main process
     });
   },
+
+  // Exposing the "ovacli" function to the renderer process
+  runOvacli: (args) => ipcRenderer.invoke("ovacli", args), // This will be used to run the CLI
 });

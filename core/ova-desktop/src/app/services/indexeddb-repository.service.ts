@@ -44,6 +44,36 @@ export class IndexedDBService {
     });
   }
 
+  // Check if repository already exists by its address
+  checkRepositoryExists(repositoryAddress: string): Promise<boolean> {
+    return this.openDB().then((db) => {
+      return new Promise<boolean>((resolve, reject) => {
+        const transaction = db.transaction(this.storeName, 'readonly');
+        const store = transaction.objectStore(this.storeName);
+
+        const request = store.getAll();
+
+        request.onsuccess = () => {
+          const existingRepositories = request.result;
+
+          // Check if any repository has the same address
+          const exists = existingRepositories.some(
+            (repo) => repo.repositoryAddress === repositoryAddress
+          );
+          resolve(exists);
+        };
+
+        request.onerror = (event: Event) => {
+          console.error(
+            'Error checking existing repositories:',
+            (event.target as IDBRequest).error
+          );
+          reject((event.target as IDBRequest).error);
+        };
+      });
+    });
+  }
+
   // Save repository information
   saveRepositoryInfo(metadata: any): Promise<void> {
     return this.openDB().then((db) => {
@@ -51,16 +81,15 @@ export class IndexedDBService {
         const transaction = db.transaction(this.storeName, 'readwrite');
         const store = transaction.objectStore(this.storeName);
 
-        const request = store.add(metadata);
+        // Add the new repository since it doesn't exist (checked elsewhere)
+        const addRequest = store.add(metadata);
 
-        // Handle success
-        request.onsuccess = () => {
+        addRequest.onsuccess = () => {
           console.log('Repository info saved successfully:', metadata);
           resolve();
         };
 
-        // Handle error
-        request.onerror = (event: Event) => {
+        addRequest.onerror = (event: Event) => {
           console.error(
             'Error saving repository info:',
             (event.target as IDBRequest).error
