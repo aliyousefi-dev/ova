@@ -1,0 +1,48 @@
+<section id="videos">
+    <div class="flex flex-col md:flex-row items-center justify-between mb-10">
+        <div class="w-full md:w-3/4 mb-4 md:mb-0">
+            <input type="text" placeholder="Search videos..." [(ngModel)]="searchQuery"
+                class="input input-bordered w-full" (ngModelChange)="onSearchQueryChange()" />
+        </div>
+        <div class="w-full md:w-1/4 md:ml-4 flex justify-end">
+            <button class="btn btn-primary" (click)="refreshVideos()" [disabled]="refreshing || loading">
+                <span *ngIf="!refreshing"> Refresh
+                </span>
+                <span *ngIf="refreshing">
+                    <span class="loading loading-spinner loading-sm mr-2"></span> Refreshing...
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <div *ngIf="loading && !refreshing" class="flex justify-center items-center">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+
+    <div *ngIf="!loading">
+        <div class="mb-6 ">
+            <strong>Total Videos:</strong> {{ videoCount }}
+        </div>
+        <div class="overflow-x-auto rounded-lg shadow-md h-full">
+            <div class="overflow-y-auto h-[calc(100vh-300px)]">
+                <table class="table w-full table-zebra">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Video Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let video of filteredVideos()">
+                            <td>{{ video.ID }}</td>
+                            <td>{{ video.Path }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div *ngIf="filteredVideos().length === 0 && !loading" class="text-center py-4 text-gray-500">
+                    No videos found.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

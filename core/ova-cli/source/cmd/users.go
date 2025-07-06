@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -29,35 +30,73 @@ var userListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all registered users",
 	Run: func(cmd *cobra.Command, args []string) {
-		repository, err := initRepo()
-		if err != nil {
-			pterm.Error.Printf("Failed to initialize repository: %v\n", err)
+		// Get the repository address from the --repository flag
+		repoAddress, _ := cmd.Flags().GetString("repository")
+
+		// If repository address is not provided, use the current working directory
+		if repoAddress == "" {
+			var err error
+			repoAddress, err = os.Getwd()
+			if err != nil {
+				fmt.Println("Error getting current working directory:", err)
+				os.Exit(1)
+			}
+		}
+
+		// Initialize the repository
+		repository := repo.NewRepoManager(repoAddress)
+		if err := repository.Init(); err != nil {
+			fmt.Println("Failed to initialize repository:", err)
 			os.Exit(1)
 		}
 
 		users, err := repository.GetAllUsers()
 		if err != nil {
-			pterm.Error.Printf("Error loading users: %v\n", err)
+			fmt.Printf("Error loading users: %v\n", err)
 			os.Exit(1)
 		}
 
-		if len(users) == 0 {
-			pterm.Info.Println("No users found.")
-			return
-		}
+		// Check if --json flag is set
+		jsonFlag, _ := cmd.Flags().GetBool("json")
+		if jsonFlag {
+			// If --json is passed, return data in JSON format
+			userData := make([]map[string]string, len(users))
+			for i, u := range users {
+				userData[i] = map[string]string{
+					"Username":  u.Username,
+					"Roles":     strings.Join(u.Roles, ", "),
+					"CreatedAt": u.CreatedAt.Format("2006-01-02 15:04:05"), // Format time for JSON
+				}
+			}
 
-		pterm.Info.Println("Registered users:")
-		rows := pterm.TableData{{"Username", "Roles", "Created At"}}
-		for _, user := range users {
-			rows = append(rows, []string{
-				user.Username,
-				strings.Join(user.Roles, ", "),
-				user.CreatedAt.Format("2006-01-02 15:04:05"),
-			})
+			// Marshal the user data into JSON format
+			jsonData, err := json.Marshal(userData)
+			if err != nil {
+				fmt.Println("Failed to marshal user data to JSON:", err)
+				os.Exit(1)
+			}
+
+			// Print the JSON output
+			fmt.Println(string(jsonData))
+		} else {
+			// If no --json flag is passed, display data in a simple table format
+			if len(users) == 0 {
+				fmt.Println("No users found.")
+				return
+			}
+
+			fmt.Println("Username\tRoles\tCreated At")
+			for _, user := range users {
+				fmt.Printf("%s\t%s\t%s\n",
+					user.Username,
+					strings.Join(user.Roles, ", "),
+					user.CreatedAt.Format("2006-01-02 15:04:05"), // Consistent time format
+				)
+			}
 		}
-		_ = pterm.DefaultTable.WithHasHeader().WithData(rows).Render()
 	},
 }
+
 
 var userAddCmd = &cobra.Command{
 	Use:   "add",
@@ -189,9 +228,14 @@ func initRepo() (*repo.RepoManager, error) {
 
 // InitCommandUsers adds user-related commands to rootCmd
 func InitCommandUsers(rootCmd *cobra.Command) {
+	
+	userListCmd.Flags().BoolP("json", "j", false, "Output the data in JSON format")
+	userListCmd.Flags().StringP("repository", "r", "", "Specify the repository directory")
+
 	userCmd.AddCommand(userListCmd)
 	userCmd.AddCommand(userAddCmd)
 	userCmd.AddCommand(userRmCmd)
 	userCmd.AddCommand(userInfoCmd)
+
 	rootCmd.AddCommand(userCmd)
 }

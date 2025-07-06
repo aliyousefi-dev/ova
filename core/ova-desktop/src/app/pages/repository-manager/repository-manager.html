@@ -1,5 +1,4 @@
 <div class="flex h-screen">
-    <!-- Sidebar -->
     <div class="w-64 bg-base-100 p-10">
         <h2 class="text-xl font-semibold mb-8">Repo Manager</h2>
         <ul class="space-y-4">
@@ -12,96 +11,14 @@
         </ul>
     </div>
 
-    <!-- Main Content -->
     <div class="flex-1 p-8 bg-base-300">
-        <!-- Loading spinner -->
-        <div *ngIf="loading" class="flex justify-center items-center h-full">
-            <span class="loading loading-spinner loading-lg text-primary"></span>
-        </div>
+        <app-general-tab *ngIf="activeTab === 'general'" [repositoryAddress]="repositoryAddress">
+        </app-general-tab>
 
-        <!-- General Tab Content -->
-        <section id="general" class="mb-12" *ngIf="activeTab === 'general' && !loading">
-            <div class="flex justify-center mb-6">
-                <div class="stats stats-vertical lg:stats-horizontal shadow bg-base-100">
-                    <div class="stat place-items-center">
-                        <div class="stat-title">Video Count</div>
-                        <div class="stat-value">{{ videoCount }}</div>
-                        <div class="stat-desc">Total videos in repository</div>
-                    </div>
+        <app-users-tab *ngIf="activeTab === 'users'" [repositoryAddress]="repositoryAddress">
+        </app-users-tab>
 
-                    <div class="stat place-items-center">
-                        <div class="stat-title">User Count</div>
-                        <div class="stat-value">{{ userCount }}</div>
-                        <div class="stat-desc">Total active users</div>
-                    </div>
-
-                    <div class="stat place-items-center">
-                        <div class="stat-title">Storage</div>
-                        <div class="stat-value">{{ storageUsed }}</div>
-                        <div class="stat-desc">Used space</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-base-100 p-6 rounded-lg shadow-md">
-                <p><strong>Repository Address:</strong> {{ repositoryAddress }}</p>
-                <p><strong>Server Status:</strong> Running</p>
-                <p><strong>Last Updated:</strong> 2023-07-15</p>
-                <button class="btn btn-primary py-2 px-4 mt-4 rounded-md">Update Settings</button>
-            </div>
-        </section>
-
-        <!-- Users Tab Content -->
-        <section id="users" class="mb-12" *ngIf="activeTab === 'users' && !loading">
-            <div class="bg-base-100 p-6 rounded-lg shadow-md">
-                <p><strong>User 1:</strong> asdsad</p>
-                <p><strong>User 2:</strong> asdsad</p>
-                <p><strong>User 3:</strong> asdsad</p>
-                <button class="btn btn-success py-2 px-4 mt-4 rounded-md">Add New User</button>
-            </div>
-        </section>
-
-        <!-- Videos Tab Content -->
-        <section id="videos" *ngIf="activeTab === 'videos' && !loading">
-            <!-- Search Bar -->
-            <div class="mb-10">
-                <input type="text" placeholder="Search videos..." [(ngModel)]="searchQuery"
-                    class="input input-bordered w-full" (ngModelChange)="onSearchQueryChange()" />
-            </div>
-
-            <!-- Display total number of videos -->
-            <div class="mb-6 ">
-                <strong>Total Videos:</strong> {{ videoCount }}
-            </div>
-            <!-- Table for video list -->
-            <div class="overflow-x-auto rounded-lg shadow-md h-full">
-                <!-- Video Table -->
-                <table class="table w-full table-zebra">
-                    <!-- Table Head -->
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Video Address</th>
-                        </tr>
-                    </thead>
-                </table>
-
-                <!-- Scrollable container for table body -->
-                <div class="overflow-y-auto h-[calc(100vh-300px)]"> <!-- Adjust height as per your layout -->
-                    <table class="table w-full table-zebra">
-                        <tbody>
-                            <!-- Loop through filteredVideos and display in rows -->
-                            <tr *ngFor="let video of filteredVideos()">
-                                <td>{{ video.ID }}</td> <!-- Video ID -->
-                                <td>{{ video.Path }}</td> <!-- Video Path -->
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-
-        </section>
-
+        <app-videos-tab *ngIf="activeTab === 'videos'" [repositoryAddress]="repositoryAddress">
+        </app-videos-tab>
     </div>
 </div>

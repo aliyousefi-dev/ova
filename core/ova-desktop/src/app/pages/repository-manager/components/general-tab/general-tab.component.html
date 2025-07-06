@@ -1,0 +1,37 @@
+<section id="general" class="mb-12">
+    <!-- Add a loading spinner here -->
+    <div *ngIf="loading" class="flex justify-center items-center h-full">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+
+    <div *ngIf="!loading">
+        <div class="flex justify-center mb-6">
+            <div class="stats stats-vertical lg:stats-horizontal shadow bg-base-100">
+                <div class="stat place-items-center">
+                    <div class="stat-title">Video Count</div>
+                    <div class="stat-value">{{ videoCount }}</div>
+                    <div class="stat-desc">Total videos in repository</div>
+                </div>
+
+                <div class="stat place-items-center">
+                    <div class="stat-title">User Count</div>
+                    <div class="stat-value">{{ userCount }}</div>
+                    <div class="stat-desc">Total active users</div>
+                </div>
+
+                <div class="stat place-items-center">
+                    <div class="stat-title">Storage</div>
+                    <div class="stat-value">{{ storageUsed }}</div>
+                    <div class="stat-desc">Used space</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-base-100 p-6 rounded-lg shadow-md">
+            <p><strong>Repository Address:</strong> {{ repositoryAddress }}</p>
+            <p><strong>Server Status:</strong> Running</p>
+            <p><strong>Last Updated:</strong> 2023-07-15</p>
+            <button class="btn btn-primary py-2 px-4 mt-4 rounded-md">Update Settings</button>
+        </div>
+    </div>
+</section>
