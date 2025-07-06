@@ -1,12 +1,12 @@
 import {
   Component,
   Input,
-  OnInit, // Import OnInit for initial data fetch
-  OnChanges, // Import OnChanges to react to input changes
-  SimpleChanges, // Import SimpleChanges for OnChanges
+  OnInit,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OvacliService } from '../../../../services/ovacli.service'; // Adjust path to your OvacliService
+import { OvacliService, RepoInfo } from '../../../../services/ovacli.service'; // Import RepoInfo
 
 @Component({
   selector: 'app-general-tab',
@@ -19,10 +19,14 @@ import { OvacliService } from '../../../../services/ovacli.service'; // Adjust p
 export class GeneralTabComponent implements OnInit, OnChanges {
   @Input() repositoryAddress: string = ''; // Keep repositoryAddress as an input
 
-  // These properties will now be populated internally
+  // These properties will now be populated from RepoInfo
   videoCount: number = 0;
   userCount: number = 0;
   storageUsed: string = '0 GB'; // Initialize with a default value
+  lastUpdated: string = 'N/A'; // New property for last updated date
+  host: string = 'N/A'; // New property for host
+  port: number = 0; // New property for port
+
   loading: boolean = false; // Add a loading state
 
   constructor(private ovacliService: OvacliService) {} // Inject OvacliService
@@ -45,9 +49,7 @@ export class GeneralTabComponent implements OnInit, OnChanges {
         this.fetchGeneralStats();
       } else {
         // Clear data if repositoryAddress becomes empty or invalid
-        this.videoCount = 0;
-        this.userCount = 0;
-        this.storageUsed = '0 GB';
+        this.resetStats();
       }
     }
   }
@@ -61,36 +63,36 @@ export class GeneralTabComponent implements OnInit, OnChanges {
       console.warn(
         'Cannot fetch general stats: repositoryAddress is not provided or invalid.'
       );
-      this.videoCount = 0;
-      this.userCount = 0;
-      this.storageUsed = '0 GB';
+      this.resetStats();
       return;
     }
 
     this.loading = true; // Start loading
 
-    // Simulate fetching data. In a real scenario, you'd make actual service calls.
-    // For videoCount, you can reuse runOvacliVideoList.
     this.ovacliService
-      .runOvacliVideoList(this.repositoryAddress)
-      .then((videos) => {
-        this.videoCount = videos.length;
-        // Simulate fetching user count and storage. Replace with actual service calls.
-        // If your OvacliService has methods like `getUsersCount` or `getStorageUsage`, use them here.
-        this.userCount = 5; // Placeholder
-        this.storageUsed = '250 GB'; // Placeholder
+      .runOvacliRepoInfo(this.repositoryAddress)
+      .then((repoInfo: RepoInfo) => {
+        this.videoCount = repoInfo.video_count;
+        this.userCount = repoInfo.user_count;
+        this.storageUsed = repoInfo.storage_used;
+        this.lastUpdated = repoInfo.last_updated;
+        this.host = repoInfo.host;
+        this.port = repoInfo.port;
         this.loading = false; // End loading
       })
       .catch((error) => {
         console.error('Error fetching general stats:', error);
-        this.videoCount = 0;
-        this.userCount = 0;
-        this.storageUsed = '0 GB';
+        this.resetStats(); // Reset stats on error
         this.loading = false; // End loading on error
       });
+  }
 
-    // If you have separate service calls for user count and storage, they would go here:
-    // this.ovacliService.getUsersCount(this.repositoryAddress).then(count => this.userCount = count);
-    // this.ovacliService.getStorageUsed(this.repositoryAddress).then(storage => this.storageUsed = storage);
+  private resetStats() {
+    this.videoCount = 0;
+    this.userCount = 0;
+    this.storageUsed = '0 GB';
+    this.lastUpdated = 'N/A';
+    this.host = 'N/A';
+    this.port = 0;
   }
 }

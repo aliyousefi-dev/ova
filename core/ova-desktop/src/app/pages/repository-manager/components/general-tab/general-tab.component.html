@@ -1,5 +1,4 @@
 <section id="general" class="mb-12">
-    <!-- Add a loading spinner here -->
     <div *ngIf="loading" class="flex justify-center items-center h-full">
         <span class="loading loading-spinner loading-lg text-primary"></span>
     </div>
@@ -30,7 +29,9 @@
         <div class="bg-base-100 p-6 rounded-lg shadow-md">
             <p><strong>Repository Address:</strong> {{ repositoryAddress }}</p>
             <p><strong>Server Status:</strong> Running</p>
-            <p><strong>Last Updated:</strong> 2023-07-15</p>
+            <p><strong>Last Updated:</strong> {{ lastUpdated }}</p>
+            <p><strong>Host:</strong> {{ host }}</p>
+            <p><strong>Port:</strong> {{ port }}</p>
             <button class="btn btn-primary py-2 px-4 mt-4 rounded-md">Update Settings</button>
         </div>
     </div>

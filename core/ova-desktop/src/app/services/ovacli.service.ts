@@ -12,6 +12,16 @@ export interface User {
   CreatedAt: string; // Formatted as a string "YYYY-MM-DD HH:MM:SS"
 }
 
+// Define the interface for repository information
+export interface RepoInfo {
+  video_count: number;
+  user_count: number;
+  storage_used: string;
+  last_updated: string;
+  host: string;
+  port: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -194,6 +204,47 @@ export class OvacliService {
       })
       .catch((err) => {
         console.error('runOvacli users list error:', err);
+        throw err;
+      });
+  }
+
+  /**
+   * Method to run the ovacli repo info command and return the result as a RepoInfo object.
+   * @param repositoryPath The path to the repository directory.
+   * @returns A promise that resolves with a RepoInfo object.
+   */
+  runOvacliRepoInfo(repositoryPath: string): Promise<RepoInfo> {
+    const quotedRepositoryPath = `"${repositoryPath}"`;
+    const args: string[] = [
+      'repo',
+      'info',
+      '--json',
+      '--repository',
+      quotedRepositoryPath,
+    ];
+
+    console.log('Running ovacli repo info with args:', args);
+
+    return window['IPCBridge']
+      .runOvacli(args)
+      .then((result) => {
+        console.log('runOvacli repo info result:', result);
+
+        if (result.success && result.output) {
+          try {
+            const repoInfo: RepoInfo = JSON.parse(result.output);
+            return repoInfo;
+          } catch (err) {
+            console.error('Failed to parse repo info JSON:', err);
+            throw err;
+          }
+        } else {
+          console.error('Error in repo info result:', result);
+          throw new Error('Error fetching repository information');
+        }
+      })
+      .catch((err) => {
+        console.error('runOvacli repo info error:', err);
         throw err;
       });
   }
