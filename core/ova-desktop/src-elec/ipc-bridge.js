@@ -13,4 +13,11 @@ contextBridge.exposeInMainWorld("IPCBridge", {
   saveRepositoryInfo: (metadata) =>
     ipcRenderer.invoke("save-repository-info", metadata),
   loadRepositoryInfo: () => ipcRenderer.invoke("load-repository-info"),
+
+  // New method to listen for shortcut presses
+  onShortcutPressed: (callback) => {
+    ipcRenderer.on("log-shortcut", (event, message) => {
+      callback(message); // Pass the message received from the main process
+    });
+  },
 });

@@ -1,32 +1,46 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter, OnDestroy } from '@angular/core';
 
-declare var window: any; // This is needed to access Electron's `window` object for IPC
+// Check if the code is running in the Electron environment
+declare var window: any;
 
 @Injectable({
-  providedIn: 'root', // This makes the service globally available
+  providedIn: 'root',
 })
-export class ShortcutService {
+export class ShortcutService implements OnDestroy {
   // Event emitter to notify components when a shortcut is pressed
   shortcutPressed: EventEmitter<string> = new EventEmitter<string>();
 
   constructor() {
-    this.registerShortcutListeners();
+    if (this.isElectron()) {
+      this.registerShortcutListeners();
+    } else {
+      console.warn('Not in Electron environment');
+    }
+  }
+
+  // Function to check if we're in Electron
+  private isElectron(): boolean {
+    return (
+      typeof window !== 'undefined' && window.IPCBridge // Check for IPCBridge exposure
+    );
   }
 
   private registerShortcutListeners() {
-    // Specify the type for 'message' as 'string'
-    window.electron.ipcRenderer.on(
-      'log-shortcut',
-      (event: any, message: string) => {
-        console.log('Shortcut pressed:', message);
+    // Make sure we are in Electron before trying to register listeners
+    if (this.isElectron()) {
+      // Use IPCBridge to listen for the shortcut
+      window.IPCBridge.onShortcutPressed((message: string) => {
         // Emit the shortcut message to components
         this.shortcutPressed.emit(message);
-      }
-    );
+      });
+    }
   }
 
   // Cleanup the listener when the service is destroyed
   ngOnDestroy() {
-    window.electron.ipcRenderer.removeAllListeners('log-shortcut');
+    if (this.isElectron()) {
+      // Remove all listeners for 'log-shortcut'
+      window.IPCBridge.removeAllListeners('log-shortcut');
+    }
   }
 }
