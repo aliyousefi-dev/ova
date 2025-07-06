@@ -9,15 +9,14 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LucideAngularModule, Edit2 } from 'lucide-angular';
 
 @Component({
   selector: 'app-playlist-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './playlist-modal.component.html',
 })
-export class PlaylistModalComponent implements OnChanges {
+export class PlaylistModalComponent {
   @Input() showModal = false;
 
   @Input() playlists: {
@@ -31,17 +30,7 @@ export class PlaylistModalComponent implements OnChanges {
     { title: string; slug: string; checked: boolean }[]
   >();
 
-  // Lucide icon reference
-  readonly Edit2 = Edit2;
-
   constructor(private router: Router) {}
-
-  ngOnChanges(changes: SimpleChanges): void {
-    // You can remove this entire method, as there's no need to sort
-    // this.sortedPlaylists = [...this.playlists].sort(
-    //   (a, b) => (a.Order ?? 0) - (b.Order ?? 0)
-    // );
-  }
 
   closeModal() {
     this.close.emit(this.playlists); // Emit the original playlists array instead of sortedPlaylists
