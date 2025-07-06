@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -198,36 +199,66 @@ var videoListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all videos",
 	Run: func(cmd *cobra.Command, args []string) {
-		repoRoot, err := os.Getwd()
-		if err != nil {
-			pterm.Error.Println("Failed to get working directory:", err)
-			return
+		// Get the repository address from the --repository flag
+		repoAddress, _ := cmd.Flags().GetString("repository")
+
+		// If repository address is not provided, use the current working directory
+		if repoAddress == "" {
+			repoAddress, _ = os.Getwd()
 		}
 
-		repository := repo.NewRepoManager(repoRoot)
+		// Initialize the repository
+		repository := repo.NewRepoManager(repoAddress)
 		if err := repository.Init(); err != nil {
-			pterm.Error.Println("Failed to initialize repository:", err)
+			fmt.Println("Failed to initialize repository:", err)
 			return
 		}
 
+		// Fetch all videos
 		videos, err := repository.GetAllVideos()
 		if err != nil {
-			pterm.Error.Printf("Error loading videos: %v\n", err)
+			fmt.Printf("Error loading videos: %v\n", err)
 			return
 		}
 
+		// If no videos are found
 		if len(videos) == 0 {
-			pterm.Info.Println("No videos found.")
+			fmt.Println("No videos found.")
 			return
 		}
 
-		rows := pterm.TableData{{"ID", "Path"}}
-		for _, v := range videos {
-			rows = append(rows, []string{v.VideoID, v.FilePath})
+		// Check if --json flag is set
+		jsonFlag, _ := cmd.Flags().GetBool("json")
+		if jsonFlag {
+			// If --json is passed, return data in JSON format
+			videoData := make([]map[string]string, len(videos))
+			for i, v := range videos {
+				videoData[i] = map[string]string{
+					"ID":   v.VideoID,
+					"Path": v.FilePath,
+				}
+			}
+
+			// Marshal the video data into JSON format
+			jsonData, err := json.Marshal(videoData) // Use json.Marshal (without indenting) to get a clean JSON format
+			if err != nil {
+				fmt.Println("Failed to marshal video data to JSON:", err)
+				return
+			}
+
+			// Print the JSON output without using pterm
+			fmt.Println(string(jsonData)) // Print the JSON output
+		} else {
+			// If no --json flag is passed, display data in table format
+			fmt.Println("ID\tPath")
+			for _, v := range videos {
+				fmt.Printf("%s\t%s\n", v.VideoID, v.FilePath)
+			}
 		}
-		_ = pterm.DefaultTable.WithHasHeader().WithData(rows).Render()
 	},
 }
+
+
 
 var videoInfoCmd = &cobra.Command{
 	Use:   "info <video-id>",
@@ -274,6 +305,9 @@ func InitCommandVideo(rootCmd *cobra.Command) {
 	videoCmd.AddCommand(videoListCmd)
 	videoCmd.AddCommand(videoInfoCmd)
 	videoCmd.AddCommand(videoRemoveCmd)
+
+	videoListCmd.Flags().BoolP("json", "j", false, "Output the data in JSON format")
+	videoListCmd.Flags().StringP("repository", "r", "", "Specify the repository directory")
 
 	rootCmd.AddCommand(videoCmd)
 }

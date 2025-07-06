@@ -1,4 +1,3 @@
-// app.ts
 import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from './components/top-navbar/navbar.component';
 import { BottomNavComponent } from './components/bottom-navbar/bottom-nav';
@@ -51,22 +50,23 @@ export class App implements OnInit {
     });
   }
 
-  // Handle Ctrl+E shortcut
+  // Handle Ctrl+E shortcut - updated to use video list functionality
   handleCtrlE() {
-    console.log('Checking Ovacli version...');
+    console.log('Fetching video list...');
+    const repositoryPath = 'E:\\PP'; // Set the repository path
     this.ovacliService
-      .runOvacliVersion()
+      .runOvacliVideoList(repositoryPath) // Call the video list method
       .then((result) => {
-        if (result.success) {
-          console.log('Ovacli version:', result.output); // Display the version info
-          alert(`Ovacli version: ${result.output}`); // You can show the version in an alert or update the UI
+        if (result && Array.isArray(result)) {
+          console.log('Video List:', result); // You can handle this result (e.g., show it in the UI)
+          alert(`Fetched ${result.length} videos from the repository.`); // Just a simple alert for now
         } else {
-          console.error('Error running Ovacli:', result.error); // Show the error message
-          alert(`Error: ${result.error}`);
+          console.error('Error fetching video list:', result);
+          alert(`Error fetching video list: ${result}`);
         }
       })
       .catch((error) => {
-        console.error('Error running Ovacli:', error);
+        console.error('Error running Ovacli video list:', error);
         alert(`Error: ${error.message}`);
       });
   }
