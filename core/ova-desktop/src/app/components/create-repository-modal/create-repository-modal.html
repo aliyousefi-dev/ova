@@ -16,7 +16,6 @@
                 <div class="mb-4">
                     <label for="server-directory" class="label">Directory for Server</label>
                     <div class="flex items-center">
-                        <!-- Display the folder path in the input field -->
                         <input type="text" id="server-directory" name="server-directory"
                             class="input input-bordered w-full" placeholder="Enter directory for server"
                             [(ngModel)]="config.serverDirectory" readonly required />
@@ -25,19 +24,28 @@
                     </div>
                 </div>
 
-
-
-                <!-- Server Host and Port in a single row -->
-                <div class="mb-4 flex gap-4">
-                    <div class="w-1/2">
-                        <label for="server-host" class="label">Server Host</label>
-                        <input type="text" id="server-host" name="server-host" class="input input-bordered w-full"
-                            placeholder="Enter server host (IP or URL)" [(ngModel)]="config.serverHost" required />
+                <!-- Admin Username and Password in Column Layout -->
+                <div class="mb-4 flex flex-col gap-4">
+                    <div>
+                        <label for="admin-username" class="label">Admin Username</label>
+                        <input type="text" id="admin-username" name="admin-username" class="input input-bordered w-full"
+                            placeholder="Enter admin username" [(ngModel)]="config.adminUsername" required />
                     </div>
-                    <div class="w-1/2">
-                        <label for="server-port" class="label">Port</label>
-                        <input type="number" id="server-port" name="server-port" class="input input-bordered w-full"
-                            placeholder="Enter server port" [(ngModel)]="config.serverPort" required />
+                    <div>
+                        <label for="admin-password" class="label">Admin Password</label>
+                        <div class="relative">
+                            <input [type]="passwordFieldType" id="admin-password" name="admin-password"
+                                class="input input-bordered w-full" placeholder="Enter admin password"
+                                [(ngModel)]="config.adminPassword" required />
+                            <button type="button" class="absolute right-2 top-1/2 transform -translate-y-1/2"
+                                (click)="togglePasswordVisibility()">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 3C7.03 3 3 7.03 3 12s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm2-6c0 .66-.68 1-1.5 1-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5c.82 0 1.5.34 1.5 1s-.68 1-1.5 1z" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -62,6 +70,5 @@
     </div>
 </dialog>
 
-<!-- Confirm Modal -->
 <app-confirm-modal (confirmed)="onConfirmGenerateRepository()"
     (cancelled)="onCancelGenerateRepository()"></app-confirm-modal>

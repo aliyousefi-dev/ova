@@ -9,7 +9,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var useBoltDB bool // add a package-level variable to hold the flag value
+var useBoltDB bool       // flag for using BoltDB
+var username string     // flag for username
+var password string     // flag for password
 
 var initCmd = &cobra.Command{
 	Use:   "init [path]",
@@ -22,22 +24,9 @@ var initCmd = &cobra.Command{
 			return
 		}
 
-		// Prompt for admin username & password, with default values
-		username, err := pterm.DefaultInteractiveTextInput.
-			WithDefaultText("user").
-			WithMultiLine(false).
-			Show("Enter admin username")
-		if err != nil {
-			pterm.Error.Printf("Failed to read username: %v\n", err)
-			return
-		}
-
-		password, err := pterm.DefaultInteractiveTextInput.
-			WithDefaultText("pass").
-			WithMultiLine(false).
-			Show("Enter admin password")
-		if err != nil {
-			pterm.Error.Printf("Failed to read password: %v\n", err)
+		// If username or password is empty, show an error
+		if username == "" || password == "" {
+			pterm.Error.Println("Username and password are required.")
 			return
 		}
 
@@ -57,8 +46,13 @@ var initCmd = &cobra.Command{
 }
 
 func InitCommandInit(rootCmd *cobra.Command) {
-	// Add a flag to the initCmd to allow selecting boltDB usage
+	// Add flags for username and password
+	initCmd.Flags().StringVar(&username, "user", "", "Admin username")
+	initCmd.Flags().StringVar(&password, "pass", "", "Admin password")
+
+	// Add a flag to select boltDB usage
 	initCmd.Flags().BoolVar(&useBoltDB, "boltdb", false, "Use BoltDB as data storage backend")
 
+	// Add the initCmd to the root command
 	rootCmd.AddCommand(initCmd)
 }

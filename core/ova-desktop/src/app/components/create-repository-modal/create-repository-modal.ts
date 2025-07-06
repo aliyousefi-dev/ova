@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ElectronService } from '../../services/common-electron.service';
 import { ConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { OvacliService } from '../../services/ovacli.service'; // Import the OvacliService
 
 @Component({
   selector: 'app-create-repository-modal',
@@ -25,8 +26,8 @@ export class CreateRepositoryModalComponent implements OnChanges {
 
   config = {
     serverDirectory: '',
-    serverHost: '127.0.0.1',
-    serverPort: 4040,
+    adminUsername: 'user', // Default admin username
+    adminPassword: 'pass', // Default admin password
   };
 
   isSaving = false; // Flag to track the saving/loading state
@@ -36,13 +37,23 @@ export class CreateRepositoryModalComponent implements OnChanges {
   @ViewChild(ConfirmModalComponent) confirmModal!: ConfirmModalComponent;
   private pendingSave = false;
 
-  constructor(private electronService: ElectronService) {}
+  passwordFieldType: string = 'password'; // Default password field type
+
+  constructor(
+    private electronService: ElectronService,
+    private ovacliService: OvacliService // Inject the OvacliService
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    // Reset config every time modal is opened
     if (changes['showModal'] && this.showModal) {
       this.resetConfig();
     }
+  }
+
+  // Toggle password visibility
+  togglePasswordVisibility() {
+    this.passwordFieldType =
+      this.passwordFieldType === 'password' ? 'text' : 'password';
   }
 
   // Handle the directory selection using Electron's folder picker
@@ -51,26 +62,20 @@ export class CreateRepositoryModalComponent implements OnChanges {
       .pickFolder()
       .then(async (folderPath) => {
         if (folderPath) {
-          // Check if the .ova-repo folder already exists in the selected directory
           const ovaRepoPath = await this.electronService.joinPaths(
             folderPath,
             '.ova-repo'
           );
           const exists = await this.electronService.folderExists(ovaRepoPath);
-
           if (exists) {
-            // Display error if .ova-repo exists
             this.showErrorMessage(
               'The selected directory already contains a repository (.ova-repo folder). Please choose another folder.'
             );
-            this.config.serverDirectory = ''; // Clear the folder path
+            this.config.serverDirectory = '';
           } else {
-            // Otherwise, set the directory path
             this.config.serverDirectory = folderPath;
-            this.clearErrorMessage(); // Clear any previous error messages
+            this.clearErrorMessage();
           }
-        } else {
-          console.log('No folder selected');
         }
       })
       .catch((err) => {
@@ -78,37 +83,32 @@ export class CreateRepositoryModalComponent implements OnChanges {
       });
   }
 
-  // Show error message when .ova-repo folder exists
   showErrorMessage(message: string) {
-    this.errorMessage = message; // Update error message
-    this.successMessage = ''; // Clear success message
+    this.errorMessage = message;
+    this.successMessage = '';
   }
 
-  // Clear the error message
   clearErrorMessage() {
-    this.errorMessage = ''; // Clear the error message
+    this.errorMessage = '';
     this.successMessage =
-      'Valid directory selected. Proceed to Generate Repository.'; // Optional success message
+      'Valid directory selected. Proceed to Generate Repository.';
   }
 
-  // Handle closing the modal
   closeModal() {
-    this.resetConfig(); // Reset the config before closing
-    this.closeSettingsEvent.emit(); // This will trigger the parent to set showModal to false
+    this.resetConfig();
+    this.closeSettingsEvent.emit();
   }
 
-  // Reset the config to default values
   resetConfig() {
     this.config = {
       serverDirectory: '',
-      serverHost: '127.0.0.1',
-      serverPort: 4040,
+      adminUsername: 'user', // Reset to default username
+      adminPassword: 'pass', // Reset to default password
     };
-    this.errorMessage = ''; // Reset any error messages
-    this.successMessage = ''; // Reset success message
+    this.errorMessage = '';
+    this.successMessage = '';
   }
 
-  // Replace saveConfig button with this handler
   onGenerateRepository() {
     if (this.isValidConfig() && !this.isSaving) {
       this.confirmModal.open(
@@ -123,33 +123,51 @@ export class CreateRepositoryModalComponent implements OnChanges {
       this.pendingSave = false;
       this.saveConfig();
     }
+
+    const folderPath = this.config.serverDirectory;
+    const username = this.config.adminUsername;
+    const password = this.config.adminPassword;
+
+    // Pass the folder path, username, and password to the OvacliService
+    this.ovacliService
+      .runOvacliInit(folderPath, username, password) // Include username and password
+      .then((result) => {
+        if (result.success) {
+          console.log('Repository initialized:', result.output);
+          this.successMessage = 'Repository initialized successfully!';
+        } else {
+          console.error('Error initializing repository:', result.error);
+          this.errorMessage = `Error: ${result.error}`;
+        }
+      })
+      .catch((error) => {
+        console.error('Error initializing repository:', error);
+        this.errorMessage = `Error: ${error.message}`;
+      });
   }
 
   onCancelGenerateRepository() {
     this.pendingSave = false;
   }
 
-  // Handle form submission with delay and loading state
   saveConfig() {
     if (this.isValidConfig()) {
-      this.isSaving = true; // Start loading state
+      this.isSaving = true;
 
-      // Simulate a delay (e.g., a network request or some background process)
       setTimeout(() => {
         console.log('Server Configuration:', this.config);
         alert('Server configuration saved successfully!');
-        this.isSaving = false; // End loading state
-      }, 2000); // 2-second delay (adjust as needed)
+        this.isSaving = false;
+      }, 2000);
     } else {
       alert('Please fill all the required fields correctly.');
     }
   }
 
-  // Validate configuration
   isValidConfig(): boolean {
     return (
-      this.config.serverHost.trim() !== '' &&
-      this.config.serverPort > 0 &&
+      this.config.adminUsername.trim() !== '' &&
+      this.config.adminPassword.trim() !== '' &&
       this.config.serverDirectory.trim() !== ''
     );
   }
