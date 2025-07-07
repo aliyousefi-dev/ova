@@ -4,36 +4,49 @@ import {
   OnChanges,
   SimpleChanges,
   OnInit,
+  ViewChild, // Import ViewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { OvacliService, User } from '../../../../services/ovacli.service'; // Import User interface
+import { OvacliService, User } from '../../../../services/ovacli.service';
 import { CreateUserModalComponent } from './components/create-user-modal.component';
+import { ConfirmModalComponent } from '../../../../components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-users-tab',
   standalone: true,
-  imports: [CommonModule, FormsModule, CreateUserModalComponent], // Add CreateUserModalComponent here
+  imports: [
+    CommonModule,
+    FormsModule,
+    CreateUserModalComponent,
+    ConfirmModalComponent,
+  ], // Add ConfirmModalComponent here
   templateUrl: './users-tab.component.html',
 })
 export class UsersTabComponent implements OnInit, OnChanges {
-  @Input() repositoryAddress: string = ''; // Input to receive the repository address
+  @Input() repositoryAddress: string = '';
 
-  users: User[] = []; // Array to hold user data
+  @ViewChild('confirmModal') confirmModal!: ConfirmModalComponent; // Reference to the confirmation modal
+
+  users: User[] = [];
   searchQuery: string = '';
   userCount: number = 0;
-  loading: boolean = false; // For initial tab load and overall content display
-  refreshing: boolean = false; // For refresh button's specific loading state
+  loading: boolean = false;
+  refreshing: boolean = false;
+  deleting: boolean = false;
 
-  activeTab: string = 'users'; // Default active tab set to 'users'
+  activeTab: string = 'users';
 
-  showCreateUserModal: boolean = false; // Control visibility of the create user modal
+  showCreateUserModal: boolean = false;
+
+  selectMode: boolean = false;
+  selectedUsernames: Set<string> = new Set<string>();
 
   constructor(private ovacliService: OvacliService) {}
 
   ngOnInit() {
     if (this.repositoryAddress) {
-      this.fetchUserList(true); // Pass true for initial load
+      this.fetchUserList(true);
     }
   }
 
@@ -44,7 +57,7 @@ export class UsersTabComponent implements OnInit, OnChanges {
         changes['repositoryAddress'].previousValue
     ) {
       if (this.repositoryAddress) {
-        this.fetchUserList(true); // Pass true for full load when address changes
+        this.fetchUserList(true);
       } else {
         this.users = [];
         this.updateUserCount();
@@ -52,7 +65,6 @@ export class UsersTabComponent implements OnInit, OnChanges {
     }
   }
 
-  // Method to fetch the user list from OvacliService
   fetchUserList(initialLoad: boolean = false) {
     if (!this.repositoryAddress) {
       console.warn(
@@ -64,16 +76,16 @@ export class UsersTabComponent implements OnInit, OnChanges {
     }
 
     if (initialLoad) {
-      this.loading = true; // Show full tab spinner for initial load/address change
+      this.loading = true;
     } else {
-      this.refreshing = true; // Show button spinner for manual refresh
+      this.refreshing = true;
     }
 
-    const minDelay = 500; // Minimum delay in milliseconds (e.g., 0.5 seconds)
+    const minDelay = 500;
     const startTime = Date.now();
 
     this.ovacliService
-      .runOvacliUserList(this.repositoryAddress) // Use the new runOvacliUserList method
+      .runOvacliUserList(this.repositoryAddress)
       .then((users) => {
         const elapsedTime = Date.now() - startTime;
         const remainingDelay = minDelay - elapsedTime;
@@ -99,13 +111,13 @@ export class UsersTabComponent implements OnInit, OnChanges {
 
         if (remainingDelay > 0) {
           setTimeout(() => {
-            this.users = []; // Clear users on error
+            this.users = [];
             this.updateUserCount();
             this.loading = false;
             this.refreshing = false;
           }, remainingDelay);
         } else {
-          this.users = []; // Clear users on error
+          this.users = [];
           this.updateUserCount();
           this.loading = false;
           this.refreshing = false;
@@ -113,25 +125,19 @@ export class UsersTabComponent implements OnInit, OnChanges {
       });
   }
 
-  // A public method specifically for the refresh button click
   refreshUsers() {
     this.fetchUserList();
   }
 
-  // Method to open the create user modal
   openCreateUserModal() {
     this.showCreateUserModal = true;
   }
 
-  // Handler for when a user is successfully created in the modal
   handleUserCreated(newUser: User) {
-    // Re-fetch the user list to include the newly created user
-    // This is more robust than just pushing to the array, as it ensures data consistency
-    this.fetchUserList(false); // No need for full load spinner, just refresh
+    this.fetchUserList(false);
     console.log('New user created:', newUser);
   }
 
-  // Filter users based on search query
   filteredUsers(): User[] {
     const filtered = this.users.filter(
       (user) =>
@@ -150,8 +156,133 @@ export class UsersTabComponent implements OnInit, OnChanges {
     this.userCount = this.filteredUsers().length;
   }
 
-  // Method to switch active tabs
   setActiveTab(tab: string) {
     this.activeTab = tab;
+  }
+
+  toggleSelectMode() {
+    this.selectMode = !this.selectMode;
+    if (!this.selectMode) {
+      this.selectedUsernames.clear();
+    }
+  }
+
+  onCheckboxChange(username: string, event: Event) {
+    const checkbox = event.target as HTMLInputElement;
+    if (checkbox.checked) {
+      this.selectedUsernames.add(username);
+    } else {
+      this.selectedUsernames.delete(username);
+    }
+    console.log('Selected Users:', Array.from(this.selectedUsernames));
+  }
+
+  isUserSelected(username: string): boolean {
+    return this.selectedUsernames.has(username);
+  }
+
+  toggleSelectAll(event: Event) {
+    const checkbox = event.target as HTMLInputElement;
+    if (checkbox.checked) {
+      this.filteredUsers().forEach((user) =>
+        this.selectedUsernames.add(user.Username)
+      );
+    } else {
+      this.selectedUsernames.clear();
+    }
+    console.log('Selected Users:', Array.from(this.selectedUsernames));
+  }
+
+  isAllFilteredUsersSelected(): boolean {
+    if (this.filteredUsers().length === 0) {
+      return false;
+    }
+    return this.filteredUsers().every((user) =>
+      this.selectedUsernames.has(user.Username)
+    );
+  }
+
+  // New method to open the confirmation modal
+  confirmDeleteSelectedUsers() {
+    if (this.selectedUsernames.size === 0) {
+      return;
+    }
+
+    const userListToDelete = Array.from(this.selectedUsernames);
+    const confirmationMessage =
+      userListToDelete.length === 1
+        ? `Are you sure you want to delete user "${userListToDelete[0]}"?`
+        : `Are you sure you want to delete ${
+            userListToDelete.length
+          } users? \n\n${userListToDelete.join('\n')}`;
+
+    this.confirmModal.open(confirmationMessage);
+    this.deleting = true; // Set deleting to true when the modal is opened
+  }
+
+  async deleteSelectedUsers() {
+    // This method is now called only when the confirm modal emits 'confirmed'
+    const userListToDelete = Array.from(this.selectedUsernames);
+    const failedDeletions: string[] = [];
+
+    try {
+      const results = await Promise.allSettled(
+        userListToDelete.map((username) =>
+          this.ovacliService.runOvacliUserRemove(
+            this.repositoryAddress,
+            username
+          )
+        )
+      );
+
+      results.forEach((result, index) => {
+        const username = userListToDelete[index];
+        if (result.status === 'fulfilled') {
+          if (!result.value.success) {
+            failedDeletions.push(
+              `${username}: ${result.value.message || 'Unknown error'}`
+            );
+            console.error(
+              `Failed to delete user '${username}':`,
+              result.value.message,
+              result.value.userdata
+            );
+          } else {
+            console.log(`User '${username}' deleted successfully.`);
+          }
+        } else {
+          failedDeletions.push(
+            `${username}: ${
+              result.reason?.message || 'Network or internal error'
+            }`
+          );
+          console.error(`Error deleting user '${username}':`, result.reason);
+        }
+      });
+
+      if (failedDeletions.length > 0) {
+        alert(
+          `Failed to delete the following users:\n${failedDeletions.join(
+            '\n'
+          )}\n\nPlease check the console for more details.`
+        );
+      } else {
+        console.log('All selected users deleted successfully.');
+      }
+
+      this.selectedUsernames.clear();
+      this.selectMode = false;
+      this.fetchUserList(false);
+    } catch (error) {
+      console.error(
+        'An unexpected error occurred during user deletion:',
+        error
+      );
+      alert(
+        'An unexpected error occurred during user deletion. Please check the console for details.'
+      );
+    } finally {
+      this.deleting = false; // Reset deleting flag here
+    }
   }
 }

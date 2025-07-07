@@ -1,24 +1,17 @@
 <h2 class="text-2xl m-8">User Data Settings</h2>
 
-
 <section id="users">
-    <!-- Tabs for Users and Roles -->
     <div class="tabs tabs-boxed mx-8 bg-base-100 rounded-lg">
         <a class="tab" [class.tab-active]="activeTab === 'users'" (click)="setActiveTab('users')">Users</a>
         <a class="tab" [class.tab-active]="activeTab === 'roles'" (click)="setActiveTab('roles')">Roles</a>
     </div>
 
-    <!-- Loading Spinner (Center it vertically) -->
     <div *ngIf="loading && !refreshing" class="flex justify-center items-center h-[calc(100vh-250px)]">
         <span class="loading loading-spinner loading-lg text-primary"></span>
     </div>
 
-    <!-- Content Section -->
     <div *ngIf="!loading" class="mx-8 mt-10">
-        <!-- Users Tab Content -->
         <div *ngIf="activeTab === 'users'">
-
-            <!-- Search and Refresh Section -->
             <div class="flex flex-col md:flex-row items-center justify-between mb-6">
                 <div class="w-full md:w-3/4 mb-4 md:mb-0">
                     <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery"
@@ -29,42 +22,64 @@
                         [disabled]="refreshing || loading">
                         <span *ngIf="!refreshing"> Refresh </span>
                         <span *ngIf="refreshing">
-                            <span class="loading loading-spinner loading-sm mr-2"></span> Refreshing...
+                            <span class="loading loading-spinner loading-sm mr-2"></span>
+                            Refreshing...
                         </span>
                     </button>
                 </div>
             </div>
 
-            <!-- User Count & Action Buttons -->
             <div class="mb-6 flex justify-between items-center">
                 <div>
                     <strong>Total Users:</strong> {{ userCount }}
                 </div>
                 <div class="space-x-4">
-                    <button class="btn btn-soft" (click)="openCreateUserModal()">
-                        Manage
+                    <button class="btn btn-soft" (click)="toggleSelectMode()">
+                        {{ selectMode ? 'Cancel Selection' : 'Select' }}
                     </button>
                     <button class="btn btn-soft" (click)="openCreateUserModal()">
                         Add User
                     </button>
+                    <button *ngIf="selectMode && selectedUsernames.size > 0" class="btn btn-error"
+                        (click)="confirmDeleteSelectedUsers()" [disabled]="deleting">
+                        <span *ngIf="!deleting">
+                            Delete ({{ selectedUsernames.size }} selected)
+                        </span>
+                        <span *ngIf="deleting">
+                            <span class="loading loading-spinner loading-sm mr-2"></span>
+                            Deleting...
+                        </span>
+                    </button>
                 </div>
             </div>
 
-            <!-- Users Table -->
             <div class="overflow-x-auto h-full rounded-box border border-base-content/5 bg-base-100">
                 <div class="overflow-y-auto h-[calc(87vh-300px)]">
                     <table class="table w-full table-pin-rows table-zebra">
                         <thead>
                             <tr>
-                                <th></th> <!-- Empty header for the index column -->
+                                <th *ngIf="selectMode">
+                                    <label>
+                                        <input type="checkbox" class="checkbox" [checked]="isAllFilteredUsersSelected()"
+                                            (change)="toggleSelectAll($event)" />
+                                    </label>
+                                </th>
+                                <th></th>
                                 <th>Username</th>
                                 <th>Roles</th>
                                 <th>Created At</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let user of filteredUsers(); let i = index" class="hover:bg-base-100">
-                                <th>{{ i + 1 }}</th> <!-- Display index starting from 1 -->
+                            <tr *ngFor="let user of filteredUsers(); let i = index" class="hover:bg-base-300">
+                                <th *ngIf="selectMode">
+                                    <label>
+                                        <input type="checkbox" class="checkbox"
+                                            [checked]="isUserSelected(user.Username)"
+                                            (change)="onCheckboxChange(user.Username, $event)" />
+                                    </label>
+                                </th>
+                                <th>{{ i + 1 }}</th>
                                 <td>{{ user.Username }}</td>
                                 <td>{{ user.Roles }}</td>
                                 <td>{{ user.CreatedAt }}</td>
@@ -79,7 +94,6 @@
             </div>
         </div>
 
-        <!-- Roles Tab Content (Empty Table) -->
         <div *ngIf="activeTab === 'roles'">
             <div class="text-center py-4 text-gray-500">
                 <div class="overflow-x-auto">
@@ -104,7 +118,9 @@
         </div>
     </div>
 
-    <!-- Modal for User Creation -->
     <app-create-user-modal [showModal]="showCreateUserModal" (modalClose)="showCreateUserModal = false"
         (userCreated)="handleUserCreated($event)" [repositoryAddress]="repositoryAddress"></app-create-user-modal>
+
+    <app-confirm-modal #confirmModal (confirmed)="deleteSelectedUsers()"
+        (cancelled)="deleting = false"></app-confirm-modal>
 </section>

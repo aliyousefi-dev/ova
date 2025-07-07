@@ -7,7 +7,7 @@ type DataStorage interface {
 
 	// User management
 	CreateUser(user *datatypes.UserData) error
-	DeleteUser(username string) error
+	DeleteUser(username string) (*datatypes.UserData, error)
 	GetUserByUsername(username string) (*datatypes.UserData, error)
 	GetAllUsers() ([]datatypes.UserData, error)
 

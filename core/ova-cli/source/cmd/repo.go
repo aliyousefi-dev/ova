@@ -19,16 +19,16 @@ var repoCmd = &cobra.Command{
 
 // Subcommand to get repository info
 var repoInfoCmd = &cobra.Command{
-	Use:   "info [path]",
+	Use:   "info",
 	Short: "Get information about the repository, including video count, user count, storage used, last updated time, host, and port",
-	Args:  cobra.ExactArgs(1), // Ensure that exactly one argument (path) is required
+	Args:  cobra.NoArgs, // No arguments required now
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get the repository address from the --repository flag
 		repoAddress, _ := cmd.Flags().GetString("repository")
 
 		// If repository address is not provided, use the current working directory
 		if repoAddress == "" {
-			repoAddress = args[0]
+			repoAddress, _ = os.Getwd() // Default to current working directory if no flag is provided
 		}
 
 		// Resolve the absolute path of the repository
@@ -77,6 +77,8 @@ var repoInfoCmd = &cobra.Command{
 		}
 	},
 }
+
+
 
 var repoVideosCmd = &cobra.Command{
 	Use:   "videos",

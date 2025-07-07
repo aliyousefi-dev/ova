@@ -47,7 +47,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let video of filteredIndexedVideos(); let i = index" class="hover:bg-base-100">
+                            <tr *ngFor="let video of filteredIndexedVideos(); let i = index" class="hover:bg-base-300">
                                 <th>{{ i + 1 }}</th>
                                 <td>{{ video.ID }}</td>
                                 <td>{{ video.Path }}</td>
@@ -94,7 +94,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let video of filteredDiskVideos(); let i = index" class="hover:bg-base-100">
+                            <tr *ngFor="let video of filteredDiskVideos(); let i = index" class="hover:bg-base-300">
                                 <th>{{ i + 1 }}</th>
                                 <td>{{ video.Path }}</td>
                             </tr>
@@ -140,7 +140,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let video of filteredUnindexedVideos(); let i = index"
-                                class="hover:bg-base-100">
+                                class="hover:bg-base-300">
                                 <th>{{ i + 1 }}</th>
                                 <td>{{ video.Path }}</td>
                             </tr>

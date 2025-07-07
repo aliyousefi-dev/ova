@@ -33,11 +33,13 @@ func (r *RepoManager) CreateUser(username, password, role string) (*datatypes.Us
 	return &userdata, nil
 }
 
-// DeleteUser removes a user by username.
-func (r *RepoManager) DeleteUser(username string) error {
+// DeleteUser removes a user by username and returns the deleted user data.
+func (r *RepoManager) DeleteUser(username string) (*datatypes.UserData, error) {
 	if !r.IsDataStorageExists() {
-		return fmt.Errorf("data storage is not initialized")
+		return nil, fmt.Errorf("data storage is not initialized")
 	}
+
+	// Call DeleteUser from the dataStorage and return the deleted user data
 	return r.dataStorage.DeleteUser(username)
 }
 

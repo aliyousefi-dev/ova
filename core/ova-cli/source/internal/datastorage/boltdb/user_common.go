@@ -21,21 +21,33 @@ func (b *BoltDB) CreateUser(user *datatypes.UserData) error {
 	return b.saveUsers(users)
 }
 
-// DeleteUser removes a user by their username.
-// Returns an error if the user is not found.
-func (b *BoltDB) DeleteUser(username string) error {
+// DeleteUser removes a user by their username and returns the deleted user data.
+// Returns an error if the user is not found or if there is a problem loading or saving users.
+func (b *BoltDB) DeleteUser(username string) (*datatypes.UserData, error) {
+	// Load all users from the database
 	users, err := b.loadUsers()
 	if err != nil {
-		return fmt.Errorf("failed to load users: %w", err)
+		return nil, fmt.Errorf("failed to load users: %w", err)
 	}
 
-	if _, exists := users[username]; !exists {
-		return fmt.Errorf("user %q not found", username)
+	// Check if the user exists in the database
+	user, exists := users[username]
+	if !exists {
+		return nil, fmt.Errorf("user %q not found", username)
 	}
 
+	// Delete the user from the map
 	delete(users, username)
-	return b.saveUsers(users)
+
+	// Save the updated list of users back to the database
+	if err := b.saveUsers(users); err != nil {
+		return nil, fmt.Errorf("failed to save updated users: %w", err)
+	}
+
+	// Return the deleted user data
+	return &user, nil
 }
+
 
 // UpdateUser updates an existing user.
 // Returns an error if the user does not exist.

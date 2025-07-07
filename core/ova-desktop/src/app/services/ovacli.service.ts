@@ -319,6 +319,64 @@ export class OvacliService {
       });
   }
 
+  runOvacliUserRemove(
+    repositoryPath: string,
+    username: string
+  ): Promise<{ success: boolean; message: string; userdata?: any }> {
+    // Wrap the repository path in double quotes to handle spaces in the path
+    const quotedRepositoryPath = `"${repositoryPath}"`;
+
+    // Build the arguments array for the 'users rm' command
+    const args: string[] = ['users', 'rm'];
+
+    // Add the --user flag
+    args.push(username);
+
+    // Add the --repository flag with the provided repository path
+    args.push('--repository', quotedRepositoryPath);
+
+    // Add the --json flag to get the result in JSON format
+    args.push('--json');
+
+    console.log('Running ovacli users rm with args:', args);
+
+    // Run the command and return the result
+    return window['IPCBridge']
+      .runOvacli(args)
+      .then((result) => {
+        console.log('runOvacli users rm result:', result);
+
+        if (result.success && result.output) {
+          try {
+            // Parse the result to check if the user was removed successfully
+            const output = JSON.parse(result.output);
+
+            if (output.success) {
+              console.log(`User '${username}' removed successfully.`);
+              return {
+                success: true,
+                message: `User '${username}' deleted successfully`,
+                userdata: output.userdata, // Return the user data
+              };
+            } else {
+              console.error(`Failed to remove user '${username}':`, output);
+              throw new Error(`Failed to remove user '${username}'`);
+            }
+          } catch (err) {
+            console.error('Failed to parse user remove JSON:', err);
+            throw err;
+          }
+        } else {
+          console.error('Error in user remove result:', result);
+          throw new Error('Error removing user');
+        }
+      })
+      .catch((err) => {
+        console.error('runOvacli users rm error:', err);
+        throw err; // Propagate the error for further handling
+      });
+  }
+
   runOvacliRepoVideos(repositoryPath: string): Promise<VideoFileDisk[]> {
     // Wrap the repository path in double quotes to handle spaces in the path
     const quotedRepositoryPath = `"${repositoryPath}"`;

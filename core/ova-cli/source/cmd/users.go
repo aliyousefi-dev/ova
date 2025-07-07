@@ -167,21 +167,52 @@ var userRmCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		username := args[0]
 
-		repository, err := initRepo()
-		if err != nil {
-			pterm.Error.Printf("Failed to initialize repository: %v\n", err)
+		// Get the repository address from the --repository flag, or use the current working directory
+		repoAddress, _ := cmd.Flags().GetString("repository")
+		if repoAddress == "" {
+			repoAddress, _ = os.Getwd() // Default to current working directory if no flag is provided
+		}
+
+		// Initialize the repository using the provided or default repo address
+		repository := repo.NewRepoManager(repoAddress)
+		if err := repository.Init(); err != nil {
+			fmt.Println("Failed to initialize repository:", err)
 			os.Exit(1)
 		}
 
-		err = repository.DeleteUser(username)
+		// Attempt to delete the user and get the deleted user data
+		deletedUser, err := repository.DeleteUser(username)
 		if err != nil {
 			pterm.Error.Printf("Error removing user '%s': %v\n", username, err)
 			os.Exit(1)
 		}
 
-		pterm.Success.Printf("User '%s' removed successfully.\n", username)
+		// Check if --json or -j flag is set
+		jsonFlag, _ := cmd.Flags().GetBool("json")
+		if jsonFlag {
+			// Create the response structure with success message and user data
+			response := map[string]interface{}{
+				"success":  true,
+				"message":  fmt.Sprintf("User '%s' deleted successfully", username),
+				"userdata": deletedUser, // Include deleted user data in the response
+			}
+
+			// Marshal the response to JSON
+			jsonResponse, err := json.Marshal(response)
+			if err != nil {
+				pterm.Error.Printf("Error creating JSON response: %v\n", err)
+				os.Exit(1)
+			}
+
+			// Output the JSON response
+			fmt.Println(string(jsonResponse))
+		} else {
+			// Success message without JSON
+			pterm.Success.Printf("User '%s' removed successfully.\n", username)
+		}
 	},
 }
+
 
 var userInfoCmd = &cobra.Command{
 	Use:   "info <username>",
@@ -270,6 +301,10 @@ func InitCommandUsers(rootCmd *cobra.Command) {
 	userAddCmd.Flags().String("role", "", "Role for the new user (default: 'user')")
 	userAddCmd.Flags().StringP("repository", "r", "", "Specify the repository directory") // Kept shorthand -r for repository
 	userAddCmd.Flags().BoolP("json", "j", false, "Output the data in JSON format")
+
+	// Add the --repository flag to the userRmCmd command
+	userRmCmd.Flags().StringP("repository", "r", "", "Specify the repository directory")
+	userRmCmd.Flags().BoolP("json", "j", false, "Return output in JSON format")
 
 	userCmd.AddCommand(userListCmd)
 	userCmd.AddCommand(userAddCmd)
