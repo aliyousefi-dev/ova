@@ -1,64 +1,110 @@
+<h2 class="text-2xl m-8">User Data Settings</h2>
+
+
 <section id="users">
-    <div class="flex flex-col md:flex-row items-center justify-between mb-10">
-        <div class="w-full md:w-3/4 mb-4 md:mb-0">
-            <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery"
-                class="input input-bordered w-full" (ngModelChange)="onSearchQueryChange()" />
-        </div>
-        <div class="w-full md:w-1/4 md:ml-4 flex justify-end">
-            <button class="btn btn-primary" (click)="refreshUsers()" [disabled]="refreshing || loading">
-                <span *ngIf="!refreshing"> Refresh </span>
-                <span *ngIf="refreshing">
-                    <span class="loading loading-spinner loading-sm mr-2"></span>
-                    Refreshing...
-                </span>
-            </button>
-        </div>
+    <!-- Tabs for Users and Roles -->
+    <div class="tabs tabs-boxed mx-8 bg-base-100 rounded-lg">
+        <a class="tab" [class.tab-active]="activeTab === 'users'" (click)="setActiveTab('users')">Users</a>
+        <a class="tab" [class.tab-active]="activeTab === 'roles'" (click)="setActiveTab('roles')">Roles</a>
     </div>
 
+    <!-- Loading Spinner (Center it vertically) -->
     <div *ngIf="loading && !refreshing" class="flex justify-center items-center h-[calc(100vh-250px)]">
         <span class="loading loading-spinner loading-lg text-primary"></span>
     </div>
 
-    <div *ngIf="!loading">
-        <div class="mb-6">
-            <strong>Total Users:</strong> {{ userCount }}
+    <!-- Content Section -->
+    <div *ngIf="!loading" class="mx-8 mt-10">
+        <!-- Users Tab Content -->
+        <div *ngIf="activeTab === 'users'">
+
+            <!-- Search and Refresh Section -->
+            <div class="flex flex-col md:flex-row items-center justify-between mb-6">
+                <div class="w-full md:w-3/4 mb-4 md:mb-0">
+                    <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery"
+                        class="input input-bordered w-full" (ngModelChange)="onSearchQueryChange()" />
+                </div>
+                <div class="w-full md:w-1/4 md:ml-4 flex justify-end">
+                    <button class="btn btn-primary w-full md:w-auto" (click)="refreshUsers()"
+                        [disabled]="refreshing || loading">
+                        <span *ngIf="!refreshing"> Refresh </span>
+                        <span *ngIf="refreshing">
+                            <span class="loading loading-spinner loading-sm mr-2"></span> Refreshing...
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- User Count & Action Buttons -->
+            <div class="mb-6 flex justify-between items-center">
+                <div>
+                    <strong>Total Users:</strong> {{ userCount }}
+                </div>
+                <div class="space-x-4">
+                    <button class="btn btn-soft" (click)="openCreateUserModal()">
+                        Manage
+                    </button>
+                    <button class="btn btn-soft" (click)="openCreateUserModal()">
+                        Add User
+                    </button>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="overflow-x-auto h-full">
+                <div class="overflow-y-auto h-[calc(95vh-300px)]">
+                    <table class="table w-full table-pin-rows table-zebra">
+                        <thead>
+                            <tr>
+                                <th></th> <!-- Empty header for the index column -->
+                                <th>Username</th>
+                                <th>Roles</th>
+                                <th>Created At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let user of filteredUsers(); let i = index" class="hover:bg-base-100">
+                                <th>{{ i + 1 }}</th> <!-- Display index starting from 1 -->
+                                <td>{{ user.Username }}</td>
+                                <td>{{ user.Roles }}</td>
+                                <td>{{ user.CreatedAt }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div *ngIf="filteredUsers().length === 0 && !loading" class="text-center py-4 text-gray-500">
+                        No users found.
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="mb-4 flex justify-end">
-            <button class="btn btn-soft" (click)="openCreateUserModal()">
-                Add User
-            </button>
-        </div>
-
-        <div class="overflow-x-auto  h-full">
-            <div class="overflow-y-auto h-[calc(100vh-300px)]">
-                <table class="table w-full table-pin-rows table-zebra">
-                    <thead>
-                        <tr>
-                            <th></th> <!-- Empty header for the index column -->
-                            <th>Username</th>
-                            <th>Roles</th>
-                            <th>Created At</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let user of filteredUsers(); let i = index" class="hover:bg-base-100">
-                            <th>{{ i + 1 }}</th> <!-- Display index starting from 1 -->
-                            <td>{{ user.Username }}</td>
-                            <td>{{ user.Roles }}</td>
-                            <td>{{ user.CreatedAt }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div *ngIf="filteredUsers().length === 0 && !loading" class="text-center py-4 text-gray-500">
-                    No users found.
+        <!-- Roles Tab Content (Empty Table) -->
+        <div *ngIf="activeTab === 'roles'">
+            <div class="text-center py-4 text-gray-500">
+                <div class="overflow-x-auto">
+                    <table class="table w-full table-pin-rows table-zebra">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Role Name</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="3" class="text-center text-gray-500 py-4">
+                                    No roles available.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Modal for User Creation -->
     <app-create-user-modal [showModal]="showCreateUserModal" (modalClose)="showCreateUserModal = false"
-        (userCreated)="handleUserCreated($event)" [repositoryAddress]="repositoryAddress"> </app-create-user-modal>
-
+        (userCreated)="handleUserCreated($event)" [repositoryAddress]="repositoryAddress"></app-create-user-modal>
 </section>

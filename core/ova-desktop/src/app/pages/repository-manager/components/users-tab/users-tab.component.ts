@@ -25,6 +25,8 @@ export class UsersTabComponent implements OnInit, OnChanges {
   loading: boolean = false; // For initial tab load and overall content display
   refreshing: boolean = false; // For refresh button's specific loading state
 
+  activeTab: string = 'users'; // Default active tab set to 'users'
+
   showCreateUserModal: boolean = false; // Control visibility of the create user modal
 
   constructor(private ovacliService: OvacliService) {}
@@ -146,5 +148,10 @@ export class UsersTabComponent implements OnInit, OnChanges {
 
   private updateUserCount() {
     this.userCount = this.filteredUsers().length;
+  }
+
+  // Method to switch active tabs
+  setActiveTab(tab: string) {
+    this.activeTab = tab;
   }
 }
