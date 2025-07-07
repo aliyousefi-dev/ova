@@ -32,6 +32,7 @@
                     <th></th>
                     <th>ID</th>
                     <th>Video Address</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,6 +41,12 @@
                         <th>{{ i + 1 }}</th>
                         <td>{{ video.ID }}</td>
                         <td>{{ video.Path }}</td>
+                        <td>
+                            <button class="btn btn-xs btn-ghost" title="Show in Folder"
+                                (click)="showIndexedVideoInFolder(video.Path)">
+                                <i class="bx bx-folder-open text-xl"></i>
+                            </button>
+                        </td>
                     </tr>
                 </ng-container>
             </tbody>

@@ -11,7 +11,7 @@ import {
   OvacliService,
   VideoFile,
 } from '../../../../../../services/ovacli.service';
-import { ElectronService } from '../../../../../../services/common-electron.service';
+import { ElectronService } from '../../../../../../services/common-electron.service'; // Ensure ElectronService is imported
 
 @Component({
   selector: 'app-indexed-video-tab',
@@ -31,7 +31,7 @@ export class IndexedVideoTabComponent implements OnInit, OnChanges {
 
   constructor(
     private ovacliService: OvacliService,
-    private electronService: ElectronService
+    private electronService: ElectronService // ElectronService is already injected
   ) {}
 
   ngOnInit(): void {
@@ -71,7 +71,7 @@ export class IndexedVideoTabComponent implements OnInit, OnChanges {
       this.refreshing = true;
     }
 
-    const minDelay = 500;
+    const minDelay = 0;
     const startTime = Date.now();
 
     this.ovacliService
@@ -127,6 +127,8 @@ export class IndexedVideoTabComponent implements OnInit, OnChanges {
     indexedVideos: VideoFile[]
   ): Promise<VideoFile[]> {
     const joinedPromises = indexedVideos.map(async (video) => {
+      // Assuming `video.Path` is the relative path from the repository address
+      // The `joinPaths` method will give us the full absolute path
       const fullPath = await this.electronService.joinPaths(
         basePath,
         video.Path
@@ -159,5 +161,33 @@ export class IndexedVideoTabComponent implements OnInit, OnChanges {
         video.ID.toLowerCase().includes(this.searchQuery.toLowerCase())
     );
     this.indexedVideoCount = this.filteredIndexedVideos.length;
+  }
+
+  // NEW: Method to show an indexed video in its containing folder and highlight it
+  async showIndexedVideoInFolder(fullVideoPath: string): Promise<void> {
+    console.log(
+      'Attempting to show indexed item in folder for:',
+      fullVideoPath
+    );
+    try {
+      const success = await this.electronService.showItemInFolder(
+        fullVideoPath
+      );
+      if (success) {
+        console.log(
+          'Indexed item shown in folder successfully:',
+          fullVideoPath
+        );
+      } else {
+        console.error(
+          'Failed to show indexed item in folder for:',
+          fullVideoPath
+        );
+        // Optionally, show a user-friendly message to the user
+      }
+    } catch (error) {
+      console.error('Error in showIndexedVideoInFolder:', error);
+      // Optionally, show a user-friendly message to the user
+    }
   }
 }

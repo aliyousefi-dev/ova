@@ -9,9 +9,6 @@ contextBridge.exposeInMainWorld("IPCBridge", {
   folderExists: (folderPath) => ipcRenderer.invoke("folder-exists", folderPath),
   joinPaths: (folderPath, folderName) =>
     ipcRenderer.invoke("join-paths", folderPath, folderName),
-  saveRepositoryInfo: (metadata) =>
-    ipcRenderer.invoke("save-repository-info", metadata),
-  loadRepositoryInfo: () => ipcRenderer.invoke("load-repository-info"),
 
   // New method to listen for shortcut presses
   onShortcutPressed: (callback) => {
@@ -22,4 +19,10 @@ contextBridge.exposeInMainWorld("IPCBridge", {
 
   // Exposing the "ovacli" function to the renderer process
   runOvacli: (args) => ipcRenderer.invoke("ovacli", args), // This will be used to run the CLI
+
+  showItemInFolder: (fullPath) =>
+    ipcRenderer.invoke("show-item-in-folder", fullPath),
+
+  getDirectoryName: (fullPath) =>
+    ipcRenderer.invoke("get-directory-name", fullPath),
 });

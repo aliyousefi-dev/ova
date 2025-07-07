@@ -9,10 +9,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   OvacliService,
-  VideoFile,
   VideoFileDisk,
 } from '../../../../../../services/ovacli.service';
-import { ElectronService } from '../../../../../../services/common-electron.service';
+import { ElectronService } from '../../../../../../services/common-electron.service'; // Re-import ElectronService
 
 @Component({
   selector: 'app-unindexed-video-tab',
@@ -23,8 +22,6 @@ import { ElectronService } from '../../../../../../services/common-electron.serv
 export class UnindexedVideoTabComponent implements OnInit, OnChanges {
   @Input() repositoryAddress: string = ''; // Input from parent
 
-  indexedVideosForCategorization: VideoFile[] = [];
-  diskVideosForCategorization: VideoFileDisk[] = [];
   unindexedVideos: VideoFileDisk[] = [];
 
   searchQuery: string = '';
@@ -35,12 +32,12 @@ export class UnindexedVideoTabComponent implements OnInit, OnChanges {
 
   constructor(
     private ovacliService: OvacliService,
-    private electronService: ElectronService
+    private electronService: ElectronService // Re-inject ElectronService
   ) {}
 
   ngOnInit(): void {
     if (this.repositoryAddress) {
-      this.fetchAllVideosAndCategorize(true); // Initial fetch for this tab
+      this.fetchUnindexedVideos(true); // Initial fetch for this tab
     }
   }
 
@@ -51,7 +48,7 @@ export class UnindexedVideoTabComponent implements OnInit, OnChanges {
         changes['repositoryAddress'].previousValue
     ) {
       if (this.repositoryAddress) {
-        this.fetchAllVideosAndCategorize(true); // Re-fetch if repository address changes
+        this.fetchUnindexedVideos(true); // Re-fetch if repository address changes
       } else {
         this.unindexedVideos = [];
         this.applyFilterAndCount();
@@ -59,10 +56,10 @@ export class UnindexedVideoTabComponent implements OnInit, OnChanges {
     }
   }
 
-  fetchAllVideosAndCategorize(initialLoad: boolean = false): void {
+  fetchUnindexedVideos(initialLoad: boolean = false): void {
     if (!this.repositoryAddress) {
       console.warn(
-        'Cannot fetch videos for unindexed tab: repositoryAddress is not provided.'
+        'Cannot fetch unindexed videos: repositoryAddress is not provided.'
       );
       this.unindexedVideos = [];
       this.applyFilterAndCount();
@@ -75,43 +72,44 @@ export class UnindexedVideoTabComponent implements OnInit, OnChanges {
       this.refreshing = true;
     }
 
-    const minDelay = 500;
+    const minDelay = 0;
     const startTime = Date.now();
 
-    Promise.all([
-      this.ovacliService.runOvacliVideoList(this.repositoryAddress),
-      this.ovacliService.runOvacliRepoVideos(this.repositoryAddress),
-    ])
-      .then(async ([indexedVideosRaw, diskVideosRaw]) => {
+    this.ovacliService
+      .runOvacliRepoUnindexed(this.repositoryAddress)
+      .then(async (unindexedVideos) => {
+        // Make this callback async
         const elapsedTime = Date.now() - startTime;
         const remainingDelay = minDelay - elapsedTime;
 
-        this.indexedVideosForCategorization =
-          await this.processIndexedVideoPaths(
-            this.repositoryAddress,
-            indexedVideosRaw
-          );
-        this.diskVideosForCategorization = await this.processDiskVideoPaths(
-          this.repositoryAddress,
-          diskVideosRaw
+        // Join repository path to each unindexed video path
+        const processedVideos = await Promise.all(
+          unindexedVideos.map(async (video) => {
+            const fullPath = await this.electronService.joinPaths(
+              this.repositoryAddress,
+              video.Path
+            );
+            return { ...video, Path: fullPath };
+          })
         );
+
+        this.unindexedVideos = processedVideos;
+        this.sortVideosByPath(this.unindexedVideos);
 
         if (remainingDelay > 0) {
           setTimeout(() => {
-            this.categorizeVideos();
             this.applyFilterAndCount();
             this.loading = false;
             this.refreshing = false;
           }, remainingDelay);
         } else {
-          this.categorizeVideos();
           this.applyFilterAndCount();
           this.loading = false;
           this.refreshing = false;
         }
       })
       .catch((err) => {
-        console.error('Error fetching videos for unindexed tab:', err);
+        console.error('Error fetching unindexed videos:', err);
         const elapsedTime = Date.now() - startTime;
         const remainingDelay = minDelay - elapsedTime;
 
@@ -129,45 +127,6 @@ export class UnindexedVideoTabComponent implements OnInit, OnChanges {
           this.refreshing = false;
         }
       });
-  }
-
-  private async processIndexedVideoPaths(
-    basePath: string,
-    indexedVideos: VideoFile[]
-  ): Promise<VideoFile[]> {
-    const joinedPromises = indexedVideos.map(async (video) => {
-      const fullPath = await this.electronService.joinPaths(
-        basePath,
-        video.Path
-      );
-      return { ...video, Path: fullPath };
-    });
-    return Promise.all(joinedPromises);
-  }
-
-  private async processDiskVideoPaths(
-    basePath: string,
-    diskVideos: VideoFileDisk[]
-  ): Promise<VideoFileDisk[]> {
-    const joinedPromises = diskVideos.map(async (video) => {
-      const fullPath = await this.electronService.joinPaths(
-        basePath,
-        video.Path
-      );
-      return { ...video, Path: fullPath };
-    });
-    return Promise.all(joinedPromises);
-  }
-
-  categorizeVideos(): void {
-    const indexedPaths = new Set(
-      this.indexedVideosForCategorization.map((video) => video.Path)
-    );
-
-    this.unindexedVideos = this.diskVideosForCategorization.filter(
-      (diskVideo) => !indexedPaths.has(diskVideo.Path)
-    );
-    this.sortVideosByPath(this.unindexedVideos);
   }
 
   sortVideosByPath<T extends { Path: string }>(videos: T[]): void {
@@ -191,5 +150,24 @@ export class UnindexedVideoTabComponent implements OnInit, OnChanges {
       video.Path.toLowerCase().includes(this.searchQuery.toLowerCase())
     );
     this.unindexedVideoCount = this.filteredUnindexedVideos.length;
+  }
+
+  // Updated: Method to open the containing folder and highlight the item
+  async openContainingFolder(fullVideoPath: string): Promise<void> {
+    console.log('Attempting to show item in folder for:', fullVideoPath);
+    try {
+      const success = await this.electronService.showItemInFolder(
+        fullVideoPath
+      );
+      if (success) {
+        console.log('Item shown in folder successfully:', fullVideoPath);
+      } else {
+        console.error('Failed to show item in folder for:', fullVideoPath);
+        // Optionally, show a user-friendly message
+      }
+    } catch (error) {
+      console.error('Error in openContainingFolder:', error);
+      // Optionally, show a user-friendly message
+    }
   }
 }

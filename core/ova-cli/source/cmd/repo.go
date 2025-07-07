@@ -147,18 +147,91 @@ var repoVideosCmd = &cobra.Command{
 	},
 }
 
+var repoUnindexedCmd = &cobra.Command{
+	Use:   "unindexed",  // Shortened the command name
+	Short: "List unindexed videos in the repository",
+	Run: func(cmd *cobra.Command, args []string) {
+		// Get the repository address from the --repository flag
+		repoAddress, _ := cmd.Flags().GetString("repository")
+
+		// If repository address is not provided, use the current working directory (os.Getwd())
+		if repoAddress == "" {
+			repoAddress, _ = os.Getwd() // Default to the current working directory
+		}
+
+		// Resolve the absolute path of the repository
+		absPath, err := filepath.Abs(repoAddress)
+		if err != nil {
+			fmt.Printf("Error resolving absolute path: %v\n", err)
+			return
+		}
+
+		// Create a new RepoManager instance
+		repository := repo.NewRepoManager(absPath)
+		if err := repository.Init(); err != nil {
+			fmt.Printf("Error initializing repository: %v\n", err)
+			return
+		}
+
+		// Fetch unindexed videos from the repository
+		unindexedVideos, err := repository.GetUnindexedVideos()
+		if err != nil {
+			fmt.Printf("Error fetching unindexed videos: %v\n", err)
+			return
+		}
+
+		// Check if --json flag is set
+		jsonFlag, _ := cmd.Flags().GetBool("json")
+		if jsonFlag {
+			// If --json is passed, return data in JSON format
+			videoData := make([]map[string]string, len(unindexedVideos))
+			for i, video := range unindexedVideos {
+				videoData[i] = map[string]string{
+					"Video Path": video,
+				}
+			}
+
+			// Marshal the video data into JSON format
+			jsonData, err := json.Marshal(videoData)
+			if err != nil {
+				fmt.Println("Failed to marshal video data to JSON:", err)
+				return
+			}
+
+			// Print the JSON output
+			fmt.Println(string(jsonData))
+		} else {
+			// If no --json flag is passed, display data in a human-readable format
+			if len(unindexedVideos) == 0 {
+				fmt.Println("No unindexed videos found.")
+			} else {
+				fmt.Println("Unindexed Video Paths:")
+				for _, video := range unindexedVideos {
+					fmt.Println(video)
+				}
+			}
+		}
+	},
+}
+
 
 func InitCommandRepo(rootCmd *cobra.Command) {
 	// Add flags for the repo info and videos commands
 	repoInfoCmd.Flags().BoolP("json", "j", false, "Output the repository information in JSON format")
 	repoInfoCmd.Flags().StringP("repository", "r", "", "Specify the repository directory")
 
+	// Add flags for the unindexed command
+	repoUnindexedCmd.Flags().BoolP("json", "j", false, "Output the unindexed video paths in JSON format")
+	repoUnindexedCmd.Flags().StringP("repository", "r", "", "Specify the repository directory")
+
+		
 	repoVideosCmd.Flags().BoolP("json", "j", false, "Output the video paths in JSON format")
 	repoVideosCmd.Flags().StringP("repository", "r", "", "Specify the repository directory")
 
 	// Add the subcommands to the root repo command
 	repoCmd.AddCommand(repoInfoCmd)
 	repoCmd.AddCommand(repoVideosCmd)
+	repoCmd.AddCommand(repoUnindexedCmd)
 
 	// Add the repoCmd to the root command (which could be `rootCmd`)
 	rootCmd.AddCommand(repoCmd)

@@ -9,70 +9,57 @@ import (
 )
 
 // RegisterVideo handles hashing, thumbnail/preview generation, and metadata storage.
-func (r *RepoManager) RegisterVideo(videoPath string) (datatypes.VideoData, error) {
+func (r *RepoManager) RegisterVideo(videoRelPath string) (datatypes.VideoData, error) {
 	if !r.IsDataStorageExists() {
 		return datatypes.VideoData{}, fmt.Errorf("data storage is not initialized")
 	}
 
 	// 1. Generate unique video ID
-	videoID, err := r.GenerateVideoID(videoPath)
+	videoID, err := r.GenerateVideoID(videoRelPath)
 	if err != nil {
 		return datatypes.VideoData{}, err
 	}
 
 	// 2. Extract metadata
-	duration, err := r.GetVideoDuration(videoPath)
+	duration, err := r.GetVideoDuration(videoRelPath)
 	if err != nil {
 		return datatypes.VideoData{}, fmt.Errorf("failed to get duration: %w", err)
 	}
 
-	codec, err := r.GetVideoCodect(videoPath)
+	codec, err := r.GetVideoCodect(videoRelPath)
 	if err != nil {
 		return datatypes.VideoData{}, fmt.Errorf("failed to get codecs for file: %w", err)
 	}
 
-	resolution, err := r.GetVideoResolution(videoPath)
+	resolution, err := r.GetVideoResolution(videoRelPath)
 	if err != nil {
-		return datatypes.VideoData{}, fmt.Errorf("failed to get resolution for %s: %w", videoPath, err)
+		return datatypes.VideoData{}, fmt.Errorf("failed to get resolution for %s: %w", videoRelPath, err)
 	}
 
 	// 3. Generate thumbnail and preview
-	thumbPath, err := r.GenerateThumb(videoPath, videoID)
+	thumbPath, err := r.GenerateThumb(videoRelPath, videoID)
 	if err != nil {
 		return datatypes.VideoData{}, fmt.Errorf("failed to generate thumbnail: %w", err)
 	}
 
-	previewPath, err := r.GeneratePreview(videoPath, videoID)
+	previewPath, err := r.GeneratePreview(videoRelPath, videoID)
 	if err != nil {
 		return datatypes.VideoData{}, fmt.Errorf("failed to generate preview: %w", err)
 	}
 
-	// 4. Compute relative paths
-	relVideoPath, err := filepath.Rel(r.GetRootPath(), videoPath)
-	if err != nil {
-		return datatypes.VideoData{}, fmt.Errorf("failed to get relative video path: %w", err)
-	}
-
-	relThumbPath, err := filepath.Rel(r.GetRootPath(), thumbPath)
-	if err != nil {
-		return datatypes.VideoData{}, fmt.Errorf("failed to get relative thumbnail path: %w", err)
-	}
-
-	relPreviewPath, err := filepath.Rel(r.GetRootPath(), previewPath)
-	if err != nil {
-		return datatypes.VideoData{}, fmt.Errorf("failed to get relative preview path: %w", err)
-	}
+	// 4. Since videoRelPath, thumbPath, and previewPath are already relative, we can directly use them.
+	// No need to compute relative paths.
 
 	// 5. Create and populate VideoData
-	title := strings.TrimSuffix(filepath.Base(videoPath), filepath.Ext(videoPath))
+	title := strings.TrimSuffix(filepath.Base(videoRelPath), filepath.Ext(videoRelPath))
 	videoData := datatypes.NewVideoData(videoID)
 	videoData.Title = title
 	videoData.DurationSeconds = int(duration)
 	videoData.Codecs = codec
 	videoData.Resolution = resolution
-	videoData.FilePath = relVideoPath
-	videoData.ThumbnailPath = &relThumbPath
-	videoData.PreviewPath = &relPreviewPath
+	videoData.FilePath = videoRelPath   // Use the already relative video path
+	videoData.ThumbnailPath = &thumbPath // Use the already relative thumbnail path
+	videoData.PreviewPath = &previewPath // Use the already relative preview path
 
 	// 6. Store metadata
 	if err := r.dataStorage.AddVideo(videoData); err != nil {

@@ -439,4 +439,71 @@ export class OvacliService {
         throw err; // Propagate the error for further handling
       });
   }
+
+  // Method to run the ovacli repo unindexed command and return the result as a list of VideoFileDisk objects
+  runOvacliRepoUnindexed(repositoryPath: string): Promise<VideoFileDisk[]> {
+    // Wrap the repository path in double quotes to handle spaces in the path
+    const quotedRepositoryPath = `"${repositoryPath}"`;
+
+    // Build the base arguments array for the 'repo unindexed' command
+    const args: string[] = ['repo', 'unindexed'];
+
+    // Add the --json flag
+    args.push('--json');
+
+    // Add the --repository flag with the provided repository path
+    args.push('--repository', quotedRepositoryPath);
+
+    console.log('Running ovacli repo unindexed with args:', args);
+
+    // Run the command and return the result
+    return window['IPCBridge']
+      .runOvacli(args) // Pass the arguments to runOvacli in the main process
+      .then((result) => {
+        console.log('runOvacli repo unindexed result:', result);
+
+        if (result.success && result.output) {
+          try {
+            // Parse the result output as JSON directly
+            const unindexedVideos = JSON.parse(result.output);
+
+            // If unindexed videos are found, format the data
+            if (Array.isArray(unindexedVideos)) {
+              // Map the unindexed videos into the VideoFileDisk[] format
+              return unindexedVideos.map(
+                (video: any): VideoFileDisk => ({
+                  Path: video['Video Path'], // Assuming the field is 'Video Path' in the output
+                })
+              );
+            } else {
+              console.error(
+                'Unexpected format in repo unindexed result:',
+                result
+              );
+              // Handle empty result if no unindexed videos are found
+              if (result.output.trim() === 'No unindexed videos found.') {
+                return [];
+              }
+              throw new Error('Unexpected format in repo unindexed result');
+            }
+          } catch (err) {
+            console.error('Failed to parse repo unindexed JSON:', err);
+            throw err; // Propagate the error if JSON parsing fails
+          }
+        } else if (
+          result.success &&
+          result.output.trim() === 'No unindexed videos found.'
+        ) {
+          // Handle "No unindexed videos found." explicitly for non-JSON output cases
+          return [];
+        } else {
+          console.error('Error in repo unindexed result:', result);
+          throw new Error('Error fetching unindexed videos');
+        }
+      })
+      .catch((err) => {
+        console.error('runOvacli repo unindexed error:', err);
+        throw err; // Propagate the error for further handling
+      });
+  }
 }

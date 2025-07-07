@@ -10,8 +10,8 @@ function registerIpcHandlers(mainWindow) {
   require("./ipc-handlers/settings-save")(); // Register settings-save handler
   require("./ipc-handlers/serve-repo")(); // Register serve-repo handler
   require("./ipc-handlers/join-path")(); // Register join-path handler
-  require("./ipc-handlers/save-repository-info")(); // Register save-repository-info handler
-  require("./ipc-handlers/load-repository-info")(); // Register load-repository-info handler
+  require("./ipc-handlers/show-item-in-folder")(); // NEW: Register show-item-in-folder handler
+  require("./ipc-handlers/get-directory-name")(); // NEW: Register get-directory-name handler
 
   // Register global shortcut handlers
   require("./ipc-handlers/key-shortcuts").registerShortcuts(mainWindow); // Register key-shortcuts handler

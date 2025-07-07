@@ -54,31 +54,32 @@ export class ElectronService {
       });
   }
 
-  // Method to save repository info
-  saveRepositoryInfo(metadata: any): Promise<void> {
-    console.log('saveRepositoryInfo called with metadata:', metadata);
+  // NEW: Method to show an item in its containing folder and highlight it
+  showItemInFolder(fullPath: string): Promise<boolean> {
+    console.log('showItemInFolder called with fullPath:', fullPath);
     return window['IPCBridge']
-      .saveRepositoryInfo(metadata)
-      .then(() => {
-        console.log('saveRepositoryInfo completed successfully');
+      .showItemInFolder(fullPath)
+      .then((success) => {
+        console.log(`showItemInFolder result for ${fullPath}:`, success);
+        return success;
       })
       .catch((err) => {
-        console.error('saveRepositoryInfo error:', err);
+        console.error('showItemInFolder error:', err);
         throw err;
       });
   }
 
-  // Method to load repository info
-  loadRepositoryInfo(): Promise<any> {
-    console.log('loadRepositoryInfo called');
+  // NEW: Method to get the directory name from a full path
+  getDirectoryName(fullPath: string): Promise<string | null> {
+    console.log('getDirectoryName called with fullPath:', fullPath);
     return window['IPCBridge']
-      .loadRepositoryInfo()
-      .then((data) => {
-        console.log('loadRepositoryInfo result:', data);
-        return data;
+      .getDirectoryName(fullPath)
+      .then((dirName) => {
+        console.log(`getDirectoryName result for ${fullPath}:`, dirName);
+        return dirName;
       })
       .catch((err) => {
-        console.error('loadRepositoryInfo error:', err);
+        console.error('getDirectoryName error:', err);
         throw err;
       });
   }

@@ -4,7 +4,7 @@
             class="input input-bordered w-full" (ngModelChange)="onSearchQueryChange()" />
     </div>
     <div class="w-full md:w-1/4 md:ml-4 flex justify-end">
-        <button class="btn btn-primary w-full md:w-auto" (click)="fetchAllVideosAndCategorize()"
+        <button class="btn btn-primary w-full md:w-auto" (click)="fetchUnindexedVideos()"
             [disabled]="refreshing || loading">
             <span *ngIf="!refreshing"> Refresh </span>
             <span *ngIf="refreshing">
@@ -42,7 +42,11 @@
                         <td>{{ video.Path }}</td>
                         <td class="flex space-x-2">
                             <button class="btn btn-xs btn-ghost" title="Index Video">
-                                <i class='bx bx-caret-right-square text-xl'></i>
+                                <i class="bx bx-caret-right-square text-xl"></i>
+                            </button>
+                            <button class="btn btn-xs btn-ghost" title="Open Containing Folder"
+                                (click)="openContainingFolder(video.Path)">
+                                <i class="bx bx-folder-open text-xl"></i>
                             </button>
                         </td>
                         <td>

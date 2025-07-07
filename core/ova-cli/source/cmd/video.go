@@ -32,80 +32,108 @@ var videoAddCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		repoRoot, err := os.Getwd()
 		if err != nil {
-			pterm.Error.Println("Failed to get working directory:", err)
+			fmt.Println("Failed to get working directory:", err)
 			return
 		}
 
 		repository := repo.NewRepoManager(repoRoot)
 		if err := repository.Init(); err != nil {
-			pterm.Error.Println("Failed to initialize repository:", err)
+			fmt.Println("Failed to initialize repository:", err)
 			return
 		}
 
 		arg := args[0]
 		var videoPaths []string
 
+		// Get the total video count on disk and print it
+		totalVideosOnDisk, err := repository.GetVideoCountOnDisk()
+		if err != nil {
+			fmt.Println("Failed to scan videos on disk:", err)
+			return
+		}
+		fmt.Printf("Total %d videos found on disk.\n", totalVideosOnDisk)
+
+		// If "all" is passed, scan disk and filter out unindexed videos
 		if arg == "all" {
-			videoPaths, err = repository.ScanDiskForVideos()
+			// Get only the unindexed videos
+			videoPaths, err = repository.GetUnindexedVideos()
 			if err != nil || len(videoPaths) == 0 {
-				pterm.Warning.Println("No videos found in the repository.")
+				fmt.Println("No unindexed videos found in the repository.")
 				return
 			}
+
+			// Calculate and print how many videos are already indexed
+			indexedCount := totalVideosOnDisk - len(videoPaths)
+			if indexedCount > 0 {
+				fmt.Printf("Skipping %d indexed videos.\n", indexedCount)
+			}
 		} else {
+			// Process single video
 			if _, err := os.Stat(arg); os.IsNotExist(err) {
-				pterm.Error.Println("Specified file does not exist.")
+				fmt.Println("Specified file does not exist.")
 				return
 			}
 			absPath, _ := filepath.Abs(arg)
 			videoPaths = append(videoPaths, absPath)
 		}
 
+		// Display the videos to be indexed
+		if len(videoPaths) > 0 {
+			fmt.Printf("Starting to index %d video(s)...\n", len(videoPaths))
+		} else {
+			fmt.Println("No videos to index.")
+			return
+		}
+
 		total := len(videoPaths)
 		successCount := 0
 		var warnings []string
 
-		multi := pterm.DefaultMultiPrinter
-		processSpinner, _ := pterm.DefaultSpinner.WithWriter(multi.NewWriter()).Start("Initializing...")
-		progressbar, _ := pterm.DefaultProgressbar.WithTotal(total).WithWriter(multi.NewWriter()).Start("Adding videos")
-		warningStatus, _ := pterm.DefaultSpinner.WithWriter(multi.NewWriter()).Start("Warnings: 0")
-		multi.Start()
+		// Define max length for the filename
+		const maxFilenameLength = 50
 
+		// Loop through all the videos
 		for i, absPath := range videoPaths {
 			fileName := filepath.Base(absPath)
-			processSpinner.UpdateText(fmt.Sprintf("Processing (%d/%d): %s", i+1, total, fileName))
 
+			// Truncate long filenames
+			if len(fileName) > maxFilenameLength {
+				fileName = fileName[:maxFilenameLength] + "..."
+			}
+
+			// Print the process message on a new line
+			fmt.Printf("Processing (%d/%d): %s \n", i+1, total, fileName)
+
+			// Simulate video registration process
 			_, err := repository.RegisterVideo(absPath)
 			if err != nil {
-				warnings = append(warnings, fmt.Sprintf("❌ %s: %v", fileName, err))
-				warningStatus.UpdateText(fmt.Sprintf("Warnings: %d", len(warnings)))
+				warnings = append(warnings, fmt.Sprintf("%s: %v", fileName, err))
 			} else {
 				successCount++
 			}
 
-			progressbar.Increment()
-			time.Sleep(30 * time.Millisecond)
+			// Simulate some processing time
+			time.Sleep(100 * time.Millisecond)
 		}
 
-		processSpinner.Success("All videos processed.")
-		progressbar.Stop()
-		if len(warnings) > 0 {
-			warningStatus.Warning(fmt.Sprintf("Warnings: %d (see below)", len(warnings)))
-		} else {
-			warningStatus.Success("No warnings.")
-		}
-		multi.Stop()
-
-		pterm.Println()
-		pterm.Success.Printf("✅ Successfully processed %d of %d videos.\n", successCount, total)
+		// Print final summary
+		fmt.Printf("\nSuccessfully processed %d of %d videos.\n", successCount, total)
 
 		if len(warnings) > 0 {
-			pterm.Warning.Println("⚠️  The following videos had issues:")
+			fmt.Println("The following videos had issues:")
 			for _, warn := range warnings {
-				pterm.Println("  " + warn)
+				fmt.Println("  " + warn)
 			}
+		} else {
+			fmt.Println("No warnings.")
 		}
 	},
 }
+
+
+
+
+
 
 var videoRemoveCmd = &cobra.Command{
 	Use:   "remove [path|all]",

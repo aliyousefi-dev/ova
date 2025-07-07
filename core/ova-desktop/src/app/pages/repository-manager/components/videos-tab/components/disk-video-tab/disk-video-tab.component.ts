@@ -11,7 +11,7 @@ import {
   OvacliService,
   VideoFileDisk,
 } from '../../../../../../services/ovacli.service';
-import { ElectronService } from '../../../../../../services/common-electron.service';
+import { ElectronService } from '../../../../../../services/common-electron.service'; // Ensure ElectronService is imported
 
 @Component({
   selector: 'app-disk-video-tab',
@@ -31,7 +31,7 @@ export class DiskVideoTabComponent implements OnInit, OnChanges {
 
   constructor(
     private ovacliService: OvacliService,
-    private electronService: ElectronService
+    private electronService: ElectronService // ElectronService is already injected
   ) {}
 
   ngOnInit(): void {
@@ -71,7 +71,7 @@ export class DiskVideoTabComponent implements OnInit, OnChanges {
       this.refreshing = true;
     }
 
-    const minDelay = 500;
+    const minDelay = 0;
     const startTime = Date.now();
 
     this.ovacliService
@@ -127,6 +127,8 @@ export class DiskVideoTabComponent implements OnInit, OnChanges {
     diskVideos: VideoFileDisk[]
   ): Promise<VideoFileDisk[]> {
     const joinedPromises = diskVideos.map(async (video) => {
+      // Assuming `video.Path` is the relative path from the repository address
+      // The `joinPaths` method will give us the full absolute path
       const fullPath = await this.electronService.joinPaths(
         basePath,
         video.Path
@@ -157,5 +159,24 @@ export class DiskVideoTabComponent implements OnInit, OnChanges {
       video.Path.toLowerCase().includes(this.searchQuery.toLowerCase())
     );
     this.diskVideoCount = this.filteredDiskVideos.length;
+  }
+
+  // NEW: Method to show a disk video in its containing folder and highlight it
+  async showDiskVideoInFolder(fullVideoPath: string): Promise<void> {
+    console.log('Attempting to show disk item in folder for:', fullVideoPath);
+    try {
+      const success = await this.electronService.showItemInFolder(
+        fullVideoPath
+      );
+      if (success) {
+        console.log('Disk item shown in folder successfully:', fullVideoPath);
+      } else {
+        console.error('Failed to show disk item in folder for:', fullVideoPath);
+        // Optionally, show a user-friendly message to the user
+      }
+    } catch (error) {
+      console.error('Error in showDiskVideoInFolder:', error);
+      // Optionally, show a user-friendly message to the user
+    }
   }
 }

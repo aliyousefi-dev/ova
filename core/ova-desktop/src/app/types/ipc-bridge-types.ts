@@ -8,9 +8,9 @@ declare global {
       pickFolder: () => Promise<string | null>;
       folderExists: (folderPath: string) => Promise<boolean>;
       joinPaths: (folderPath: string, folderName: string) => Promise<string>;
-      saveRepositoryInfo: (metadata: any) => Promise<void>; // New method
-      loadRepositoryInfo: () => Promise<any>; // New method
       runOvacli: (args: string[]) => Promise<any>; // <-- Add this method
+      showItemInFolder: (fullPath: string) => Promise<boolean>;
+      getDirectoryName: (fullPath: string) => Promise<string | null>;
     };
   }
 }
