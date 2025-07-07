@@ -1,3 +1,4 @@
+// videos-tab.component.ts
 import {
   Component,
   Input,
@@ -12,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { IndexedVideoTabComponent } from './components/indexed-video-tab/indexed-video-tab.component';
 import { DiskVideoTabComponent } from './components/disk-video-tab/disk-video-tab.component';
 import { UnindexedVideoTabComponent } from './components/unindexed-video-tab/unindexed-video-tab.component';
+import { DuplicateVideoTabComponent } from './components/duplicate-video-tab/duplicate-video-tab.component'; // Import the new component
 
 @Component({
   selector: 'app-videos-tab',
@@ -22,13 +24,19 @@ import { UnindexedVideoTabComponent } from './components/unindexed-video-tab/uni
     IndexedVideoTabComponent,
     DiskVideoTabComponent,
     UnindexedVideoTabComponent,
+    DuplicateVideoTabComponent, // Add the new component here
   ],
   templateUrl: './videos-tab.component.html',
 })
 export class VideosTabComponent implements OnInit, OnChanges {
   @Input() repositoryAddress: string = '';
 
-  activeTab: string = 'indexedVideo'; // Default active tab
+  // Add 'duplicateVideo' to the possible types for activeTab
+  activeTab:
+    | 'indexedVideo'
+    | 'diskVideo'
+    | 'unindexedVideo'
+    | 'duplicateVideo' = 'indexedVideo'; // Default active tab
 
   loading: boolean = false; // This remains for any high-level parent loading if desired
 
@@ -40,7 +48,10 @@ export class VideosTabComponent implements OnInit, OnChanges {
     // Children will react to repositoryAddress changes via their own ngOnChanges
   }
 
-  setActiveTab(tab: string) {
+  // Update the type for 'tab' to include 'duplicateVideo'
+  setActiveTab(
+    tab: 'indexedVideo' | 'diskVideo' | 'unindexedVideo' | 'duplicateVideo'
+  ) {
     this.activeTab = tab;
   }
 }

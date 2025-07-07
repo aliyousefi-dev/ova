@@ -9,6 +9,11 @@ export interface VideoFileDisk {
   Path: string;
 }
 
+export interface VideoFileDuplicate {
+  hash: string;
+  paths: string[];
+}
+
 // Define the interface for a User
 export interface User {
   Username: string;
@@ -373,6 +378,81 @@ export class OvacliService {
       })
       .catch((err) => {
         console.error('runOvacli users rm error:', err);
+        throw err; // Propagate the error for further handling
+      });
+  }
+
+  runOvacliRepoDuplicates(
+    repositoryPath: string
+  ): Promise<VideoFileDuplicate[]> {
+    // Wrap the repository path in double quotes to handle spaces in the path
+    const quotedRepositoryPath = `"${repositoryPath}"`;
+
+    // Build the base arguments array for the 'repo duplicates' command
+    const args: string[] = ['repo', 'duplicates'];
+
+    // Add the --json flag
+    args.push('--json');
+
+    // Add the --repository flag with the provided repository path
+    args.push('--repository', quotedRepositoryPath);
+
+    console.log('Running ovacli repo duplicates with args:', args);
+
+    // Run the command and return the result
+    return window['IPCBridge']
+      .runOvacli(args) // Pass the arguments to runOvacli in the main process
+      .then((result) => {
+        console.log('runOvacli repo duplicates result:', result);
+
+        // Ensure the result is valid
+        if (result.success && result.output) {
+          try {
+            let output = result.output.trim();
+
+            // Check for any potential warning message in the output
+            if (output.startsWith('Warning:')) {
+              console.warn('Received a warning from ovacli:', output);
+              // Handle or suppress the warning
+              // You can choose to throw an error or ignore it
+              throw new Error('Received warning: ' + output);
+            }
+
+            // Check if output starts with a valid JSON structure
+            if (!output.startsWith('{') && !output.startsWith('[')) {
+              console.error('Unexpected output format:', output);
+              throw new Error('Output is not valid JSON');
+            }
+
+            // Parse the result output as JSON directly
+            const duplicates = JSON.parse(output);
+
+            // If duplicates are found, return the result as an array of VideoFileDuplicate objects
+            if (Array.isArray(duplicates)) {
+              return duplicates.map(
+                (duplicate: any): VideoFileDuplicate => ({
+                  hash: duplicate.hash,
+                  paths: duplicate.paths,
+                })
+              );
+            } else {
+              console.error(
+                'Unexpected format in repo duplicates result:',
+                result
+              );
+              throw new Error('Unexpected format in repo duplicates result');
+            }
+          } catch (err) {
+            console.error('Failed to parse repo duplicates JSON:', err);
+            throw err; // Propagate the error if JSON parsing fails
+          }
+        } else {
+          console.error('Error in repo duplicates result:', result);
+          throw new Error('Error fetching repo duplicates');
+        }
+      })
+      .catch((err) => {
+        console.error('runOvacli repo duplicates error:', err);
         throw err; // Propagate the error for further handling
       });
   }

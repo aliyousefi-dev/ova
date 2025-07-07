@@ -214,24 +214,100 @@ var repoUnindexedCmd = &cobra.Command{
 	},
 }
 
+var repoDuplicateCmd = &cobra.Command{
+	Use:   "duplicates",
+	Short: "List duplicate videos in the repository",
+	Run: func(cmd *cobra.Command, args []string) {
+		// Get the repository address from the --repository flag
+		repoAddress, _ := cmd.Flags().GetString("repository")
+
+		// If repository address is not provided, use the current working directory (os.Getwd())
+		if repoAddress == "" {
+			repoAddress, _ = os.Getwd() // Default to the current working directory
+		}
+
+		// Resolve the absolute path of the repository
+		absPath, err := filepath.Abs(repoAddress)
+		if err != nil {
+			fmt.Printf("Error resolving absolute path: %v\n", err)
+			return
+		}
+
+		// Create a new RepoManager instance
+		repository := repo.NewRepoManager(absPath) // Assuming repo.NewRepoManager exists
+		if err := repository.Init(); err != nil {  // Assuming repository.Init() exists
+			fmt.Printf("Error initializing repository: %v\n", err)
+			return
+		}
+
+		// Scan for duplicate videos
+		duplicateVideos, err := repository.ScanDiskForDuplicateVideos()
+		if err != nil {
+			fmt.Printf("Error scanning for duplicate videos: %v\n", err)
+			return
+		}
+
+		// Check if --json flag is set
+		jsonFlag, _ := cmd.Flags().GetBool("json")
+		if jsonFlag {
+			// If --json is passed, return data in JSON format
+			// We'll transform the map[string][]string to a slice of a more JSON-friendly struct
+			type DuplicateSet struct {
+				Hash  string   `json:"hash"`
+				Paths []string `json:"paths"`
+			}
+			var jsonOutput []DuplicateSet
+
+			for hash, paths := range duplicateVideos {
+				jsonOutput = append(jsonOutput, DuplicateSet{Hash: hash, Paths: paths})
+			}
+
+			// Marshal the duplicate video data into JSON format
+			jsonData, err := json.Marshal(jsonOutput)
+			if err != nil {
+				fmt.Println("Failed to marshal duplicate video data to JSON:", err)
+				return
+			}
+
+			// Print the JSON output
+			fmt.Println(string(jsonData))
+		} else {
+			// If no --json flag is passed, display data in a human-readable format
+			if len(duplicateVideos) == 0 {
+				fmt.Println("No duplicate videos found.")
+			} else {
+				fmt.Println("Duplicate Video Sets:")
+				for hash, paths := range duplicateVideos {
+					fmt.Printf("  Hash: %s\n", hash)
+					for _, path := range paths {
+						fmt.Printf("    - %s\n", path)
+					}
+					fmt.Println() // Add a blank line for readability between sets
+				}
+			}
+		}
+	},
+}
+
 
 func InitCommandRepo(rootCmd *cobra.Command) {
 	// Add flags for the repo info and videos commands
+	repoCmd.AddCommand(repoInfoCmd)
 	repoInfoCmd.Flags().BoolP("json", "j", false, "Output the repository information in JSON format")
 	repoInfoCmd.Flags().StringP("repository", "r", "", "Specify the repository directory")
 
 	// Add flags for the unindexed command
+	repoCmd.AddCommand(repoUnindexedCmd)	
 	repoUnindexedCmd.Flags().BoolP("json", "j", false, "Output the unindexed video paths in JSON format")
 	repoUnindexedCmd.Flags().StringP("repository", "r", "", "Specify the repository directory")
 
-		
+	repoCmd.AddCommand(repoDuplicateCmd)
+	repoDuplicateCmd.Flags().StringP("repository", "r", "", "Path to the video repository (default: current directory)")
+	repoDuplicateCmd.Flags().BoolP("json", "j", false, "Output results in JSON format")
+	
+	repoCmd.AddCommand(repoVideosCmd)
 	repoVideosCmd.Flags().BoolP("json", "j", false, "Output the video paths in JSON format")
 	repoVideosCmd.Flags().StringP("repository", "r", "", "Specify the repository directory")
-
-	// Add the subcommands to the root repo command
-	repoCmd.AddCommand(repoInfoCmd)
-	repoCmd.AddCommand(repoVideosCmd)
-	repoCmd.AddCommand(repoUnindexedCmd)
 
 	// Add the repoCmd to the root command (which could be `rootCmd`)
 	rootCmd.AddCommand(repoCmd)

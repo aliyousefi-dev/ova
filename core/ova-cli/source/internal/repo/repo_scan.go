@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
+	"sync"
 )
 
 var videoExtensions = []string{".mp4"}
@@ -154,7 +156,7 @@ func (r *RepoManager) GetVideoCountOnDisk() (int, error) {
 }
 
 
-// GetUnindexedVideos scans the disk for video files and returns the paths of unindexed videos.
+// GetUnindexedVideos scans the disk for video files and returns the absolute paths of unindexed videos.
 func (r *RepoManager) GetUnindexedVideos() ([]string, error) {
 	if !r.IsDataStorageExists() {
 		return nil, fmt.Errorf("data storage is not initialized")
@@ -178,13 +180,118 @@ func (r *RepoManager) GetUnindexedVideos() ([]string, error) {
 		return nil, fmt.Errorf("failed to scan disk for videos: %w", err)
 	}
 
-	// Filter out the video paths that are already indexed
+	// Get the root directory to convert relative paths to absolute paths
+	rootPath := r.GetRootPath()
+
+	// Filter out the video paths that are already indexed and convert to absolute paths
 	var unindexedPaths []string
 	for _, videoPath := range scannedVideoPaths {
 		if _, exists := indexedVideoPaths[videoPath]; !exists {
-			unindexedPaths = append(unindexedPaths, videoPath)
+			// Convert the relative path to an absolute path
+			absolutePath := filepath.Join(rootPath, videoPath)
+			unindexedPaths = append(unindexedPaths, absolutePath)
 		}
 	}
 
 	return unindexedPaths, nil
+}
+
+
+
+// Define a struct to hold the result of each hashing operation
+type VideoHashResult struct {
+	RelPath string
+	Hash    string
+	Err     error
+}
+
+
+// ScanDiskForDuplicateVideos scans the repository for duplicate video files by checking their hashes.
+// It returns a map where keys are video hashes and values are slices of relative paths
+// that share that hash, effectively listing all duplicates.
+func (r *RepoManager) ScanDiskForDuplicateVideos() (map[string][]string, error) {
+	videoHashes := make(map[string][]string)
+	duplicateVideos := make(map[string][]string)
+
+	videoRelPaths, err := r.ScanDiskForVideos()
+	if err != nil {
+		return nil, fmt.Errorf("failed to scan disk for videos: %w", err)
+	}
+
+	// Use a buffered channel to collect results from goroutines
+	// The buffer size can be tuned, but len(videoRelPaths) is a safe upper bound.
+	results := make(chan VideoHashResult, len(videoRelPaths))
+	var wg sync.WaitGroup
+
+	// Determine the number of concurrent workers.
+	// A common practice is to use GOMAXPROCS or a slightly higher number to account for I/O bound tasks.
+	numWorkers := runtime.NumCPU() * 2 // Or a fixed number like 8, 16, depending on I/O capacity
+	if numWorkers == 0 { // Fallback if NumCPU returns 0 (unlikely)
+		numWorkers = 4
+	}
+
+	// Use a worker pool pattern to limit concurrent file operations
+	pathsToProcess := make(chan string, len(videoRelPaths))
+
+	// Start worker goroutines
+	for i := 0; i < numWorkers; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for relPath := range pathsToProcess {
+				videoID, err := r.GenerateVideoID(relPath)
+				results <- VideoHashResult{RelPath: relPath, Hash: videoID, Err: err}
+			}
+		}()
+	}
+
+	// Send paths to the worker pool
+	for _, relPath := range videoRelPaths {
+		pathsToProcess <- relPath
+	}
+	close(pathsToProcess) // Signal that no more paths will be sent
+
+	// Wait for all workers to finish
+	wg.Wait()
+	close(results) // Close the results channel once all workers are done
+
+	// Collect and process results from the channel
+	for res := range results {
+		if res.Err != nil {
+			fmt.Printf("Warning: Could not generate ID for video %s: %v\n", res.RelPath, res.Err)
+			continue
+		}
+		videoHashes[res.Hash] = append(videoHashes[res.Hash], res.RelPath)
+	}
+
+	// Identify duplicates (this part remains the same)
+	for hash, paths := range videoHashes {
+		if len(paths) > 1 {
+			duplicateVideos[hash] = paths
+		}
+	}
+
+	return duplicateVideos, nil
+}
+
+// IsVideoFilePathExist checks if a video file exists at the specified absolute path.
+func (r *RepoManager) IsVideoFilePathExist(absolutePath string) (bool, error) {
+	// Check if the file exists at the absolute path
+	info, err := os.Stat(absolutePath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			// The file does not exist
+			return false, nil
+		}
+		// Some other error occurred (e.g., permission denied)
+		return false, err
+	}
+
+	// Check if it's a valid video file
+	if r.IsVideoFile(info.Name()) {
+		return true, nil
+	}
+
+	// The file exists but is not a video file
+	return false, nil
 }

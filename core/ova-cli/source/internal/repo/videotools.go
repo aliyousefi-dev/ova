@@ -8,10 +8,10 @@ import (
 )
 
 // GenerateVideoID computes a unique ID for the video based on its content hash.
-func (r *RepoManager) GenerateVideoID(videoPath string) (string, error) {
-	videoID, err := filehash.ComputeFileHash(videoPath)
+func (r *RepoManager) GenerateVideoID(absoluteVideoPath string) (string, error) {
+	videoID, err := filehash.ComputeFileHash(absoluteVideoPath)
 	if err != nil {
-		return "", fmt.Errorf("filehash compute failed for %s: %w", videoPath, err)
+		return "", fmt.Errorf("filehash compute failed for %s: %w", absoluteVideoPath, err)
 	}
 	return videoID, nil
 }

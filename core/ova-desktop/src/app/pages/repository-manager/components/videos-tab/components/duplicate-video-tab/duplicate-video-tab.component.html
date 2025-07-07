@@ -1,0 +1,65 @@
+<div class="flex flex-col md:flex-row items-center justify-between mb-6">
+    <div class="w-full md:w-3/4 mb-4 md:mb-0">
+        <input type="text" placeholder="Search duplicate videos by path or hash..." [(ngModel)]="searchQuery"
+            class="input input-bordered w-full" (ngModelChange)="onSearchQueryChange()" />
+    </div>
+    <div class="w-full md:w-1/4 md:ml-4 flex justify-end">
+        <button class="btn btn-primary w-full md:w-auto" (click)="fetchDuplicateVideos()"
+            [disabled]="refreshing || loading">
+            <span *ngIf="!refreshing"> Refresh </span>
+            <span *ngIf="refreshing">
+                <span class="loading loading-spinner loading-sm mr-2"></span>
+                Refreshing...
+            </span>
+        </button>
+    </div>
+</div>
+
+<div class="mb-6">
+    <strong>Total Duplicate Video Sets:</strong> {{ duplicateVideoCount }}
+</div>
+
+<div class="overflow-x-auto h-full rounded-box border border-base-content/5 bg-base-100 relative">
+    <div *ngIf="loading && filteredDuplicateVideos.length === 0"
+        class="absolute inset-0 flex items-center justify-center bg-base-100 bg-opacity-80 z-10">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+
+    <div class="overflow-y-auto h-[calc(90vh-300px)]">
+        <table class="table table-pin-rows w-full table-zebra table-xs">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Video Hash</th>
+                    <th>Duplicate Video Paths</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngIf="!loading || filteredDuplicateVideos.length > 0">
+                    <tr *ngFor="let duplicate of filteredDuplicateVideos; let i = index" class="hover:bg-base-300">
+                        <th>{{ i + 1 }}</th>
+                        <td>{{ duplicate.hash }}</td>
+                        <td>
+                            <ul class="list-disc list-inside">
+                                <li *ngFor="let path of duplicate.paths">{{ path }}</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="flex flex-col space-y-1">
+                                <button *ngFor="let path of duplicate.paths" class="btn btn-xs btn-ghost"
+                                    title="Open Containing Folder" (click)="openContainingFolder(path)">
+                                    <i class="bx bx-folder-open text-xl"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+
+        <div *ngIf="!loading && filteredDuplicateVideos.length === 0" class="text-center py-4 text-gray-500">
+            No duplicate videos found.
+        </div>
+    </div>
+</div>

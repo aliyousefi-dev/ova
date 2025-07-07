@@ -7,6 +7,8 @@
         <a class="tab" [class.tab-active]="activeTab === 'diskVideo'" (click)="setActiveTab('diskVideo')">Hard Disk</a>
         <a class="tab" [class.tab-active]="activeTab === 'unindexedVideo'"
             (click)="setActiveTab('unindexedVideo')">Unindexed Video</a>
+        <a class="tab" [class.tab-active]="activeTab === 'duplicateVideo'"
+            (click)="setActiveTab('duplicateVideo')">Duplicate Video</a>
     </div>
 
     <div *ngIf="loading" class="flex justify-center items-center h-[calc(100vh-250px)]">
@@ -22,5 +24,8 @@
 
         <app-unindexed-video-tab *ngIf="activeTab === 'unindexedVideo'"
             [repositoryAddress]="repositoryAddress"></app-unindexed-video-tab>
+
+        <app-duplicate-video-tab *ngIf="activeTab === 'duplicateVideo'"
+            [repositoryAddress]="repositoryAddress"></app-duplicate-video-tab>
     </div>
 </section>

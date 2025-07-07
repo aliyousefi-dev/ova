@@ -33,3 +33,4 @@ Check for Unindexed
 Register Remine Videos
 
 
+i thinking about the how adding vidoe indexing progress inside the 

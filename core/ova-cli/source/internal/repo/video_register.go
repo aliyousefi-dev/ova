@@ -4,64 +4,80 @@ import (
 	"fmt"
 	"os"
 	"ova-cli/source/internal/datatypes"
+	"ova-cli/source/internal/utils"
 	"path/filepath"
 	"strings"
 )
 
-// RegisterVideo handles hashing, thumbnail/preview generation, and metadata storage.
-func (r *RepoManager) RegisterVideo(videoRelPath string) (datatypes.VideoData, error) {
+// RegisterVideoWithAbsolutePath handles hashing, thumbnail/preview generation, and metadata storage.
+func (r *RepoManager) RegisterVideoWithAbsolutePath(absolutePath string) (datatypes.VideoData, error) {
 	if !r.IsDataStorageExists() {
 		return datatypes.VideoData{}, fmt.Errorf("data storage is not initialized")
 	}
 
-	// 1. Generate unique video ID
-	videoID, err := r.GenerateVideoID(videoRelPath)
+	// 1. Check if the video file exists using the absolute path
+	exists, err := r.IsVideoFilePathExist(absolutePath)
+	if err != nil {
+		return datatypes.VideoData{}, fmt.Errorf("failed to check video file existence: %w", err)
+	}
+	if !exists {
+		return datatypes.VideoData{}, fmt.Errorf("video file does not exist: %s", absolutePath)
+	}
+
+	// 2. Get the root directory of the repository (or base directory)
+	rootPath := r.GetRootPath()  // Assuming this is a method that gets the root path
+
+	// 3. Generate the relative path from rootPath to absolutePath
+	relativePath, err := utils.MakeRelative(rootPath, absolutePath)
+	if err != nil {
+		return datatypes.VideoData{}, fmt.Errorf("failed to generate relative path: %w", err)
+	}
+
+	// 4. Generate unique video ID
+	videoID, err := r.GenerateVideoID(absolutePath)
 	if err != nil {
 		return datatypes.VideoData{}, err
 	}
 
-	// 2. Extract metadata
-	duration, err := r.GetVideoDuration(videoRelPath)
+	// 5. Extract metadata
+	duration, err := r.GetVideoDuration(absolutePath)
 	if err != nil {
 		return datatypes.VideoData{}, fmt.Errorf("failed to get duration: %w", err)
 	}
 
-	codec, err := r.GetVideoCodect(videoRelPath)
+	codec, err := r.GetVideoCodect(absolutePath)
 	if err != nil {
 		return datatypes.VideoData{}, fmt.Errorf("failed to get codecs for file: %w", err)
 	}
 
-	resolution, err := r.GetVideoResolution(videoRelPath)
+	resolution, err := r.GetVideoResolution(absolutePath)
 	if err != nil {
-		return datatypes.VideoData{}, fmt.Errorf("failed to get resolution for %s: %w", videoRelPath, err)
+		return datatypes.VideoData{}, fmt.Errorf("failed to get resolution for %s: %w", absolutePath, err)
 	}
 
-	// 3. Generate thumbnail and preview
-	thumbPath, err := r.GenerateThumb(videoRelPath, videoID)
+	// 6. Generate thumbnail and preview
+	thumbPath, err := r.GenerateThumb(absolutePath, videoID)
 	if err != nil {
 		return datatypes.VideoData{}, fmt.Errorf("failed to generate thumbnail: %w", err)
 	}
 
-	previewPath, err := r.GeneratePreview(videoRelPath, videoID)
+	previewPath, err := r.GeneratePreview(absolutePath, videoID)
 	if err != nil {
 		return datatypes.VideoData{}, fmt.Errorf("failed to generate preview: %w", err)
 	}
 
-	// 4. Since videoRelPath, thumbPath, and previewPath are already relative, we can directly use them.
-	// No need to compute relative paths.
-
-	// 5. Create and populate VideoData
-	title := strings.TrimSuffix(filepath.Base(videoRelPath), filepath.Ext(videoRelPath))
+	// 7. Create and populate VideoData
+	title := strings.TrimSuffix(filepath.Base(absolutePath), filepath.Ext(absolutePath))
 	videoData := datatypes.NewVideoData(videoID)
 	videoData.Title = title
 	videoData.DurationSeconds = int(duration)
 	videoData.Codecs = codec
 	videoData.Resolution = resolution
-	videoData.FilePath = videoRelPath   // Use the already relative video path
-	videoData.ThumbnailPath = &thumbPath // Use the already relative thumbnail path
-	videoData.PreviewPath = &previewPath // Use the already relative preview path
+	videoData.FilePath = relativePath   // Use the relative path here
+	videoData.ThumbnailPath = &thumbPath // Use the relative thumbnail path
+	videoData.PreviewPath = &previewPath // Use the relative preview path
 
-	// 6. Store metadata
+	// 8. Store metadata
 	if err := r.dataStorage.AddVideo(videoData); err != nil {
 		return datatypes.VideoData{}, fmt.Errorf("failed to save video metadata: %w", err)
 	}
