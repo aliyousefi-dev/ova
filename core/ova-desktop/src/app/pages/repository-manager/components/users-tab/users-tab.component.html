@@ -32,22 +32,25 @@
 
         <div class="overflow-x-auto rounded-lg shadow-md h-full">
             <div class="overflow-y-auto h-[calc(100vh-300px)]">
-                <table class="table w-full table-zebra">
+                <table class="table w-full table-pin-rows table-zebra">
                     <thead>
                         <tr>
+                            <th></th> <!-- Empty header for the index column -->
                             <th>Username</th>
                             <th>Roles</th>
                             <th>Created At</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let user of filteredUsers()">
+                        <tr *ngFor="let user of filteredUsers(); let i = index">
+                            <th>{{ i + 1 }}</th> <!-- Display index starting from 1 -->
                             <td>{{ user.Username }}</td>
                             <td>{{ user.Roles }}</td>
                             <td>{{ user.CreatedAt }}</td>
                         </tr>
                     </tbody>
                 </table>
+
                 <div *ngIf="filteredUsers().length === 0 && !loading" class="text-center py-4 text-gray-500">
                     No users found.
                 </div>

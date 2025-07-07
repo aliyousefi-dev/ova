@@ -48,8 +48,6 @@ export class VideosTabComponent implements OnInit, OnChanges {
     }
   }
 
-  // Method to fetch the video list from OvacliService
-  // Accepts an optional boolean `initialLoad` to differentiate between full tab load and button refresh
   fetchVideoList(initialLoad: boolean = false) {
     if (!this.repositoryAddress) {
       console.warn(
@@ -77,13 +75,15 @@ export class VideosTabComponent implements OnInit, OnChanges {
 
         if (remainingDelay > 0) {
           setTimeout(() => {
-            this.videos = videos;
+            // Sort videos alphabetically by the 'Path' (video address)
+            this.videos = videos.sort((a, b) => a.Path.localeCompare(b.Path));
             this.updateVideoCount();
             this.loading = false;
             this.refreshing = false;
           }, remainingDelay);
         } else {
-          this.videos = videos;
+          // Sort videos alphabetically by the 'Path' (video address)
+          this.videos = videos.sort((a, b) => a.Path.localeCompare(b.Path));
           this.updateVideoCount();
           this.loading = false;
           this.refreshing = false;
