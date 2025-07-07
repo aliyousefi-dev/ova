@@ -68,6 +68,7 @@
                                 <th>Username</th>
                                 <th>Roles</th>
                                 <th>Created At</th>
+                                <th>Actions</th> <!-- Added Actions column for buttons -->
                             </tr>
                         </thead>
                         <tbody>
@@ -83,9 +84,26 @@
                                 <td>{{ user.Username }}</td>
                                 <td>{{ user.Roles }}</td>
                                 <td>{{ user.CreatedAt }}</td>
+                                <td class="flex space-x-2"> <!-- Added flex for the buttons -->
+                                    <!-- Info Button -->
+                                    <button class="btn btn-xs btn-ghost" title="View Info">
+                                        <i class="bx bx-info-circle text-xl"></i> <!-- Info icon from Boxicons -->
+                                    </button>
+
+                                    <!-- Edit Button -->
+                                    <button class="btn btn-xs btn-ghost" title="Edit">
+                                        <i class="bx bx-edit-alt text-xl"></i> <!-- Edit icon from Boxicons -->
+                                    </button>
+
+                                    <!-- Delete Button -->
+                                    <button class="btn btn-xs btn-ghost" title="Delete">
+                                        <i class="bx bx-trash text-xl"></i> <!-- Trash icon from Boxicons -->
+                                    </button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
+
 
                     <div *ngIf="filteredUsers().length === 0 && !loading" class="text-center py-4 text-gray-500">
                         No users found.
