@@ -23,9 +23,9 @@
         <div class="mb-6 ">
             <strong>Total Videos:</strong> {{ videoCount }}
         </div>
-        <div class="overflow-x-auto rounded-lg shadow-md h-full ">
+        <div class="overflow-x-auto  h-full ">
             <div class="overflow-y-auto h-[calc(100vh-300px)]">
-                <table class="table table-pin-rows w-full table-zebra">
+                <table class="table table-pin-rows w-full table-zebra table-xs">
                     <thead>
                         <tr>
                             <th></th>
@@ -34,7 +34,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let video of filteredVideos(); let i = index">
+                        <tr *ngFor="let video of filteredVideos(); let i = index" class="hover:bg-base-100">
                             <th>{{ i + 1 }}</th> <!-- Index starting from 1 -->
                             <td>{{ video.ID }}</td>
                             <td>{{ video.Path }}</td>

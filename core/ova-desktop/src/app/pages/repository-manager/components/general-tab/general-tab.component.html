@@ -26,12 +26,17 @@
             </div>
         </div>
 
+
         <div class="bg-base-100 p-6 rounded-lg shadow-md">
-            <p><strong>Repository Address:</strong> {{ repositoryAddress }}</p>
-            <p><strong>Server Status:</strong> Running</p>
-            <p><strong>Last Updated:</strong> {{ lastUpdated }}</p>
-            <p><strong>Host:</strong> {{ host }}</p>
-            <p><strong>Port:</strong> {{ port }}</p>
+            <div class="mb-4">
+                <strong>Repository Information</strong>
+            </div>
+
+            <p class="text-sm"><strong>Address:</strong> {{ repositoryAddress }}</p>
+            <p class="text-sm"><strong>Host:</strong> {{ host }}</p>
+            <p class="text-sm"><strong>Port:</strong> {{ port }}</p>
+            <p class="text-sm"><strong>Created At:</strong> {{ created_at }}</p>
+
         </div>
     </div>
 </section>

@@ -7,7 +7,7 @@ type RepoInfo struct {
 	VideoCount  int    `json:"video_count"`
 	UserCount   int    `json:"user_count"`
 	StorageUsed string `json:"storage_used"`
-	LastUpdated string `json:"last_updated"`
+	CreatedAt   string `json:"created_at"`
 	Host        string `json:"host"`         // Fake host address
 	Port        int    `json:"port"`         // Fake port number
 }
@@ -48,7 +48,7 @@ func (r *RepoManager) GetRepoInfo() (RepoInfo, error) {
 		VideoCount:  count,
 		UserCount:   userCount,
 		StorageUsed: storageUsed,
-		LastUpdated: r.GetConfigs().CreatedAt.Format("2006-01-02 15:04:05"),
+		CreatedAt: r.GetConfigs().CreatedAt.Format("2006-01-02 15:04:05"),
 		Host:        r.GetConfigs().ServerHost,
 		Port:        r.GetConfigs().ServerPort,
 	}

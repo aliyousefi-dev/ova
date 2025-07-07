@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router'; // Import Router for navigation
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -25,7 +25,7 @@ export class RepositoryManagerPage implements OnInit {
   loading: boolean = false; // Loading state for tab switching transition
   repositoryAddress: string = ''; // Repository address, passed to child tabs
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private router: Router) {} // Inject Router for navigation
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
@@ -34,14 +34,18 @@ export class RepositoryManagerPage implements OnInit {
     });
   }
 
+  // Set active tab and handle loading state
   setActiveTab(tab: string) {
     if (this.activeTab === tab) return; // Prevent reloading if same tab is clicked
 
-    // Remove the artificial delay here
-    this.loading = true; // Still show loading briefly if you want a flicker, or remove this line too
+    this.loading = true;
     this.activeTab = ''; // Temporarily hide the content
-    // The content will reappear on the next tick once activeTab is set
-    this.activeTab = tab;
-    this.loading = false; // Hide loading spinner immediately
+    this.activeTab = tab; // Set the active tab
+    this.loading = false; // Hide loading spinner
+  }
+
+  // Navigate back to the root or previous page
+  goBack() {
+    this.router.navigateByUrl('/'); // Navigates to the root ("/") page
   }
 }

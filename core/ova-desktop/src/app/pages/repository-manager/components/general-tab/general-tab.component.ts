@@ -23,7 +23,7 @@ export class GeneralTabComponent implements OnInit, OnChanges {
   videoCount: number = 0;
   userCount: number = 0;
   storageUsed: string = '0 GB'; // Initialize with a default value
-  lastUpdated: string = 'N/A'; // New property for last updated date
+  created_at: string = 'N/A'; // New property for last updated date
   host: string = 'N/A'; // New property for host
   port: number = 0; // New property for port
 
@@ -75,7 +75,7 @@ export class GeneralTabComponent implements OnInit, OnChanges {
         this.videoCount = repoInfo.video_count;
         this.userCount = repoInfo.user_count;
         this.storageUsed = repoInfo.storage_used;
-        this.lastUpdated = repoInfo.last_updated;
+        this.created_at = repoInfo.created_at;
         this.host = repoInfo.host;
         this.port = repoInfo.port;
         this.loading = false; // End loading
@@ -91,7 +91,7 @@ export class GeneralTabComponent implements OnInit, OnChanges {
     this.videoCount = 0;
     this.userCount = 0;
     this.storageUsed = '0 GB';
-    this.lastUpdated = 'N/A';
+    this.created_at = 'N/A';
     this.host = 'N/A';
     this.port = 0;
   }

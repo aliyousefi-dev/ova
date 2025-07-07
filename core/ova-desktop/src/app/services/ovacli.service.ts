@@ -17,7 +17,7 @@ export interface RepoInfo {
   video_count: number;
   user_count: number;
   storage_used: string;
-  last_updated: string;
+  created_at: string;
   host: string;
   port: number;
 }

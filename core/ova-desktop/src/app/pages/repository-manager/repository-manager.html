@@ -1,24 +1,49 @@
 <div class="flex h-screen">
-    <div class="w-64 bg-base-100 p-10">
-        <h2 class="text-xl font-semibold mb-8">Repo Manager</h2>
-        <ul class="space-y-4">
-            <li><a href="javascript:void(0)" (click)="setActiveTab('general')" class="text-lg hover:text-gray-400"
-                    [class.font-bold]="activeTab === 'general'">General</a></li>
-            <li><a href="javascript:void(0)" (click)="setActiveTab('users')" class="text-lg hover:text-gray-400"
-                    [class.font-bold]="activeTab === 'users'">Users</a></li>
-            <li><a href="javascript:void(0)" (click)="setActiveTab('videos')" class="text-lg hover:text-gray-400"
-                    [class.font-bold]="activeTab === 'videos'">Videos</a></li>
+
+    <!-- Sidebar -->
+    <div class="w-70 bg-base-100 h-full flex flex-col">
+
+        <div class="flex items-center my-8">
+            <!-- Back Button -->
+            <button (click)="goBack()" class="btn btn-ghost text-lg mr-6">
+                <i class="bx bx-arrow-back text-lg"></i>
+            </button>
+
+            <!-- Repo Manager Title -->
+            <h2 class="text- font-semibold text-lg">Repo Manager</h2>
+        </div>
+
+
+        <!-- Navigation Links -->
+        <ul class="w-full">
+            <li>
+                <a href="javascript:void(0)" (click)="setActiveTab('general')"
+                    class="block px-6 py-2   hover:bg-base-200" [class.bg-base-200]="activeTab === 'general'"
+                    [class.font-bold]="activeTab === 'general'">
+                    General
+                </a>
+            </li>
+            <li>
+                <a href="javascript:void(0)" (click)="setActiveTab('users')" class="block px-6 py-2 hover:bg-base-200  "
+                    [class.bg-base-200]="activeTab === 'users'" [class.font-bold]="activeTab === 'users'">
+                    Users
+                </a>
+            </li>
+            <li>
+                <a href="javascript:void(0)" (click)="setActiveTab('videos')"
+                    class="block px-6 py-2   hover:bg-base-200  " [class.bg-base-200]="activeTab === 'videos'"
+                    [class.font-bold]="activeTab === 'videos'">
+                    Videos
+                </a>
+            </li>
         </ul>
     </div>
 
+    <!-- Main Content Area -->
     <div class="flex-1 p-8 bg-base-300">
-        <app-general-tab *ngIf="activeTab === 'general'" [repositoryAddress]="repositoryAddress">
-        </app-general-tab>
-
-        <app-users-tab *ngIf="activeTab === 'users'" [repositoryAddress]="repositoryAddress">
-        </app-users-tab>
-
-        <app-videos-tab *ngIf="activeTab === 'videos'" [repositoryAddress]="repositoryAddress">
-        </app-videos-tab>
+        <!-- Tab Components -->
+        <app-general-tab *ngIf="activeTab === 'general'" [repositoryAddress]="repositoryAddress"></app-general-tab>
+        <app-users-tab *ngIf="activeTab === 'users'" [repositoryAddress]="repositoryAddress"></app-users-tab>
+        <app-videos-tab *ngIf="activeTab === 'videos'" [repositoryAddress]="repositoryAddress"></app-videos-tab>
     </div>
 </div>

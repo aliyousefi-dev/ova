@@ -63,7 +63,7 @@ var repoCmd = &cobra.Command{
 			fmt.Printf("  Total Videos: %d\n", repoInfo.VideoCount)
 			fmt.Printf("  Total Users: %d\n", repoInfo.UserCount)
 			fmt.Printf("  Storage Used: %s\n", repoInfo.StorageUsed)
-			fmt.Printf("  Last Updated: %s\n", repoInfo.LastUpdated)
+			fmt.Printf("  Created At: %s\n", repoInfo.CreatedAt)
 			fmt.Printf("  Host: %s\n", repoInfo.Host)
 			fmt.Printf("  Port: %d\n", repoInfo.Port)
 		}
