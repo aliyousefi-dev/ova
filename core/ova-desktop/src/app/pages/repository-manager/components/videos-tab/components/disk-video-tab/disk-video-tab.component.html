@@ -1,0 +1,48 @@
+<div class="flex flex-col md:flex-row items-center justify-between mb-6">
+    <div class="w-full md:w-3/4 mb-4 md:mb-0">
+        <input type="text" placeholder="Search hard disk videos..." [(ngModel)]="searchQuery"
+            class="input input-bordered w-full" (ngModelChange)="onSearchQueryChange()" />
+    </div>
+    <div class="w-full md:w-1/4 md:ml-4 flex justify-end">
+        <button class="btn btn-primary w-full md:w-auto" (click)="fetchDiskVideos()" [disabled]="refreshing || loading">
+            <span *ngIf="!refreshing"> Refresh </span>
+            <span *ngIf="refreshing">
+                <span class="loading loading-spinner loading-sm mr-2"></span>
+                Refreshing...
+            </span>
+        </button>
+    </div>
+</div>
+
+<div class="mb-6">
+    <strong>Total Hard Disk Videos:</strong> {{ diskVideoCount }}
+</div>
+
+<div class="overflow-x-auto h-full rounded-box border border-base-content/5 bg-base-100 relative">
+    <div *ngIf="loading && filteredDiskVideos.length === 0"
+        class="absolute inset-0 flex items-center justify-center bg-base-100 bg-opacity-80 z-10">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+
+    <div class="overflow-y-auto h-[calc(90vh-300px)]">
+        <table class="table table-pin-rows w-full table-zebra table-xs">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Video Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngIf="!loading || filteredDiskVideos.length > 0">
+                    <tr *ngFor="let video of filteredDiskVideos; let i = index" class="hover:bg-base-300">
+                        <th>{{ i + 1 }}</th>
+                        <td>{{ video.Path }}</td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+        <div *ngIf="!loading && filteredDiskVideos.length === 0" class="text-center py-4 text-gray-500">
+            No videos found on hard disk.
+        </div>
+    </div>
+</div>
