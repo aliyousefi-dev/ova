@@ -248,4 +248,70 @@ export class OvacliService {
         throw err;
       });
   }
+
+  runOvacliUserAdd(
+    repositoryPath: string,
+    username: string,
+    password: string,
+    role: string
+  ): Promise<User> {
+    // Wrap the repository path in double quotes to handle spaces in the path
+    const quotedRepositoryPath = `"${repositoryPath}"`;
+
+    // Build the arguments array for the 'users add' command
+    const args: string[] = ['users', 'add'];
+
+    // Add the --user flag
+    args.push('--user', username);
+
+    // Add the --pass flag
+    args.push('--pass', password);
+
+    // Add the --role flag
+    args.push('--role', role);
+
+    // Add the --repository flag with the provided repository path
+    args.push('--repository', quotedRepositoryPath);
+
+    // Add the --json flag to get the result in JSON format
+    args.push('--json');
+
+    console.log('Running ovacli users add with args:', args);
+
+    // Run the command and return the result
+    return window['IPCBridge']
+      .runOvacli(args)
+      .then((result) => {
+        console.log('runOvacli users add result:', result);
+
+        if (result.success && result.output) {
+          try {
+            // Parse the user data from the JSON output
+            const user = JSON.parse(result.output);
+
+            if (user && user.username) {
+              // Return the user object based on the received data
+              return {
+                Username: user.username,
+                Roles: user.roles,
+                CreatedAt: user.createdAt,
+              };
+            } else {
+              console.error('Unexpected format in user add result:', result);
+              throw new Error('Unexpected format in user add result');
+            }
+          } catch (err) {
+            console.error('Failed to parse user add JSON:', err);
+            throw err;
+          }
+        } else {
+          console.error('Error in user add result:', result);
+          throw new Error('Error adding user');
+        }
+      })
+      .catch((err) => {
+        console.error('runOvacli users add error:', err);
+        throw err;
+      });
+  }
 }

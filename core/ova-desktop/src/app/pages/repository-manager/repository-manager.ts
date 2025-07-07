@@ -21,7 +21,7 @@ import { VideosTabComponent } from './components/videos-tab/videos-tab.component
   templateUrl: 'repository-manager.html',
 })
 export class RepositoryManagerPage implements OnInit {
-  activeTab: string = 'general'; // Default active tab
+  activeTab: string = 'users'; // Default active tab
   loading: boolean = false; // Loading state for tab switching transition
   repositoryAddress: string = ''; // Repository address, passed to child tabs
 

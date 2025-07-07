@@ -5,3 +5,9 @@ total user numbers
 storage used: in human format
 the repository address
 last updated time
+
+Groups for Access
+like Editors
+have Read Access and 
+
+and Admin have Read and Write Access.

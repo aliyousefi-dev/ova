@@ -7,29 +7,30 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// CreateUser creates a new user with hashed password and optional admin role.
-func (r *RepoManager) CreateUser(username, password string, isAdmin bool) error {
+// CreateUser creates a new user with a hashed password and an optional role.
+func (r *RepoManager) CreateUser(username, password, role string) (*datatypes.UserData, error) {
 	if !r.IsDataStorageExists() {
-		return fmt.Errorf("data storage is not initialized")
+		return nil, fmt.Errorf("data storage is not initialized")
 	}
 
 	// Hash password
 	hashedPass, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		return fmt.Errorf("failed to hash password: %w", err)
+		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
 
 	// Prepare user data
 	userdata := datatypes.NewUserData(username, string(hashedPass))
-	if isAdmin {
-		userdata.Roles = append(userdata.Roles, "admin")
+	if role != "" {
+		// Add the specified role
+		userdata.Roles = append(userdata.Roles, role)
 	}
 
 	// Store user
 	if err := r.dataStorage.CreateUser(&userdata); err != nil {
-		return fmt.Errorf("failed to create user in data storage: %w", err)
+		return nil, fmt.Errorf("failed to create user in data storage: %w", err)
 	}
-	return nil
+	return &userdata, nil
 }
 
 // DeleteUser removes a user by username.

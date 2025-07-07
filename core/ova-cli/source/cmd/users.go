@@ -102,29 +102,61 @@ var userAddCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Add a new user account",
 	Run: func(cmd *cobra.Command, args []string) {
-		username, _ := pterm.DefaultInteractiveTextInput.
-			WithDefaultText("user").
-			WithMultiLine(false).
-			Show("Enter new username")
+		// Get flags for username, password, role, repository, and JSON output
+		username, _ := cmd.Flags().GetString("user")
+		password, _ := cmd.Flags().GetString("pass")
+		role, _ := cmd.Flags().GetString("role")
+		repoAddress, _ := cmd.Flags().GetString("repository")
+		jsonFlag, _ := cmd.Flags().GetBool("json")
 
-		password, _ := pterm.DefaultInteractiveTextInput.
-			WithDefaultText("pass").
-			WithMultiLine(false).
-			Show("Enter password")
+		// If username or password is not provided, prompt the user interactively
+		if username == "" {
+			username, _ = pterm.DefaultInteractiveTextInput.
+				WithDefaultText("user").
+				WithMultiLine(false).
+				Show("Enter new username")
+		}
 
-		repository, err := initRepo()
-		if err != nil {
-			pterm.Error.Printf("Failed to initialize repository: %v\n", err)
+		if password == "" {
+			password, _ = pterm.DefaultInteractiveTextInput.
+				WithDefaultText("pass").
+				WithMultiLine(false).
+				Show("Enter password")
+		}
+
+		// If role is not provided, set it to default "user"
+		if role == "" {
+			role = "user"
+		}
+
+		// Initialize the repository directly using the repo address
+		repository := repo.NewRepoManager(repoAddress)
+		if err := repository.Init(); err != nil {
+			fmt.Println("Failed to initialize repository:", err)
 			os.Exit(1)
 		}
 
-		err = repository.CreateUser(username, password, false)
+		// Create the user using the CreateUser method, which handles hashing and role assignment
+		newUser, err := repository.CreateUser(username, password, role)
 		if err != nil {
 			pterm.Error.Printf("Error adding user '%s': %v\n", username, err)
 			os.Exit(1)
 		}
 
-		pterm.Success.Printf("Successfully added user: %s\n", username)
+		// If --json flag is set, return user data as JSON
+		if jsonFlag {
+			// Marshal newUser directly into JSON format
+			jsonOutput, err := json.Marshal(newUser)
+			if err != nil {
+				pterm.Error.Printf("Failed to marshal user data to JSON: %v\n", err)
+				os.Exit(1)
+			}
+			fmt.Println(string(jsonOutput))
+		} else {
+			// If no --json flag, print user info in a readable format
+			pterm.Success.Printf("Successfully added user: %s\n", newUser.Username)
+			fmt.Printf("Username: %s\nRoles: %s\nCreated At: %s\n", newUser.Username, strings.Join(newUser.Roles, ", "), newUser.CreatedAt.Format("2006-01-02 15:04:05"))
+		}
 	},
 }
 
@@ -231,6 +263,13 @@ func InitCommandUsers(rootCmd *cobra.Command) {
 	
 	userListCmd.Flags().BoolP("json", "j", false, "Output the data in JSON format")
 	userListCmd.Flags().StringP("repository", "r", "", "Specify the repository directory")
+
+	// Add flags for the new user
+	userAddCmd.Flags().String("user", "", "Username for the new user")
+	userAddCmd.Flags().String("pass", "", "Password for the new user")
+	userAddCmd.Flags().String("role", "", "Role for the new user (default: 'user')")
+	userAddCmd.Flags().StringP("repository", "r", "", "Specify the repository directory") // Kept shorthand -r for repository
+	userAddCmd.Flags().BoolP("json", "j", false, "Output the data in JSON format")
 
 	userCmd.AddCommand(userListCmd)
 	userCmd.AddCommand(userAddCmd)

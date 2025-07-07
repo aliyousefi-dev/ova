@@ -23,9 +23,14 @@
         <div class="mb-6">
             <strong>Total Users:</strong> {{ userCount }}
         </div>
+
+        <div class="mb-4 flex justify-end">
+            <button class="btn btn-soft" (click)="openCreateUserModal()">
+                Add User
+            </button>
+        </div>
+
         <div class="overflow-x-auto rounded-lg shadow-md h-full">
-
-
             <div class="overflow-y-auto h-[calc(100vh-300px)]">
                 <table class="table w-full table-zebra">
                     <thead>
@@ -49,4 +54,8 @@
             </div>
         </div>
     </div>
+
+    <app-create-user-modal [showModal]="showCreateUserModal" (modalClose)="showCreateUserModal = false"
+        (userCreated)="handleUserCreated($event)" [repositoryAddress]="repositoryAddress"> </app-create-user-modal>
+
 </section>

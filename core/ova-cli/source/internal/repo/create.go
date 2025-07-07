@@ -53,7 +53,7 @@ func (r *RepoManager) CreateRepoWithUser(username, password string, useBoltDB bo
 	}
 
 	// Create admin user
-	if err := r.CreateUser(username, password, true); err != nil {
+	if _, err := r.CreateUser(username, password, "admin"); err != nil {
 		return err
 	}
 

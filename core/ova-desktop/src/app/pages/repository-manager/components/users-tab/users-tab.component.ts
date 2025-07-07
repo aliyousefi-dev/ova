@@ -8,11 +8,12 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OvacliService, User } from '../../../../services/ovacli.service'; // Import User interface
+import { CreateUserModalComponent } from './components/create-user-modal.component';
 
 @Component({
   selector: 'app-users-tab',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CreateUserModalComponent], // Add CreateUserModalComponent here
   templateUrl: './users-tab.component.html',
 })
 export class UsersTabComponent implements OnInit, OnChanges {
@@ -23,6 +24,8 @@ export class UsersTabComponent implements OnInit, OnChanges {
   userCount: number = 0;
   loading: boolean = false; // For initial tab load and overall content display
   refreshing: boolean = false; // For refresh button's specific loading state
+
+  showCreateUserModal: boolean = false; // Control visibility of the create user modal
 
   constructor(private ovacliService: OvacliService) {}
 
@@ -113,6 +116,20 @@ export class UsersTabComponent implements OnInit, OnChanges {
     this.fetchUserList();
   }
 
+  // Method to open the create user modal
+  openCreateUserModal() {
+    this.showCreateUserModal = true;
+  }
+
+  // Handler for when a user is successfully created in the modal
+  handleUserCreated(newUser: User) {
+    // Re-fetch the user list to include the newly created user
+    // This is more robust than just pushing to the array, as it ensures data consistency
+    this.fetchUserList(false); // No need for full load spinner, just refresh
+    console.log('New user created:', newUser);
+  }
+
+  // Filter users based on search query
   filteredUsers(): User[] {
     const filtered = this.users.filter(
       (user) =>
