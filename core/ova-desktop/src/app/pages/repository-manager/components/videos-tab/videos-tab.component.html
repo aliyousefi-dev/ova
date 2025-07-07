@@ -1,25 +1,21 @@
 <h2 class="text-2xl m-8">Video Data Settings</h2>
 
 <section id="videos">
-    <!-- Tabs for Indexed Video, Unindexed Video, and Empty Tab -->
     <div class="tabs tabs-boxed mx-8 bg-base-100 rounded-lg">
         <a class="tab" [class.tab-active]="activeTab === 'indexedVideo'" (click)="setActiveTab('indexedVideo')">Indexed
             Video</a>
-        <a class="tab" [class.tab-active]="activeTab === 'emptyTab'" (click)="setActiveTab('emptyTab')">HardDisk</a>
+        <a class="tab" [class.tab-active]="activeTab === 'diskVideo'" (click)="setActiveTab('diskVideo')">Hard Disk</a>
         <a class="tab" [class.tab-active]="activeTab === 'unindexedVideo'"
             (click)="setActiveTab('unindexedVideo')">Unindexed Video</a>
     </div>
 
-    <!-- Loading Spinner -->
     <div *ngIf="loading && !refreshing" class="flex justify-center items-center h-[calc(100vh-250px)]">
         <span class="loading loading-spinner loading-lg text-primary"></span>
     </div>
 
     <div *ngIf="!loading" class="mx-8 mt-10">
-        <!-- Indexed Video Tab Content -->
-        <div *ngIf=" activeTab==='indexedVideo'">
-            <!-- Search and Refresh Section -->
-            <div class=" flex flex-col md:flex-row items-center justify-between mb-6">
+        <div *ngIf="activeTab === 'indexedVideo'">
+            <div class="flex flex-col md:flex-row items-center justify-between mb-6">
                 <div class="w-full md:w-3/4 mb-4 md:mb-0">
                     <input type="text" placeholder="Search indexed videos..." [(ngModel)]="searchQuery"
                         class="input input-bordered w-full" (ngModelChange)="onSearchQueryChange()" />
@@ -29,19 +25,18 @@
                         [disabled]="refreshing || loading">
                         <span *ngIf="!refreshing"> Refresh </span>
                         <span *ngIf="refreshing">
-                            <span class="loading loading-spinner loading-sm mr-2"></span> Refreshing...
+                            <span class="loading loading-spinner loading-sm mr-2"></span>
+                            Refreshing...
                         </span>
                     </button>
                 </div>
             </div>
 
-            <!-- Total Count for Indexed Videos -->
             <div class="mb-6">
                 <strong>Total Indexed Videos:</strong> {{ indexedVideoCount }}
             </div>
 
-            <!-- Indexed Video Table -->
-            <div class="overflow-x-auto h-full">
+            <div class="overflow-x-auto h-full rounded-box border border-base-content/5 bg-base-100">
                 <div class="overflow-y-auto h-[calc(90vh-300px)]">
                     <table class="table table-pin-rows w-full table-zebra table-xs">
                         <thead>
@@ -67,37 +62,79 @@
             </div>
         </div>
 
-        <!-- Unindexed Video Tab Content -->
+        <div *ngIf="activeTab === 'diskVideo'">
+            <div class="flex flex-col md:flex-row items-center justify-between mb-6">
+                <div class="w-full md:w-3/4 mb-4 md:mb-0">
+                    <input type="text" placeholder="Search hard disk videos..." [(ngModel)]="searchQuery"
+                        class="input input-bordered w-full" (ngModelChange)="onSearchQueryChange()" />
+                </div>
+                <div class="w-full md:w-1/4 md:ml-4 flex justify-end">
+                    <button class="btn btn-primary w-full md:w-auto" (click)="refreshVideos()"
+                        [disabled]="refreshing || loading">
+                        <span *ngIf="!refreshing"> Refresh </span>
+                        <span *ngIf="refreshing">
+                            <span class="loading loading-spinner loading-sm mr-2"></span>
+                            Refreshing...
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <strong>Total Hard Disk Videos:</strong> {{ diskVideoCount }}
+            </div>
+
+            <div class="overflow-x-auto h-full rounded-box border border-base-content/5 bg-base-100">
+                <div class="overflow-y-auto h-[calc(90vh-300px)]">
+                    <table class="table table-pin-rows w-full table-zebra table-xs">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Video Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let video of filteredDiskVideos(); let i = index" class="hover:bg-base-100">
+                                <th>{{ i + 1 }}</th>
+                                <td>{{ video.Path }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div *ngIf="filteredDiskVideos().length === 0 && !loading" class="text-center py-4 text-gray-500">
+                        No videos found on hard disk.
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div *ngIf="activeTab === 'unindexedVideo'">
-            <!-- Search and Refresh Section -->
             <div class="flex flex-col md:flex-row items-center justify-between mb-6">
                 <div class="w-full md:w-3/4 mb-4 md:mb-0">
                     <input type="text" placeholder="Search unindexed videos..." [(ngModel)]="searchQuery"
                         class="input input-bordered w-full" (ngModelChange)="onSearchQueryChange()" />
                 </div>
                 <div class="w-full md:w-1/4 md:ml-4 flex justify-end">
-                    <button class="btn btn-primary w-full md:w-auto" [disabled]="refreshing || loading">
+                    <button class="btn btn-primary w-full md:w-auto" (click)="refreshVideos()"
+                        [disabled]="refreshing || loading">
                         <span *ngIf="!refreshing"> Refresh </span>
                         <span *ngIf="refreshing">
-                            <span class="loading loading-spinner loading-sm mr-2"></span> Refreshing...
+                            <span class="loading loading-spinner loading-sm mr-2"></span>
+                            Refreshing...
                         </span>
                     </button>
                 </div>
             </div>
 
-            <!-- Total Count for Unindexed Videos -->
             <div class="mb-6">
                 <strong>Total Unindexed Videos:</strong> {{ unindexedVideoCount }}
             </div>
 
-            <!-- Unindexed Video Table -->
-            <div class="overflow-x-auto h-full">
-                <div class="overflow-y-auto h-[calc(95vh-300px)]">
+            <div class="overflow-x-auto h-full rounded-box border border-base-content/5 bg-base-100">
+                <div class="overflow-y-auto h-[calc(90vh-300px)]">
                     <table class="table table-pin-rows w-full table-zebra table-xs">
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>ID</th>
                                 <th>Video Address</th>
                             </tr>
                         </thead>
@@ -105,7 +142,6 @@
                             <tr *ngFor="let video of filteredUnindexedVideos(); let i = index"
                                 class="hover:bg-base-100">
                                 <th>{{ i + 1 }}</th>
-                                <td>{{ video.ID }}</td>
                                 <td>{{ video.Path }}</td>
                             </tr>
                         </tbody>
@@ -116,11 +152,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Empty Tab Content -->
-        <div *ngIf="activeTab === 'emptyTab'" class="text-center py-4 text-gray-500">
-            <p>This tab is empty. You can add content here later.</p>
         </div>
     </div>
 </section>

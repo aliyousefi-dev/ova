@@ -1,12 +1,13 @@
+<h2 class="text-2xl m-8">General Settings</h2>
+
 <section id="general" class="mb-12 m-8">
     <div *ngIf="loading" class="flex justify-center items-center h-full">
         <span class="loading loading-spinner loading-lg text-primary"></span>
     </div>
 
+    <div *ngIf="!loading" class="space-y-8">
 
-
-    <div *ngIf="!loading">
-        <div class="flex justify-center mb-6">
+        <div class="flex justify-start">
             <div class="stats stats-vertical lg:stats-horizontal shadow bg-base-100">
                 <div class="stat place-items-center">
                     <div class="stat-title">Video Count</div>
@@ -40,5 +41,7 @@
             <p class="text-sm"><strong>Created At:</strong> {{ created_at }}</p>
 
         </div>
+
+
     </div>
 </section>

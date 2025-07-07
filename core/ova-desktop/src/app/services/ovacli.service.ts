@@ -5,6 +5,10 @@ export interface VideoFile {
   Path: string; // Path to the video file
 }
 
+export interface VideoFileDisk {
+  Path: string;
+}
+
 // Define the interface for a User
 export interface User {
   Username: string;
@@ -312,6 +316,69 @@ export class OvacliService {
       .catch((err) => {
         console.error('runOvacli users add error:', err);
         throw err;
+      });
+  }
+
+  runOvacliRepoVideos(repositoryPath: string): Promise<VideoFileDisk[]> {
+    // Wrap the repository path in double quotes to handle spaces in the path
+    const quotedRepositoryPath = `"${repositoryPath}"`;
+
+    // Build the base arguments array for the 'repo videos' command
+    const args: string[] = ['repo', 'videos'];
+
+    // Add the --json flag to request JSON output
+    args.push('-j');
+
+    // Add the --repository flag with the provided repository path
+    args.push('--repository', quotedRepositoryPath);
+
+    console.log('Running ovacli repo videos with args:', args);
+
+    // Run the command and return the result
+    return window['IPCBridge']
+      .runOvacli(args) // Pass the arguments to runOvacli in the main process
+      .then((result) => {
+        console.log('runOvacli repo videos result:', result);
+
+        if (result.success && result.output) {
+          try {
+            // Parse the result output as JSON directly
+            const videos = JSON.parse(result.output);
+
+            // If videos are found, format the data
+            if (Array.isArray(videos)) {
+              // Map the videos into the VideoFile[] format
+              return videos.map(
+                (video: any): VideoFileDisk => ({
+                  Path: video['Video Path'], // Assuming the output has "Video Path" as the key
+                })
+              );
+            } else {
+              console.error('Unexpected format in repo videos result:', result);
+              // Handle "No videos found." by returning an empty array if the CLI output is a simple string "No videos found."
+              if (result.output.trim() === 'No videos found.') {
+                return [];
+              }
+              throw new Error('Unexpected format in repo videos result');
+            }
+          } catch (err) {
+            console.error('Failed to parse repo videos JSON:', err);
+            throw err; // Propagate the error if JSON parsing fails
+          }
+        } else if (
+          result.success &&
+          result.output.trim() === 'No videos found.'
+        ) {
+          // Handle "No videos found." explicitly for non-JSON output cases
+          return [];
+        } else {
+          console.error('Error in repo videos result:', result);
+          throw new Error('Error fetching repo videos');
+        }
+      })
+      .catch((err) => {
+        console.error('runOvacli repo videos error:', err);
+        throw err; // Propagate the error for further handling
       });
   }
 }

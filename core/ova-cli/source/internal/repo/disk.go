@@ -30,6 +30,40 @@ func (r *RepoManager) ScanDiskForVideos() ([]string, error) {
 	return videos, err
 }
 
+func (r *RepoManager) ScanDiskForVideosRelPath() ([]string, error) {
+	var videos []string
+	rootPath := r.GetRootPath() // Get the root path of the repository
+
+	err := filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return nil
+		}
+		if info.IsDir() {
+			// Skip the ".ova-server" directory
+			if info.Name() == ".ova-server" {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+		
+		// Check if it's a video file
+		if r.IsVideoFile(info.Name()) {
+			// Get the relative path from the repository root to the video file
+			relPath, err := filepath.Rel(rootPath, path)
+			if err != nil {
+				return err
+			}
+
+			// Append the relative path to the videos list
+			videos = append(videos, relPath)
+		}
+		return nil
+	})
+
+	return videos, err
+}
+
+
 func (r *RepoManager) IsVideoFile(filename string) bool {
 	lower := strings.ToLower(filename)
 	for _, ext := range videoExtensions {
