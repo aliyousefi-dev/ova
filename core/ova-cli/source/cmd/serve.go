@@ -30,12 +30,12 @@ var serveCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		repoPath := args[0]
 
-		// Initialize RepoManager with config and storage
-		repository := repo.NewRepoManager(repoPath)
-		if err := repository.Init(); err != nil {
-			serveLogger.Error("Failed to initialize repository at %s: %v", repoPath, err)
-			os.Exit(1)
+		repository, err := repo.NewRepoManager(repoPath)
+		if err != nil {
+			fmt.Println("Failed to initialize repository:", err)
+			return
 		}
+
 
 		cfg := repository.GetConfigs()
 

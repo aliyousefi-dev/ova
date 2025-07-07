@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"ova-cli/source/internal/logs"
 	"ova-cli/source/internal/repo"
@@ -33,7 +34,12 @@ var cookVTTsCmd = &cobra.Command{
 			return
 		}
 
-		repoManager := repo.NewRepoManager(repoRoot)
+		repoManager, err := repo.NewRepoManager(repoRoot)
+		if err != nil {
+			fmt.Println("Failed to initialize repository:", err)
+			return
+		}
+
 
 		arg := args[0]
 		var videoPaths []string

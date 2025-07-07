@@ -43,12 +43,12 @@ var userListCmd = &cobra.Command{
 			}
 		}
 
-		// Initialize the repository
-		repository := repo.NewRepoManager(repoAddress)
-		if err := repository.Init(); err != nil {
+		repository, err := repo.NewRepoManager(repoAddress)
+		if err != nil {
 			fmt.Println("Failed to initialize repository:", err)
-			os.Exit(1)
+			return
 		}
+
 
 		users, err := repository.GetAllUsers()
 		if err != nil {
@@ -129,12 +129,12 @@ var userAddCmd = &cobra.Command{
 			role = "user"
 		}
 
-		// Initialize the repository directly using the repo address
-		repository := repo.NewRepoManager(repoAddress)
-		if err := repository.Init(); err != nil {
+		repository, err := repo.NewRepoManager(repoAddress)
+		if err != nil {
 			fmt.Println("Failed to initialize repository:", err)
-			os.Exit(1)
+			return
 		}
+
 
 		// Create the user using the CreateUser method, which handles hashing and role assignment
 		newUser, err := repository.CreateUser(username, password, role)
@@ -173,12 +173,12 @@ var userRmCmd = &cobra.Command{
 			repoAddress, _ = os.Getwd() // Default to current working directory if no flag is provided
 		}
 
-		// Initialize the repository using the provided or default repo address
-		repository := repo.NewRepoManager(repoAddress)
-		if err := repository.Init(); err != nil {
+		repository, err := repo.NewRepoManager(repoAddress)
+		if err != nil {
 			fmt.Println("Failed to initialize repository:", err)
-			os.Exit(1)
+			return
 		}
+
 
 		// Attempt to delete the user and get the deleted user data
 		deletedUser, err := repository.DeleteUser(username)
@@ -221,11 +221,18 @@ var userInfoCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		username := args[0]
 
-		repository, err := initRepo()
-		if err != nil {
-			pterm.Error.Printf("Failed to initialize repository: %v\n", err)
-			os.Exit(1)
+		// Get the repository address from the --repository flag, or use the current working directory
+		repoAddress, _ := cmd.Flags().GetString("repository")
+		if repoAddress == "" {
+			repoAddress, _ = os.Getwd() // Default to current working directory if no flag is provided
 		}
+
+		repository, err := repo.NewRepoManager(repoAddress)
+		if err != nil {
+			fmt.Println("Failed to initialize repository:", err)
+			return
+		}
+
 
 		user, err := repository.GetUserByUsername(username)
 		if err != nil {
@@ -274,20 +281,6 @@ var userInfoCmd = &cobra.Command{
 	},
 }
 
-// initRepo initializes the repo manager from the current working directory, calling Init()
-func initRepo() (*repo.RepoManager, error) {
-	absPath, err := os.Getwd()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get current working directory: %w", err)
-	}
-
-	repository := repo.NewRepoManager(absPath)
-	if err := repository.Init(); err != nil {
-		return nil, fmt.Errorf("repository init failed: %w", err)
-	}
-
-	return repository, nil
-}
 
 // InitCommandUsers adds user-related commands to rootCmd
 func InitCommandUsers(rootCmd *cobra.Command) {

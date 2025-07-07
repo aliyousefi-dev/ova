@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"path/filepath"
 
 	"ova-cli/source/internal/repo"
@@ -30,7 +31,12 @@ var initCmd = &cobra.Command{
 			return
 		}
 
-		repository := repo.NewRepoManager(absPath)
+		repository, err := repo.NewRepoManager(absPath)
+		if err != nil {
+			fmt.Println("Failed to initialize repository:", err)
+			return
+		}
+
 
 		// No need to call repository.Init() here because CreateRepoWithUser calls it internally
 		if err := repository.CreateRepoWithUser(username, password, useBoltDB); err != nil {

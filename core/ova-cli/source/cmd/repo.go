@@ -39,11 +39,12 @@ var repoInfoCmd = &cobra.Command{
 		}
 
 		// Create a new RepoManager instance
-		repository := repo.NewRepoManager(absPath)
-		if err := repository.Init(); err != nil {
-			fmt.Printf("Error initializing repository: %v\n", err)
+		repository, err := repo.NewRepoManager(absPath)
+		if err != nil {
+			fmt.Println("Failed to initialize repository:", err)
 			return
 		}
+
 
 		// Fetch the repository info using the GetRepoInfo method
 		repoInfo, err := repository.GetRepoInfo()
@@ -100,11 +101,12 @@ var repoVideosCmd = &cobra.Command{
 		}
 
 		// Create a new RepoManager instance
-		repository := repo.NewRepoManager(absPath)
-		if err := repository.Init(); err != nil {
-			fmt.Printf("Error initializing repository: %v\n", err)
+		repository, err := repo.NewRepoManager(absPath)
+		if err != nil {
+			fmt.Println("Failed to initialize repository:", err)
 			return
 		}
+
 
 		// Fetch videos from repository by scanning the disk
 		videos, err := repository.ScanDiskForVideosRelPath()
@@ -167,11 +169,12 @@ var repoUnindexedCmd = &cobra.Command{
 		}
 
 		// Create a new RepoManager instance
-		repository := repo.NewRepoManager(absPath)
-		if err := repository.Init(); err != nil {
-			fmt.Printf("Error initializing repository: %v\n", err)
+		repository, err := repo.NewRepoManager(absPath)
+		if err != nil {
+			fmt.Println("Failed to initialize repository:", err)
 			return
 		}
+
 
 		// Fetch unindexed videos from the repository
 		unindexedVideos, err := repository.GetUnindexedVideos()
@@ -234,9 +237,9 @@ var repoDuplicateCmd = &cobra.Command{
 		}
 
 		// Create a new RepoManager instance
-		repository := repo.NewRepoManager(absPath) // Assuming repo.NewRepoManager exists
-		if err := repository.Init(); err != nil {  // Assuming repository.Init() exists
-			fmt.Printf("Error initializing repository: %v\n", err)
+		repository, err := repo.NewRepoManager(absPath)
+		if err != nil {
+			fmt.Println("Failed to initialize repository:", err)
 			return
 		}
 

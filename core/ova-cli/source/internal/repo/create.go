@@ -48,7 +48,7 @@ func (r *RepoManager) CreateRepoWithUser(username, password string, useBoltDB bo
 	}
 
 	// Initialize repository (loads config and data storage)
-	if err := r.Init(); err != nil {
+	if err := r.InitDataStorage(); err != nil {
 		return err
 	}
 

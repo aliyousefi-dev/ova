@@ -4,3 +4,5 @@ and need first check the file exists or not
 
 - Folder Video Register
 - and Folder Unregister
+
+adding the -y option to pass the confirmation

@@ -49,8 +49,8 @@ var videoAddCmd = &cobra.Command{
 			return
 		}
 
-		repository := repo.NewRepoManager(repoRoot)
-		if err := repository.Init(); err != nil {
+		repository, err := repo.NewRepoManager(repoRoot)
+		if err != nil {
 			fmt.Println("Failed to initialize repository:", err)
 			return
 		}
@@ -274,9 +274,6 @@ var videoAddCmd = &cobra.Command{
 	},
 }
 
-
-
-
 var videoRemoveCmd = &cobra.Command{
 	Use:   "remove [path|all]",
 	Short: "Remove video(s)",
@@ -288,11 +285,11 @@ var videoRemoveCmd = &cobra.Command{
 			return
 		}
 
-		repository := repo.NewRepoManager(repoRoot)
-		if err := repository.Init(); err != nil {
-			pterm.Error.Println("Failed to initialize repository:", err)
-			return
-		}
+repository, err := repo.NewRepoManager(repoRoot)
+if err != nil {
+    fmt.Println("Failed to initialize repository:", err)
+    return
+}
 
 		arg := args[0]
 		var videoPaths []string
@@ -378,8 +375,8 @@ var videoListCmd = &cobra.Command{
 		}
 
 		// Initialize the repository
-		repository := repo.NewRepoManager(repoAddress)
-		if err := repository.Init(); err != nil {
+		repository, err := repo.NewRepoManager(repoAddress)
+		if err != nil {
 			fmt.Println("Failed to initialize repository:", err)
 			return
 		}
@@ -427,8 +424,6 @@ var videoListCmd = &cobra.Command{
 		}
 	},
 }
-
-
 
 var videoInfoCmd = &cobra.Command{
 	Use:   "info <video-id>",
