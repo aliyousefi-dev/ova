@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">ova mobile</string>
-    <string name="title_activity_main">ova mobile</string>
-    <string name="package_name">com.ova.mobile</string>
-    <string name="custom_url_scheme">com.ova.mobile</string>
-</resources>
