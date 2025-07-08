@@ -69,12 +69,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "OVA Desktop.md",
+                "file": "OVA Mobile.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "OVA Desktop"
+              "title": "OVA Mobile"
             }
           },
           {
@@ -294,6 +294,7 @@
   },
   "active": "483bc3e2180c7679",
   "lastOpenFiles": [
+    "OVA Desktop.md",
     "OVA Desktop Features.md",
     "OVA Mobile.md",
     "OVA Overview.md",
@@ -308,7 +309,6 @@
     "Untitled 3.md",
     "Untitled.canvas",
     "OvaCli.md",
-    "OVA Desktop.md",
     "Home Page.md",
     "Folder Tree.md",
     "Feature Tree.canvas",

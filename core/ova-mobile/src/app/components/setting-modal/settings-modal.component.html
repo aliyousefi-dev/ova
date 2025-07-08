@@ -1,0 +1,62 @@
+<dialog id="settings_modal" class="modal" [open]="showModal">
+  <div class="modal-box flex flex-col" style=" height: 600px; overflow: hidden;" (click)="$event.stopPropagation()">
+    <!-- Modal Header with Close Button -->
+    <div class="w-full dark:border-gray-700 relative">
+      <div class="p-4 flex items-center justify-start">
+        <h3 class="font-bold text-lg">Settings</h3>
+      </div>
+      <!-- Close Button in top-right corner -->
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="closeModal($event)">✕</button>
+    </div>
+
+    <!-- Tabs for switching between settings -->
+    <div class="tabs tabs-boxed">
+      <a class="tab" [class.tab-active]="activeTab === 'general'" (click)="setActiveTab('general')">General</a>
+      <a class="tab" [class.tab-active]="activeTab === 'theme'" (click)="setActiveTab('theme')">Theme</a>
+      <a class="tab" [class.tab-active]="activeTab === 'proxy'" (click)="setActiveTab('proxy')">Proxy</a>
+    </div>
+
+    <!-- Modal Content Section (Scrollable) -->
+    <div class="p-4 space-y-4 overflow-auto" style="flex-grow: 1;">
+      <!-- General Tab Content -->
+      <div *ngIf="activeTab === 'general'" class="max-w-full">
+        <p class="py-4">General settings content goes here.</p>
+      </div>
+
+      <!-- Theme Tab Content -->
+      <div *ngIf="activeTab === 'theme'" class="max-w-full">
+        <p class="py-4">Choose your theme:</p>
+        <div class="form-control w-full max-w-xl p-4">
+          <div class="flex flex-wrap gap-2">
+            <button class="btn btn-sm" *ngFor="let theme of themes" (click)="setTheme(theme)"
+              [class.btn-active]="selectedTheme === theme">{{ theme }}</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Proxy Tab Content -->
+      <div *ngIf="activeTab === 'proxy'" class="max-w-full">
+        <p class="py-4">Configure your proxy settings:</p>
+        <div class="form-control w-full max-w-xl p-4">
+          <label for="proxy-address" class="label">Proxy Address:</label>
+          <input type="text" id="proxy-address" class="input input-bordered w-full" [(ngModel)]="proxyAddress"
+            placeholder="Enter proxy address" />
+
+          <label for="proxy-port" class="label">Proxy Port:</label>
+          <input type="number" id="proxy-port" class="input input-bordered w-full" [(ngModel)]="proxyPort"
+            placeholder="Enter proxy port" />
+
+          <label for="proxy-user" class="label">Username:</label>
+          <input type="text" id="proxy-user" class="input input-bordered w-full" [(ngModel)]="proxyUser"
+            placeholder="Enter username" />
+
+          <label for="proxy-password" class="label">Password:</label>
+          <input type="password" id="proxy-password" class="input input-bordered w-full" [(ngModel)]="proxyPassword"
+            placeholder="Enter password" />
+
+          <button class="btn btn-primary mt-4" (click)="saveProxySettings()">Save Proxy Settings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
