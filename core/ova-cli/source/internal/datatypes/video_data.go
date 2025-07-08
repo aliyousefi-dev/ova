@@ -25,8 +25,6 @@ type VideoData struct {
 	FilePath        string          `json:"filePath"`                // Path to the main video file
 	Rating          float64         `json:"rating"`                  // Average user rating (e.g., 0.0 to 5.0)
 	DurationSeconds int             `json:"durationSeconds"`         // Duration in seconds
-	ThumbnailPath   *string         `json:"thumbnailPath,omitempty"` // Optional path to thumbnail image
-	PreviewPath     *string         `json:"previewPath,omitempty"`   // Optional path to video preview
 	Tags            []string        `json:"tags"`                    // Tags for categorization and search
 	Views           int             `json:"views"`                   // Number of views
 	Resolution      VideoResolution `json:"resolution"`              // Video resolution (width, height)
@@ -44,8 +42,6 @@ func NewVideoData(videoID string) VideoData {
 		FilePath:        "",
 		Rating:          0,
 		DurationSeconds: 0,
-		ThumbnailPath:   nil,
-		PreviewPath:     nil,
 		Tags:            []string{},
 		UploadedAt:      time.Now().UTC(),
 		Views:           0,

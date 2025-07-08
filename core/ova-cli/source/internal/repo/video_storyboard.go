@@ -15,8 +15,10 @@ func (r *RepoManager) GenerateStoryboardForVideo(videoPath string) error {
 		return fmt.Errorf("failed to compute video ID: %w", err)
 	}
 
-	videoSpriteDir := filepath.Join(r.GetStoryboardDir(), videoID)
+	// Use GetStoryboardFolderPathByVideoID to get the folder path for the storyboard
+	videoSpriteDir := r.GetStoryboardFolderPathByVideoID(videoID)
 
+	// Create the storyboard directory if it doesn't exist
 	if err := os.MkdirAll(videoSpriteDir, 0755); err != nil {
 		return fmt.Errorf("failed to create directory for %s: %w", filepath.Base(videoPath), err)
 	}

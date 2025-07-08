@@ -19,19 +19,10 @@ func getPreview(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoId := c.Param("videoId")
 
-		video, err := rm.GetVideoByID(videoId)
-		if err != nil {
-			respondError(c, http.StatusNotFound, "Video not found")
-			return
-		}
+		// Attempt to fetch the preview path using GetPreviewFilePathByVideoID
+		previewPath := rm.GetPreviewFilePathByVideoID(videoId)
 
-		if video.PreviewPath == nil || *video.PreviewPath == "" {
-			respondError(c, http.StatusNotFound, "Preview path not set")
-			return
-		}
-
-		previewPath := *video.PreviewPath
-
+		// Check if the preview file exists
 		if _, err := os.Stat(previewPath); os.IsNotExist(err) {
 			respondError(c, http.StatusNotFound, "Preview not found")
 			return

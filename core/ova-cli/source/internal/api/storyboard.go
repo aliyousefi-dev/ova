@@ -19,9 +19,11 @@ func RegisterStoryboardRoutes(rg *gin.RouterGroup, repoManager *repo.RepoManager
 		videoId := c.Param("videoId")
 		filename := c.Param("filename")
 
-		thumbPath := filepath.Join(repoManager.GetStoryboardDir(), videoId, filename)
+		// Get the correct folder path for the storyboard using GetStoryboardFolderPathByVideoID
+		storyboardPath := filepath.Join(repoManager.GetStoryboardFolderPathByVideoID(videoId), filename)
 
-		info, err := os.Stat(thumbPath)
+		// Check if the file exists
+		info, err := os.Stat(storyboardPath)
 		if err != nil {
 			if os.IsNotExist(err) {
 				c.JSON(http.StatusNotFound, gin.H{"error": "Thumbnail not found"})
@@ -36,6 +38,6 @@ func RegisterStoryboardRoutes(rg *gin.RouterGroup, repoManager *repo.RepoManager
 		}
 
 		// Serve the image file
-		c.File(thumbPath)
+		c.File(storyboardPath)
 	})
 }

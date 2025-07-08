@@ -454,11 +454,6 @@ var videoInfoCmd = &cobra.Command{
 		pterm.DefaultSection.Println("File Path:", video.FilePath)
 		pterm.DefaultSection.Println("Rating:", fmt.Sprintf("%.1f", video.Rating))
 		pterm.DefaultSection.Println("Duration (seconds):", fmt.Sprintf("%d", video.DurationSeconds))
-		if video.ThumbnailPath != nil {
-			pterm.DefaultSection.Println("Thumbnail Path:", *video.ThumbnailPath)
-		} else {
-			pterm.DefaultSection.Println("Thumbnail Path: <none>")
-		}
 		pterm.DefaultSection.Println("Tags:", fmt.Sprintf("%v", video.Tags))
 		pterm.DefaultSection.Println("Uploaded At:", video.UploadedAt.Format(time.RFC3339))
 		pterm.DefaultSection.Println("Views:", fmt.Sprintf("%d", video.Views))

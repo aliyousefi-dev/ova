@@ -19,19 +19,10 @@ func getThumbnail(repo *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		videoId := c.Param("videoId")
 
-		video, err := repo.GetVideoByID(videoId)
-		if err != nil {
-			respondError(c, http.StatusNotFound, "Video not found")
-			return
-		}
+		// Attempt to fetch the thumbnail path using GetThumbnailFilePathByVideoID
+		thumbnailPath := repo.GetThumbnailFilePathByVideoID(videoId)
 
-		if video.ThumbnailPath == nil || *video.ThumbnailPath == "" {
-			respondError(c, http.StatusNotFound, "Thumbnail path not set")
-			return
-		}
-
-		thumbnailPath := *video.ThumbnailPath
-
+		// Check if the thumbnail file exists
 		if _, err := os.Stat(thumbnailPath); os.IsNotExist(err) {
 			respondError(c, http.StatusNotFound, "Thumbnail not found")
 			return

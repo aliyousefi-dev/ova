@@ -3,7 +3,6 @@ package api
 import (
 	"net/http"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -106,8 +105,8 @@ func getMarkerFile(rm *repo.RepoManager) gin.HandlerFunc {
 			return
 		}
 
-		dir := filepath.Join(rm.GetStoragePath(), "video_markers")
-		filePath := filepath.Join(dir, videoId+".vtt")
+		// Use GetVideoMarkerFilePathByVideoID to get the correct file path for the VTT marker file
+		filePath := rm.GetVideoMarkerFilePathByVideoID(videoId)
 
 		if _, err := os.Stat(filePath); err != nil {
 			if os.IsNotExist(err) {

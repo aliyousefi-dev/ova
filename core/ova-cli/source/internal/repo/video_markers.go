@@ -8,24 +8,35 @@ import (
 	"sort"
 	"strings"
 )
-
 func (r *RepoManager) AddMarkerToVideo(videoID string, marker datatypes.VideoMarker) error {
+	// Calculate file path for the VTT marker file
+	filePath := r.GetVideoMarkerFilePathByVideoID(videoID)
+
+	// Ensure the directory exists before adding the marker
+	dir := filepath.Dir(filePath)
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return fmt.Errorf("failed to create marker directory %s: %w", dir, err)
+	}
+
+	// Fetch existing markers and add the new one
 	markers, err := r.GetMarkersForVideo(videoID)
 	if err != nil {
 		return err
 	}
 
 	markers = append(markers, marker)
-
 	return r.saveMarkersToVTT(videoID, markers)
 }
 
 func (r *RepoManager) GetMarkersForVideo(videoID string) ([]datatypes.VideoMarker, error) {
-	filePath := filepath.Join(r.GetVideoMarkerDir(), videoID+".vtt")
+	// Calculate the file path for the VTT marker file dynamically
+	filePath := r.GetVideoMarkerFilePathByVideoID(videoID)
+
+	// Read the VTT file and extract markers
 	data, err := os.ReadFile(filePath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return []datatypes.VideoMarker{}, nil // Return empty list if file does not exist
+			return []datatypes.VideoMarker{}, nil // Return empty list if the file does not exist
 		}
 		return nil, err
 	}
@@ -83,33 +94,41 @@ func (r *RepoManager) GetMarkersForVideo(videoID string) ([]datatypes.VideoMarke
 }
 
 func (r *RepoManager) DeleteMarkerFromVideo(videoID string, markerToDelete datatypes.VideoMarker) error {
+	// Get markers for the video
 	markers, err := r.GetMarkersForVideo(videoID)
 	if err != nil {
 		return err
 	}
 
+	// Format the timestamp for the marker to be deleted
 	targetVTTTimestamp := datatypes.FormatHMSToVTT(markerToDelete.Hour, markerToDelete.Minute, markerToDelete.Second)
 
-	filtered := make([]datatypes.VideoMarker, 0, len(markers))
-	deleted := false
+	// Filter out the marker to delete
+	var filtered []datatypes.VideoMarker
+	var markerDeleted bool
 	for _, m := range markers {
 		storedVTTTimestamp := datatypes.FormatHMSToVTT(m.Hour, m.Minute, m.Second)
-		if !deleted && storedVTTTimestamp == targetVTTTimestamp {
-			deleted = true
+		if storedVTTTimestamp == targetVTTTimestamp {
+			// Skip the marker to delete
+			markerDeleted = true
 			continue
 		}
+		// Keep other markers
 		filtered = append(filtered, m)
 	}
 
-	if !deleted {
+	if !markerDeleted {
 		return fmt.Errorf("marker with timestamp '%s' not found for deletion", targetVTTTimestamp)
 	}
 
+	// Re-save the remaining markers back to the VTT file
 	return r.saveMarkersToVTT(videoID, filtered)
 }
 
+
 func (r *RepoManager) DeleteAllMarkersFromVideo(videoID string) error {
-	filePath := filepath.Join(r.GetVideoMarkerDir(), videoID+".vtt")
+	// Calculate the file path for the VTT marker file
+	filePath := r.GetVideoMarkerFilePathByVideoID(videoID)
 	if err := os.Remove(filePath); err != nil && !os.IsNotExist(err) {
 		return err
 	}
@@ -122,13 +141,14 @@ func (r *RepoManager) saveMarkersToVTT(videoID string, markers []datatypes.Video
 		return markers[i].ConvertToSeconds() < markers[j].ConvertToSeconds()
 	})
 
-	dir := r.GetVideoMarkerDir()
+	// Use GetVideoMarkerFilePathByVideoID to get the correct file path
+	filePath := r.GetVideoMarkerFilePathByVideoID(videoID)
 
+	// Ensure the directory exists
+	dir := filepath.Dir(filePath)
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		return fmt.Errorf("failed to create directory %s: %w", dir, err)
 	}
-
-	filePath := filepath.Join(dir, videoID+".vtt")
 
 	// Get video duration in seconds from video data
 	var videoDuration float64 = 600 // fallback default to 10 minutes
@@ -154,11 +174,12 @@ func (r *RepoManager) saveMarkersToVTT(videoID string, markers []datatypes.Video
 	var sb strings.Builder
 	sb.WriteString("WEBVTT\n\n")
 
+	// Write markers to the VTT file
 	for _, marker := range markers {
 		startSeconds := marker.ConvertToSeconds()
 		endSeconds := startSeconds + offsetSeconds
 
-		// Format start time with milliseconds
+		// Format start and end time with milliseconds
 		totalStartMillis := int(startSeconds * 1000)
 		startH := totalStartMillis / (3600 * 1000)
 		startM := (totalStartMillis % (3600 * 1000)) / (60 * 1000)

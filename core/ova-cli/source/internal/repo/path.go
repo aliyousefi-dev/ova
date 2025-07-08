@@ -1,6 +1,8 @@
 package repo
 
-import "path/filepath"
+import (
+	"path/filepath"
+)
 
 func (r *RepoManager) GetRootPath() string {
 	return r.rootDir
@@ -31,5 +33,50 @@ func (r *RepoManager) GetVideoMarkerDir() string {
 }
 
 func (r *RepoManager) GetStoryboardDir() string {
-	return filepath.Join(r.rootDir, ".ova-repo", "storage", "sprite_vtt")
+	return filepath.Join(r.rootDir, ".ova-repo", "storage", "sprite_thumbnails")
+}
+
+
+func (r *RepoManager) GetPreviewFilePathByVideoID(videoID string) string {
+	// Get the first two characters of the videoID
+	subfolder := videoID[:2]
+
+	// Build the full path to the preview file
+	previewPath := filepath.Join(r.getPreviewsDir(), subfolder, videoID+".webm")
+
+	// Return the preview path directly without checking if the file exists
+	return previewPath
+}
+
+func (r *RepoManager) GetThumbnailFilePathByVideoID(videoID string) string {
+	// Get the first two characters of the videoID
+	subfolder := videoID[:2]
+
+	// Build the full path to the thumbnail file
+	thumbnailPath := filepath.Join(r.getThumbsDir(), subfolder, videoID+".jpg")
+
+	// Return the thumbnail path directly without checking if the file exists
+	return thumbnailPath
+}
+
+func (r *RepoManager) GetStoryboardFolderPathByVideoID(videoID string) string {
+	// Get the first two characters of the videoID to create the subfolder
+	subfolder := videoID[:2]
+
+	// Build the full path to the storyboard folder
+	storyboardFolderPath := filepath.Join(r.GetStoryboardDir(), subfolder, videoID)
+
+	// Return the storyboard folder path directly without checking if the folder exists
+	return storyboardFolderPath
+}
+
+func (r *RepoManager) GetVideoMarkerFilePathByVideoID(videoID string) string {
+	// Get the first two characters of the videoID to create the subfolder
+	subfolder := videoID[:2]
+
+	// Build the full path to the video marker .vtt file
+	videoMarkerPath := filepath.Join(r.GetVideoMarkerDir(), subfolder, videoID+".vtt")
+
+	// Return the video marker path directly without checking if the file exists
+	return videoMarkerPath
 }

@@ -2,7 +2,6 @@ package repo
 
 import (
 	"fmt"
-	"os"
 	"ova-cli/source/internal/datatypes"
 	"ova-cli/source/internal/utils"
 	"path/filepath"
@@ -56,12 +55,12 @@ func (r *RepoManager) RegisterVideoWithAbsolutePath(absolutePath string) (dataty
 	}
 
 	// 6. Generate thumbnail and preview
-	thumbPath, err := r.GenerateThumb(absolutePath, videoID)
+	_, err = r.GenerateThumb(absolutePath, videoID)
 	if err != nil {
 		return datatypes.VideoData{}, fmt.Errorf("failed to generate thumbnail: %w", err)
 	}
 
-	previewPath, err := r.GeneratePreview(absolutePath, videoID)
+	_, err = r.GeneratePreview(absolutePath, videoID)
 	if err != nil {
 		return datatypes.VideoData{}, fmt.Errorf("failed to generate preview: %w", err)
 	}
@@ -74,8 +73,6 @@ func (r *RepoManager) RegisterVideoWithAbsolutePath(absolutePath string) (dataty
 	videoData.Codecs = codec
 	videoData.Resolution = resolution
 	videoData.FilePath = relativePath   // Use the relative path here
-	videoData.ThumbnailPath = &thumbPath // Use the relative thumbnail path
-	videoData.PreviewPath = &previewPath // Use the relative preview path
 
 	// 8. Store metadata
 	if err := r.dataStorage.AddVideo(videoData); err != nil {
@@ -97,32 +94,32 @@ func (r *RepoManager) UnregisterVideo(videoPath string) error {
 		return fmt.Errorf("failed to compute video ID: %w", err)
 	}
 
-	// 2. Fetch existing video metadata
-	videoData, err := r.dataStorage.GetVideoByID(videoID)
-	if err != nil {
-		return fmt.Errorf("failed to find video in storage: %w", err)
-	}
+	// // 2. Fetch existing video metadata
+	// videoData, err := r.dataStorage.GetVideoByID(videoID)
+	// if err != nil {
+	// 	return fmt.Errorf("failed to find video in storage: %w", err)
+	// }
 
-	// 3. Resolve absolute paths
-	repoRoot := r.GetRootPath()
+	// // 3. Resolve absolute paths
+	// repoRoot := r.GetRootPath()
 
-	if videoData.ThumbnailPath != nil {
-		thumbPath := filepath.Join(repoRoot, *videoData.ThumbnailPath)
-		if err := os.Remove(thumbPath); err != nil && !os.IsNotExist(err) {
-			fmt.Printf("Warning: failed to delete thumbnail: %s (%v)\n", thumbPath, err)
-		} else {
-			fmt.Printf("Thumbnail deleted: %s\n", thumbPath)
-		}
-	}
+	// if videoData.ThumbnailPath != nil {
+	// 	thumbPath := filepath.Join(repoRoot, *videoData.ThumbnailPath)
+	// 	if err := os.Remove(thumbPath); err != nil && !os.IsNotExist(err) {
+	// 		fmt.Printf("Warning: failed to delete thumbnail: %s (%v)\n", thumbPath, err)
+	// 	} else {
+	// 		fmt.Printf("Thumbnail deleted: %s\n", thumbPath)
+	// 	}
+	// }
 
-	if videoData.PreviewPath != nil {
-		previewPath := filepath.Join(repoRoot, *videoData.PreviewPath)
-		if err := os.Remove(previewPath); err != nil && !os.IsNotExist(err) {
-			fmt.Printf("Warning: failed to delete preview: %s (%v)\n", previewPath, err)
-		} else {
-			fmt.Printf("Preview deleted: %s\n", previewPath)
-		}
-	}
+	// if videoData.PreviewPath != nil {
+	// 	previewPath := filepath.Join(repoRoot, *videoData.PreviewPath)
+	// 	if err := os.Remove(previewPath); err != nil && !os.IsNotExist(err) {
+	// 		fmt.Printf("Warning: failed to delete preview: %s (%v)\n", previewPath, err)
+	// 	} else {
+	// 		fmt.Printf("Preview deleted: %s\n", previewPath)
+	// 	}
+	// }
 
 	// 4. Remove metadata from storage
 	if err := r.dataStorage.DeleteVideoByID(videoID); err != nil {
