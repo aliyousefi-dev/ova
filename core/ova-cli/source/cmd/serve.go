@@ -18,9 +18,6 @@ var serveBackendOnly bool
 var serveDisableAuth bool
 var serveUseHttps bool
 
-// Version of the UI, which you can set dynamically or statically
-var ovaUIVersion = "0.1.0"
-
 
 
 var serveCmd = &cobra.Command{
@@ -50,13 +47,13 @@ var serveCmd = &cobra.Command{
 			serveLogger.Error("Failed to get executable path: %v", err)
 			os.Exit(1)
 		}
-		exeDir := filepath.Dir(exePath)
+		exeDir := filepath.Dir(exePath)	
 
 		// Server address
 		addr := fmt.Sprintf("%s:%d", cfg.ServerHost, cfg.ServerPort)
 
 		// Web UI check
-		webPath := filepath.Join(exeDir, fmt.Sprintf("ovaui-%s", ovaUIVersion))
+		webPath := filepath.Join(exeDir, "web")
 		serveweb := false
 		if !serveBackendOnly {
 			if _, err := os.Stat(webPath); err == nil {

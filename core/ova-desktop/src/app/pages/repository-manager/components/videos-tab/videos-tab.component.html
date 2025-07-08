@@ -2,13 +2,13 @@
 
 <section id="videos">
     <div class="tabs tabs-boxed mx-8 bg-base-100 rounded-lg">
-        <a class="tab" [class.tab-active]="activeTab === 'indexedVideo'" (click)="setActiveTab('indexedVideo')">Indexed
-            Video</a>
+        <a class="tab" [class.tab-active]="activeTab === 'indexedVideo'"
+            (click)="setActiveTab('indexedVideo')">Indexed</a>
         <a class="tab" [class.tab-active]="activeTab === 'diskVideo'" (click)="setActiveTab('diskVideo')">Hard Disk</a>
         <a class="tab" [class.tab-active]="activeTab === 'unindexedVideo'"
-            (click)="setActiveTab('unindexedVideo')">Unindexed Video</a>
+            (click)="setActiveTab('unindexedVideo')">Unindexed</a>
         <a class="tab" [class.tab-active]="activeTab === 'duplicateVideo'"
-            (click)="setActiveTab('duplicateVideo')">Duplicate Video</a>
+            (click)="setActiveTab('duplicateVideo')">Duplicates</a>
     </div>
 
     <div *ngIf="loading" class="flex justify-center items-center h-[calc(100vh-250px)]">
