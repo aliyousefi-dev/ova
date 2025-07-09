@@ -1,17 +1,33 @@
 <div class="navbar sticky top-0 bg-base-100 shadow-sm">
     <div class="flex-none">
-        <button class="btn btn-square btn-ghost">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                class="inline-block h-5 w-5 stroke-current">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
-                </path>
-            </svg>
-        </button>
+        <div class="drawer">
+            <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+            <div class="drawer-content">
+                <!-- Page content here -->
+                <label for="my-drawer" aria-label="open sidebar" class="btn btn-square btn-ghost">
+                    <!-- Boxicon for Hamburger Menu -->
+                    <i class="bx bx-menu bx-sm"></i>
+                </label>
+            </div>
+            <div class="drawer-side z-50">
+                <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+                <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+                    <!-- Sidebar content here -->
+                    <li><a>Sidebar Item 2</a></li>
+                    <li><a>Logout</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
     <div class="flex-1">
         <a class="btn btn-ghost text-xl">OVA</a>
     </div>
-    <div class="flex-none">
-        <app-theme-controller-menu></app-theme-controller-menu>
-    </div>
+
+    <!-- Boxicon for Settings Button -->
+    <button class="btn btn-ghost btn-circle" (click)="openSettingsModal()">
+        <i class="bx bx-cog bx-sm"></i>
+    </button>
 </div>
+
+<!-- Settings Modal component -->
+<app-settings-modal [showModal]="showModal" (close)="closeModal()"></app-settings-modal>

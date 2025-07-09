@@ -3,4 +3,16 @@
 /* Load all default DaisyUI themes */
 @plugin "daisyui" {
   themes: all;
+  exclude: rootscrollgutter, rootscrolllock;
+}
+
+:root:has(
+    :is(
+        .modal-open,
+        .modal:target,
+        .modal-toggle:checked + .modal,
+        .modal[open]
+      )
+  ) {
+  scrollbar-gutter: unset; /* or auto */
 }

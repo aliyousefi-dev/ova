@@ -1,10 +1,21 @@
 import { Component } from '@angular/core';
-import { ThemeControllerMenu } from '../theme-controller-menu/theme-controller-menu';
+import { SettingsModalComponent } from '../setting-modal/settings-modal.component';
 
 @Component({
   selector: 'app-top-navbar',
-  imports: [ThemeControllerMenu],
   templateUrl: './top-navbar.html',
-  styles: ``,
+  styles: [],
+  standalone: true, // Add this if this component is standalone
+  imports: [SettingsModalComponent], // Import the SettingsModalComponent
 })
-export class TopNavbar {}
+export class TopNavbar {
+  showModal = false;
+
+  openSettingsModal() {
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+  }
+}
