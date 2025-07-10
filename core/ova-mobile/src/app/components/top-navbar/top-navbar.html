@@ -1,20 +1,32 @@
-<div class="navbar sticky top-0 bg-base-100 shadow-sm">
+<div class="navbar top-0 bg-base-100 shadow-sm relative">
     <div class="flex-none">
         <div class="drawer">
             <input id="my-drawer" type="checkbox" class="drawer-toggle" />
             <div class="drawer-content">
-                <!-- Page content here -->
                 <label for="my-drawer" aria-label="open sidebar" class="btn btn-square btn-ghost">
-                    <!-- Boxicon for Hamburger Menu -->
                     <i class="bx bx-menu bx-sm"></i>
                 </label>
             </div>
             <div class="drawer-side z-50">
                 <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-                <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
-                    <!-- Sidebar content here -->
-                    <li><a>Sidebar Item 2</a></li>
-                    <li><a>Logout</a></li>
+                <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4 space-y-4">
+                    <li><a href="#">Sidebar Item 1</a></li>
+                    <li><a href="#">Sidebar Item 2</a></li>
+
+                    <li>
+                        <button class="btn btn-ghost w-full flex items-center justify-start"
+                            (click)="openSettingsModal()">
+                            <i class="bx bx-cog bx-sm mr-2"></i>
+                            <span>Settings</span>
+                        </button>
+                    </li>
+
+                    <li>
+                        <button class="btn btn-ghost w-full flex items-center justify-start">
+                            <i class="bx bx-log-out bx-sm mr-2"></i>
+                            <span>Logout</span>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -23,11 +35,32 @@
         <a class="btn btn-ghost text-xl">OVA</a>
     </div>
 
-    <!-- Boxicon for Settings Button -->
-    <button class="btn btn-ghost btn-circle" (click)="openSettingsModal()">
-        <i class="bx bx-cog bx-sm"></i>
-    </button>
-</div>
+    <div class="flex gap-2">
+        <button class="btn btn-ghost btn-circle" (click)="openSearchBar()">
+            <i class="bx bx-search bx-sm"></i>
+        </button>
+        <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                <div class="w-10 rounded-full">
+                    <img alt="Tailwind CSS Navbar component"
+                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                </div>
+            </div>
+            <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                <li>
+                    <a class="justify-between">
+                        Profile
+                        <span class="badge">New</span>
+                    </a>
+                </li>
+                <li><a>Settings</a></li>
+                <li><a>Logout</a></li>
+            </ul>
+        </div>
+    </div>
 
-<!-- Settings Modal component -->
-<app-settings-modal [showModal]="showModal" (close)="closeModal()"></app-settings-modal>
+    <app-searchbar-expandable [isSearchVisible]="isSearchVisible"
+        (searchClosed)="onSearchClosed()"></app-searchbar-expandable>
+
+    <app-settings-modal [showModal]="showModal" (close)="closeModal()"></app-settings-modal>
+</div>

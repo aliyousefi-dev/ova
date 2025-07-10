@@ -4,8 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-discover-page',
   imports: [],
   templateUrl: './discover-page.html',
-  styles: ``
+  styles: ``,
 })
-export class DiscoverPage {
-
-}
+export class DiscoverPage {}
