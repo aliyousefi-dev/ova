@@ -1,0 +1,9 @@
+<div *ngIf="visible" class="modal modal-open" (click)="onCancel()">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <p class="py-4">{{ message }}</p>
+    <div class="modal-action">
+      <button class="btn" (click)="onCancel()">Cancel</button>
+      <button class="btn btn-error text-white" (click)="onConfirm()">Confirm</button>
+    </div>
+  </div>
+</div>

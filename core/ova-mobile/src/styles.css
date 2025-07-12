@@ -6,6 +6,10 @@
   exclude: rootscrollgutter, rootscrolllock;
 }
 
+@import "vidstack/player/styles/base.css";
+@import "vidstack/player/styles/default/theme.css";
+@import "vidstack/player/styles/default/layouts/video.css";
+
 :root:has(
     :is(
         .modal-open,
@@ -15,4 +19,12 @@
       )
   ) {
   scrollbar-gutter: unset; /* or auto */
+}
+
+media-google-cast-button {
+  display: none;
+}
+
+media-pip-button {
+  display: none;
 }

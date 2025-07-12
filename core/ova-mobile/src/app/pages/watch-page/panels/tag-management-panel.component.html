@@ -1,0 +1,31 @@
+<div>
+  <div class="flex gap-2">
+    <input
+      [(ngModel)]="newTag"
+      type="text"
+      placeholder="Add new tag"
+      class="input input-bordered w-full"
+      (keyup.enter)="addTag()"
+    />
+    <button
+      (click)="addTag()"
+      class="btn btn-primary"
+      [disabled]="updatingTags"
+    >
+      {{ updatingTags ? "Adding..." : "Add" }}
+    </button>
+  </div>
+
+  <div class="mt-5 flex flex-wrap gap-2 items-center">
+    <app-tag-chip
+      *ngFor="let tag of currentTags"
+      [tag]="tag"
+      [videoId]="videoId"
+      (removed)="onTagRemoved($event)"
+    ></app-tag-chip>
+  </div>
+
+  <p *ngIf="tagUpdateError" class="text-error text-sm mt-1">
+    Failed to update tags.
+  </p>
+</div>

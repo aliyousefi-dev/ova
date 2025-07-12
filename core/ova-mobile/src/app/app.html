@@ -1,7 +1,11 @@
 <div class="flex flex-col h-screen overflow-x-hidden overflow-y-hidden">
-  <app-top-navbar class="sticky top-0 z-10"></app-top-navbar>
+  <!-- Only show Top Navbar if not on '/login' route -->
+  <app-top-navbar *ngIf="!isLoginPage" class="sticky top-0 z-10"></app-top-navbar>
+
   <div class="flex-1 overflow-y-auto overflow-x-hidden">
     <router-outlet />
   </div>
-  <app-bottom-docks class="sticky bottom-0"></app-bottom-docks>
+
+  <!-- Only show Bottom Docks if not on '/login' route -->
+  <app-bottom-docks *ngIf="!isLoginPage" class="sticky bottom-0"></app-bottom-docks>
 </div>

@@ -1,0 +1,35 @@
+<dialog id="playlist-modal" class="modal" [open]="showModal" (click)="closeModal()">
+  <div class="modal-box bg-base-100 max-w-sm rounded-lg shadow-md relative" (click)="$event.stopPropagation()">
+    <!-- Top right icon button -->
+    <button class="btn btn-ghost btn-sm btn-circle absolute top-4 right-4 p-0" aria-label="Edit Playlists"
+      (click)="navigateToPlaylists()" title="Edit Playlists">
+      <i class="bx bx-edit-alt text-lg"></i> <!-- Boxicons Edit icon -->
+    </button>
+
+    <h3 class="font-semibold text-lg text-center mb-4 pb-2 tracking-wide" style="letter-spacing: 0.03em">
+      Add to Playlist
+    </h3>
+
+    <!-- Display a loading message or spinner if playlists are not yet loaded -->
+    <div *ngIf="playlists.length === 0 && showModal" class="text-center py-4 text-gray-500">
+      Loading playlists...
+    </div>
+
+    <form (ngSubmit)="save()" class="max-h-48 overflow-y-auto mb-4 px-2">
+      <div class="form-control mb-2" *ngFor="let playlist of playlists; trackBy: trackBySlug">
+        <label class="label cursor-pointer flex items-center space-x-3">
+          <input type="checkbox" class="checkbox checkbox-sm" [(ngModel)]="playlist.checked"
+            name="{{ playlist.slug }}" />
+          <span class="label-text text-base select-none">
+            {{ playlist.title }}
+          </span>
+        </label>
+      </div>
+    </form>
+
+    <div class="modal-action flex justify-center space-x-4 px-2">
+      <button class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="save()">Save</button>
+    </div>
+  </div>
+</dialog>

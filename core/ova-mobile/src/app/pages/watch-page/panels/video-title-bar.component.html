@@ -1,0 +1,11 @@
+<div
+  class="flex items-center justify-between pb-5 sm:px-3 md:px-6 lg:px-0 xl:px-0 2xl:px-0 px-3"
+>
+  <div
+    *ngIf="videoTitle"
+    class="text-xl font-semibold leading-tight truncate flex-1"
+    [title]="videoTitle"
+  >
+    {{ videoTitle }}
+  </div>
+</div>

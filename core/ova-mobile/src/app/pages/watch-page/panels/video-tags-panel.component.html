@@ -1,0 +1,17 @@
+<div class="flex flex-col gap-4">
+  <!-- Tags Header -->
+  <div class="font-semibold flex items-center gap-2">
+    <i class="bx bx-tag w-4 h-4"></i> <!-- Boxicon for Tags -->
+    <span>Tags</span>
+  </div>
+
+  <!-- If tags exist -->
+  <div *ngIf="tags.length > 0; else noTags" class="flex flex-wrap gap-2">
+    <app-tag-link *ngFor="let tag of tags" [tag]="tag"></app-tag-link>
+  </div>
+
+  <!-- Fallback -->
+  <ng-template #noTags>
+    <div class="text-sm text-gray-500">No tags available for this video.</div>
+  </ng-template>
+</div>

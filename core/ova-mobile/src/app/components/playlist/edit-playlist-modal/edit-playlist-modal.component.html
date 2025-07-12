@@ -1,0 +1,30 @@
+    <div *ngIf="visible" class="modal modal-open" (click)="onCancel()">
+      <div class="modal-box" (click)="$event.stopPropagation()">
+        <h3 class="font-bold text-lg mb-4">Edit Playlist</h3>
+        <form (ngSubmit)="onConfirm()" #editForm="ngForm" novalidate>
+          <label class="label" for="title">Title</label>
+          <input
+            id="title"
+            type="text"
+            class="input input-bordered w-full mb-3"
+            [(ngModel)]="title"
+            name="title"
+            required
+          />
+
+          <label class="label" for="description">Description</label>
+          <textarea
+            id="description"
+            class="textarea textarea-bordered w-full"
+            [(ngModel)]="description"
+            name="description"
+            rows="3"
+          ></textarea>
+
+          <div class="modal-action">
+            <button type="button" class="btn" (click)="onCancel()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!title.trim()">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>

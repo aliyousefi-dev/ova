@@ -1,0 +1,76 @@
+<!-- Container that clears the global sidebar with padding-left: 256px -->
+<div class="w-full mx-auto px-4 pt-5 flex flex-col md:flex-row gap-8">
+    <ng-container *ngIf="video; else loading">
+        <!-- Video Area: 70% width on md+ -->
+        <div class="w-full md:w-[70%] flex flex-col">
+            <!-- Video action bar, title, player, metadata, panels -->
+            <div class="flex flex-col py-3">
+                <app-video-action-bar [videoId]="video.videoId" [isSaved]="isSaved"
+                    [loadingSavedVideo]="loadingSavedVideo" (toggleSaved)="toggleSaved()"
+                    [getCurrentTimeFn]="getCurrentTimeFromPlayer" [videoDurationSeconds]="video.durationSeconds"
+                    [videoUploadedAt]="video.uploadedAt" [videoResolution]="video.resolution"></app-video-action-bar>
+            </div>
+
+            <app-video-title-bar [videoTitle]="video.title"></app-video-title-bar>
+
+            <div class="w-full overflow-hidden">
+                <ng-container *ngIf="true; else defaultPlayer">
+                    <app-vidstack-player #vidstackPlayer [videoUrl]="videoUrl" [posterUrl]="thumbnailUrl"
+                        [vttUrl]="storyboardVttUrl" [vttMarkersUrl]="markerFileUrl"></app-vidstack-player>
+                </ng-container>
+                <ng-template #defaultPlayer>
+                    <app-default-video-player [videoUrl]="videoUrl"
+                        [posterUrl]="thumbnailUrl"></app-default-video-player>
+                </ng-template>
+            </div>
+
+            <!-- Metadata badges -->
+            <div class="flex flex-col gap-10 p-5">
+                <div class="flex flex-wrap gap-5 w-full text-xs">
+                    <span *ngIf="video.uploadedAt" class="inline-flex items-center gap-1 px-3 py-1 font-medium"
+                        [title]="video.uploadedAt">
+                        <i class="bx bx-time text-xl"></i>
+                        <span>{{ video.uploadedAt | date : 'mediumDate' }}</span>
+                    </span>
+                    <span *ngIf="video.resolution" class="inline-flex items-center gap-1 px-3 py-1 font-medium"
+                        [title]="video.resolution.width + 'x' + video.resolution.height">
+                        <i class="bx bx-desktop text-xl"></i>
+                        <span>{{ video.resolution.width }} x {{ video.resolution.height }}</span>
+                    </span>
+                    <span *ngIf="video.durationSeconds !== undefined"
+                        class="inline-flex items-center gap-1 px-3 py-1 font-medium"
+                        [title]="formatTime(video.durationSeconds)">
+                        <i class="bx bx-time text-xl"></i>
+                        <span>{{ formatTime(video.durationSeconds) }}</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1 px-3 py-1 font-medium">
+                        <i class="bx bx-video text-xl"></i>
+                        <span>30 fps</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Video Info Panels -->
+            <div class="flex flex-col gap-6 p-6 pb-10 bg-base-100 rounded-xl shadow-md">
+                <app-video-tags-panel [tags]="video.tags"></app-video-tags-panel>
+            </div>
+            <div class="flex flex-col gap-6 mt-6 p-6 pb-10 bg-base-100 rounded-xl shadow-md">
+                <app-video-admin-tabs #adminTabs [videoId]="video.videoId" [currentTags]="video.tags"
+                    (tagsUpdated)="video.tags = $event"
+                    (addMarkerClicked)="onAddMarkerClicked()"></app-video-admin-tabs>
+            </div>
+        </div>
+
+        <!-- Sidebar + Comments (30% width) -->
+        <div class="w-full md:w-[30%] flex flex-col gap-6">
+            <app-video-comment-panel [videoId]="video.videoId"></app-video-comment-panel>
+
+            <app-similar-videos-panel [currentVideoId]="videoId!"
+                (navigateToVideo)="navigateToVideo($event)"></app-similar-videos-panel>
+        </div>
+    </ng-container>
+
+    <ng-template #loading>
+        <p>Loading video...</p>
+    </ng-template>
+</div>

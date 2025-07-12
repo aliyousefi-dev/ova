@@ -1,0 +1,66 @@
+<div *ngIf="videoId" class="flex flex-col items-end gap-4 w-full">
+  <!-- Actions + Trim Controls -->
+  <div class="flex flex-wrap items-center justify-end gap-2 w-full">
+    <!-- Add to Playlist -->
+    <button class="btn btn-outline" (click)="openPlaylistModal()" aria-label="Add to Playlist">
+      <i class="bx bx-plus-square text-lg"></i>
+      <span class="hidden sm:inline">Add to Playlist</span>
+    </button>
+
+    <!-- Save/Unsave -->
+    <button class="btn flex items-center" [ngClass]="
+        isSaved ? 'btn-error' : 'btn-outline btn-error hover:btn-error'
+      " (click)="toggleSaved.emit()" [disabled]="loadingSavedVideo" [attr.aria-label]="
+        isSaved ? 'Unsave from favorites' : 'Save to favorites'
+      ">
+      <ng-container *ngIf="isSaved; else notFavoriteIcon">
+        <i class="bx bxs-bookmark-plus text-lg"></i>
+        <span class="hidden sm:inline">Saved</span>
+      </ng-container>
+      <ng-template #notFavoriteIcon>
+        <i class="bx bx-bookmark text-lg"></i>
+        <span class="hidden sm:inline">Save</span>
+      </ng-template>
+    </button>
+
+    <!-- Download -->
+    <button class="btn btn-primary" (click)="downloadVideo()" aria-label="Download">
+      <i class="bx bx-download text-lg"></i>
+      <span class="hidden sm:inline">Download</span>
+    </button>
+
+    <!-- Trim Toggle -->
+    <button class="btn btn-outline" (click)="toggleTrimMode()"
+      [attr.aria-label]="trimMode ? 'Cancel Trim' : 'Trim Download'">
+      <!-- Mobile icon only -->
+      <i *ngIf="!trimMode" class="bx bx-download text-lg sm:hidden"></i>
+      <i *ngIf="trimMode" class="bx bxs-bookmark-plus text-lg sm:hidden"></i>
+
+      <!-- Desktop text -->
+      <span class="hidden sm:inline">
+        {{ trimMode ? "Cancel Trim" : "Trim Download" }}
+      </span>
+    </button>
+
+    <!-- Trim Controls (Inline when active) -->
+    <div *ngIf="trimMode" class="flex flex-wrap items-center gap-2 ml-2 text-sm">
+      <span class="text-gray-500 whitespace-nowrap">
+        Start: {{ formatTime(trimStart) }}, End: {{ formatTime(trimEnd) }},
+        Duration: {{ formatTime(trimmedDuration) }}
+      </span>
+      <button class="btn btn-xs btn-accent" (click)="setTrimStart()">
+        Set Start
+      </button>
+      <button class="btn btn-xs btn-accent" (click)="setTrimEnd()">
+        Set End
+      </button>
+      <button class="btn btn-xs btn-success" (click)="downloadTrimmed()">
+        Trim Download
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Playlist Modal -->
+<app-playlist-modal [showModal]="playlistModalVisible" [selectedVideoId]="videoId!"
+  (close)="closePlaylistModal()"></app-playlist-modal>

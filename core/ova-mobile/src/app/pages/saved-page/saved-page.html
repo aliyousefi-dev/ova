@@ -1,72 +1,44 @@
-<div class="hero bg-base-200 ">
-    <div class="hero-content text-center">
-        <div class="max-w-md">
-            <h1 class="text-5xl font-bold">Hello there</h1>
-            <p class="py-6">
-                Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
-                quasi. In deleniti eaque aut repudiandae et a id nisi.
-            </p>
-            <button class="btn btn-primary">Get Started</button>
-        </div>
+<app-search-bar [(value)]="searchTerm" (valueChange)="goToPage(1)" placeholder="Local Search ..."></app-search-bar>
+
+<div class="max-w-7xl mx-auto px-4 mt-4 flex items-center justify-between">
+    <div class="font-medium">
+        Total videos: {{ filteredVideosUnpaginated.length }}
+    </div>
+
+    <!-- Sort Menu -->
+    <div class="flex justify-end items-center gap-2">
+        <label for="sort" class="text-sm font-medium">Sort by:</label>
+        <select id="sort" [(ngModel)]="sortOption" (change)="goToPage(1)" class="select select-sm select-bordered w-40">
+            <option value="titleAsc">Title (A–Z)</option>
+            <option value="titleDesc">Title (Z–A)</option>
+            <option value="durationAsc">Duration (Short → Long)</option>
+            <option value="durationDesc">Duration (Long → Short)</option>
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+        </select>
     </div>
 </div>
-<div class="hero bg-base-200 ">
-    <div class="hero-content text-center">
-        <div class="max-w-md">
-            <h1 class="text-5xl font-bold">Hello there</h1>
-            <p class="py-6">
-                Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
-                quasi. In deleniti eaque aut repudiandae et a id nisi.
-            </p>
-            <button class="btn btn-primary">Get Started</button>
-        </div>
+
+<!-- Top Pagination -->
+<div class="max-w-7xl mx-auto px-4 mt-6 flex justify-center" *ngIf="totalPages > 1 && !loading">
+    <div class="join">
+        <input *ngFor="let page of [].constructor(totalPages); let i = index" class="join-item btn btn-square btn-sm"
+            type="radio" name="paginationTop" [attr.aria-label]="(i + 1)" [checked]="currentPage === i + 1"
+            (change)="goToPage(i + 1)" />
     </div>
 </div>
-<div class="hero bg-base-200 ">
-    <div class="hero-content text-center">
-        <div class="max-w-md">
-            <h1 class="text-5xl font-bold">Hello there</h1>
-            <p class="py-6">
-                Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
-                quasi. In deleniti eaque aut repudiandae et a id nisi.
-            </p>
-            <button class="btn btn-primary">Get Started</button>
-        </div>
-    </div>
+
+<!-- Videos Block -->
+<div class="mx-auto px-4 mt-6">
+    <p *ngIf="loading" class="font-medium text-center">Loading favorites...</p>
+    <app-video-grid *ngIf="!loading" [videos]="filteredVideos"></app-video-grid>
 </div>
-<div class="hero bg-base-200 ">
-    <div class="hero-content text-center">
-        <div class="max-w-md">
-            <h1 class="text-5xl font-bold">Hello there</h1>
-            <p class="py-6">
-                Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
-                quasi. In deleniti eaque aut repudiandae et a id nisi.
-            </p>
-            <button class="btn btn-primary">Get Started</button>
-        </div>
-    </div>
-</div>
-<div class="hero bg-base-200 ">
-    <div class="hero-content text-center">
-        <div class="max-w-md">
-            <h1 class="text-5xl font-bold">Hello there</h1>
-            <p class="py-6">
-                Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
-                quasi. In deleniti eaque aut repudiandae et a id nisi.
-            </p>
-            <button class="btn btn-primary">Get Started</button>
-        </div>
-    </div>
-</div>
-<div class="hero bg-base-200 ">
-    <div class="hero-content text-center">
-        <div class="max-w-md">
-            <h1 class="text-5xl font-bold">Hello there</h1>
-            <p class="py-6">
-                Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
-                quasi. In deleniti eaque aut repudiandae et a id nisi.
-            </p>
-            <button class="btn btn-primary">Get Started</button>
-        </div>
+
+<!-- Bottom Pagination -->
+<div class="max-w-7xl mx-auto px-4 mt-10 flex justify-center" *ngIf="totalPages > 1 && !loading">
+    <div class="join">
+        <input *ngFor="let page of [].constructor(totalPages); let i = index" class="join-item btn btn-square btn-sm"
+            type="radio" name="paginationBottom" [attr.aria-label]=" (i + 1)" [checked]="currentPage === i + 1"
+            (change)="goToPage(i + 1)" />
     </div>
 </div>
