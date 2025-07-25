@@ -1,6 +1,6 @@
+here is all commands the the Cli Supports
 
 
-## Commands
 ```
 - ovacli debug
 - ovacli debug hash

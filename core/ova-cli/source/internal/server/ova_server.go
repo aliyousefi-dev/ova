@@ -1,14 +1,18 @@
 package server
 
 import (
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/grandcat/zeroconf"
 
 	"ova-cli/source/internal/api"
 	"ova-cli/source/internal/repo"
-
-	"github.com/gin-gonic/gin"
 )
 
 type OvaServer struct {
@@ -100,15 +104,51 @@ func (s *OvaServer) serveFrontendStatic() {
 	})
 }
 
-// Run starts the unified HTTP or HTTPS server based on UseHttps flag.
 func (s *OvaServer) Run() error {
 	s.initRoutes()
 
+	// Start mDNS service advertisement
+	go func() {
+		port := parsePort(s.Addr)
+
+		server, err := zeroconf.Register(
+			"ova-server",        // Instance name (visible to network)
+			"_http._tcp",        // Service type
+			"local.",            // Domain
+			port,                // Port from your Addr
+			[]string{"version=1", "app=ova"}, // TXT records
+			nil,                 // Use default interface
+		)
+		if err != nil {
+			log.Printf("mDNS registration failed: %v", err)
+			return
+		}
+		log.Println("✅ mDNS service announced as ova-server._http._tcp.local")
+
+		defer server.Shutdown()
+		select {} // Keep mDNS running
+	}()
+
 	if s.UseHttps {
-		certFile := filepath.Join(s.ExeDir, "ssl", "cert.pem")
-		keyFile := filepath.Join(s.ExeDir, "ssl", "key.pem")
+		// Get the SSL folder path using GetSSLPath()
+		sslFolderPath := s.RepoManager.GetSSLPath()
+
+		// Set the cert and key file paths
+		certFile := filepath.Join(sslFolderPath, "cert.pem")
+		keyFile := filepath.Join(sslFolderPath, "cert-key.pem")
+
 		return s.router.RunTLS(s.Addr, certFile, keyFile)
 	}
-
 	return s.router.Run(s.Addr)
+}
+
+// Helper to extract port from address string like ":8080" or "0.0.0.0:8080"
+func parsePort(addr string) int {
+	parts := strings.Split(addr, ":")
+	portStr := parts[len(parts)-1]
+	port, err := strconv.Atoi(portStr)
+	if err != nil {
+		log.Fatalf("Invalid port in address: %v", addr)
+	}
+	return port
 }

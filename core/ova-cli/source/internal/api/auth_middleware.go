@@ -31,7 +31,22 @@ func AuthMiddleware(sm *SessionManager, publicPaths map[string]bool, publicPrefi
 			}
 		}
 
-		// Auth check
+		// First check for OVA-AUTH header
+		ovaAuthHeader := c.GetHeader("OVA-AUTH")
+		if ovaAuthHeader != "" {
+			// Check for session in the OVA-AUTH header
+			username, ok := sm.sessions[ovaAuthHeader]
+			if !ok {
+				respondError(c, http.StatusUnauthorized, "Invalid OVA-AUTH session")
+				c.Abort()
+				return
+			}
+			c.Set("username", username)
+			c.Next()
+			return
+		}
+
+		// Fall back to cookie if OVA-AUTH header is not present
 		sessionID, err := c.Cookie("session_id")
 		if err != nil {
 			respondError(c, http.StatusUnauthorized, "Authentication required")

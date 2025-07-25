@@ -1,44 +1,14 @@
-Playlist Card
-playlist Grid
-Playlist Manager
-Playlist Page
+we developing the ova that have cli and the desktop and mobile apps
+and the cli have bundle the frontend and serve that but we have the mobile and desktop app that need to connect to the cli api served 
 
+Think we have the vidstack and we can not use the custom headers with that not because it not support that because if we use that we voluntary ourselves to the XSS attacks.
 
+So because of that we need to use the Cookies. For Auth.
 
-we should think about the admin panel and how this shoul works 
+this is the Best Way but we have problem with Cookies and Cross Origin.
+Since we Want use that API for other Apps like the Android and Desktop. 
+and they are Web Apps that Connect to the API. and Served on the Local host and want to Send Login with that API it not working. We need way to fix this .
 
-we need to implement two things
-the one is how we can run the front end and the 
+First i thinking about the Android maybe we can use the Capacitor Http Client Instead of the Angular Http Client.
 
-first when we upload a file then it show the progress for processing the video. and adding that to 
-i don't know what is good for doing this.
-
-and we can delete the video 
-
-
-how we can add new user also. we need to see the users and also 
-have buttons for adding the user .
-
-also we need the logic for changing the password on the profile 
-
-
-i think it best to tag some timeline for hot times.
-i think about the Smart Playlist .
-
-Keep `localstorage` focused on storing/loading/managing data.
-`localstorage` calls `metadata.ExtractVideoMetadata` when it needs video info.
-
-
-Repository Validation ? 
-how this is better Create first all folder inside the .ova-repo folder like thumbnail 
-
-and when i want use any commadn check the repostiroy valid or not 
-or use another method that the folder create when need like when run the commadn ovacli cook vtss all 
-
-look this 
-
-RepoManager
-	- Storage
-
-StorageManager
-	- 
+the SSL folder is inside the .ova-repo 

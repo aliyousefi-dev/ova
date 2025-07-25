@@ -8,9 +8,17 @@ import { AuthApiService } from './api/auth-api.service';
   providedIn: 'root',
 })
 export class AuthGuard {
+  // Add a debugMode flag to control whether the guard should bypass the process
+  private debugMode: boolean = true;
+
   constructor(private authapi: AuthApiService, private router: Router) {}
 
   canActivate(): Observable<boolean | UrlTree> {
+    if (this.debugMode) {
+      // If debugMode is true, simply allow access without checking authentication status
+      return of(true);
+    }
+
     return this.authapi.getAuthStatusFull().pipe(
       map((res) => {
         if (res.status === 'success' && res.data.authenticated) {
@@ -26,5 +34,10 @@ export class AuthGuard {
         return of(this.router.createUrlTree(['/login']));
       })
     );
+  }
+
+  // Optional setter method to toggle debugMode
+  setDebugMode(enabled: boolean): void {
+    this.debugMode = enabled;
   }
 }

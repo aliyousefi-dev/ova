@@ -2,9 +2,12 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"ova-cli/source/internal/logs"
+	"ova-cli/source/internal/repo"
 	"ova-cli/source/internal/thirdparty"
 
+	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +18,6 @@ var toolsCmd = &cobra.Command{
 	Use:   "tools",
 	Short: "Various utility tools commands",
 }
-
 
 
 var toolsThumbnailCmd = &cobra.Command{
@@ -39,6 +41,52 @@ var toolsThumbnailCmd = &cobra.Command{
 		fmt.Println(thumbnailPath) // Optionally print to stdout
 	},
 }
+
+var GenerateSSLCmd = &cobra.Command{
+	Use:   "generate-ssl",
+	Short: "Print the executable folder path and generate the RSA key in the SSL folder",
+	Run: func(cmd *cobra.Command, args []string) {
+		// Get the current working directory
+		repoRoot, err := os.Getwd()
+		if err != nil {
+			pterm.Error.Println("Failed to get working directory:", err)
+			return
+		}
+
+		// Initialize the RepoManager with the working directory
+		repoManager, err := repo.NewRepoManager(repoRoot)
+		if err != nil {
+			fmt.Println("Failed to initialize repository:", err)
+			return
+		}
+
+		// Define the password, DNS, and IP
+		password := "yourpassword"
+		dns := "your-dns.record"
+		ip := "192.168.21.69"
+
+		// Call GenerateSelfCertificate with the required parameters
+		err = repoManager.GenerateSelfCertificate(password, dns, ip)
+		if err != nil {
+			fmt.Println("Error generating RSA key:", err)
+			return
+		}
+
+		// Notify that the RSA key generation was successful
+		fmt.Println("RSA key generated successfully!")
+
+		// Clean up unnecessary certificate files and rename fullchain.pem to cert.pem
+		err = repoManager.CleanCertificate()
+		if err != nil {
+			fmt.Println("Error cleaning up certificate files:", err)
+			return
+		}
+
+		// Notify the user that the clean-up was successful
+		fmt.Println("Certificate files cleaned up successfully!")
+	},
+}
+
 
 var toolsPreviewCmd = &cobra.Command{
 	Use:   "preview <video-path> <preview-output-path>",
@@ -110,6 +158,7 @@ func InitCommandTools(rootCmd *cobra.Command) {
 	toolsCmd.AddCommand(toolsPreviewCmd)
 	toolsCmd.AddCommand(toolsInfoCmd)
 	toolsCmd.AddCommand(toolsConvertCmd)
+	toolsCmd.AddCommand(GenerateSSLCmd)
 
 	toolsThumbnailCmd.Flags().Float64("time", 5.0, "Time position (in seconds) for thumbnail")
 

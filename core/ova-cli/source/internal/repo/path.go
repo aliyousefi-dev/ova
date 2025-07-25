@@ -1,8 +1,20 @@
 package repo
 
 import (
+	"fmt"
+	"os"
 	"path/filepath"
 )
+
+// GetExecutableFolderPath returns the folder path of the currently running executable (ovacli).
+func (r *RepoManager) GetExecutableFolderPath() (string, error) {
+	exePath, err := os.Executable()
+	if err != nil {
+		return "", fmt.Errorf("failed to get executable path: %w", err)
+	}
+	exeDir := filepath.Dir(exePath)
+	return exeDir, nil
+}
 
 func (r *RepoManager) GetRootPath() string {
 	return r.rootDir
@@ -14,6 +26,10 @@ func (r *RepoManager) GetRepoDir() string {
 
 func (r *RepoManager) GetStoragePath() string {
 	return filepath.Join(r.rootDir, ".ova-repo", "storage")
+}
+
+func (r *RepoManager) GetSSLPath() string {
+	return filepath.Join(r.rootDir, ".ova-repo", "ssl")
 }
 
 func (r *RepoManager) getRepoConfigFilePath() string {

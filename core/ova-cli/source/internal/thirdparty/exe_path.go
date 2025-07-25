@@ -7,6 +7,33 @@ import (
 	"runtime"
 )
 
+// GetOpenSSLPath returns the full path to the OpenSSL executable.
+func GetOpenSSLPath() (string, error) {
+	exePath, err := os.Executable()
+	if err != nil {
+		return "", fmt.Errorf("failed to get executable path: %w", err)
+	}
+	exeDir := filepath.Dir(exePath)
+
+	// Assuming the OpenSSL executable is located in a folder named "openssl"
+	opensslPath := filepath.Join(exeDir, "openssl", "openssl")
+	if runtime.GOOS == "windows" {
+		opensslPath += ".exe"
+	}
+
+	info, err := os.Stat(opensslPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return "", fmt.Errorf("openssl not found: %s", opensslPath)
+		}
+		return "", fmt.Errorf("error checking openssl: %w", err)
+	}
+	if info.IsDir() {
+		return "", fmt.Errorf("openssl path is a directory: %s", opensslPath)
+	}
+	return opensslPath, nil
+}
+
 // BentoMP4Info returns the full path to the Bento4 mp4info executable.
 func GetBentoMP4InfoPath() (string, error) {
 	exePath, err := os.Executable()

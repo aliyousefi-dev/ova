@@ -1,5 +1,5 @@
 // environment.prod.ts
 export const environment = {
   production: true,
-  apiBaseUrl: 'localhost:4040/api/v1',
+  apiBaseUrl: 'http://127.0.0.1:4040/api/v1',
 };

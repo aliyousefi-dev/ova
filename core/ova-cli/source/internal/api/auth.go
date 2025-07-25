@@ -60,15 +60,13 @@ func loginHandler(c *gin.Context, sm *SessionManager, repoMgr *repo.RepoManager)
 
 	sessionID := uuid.NewString()
 	sm.sessions[sessionID] = req.Username
-
-	http.SetCookie(c.Writer, &http.Cookie{
-		Name:     "session_id",
-		Value:    sessionID,
-		Path:     "/",
-		MaxAge:   int(24 * time.Hour.Seconds()),
-		HttpOnly: false,                // Allow JS access
-		Secure:   false,                // Must be false on HTTP
-		SameSite: http.SameSiteLaxMode, // Works on HTTP
+    http.SetCookie(c.Writer, &http.Cookie{
+        Name:     "session_id",
+        Value:    sessionID,
+        Path:     "/",
+        MaxAge:   int(24 * time.Hour.Seconds()),
+		HttpOnly: true,  // Set to true for security
+		Secure:   false,  // Keep as false for HTTP
 	})
 
 	respondSuccess(c, http.StatusOK, LoginResponse{SessionID: sessionID}, "Login successful")
