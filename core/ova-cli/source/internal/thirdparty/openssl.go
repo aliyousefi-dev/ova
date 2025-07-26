@@ -81,7 +81,8 @@ func GenerateRSAKey(outputPath string, keySize int, password string) error {
 
 // GenerateCACert generates a public CA certificate using OpenSSL
 // with the private key (ca-key.pem) and saves it as ca.pem.
-func GenerateCACert(keyPath string, outputPath string, password string) error {
+// The CN parameter allows the user to specify a custom Common Name for the certificate.
+func GenerateCACert(keyPath string, outputPath string, password string, commonName string) error {
 	// Get the path to the OpenSSL executable
 	opensslPath, err := GetOpenSSLPath() // Assuming GetOpenSSLPath is implemented as before
 	if err != nil {
@@ -89,7 +90,12 @@ func GenerateCACert(keyPath string, outputPath string, password string) error {
 	}
 
 	// Use the -subj flag to provide non-interactive values for the required fields
-	subj := "/C=US/ST=California/L=San Francisco/O=MyOrg/CN=my-ca"
+	// If the CN parameter is empty, use a default value
+	if commonName == "" {
+		commonName = "my-ca" // Default CN if none is provided
+	}
+	
+	subj := fmt.Sprintf("/C=ZZ/ST=ZZ/L=ZZ/O=OVA/CN=%s", commonName)
 
 	// Build the OpenSSL command to generate the public CA cert
 	args := []string{
@@ -107,6 +113,7 @@ func GenerateCACert(keyPath string, outputPath string, password string) error {
 	fmt.Printf("Public CA certificate generated successfully at: %s\n", outputPath)
 	return nil
 }
+
 
 
 

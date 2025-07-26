@@ -42,9 +42,9 @@ var toolsThumbnailCmd = &cobra.Command{
 	},
 }
 
-var GenerateSSLCmd = &cobra.Command{
-	Use:   "generate-ssl",
-	Short: "Print the executable folder path and generate the RSA key in the SSL folder",
+var GenerateCACmd = &cobra.Command{
+	Use:   "generate-ca",
+	Short: "Generate the RSA key and CA certificate in the SSL folder",
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get the current working directory
 		repoRoot, err := os.Getwd()
@@ -60,30 +60,77 @@ var GenerateSSLCmd = &cobra.Command{
 			return
 		}
 
-		// Define the password, DNS, and IP
-		password := "yourpassword"
-		dns := "your-dns.record"
-		ip := "192.168.21.69"
+		// Get the CN from the flag (or default to "my-ca" if not provided)
+		cn, _ := cmd.Flags().GetString("cn")
+		if cn == "" {
+			cn = "my-ca" // Default CN if none is provided
+		}
 
-		// Call GenerateSelfCertificate with the required parameters
-		err = repoManager.GenerateSelfCertificate(password, dns, ip)
+		// Get the password from the flag (or default to "yourpassword" if not provided)
+		password, _ := cmd.Flags().GetString("password")
+		if password == "" {
+			password = "ova" // Default password if none is provided
+		}
+
+		// Generate the CA (RSA key and CA certificate) with the specified CN and password
+		err = repoManager.GenerateCA(password, cn)
 		if err != nil {
-			fmt.Println("Error generating RSA key:", err)
+			fmt.Println("Error generating CA:", err)
 			return
 		}
 
-		// Notify that the RSA key generation was successful
-		fmt.Println("RSA key generated successfully!")
+		// Notify that the CA generation was successful
+		fmt.Println("CA generated successfully!")
+	},
+}
 
-		// Clean up unnecessary certificate files and rename fullchain.pem to cert.pem
-		err = repoManager.CleanCertificate()
+
+
+var GenerateCertCmd = &cobra.Command{
+	Use:   "generate-cert",
+	Short: "Generate a certificate using the CA's key and certificate",
+	Run: func(cmd *cobra.Command, args []string) {
+		// Get the current working directory
+		repoRoot, err := os.Getwd()
 		if err != nil {
-			fmt.Println("Error cleaning up certificate files:", err)
+			pterm.Error.Println("Failed to get working directory:", err)
 			return
 		}
 
-		// Notify the user that the clean-up was successful
-		fmt.Println("Certificate files cleaned up successfully!")
+		// Initialize the RepoManager with the working directory
+		repoManager, err := repo.NewRepoManager(repoRoot)
+		if err != nil {
+			fmt.Println("Failed to initialize repository:", err)
+			return
+		}
+
+		// Get the CA password from the flag (or default to "ova" if not provided)
+		caPassword, _ := cmd.Flags().GetString("caPassword")
+		if caPassword == "" {
+			caPassword = "ova" // Default password if none is provided
+		}
+
+		// Get the DNS from the flag (or default to "your-dns.record" if not provided)
+		dns, _ := cmd.Flags().GetString("dns")
+		if dns == "" {
+			dns = "your-dns.record" // Default DNS if none is provided
+		}
+
+		// Get the IP from the flag (or default to "127.0.0.1" if not provided)
+		ip, _ := cmd.Flags().GetString("ip")
+		if ip == "" {
+			ip = "127.0.0.1" // Default IP if none is provided
+		}
+
+		// Generate the certificate using the CA's key and certificate
+		err = repoManager.GenerateCertificate(dns, ip, caPassword)
+		if err != nil {
+			fmt.Println("Error generating certificate:", err)
+			return
+		}
+
+		// Notify that the certificate generation was successful
+		fmt.Println("Certificate generated successfully!")
 	},
 }
 
@@ -158,7 +205,16 @@ func InitCommandTools(rootCmd *cobra.Command) {
 	toolsCmd.AddCommand(toolsPreviewCmd)
 	toolsCmd.AddCommand(toolsInfoCmd)
 	toolsCmd.AddCommand(toolsConvertCmd)
-	toolsCmd.AddCommand(GenerateSSLCmd)
+	toolsCmd.AddCommand(GenerateCACmd)
+	toolsCmd.AddCommand(GenerateCertCmd)
+
+	GenerateCACmd.Flags().String("cn", "", "Common Name (CN) for the CA certificate (default: 'my-ca')")
+	GenerateCACmd.Flags().String("password", "", "Password for the private key (default: 'yourpassword')")
+
+	// Adding flags for GenerateCertCmd
+	GenerateCertCmd.Flags().String("caPassword", "", "Password for the CA's private key (default: 'ova')")
+	GenerateCertCmd.Flags().String("dns", "", "DNS record for the certificate (default: 'your-dns.record')")
+	GenerateCertCmd.Flags().String("ip", "", "IP address for the certificate (default: '127.0.0.1')")
 
 	toolsThumbnailCmd.Flags().Float64("time", 5.0, "Time position (in seconds) for thumbnail")
 

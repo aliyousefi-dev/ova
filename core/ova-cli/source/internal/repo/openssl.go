@@ -7,42 +7,48 @@ import (
 	"path/filepath"
 )
 
-// GenerateSelfCertificate generates an RSA key using OpenSSL with AES256 encryption
-// and saves it to the SSL folder inside the repository, with the file name "ca-key.pem".
-// Then it generates a public CA certificate (ca.pem) using the ca-key.pem.
-// After that, it generates a certificate key (cert-key.pem) without a passphrase, creates a CSR (cert.csr),
-// and finally, it generates the certificate (cert.pem) from the CSR using the CA's key and certificate.
-// Finally, it creates a fullchain.pem by combining cert.pem and ca.pem.
-func (r *RepoManager) GenerateSelfCertificate(password, dns, ip string) error {
+// GenerateCA generates the RSA key (ca-key.pem) and the public CA certificate (ca.pem)
+// It now accepts a CN (Common Name) for the CA certificate.
+func (r *RepoManager) GenerateCA(password string, commonName string) error {
 	// Get the path to the SSL folder
 	sslFolderPath := r.GetSSLPath()
+	caPath := filepath.Join(sslFolderPath, "self-ca")
 
-	// Check if the SSL folder exists, and create it if it doesn't
-	if _, err := os.Stat(sslFolderPath); os.IsNotExist(err) {
+	// Check if the CA folder exists, and create it if it doesn't
+	if _, err := os.Stat(caPath); os.IsNotExist(err) {
 		// Create the directory if it does not exist
-		err := os.MkdirAll(sslFolderPath, os.ModePerm)
+		err := os.MkdirAll(caPath, os.ModePerm)
 		if err != nil {
-			return fmt.Errorf("failed to create SSL folder: %w", err)
+			return fmt.Errorf("failed to create CA folder: %w", err)
 		}
 	}
 
 	// Generate the RSA key (ca-key.pem) with the provided password
-	caKeyPath := filepath.Join(sslFolderPath, "ca-key.pem")
+	caKeyPath := filepath.Join(caPath, "ca-key.pem")
 	err := thirdparty.GenerateRSAKey(caKeyPath, 4096, password)
 	if err != nil {
 		return fmt.Errorf("failed to generate RSA key: %w", err)
 	}
 
 	// Now generate the public CA certificate (ca.pem) using the private key (ca-key.pem)
-	caCertPath := filepath.Join(sslFolderPath, "ca.pem")
-	err = thirdparty.GenerateCACert(caKeyPath, caCertPath, password)
+	caCertPath := filepath.Join(caPath, "ca.pem")
+	err = thirdparty.GenerateCACert(caKeyPath, caCertPath, password, commonName) // Pass the CN to GenerateCACert
 	if err != nil {
 		return fmt.Errorf("failed to generate CA certificate: %w", err)
 	}
 
+	return nil
+}
+
+
+// GenerateCertificate generates a certificate from a CSR using the CA's key and certificate
+func (r *RepoManager) GenerateCertificate(dns, ip, password string) error {
+	// Get the path to the SSL folder
+	sslFolderPath := r.GetSSLPath()
+
 	// Generate the certificate key (cert-key.pem) without passphrase
 	certKeyPath := filepath.Join(sslFolderPath, "cert-key.pem")
-	err = thirdparty.GenerateRSAKeyNoPass(certKeyPath, 4096)
+	err := thirdparty.GenerateRSAKeyNoPass(certKeyPath, 4096)
 	if err != nil {
 		return fmt.Errorf("failed to generate certificate key: %w", err)
 	}
@@ -62,23 +68,29 @@ func (r *RepoManager) GenerateSelfCertificate(password, dns, ip string) error {
 		return fmt.Errorf("failed to generate extfile.cnf: %w", err)
 	}
 
-	// Generate the certificate (cert.pem) using the CSR, CA cert and key, and the extfile
-	certPath := filepath.Join(sslFolderPath, "cert.pem")
+	caPath := filepath.Join(sslFolderPath, "self-ca")
+	
+	// Get the CA certificate path
+	caCertPath := filepath.Join(caPath, "ca.pem")
+	// Get the CA key path
+	caKeyPath := filepath.Join(caPath, "ca-key.pem")
+
+	// Generate the certificate (cert-file.pem) using the CSR, CA cert and key, and the extfile
+	certPath := filepath.Join(sslFolderPath, "cert-file.pem")
 	err = thirdparty.GenerateCertificate(csrPath, caCertPath, caKeyPath, extfilePath, certPath, password)
 	if err != nil {
 		return fmt.Errorf("failed to generate certificate: %w", err)
 	}
 
-	// Now combine cert.pem and ca.pem into fullchain.pem
-	fullchainPath := filepath.Join(sslFolderPath, "fullchain.pem")
+	// Now combine cert-file.pem and ca.pem into cert.pem
+	fullchainPath := filepath.Join(sslFolderPath, "cert.pem")
 	err = thirdparty.CombineCertsIntoFullchain(certPath, caCertPath, fullchainPath)
 	if err != nil {
-		return fmt.Errorf("failed to combine cert and CA cert into fullchain.pem: %w", err)
+		return fmt.Errorf("failed to combine cert and CA cert into cert.pem: %w", err)
 	}
 
 	return nil
 }
-
 
 // CleanCertificate keeps only the necessary certificate files, renames fullchain.pem to cert.pem,
 // and deletes all other generated certificate files, keeping cert.pem, ca.pem, and cert-key.pem.
@@ -88,9 +100,17 @@ func (r *RepoManager) CleanCertificate() error {
 
 	// Define the files to keep
 	filesToKeep := []string{
-		"ca.pem",        // Public CA certificate
+		"ca.pem",        // Public CA certificate (from self-ca folder)
 		"cert-key.pem",  // Certificate key (without passphrase)
 		"cert.pem",      // Renamed certificate
+	}
+
+	// Define the path for the CA folder
+	caPath := filepath.Join(sslFolderPath, "self-ca")
+
+	// Ensure the self-ca folder exists and has the correct files
+	if _, err := os.Stat(caPath); os.IsNotExist(err) {
+		return fmt.Errorf("CA folder '%s' does not exist", caPath)
 	}
 
 	// Define the file to rename
@@ -112,19 +132,25 @@ func (r *RepoManager) CleanCertificate() error {
 			return err
 		}
 
-		// Check if the file is not one of the ones to keep
-		for _, file := range filesToKeep {
-			if filepath.Base(path) == file {
+		// Skip directories or files in the "filesToKeep" list
+		if info.IsDir() {
+			return nil
+		}
+
+		// Get the base file name
+		fileName := filepath.Base(path)
+
+		// Skip the files we need to keep
+		for _, keepFile := range filesToKeep {
+			if fileName == keepFile {
 				return nil // Skip this file (do not delete)
 			}
 		}
 
-		// Delete the file if it's not in the "filesToKeep" list
-		if !info.IsDir() {
-			err := os.Remove(path)
-			if err != nil {
-				return fmt.Errorf("failed to delete file %s: %w", path, err)
-			}
+		// If the file is not one of the ones to keep, delete it
+		err = os.Remove(path)
+		if err != nil {
+			return fmt.Errorf("failed to delete file %s: %w", path, err)
 		}
 
 		return nil
@@ -132,6 +158,43 @@ func (r *RepoManager) CleanCertificate() error {
 
 	if err != nil {
 		return fmt.Errorf("failed to clean up certificate files: %w", err)
+	}
+
+	// Clean up the self-ca folder after keeping ca.pem and ca-key.pem (if needed)
+	err = filepath.Walk(caPath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		// Skip directories or files we want to keep
+		if info.IsDir() {
+			return nil
+		}
+
+		// Define files in the CA folder to keep
+		caFilesToKeep := []string{
+			"ca.pem",        // The CA public certificate
+			"ca-key.pem",    // The CA private key
+		}
+
+		// Check if the file is in the list of files to keep
+		for _, caFile := range caFilesToKeep {
+			if filepath.Base(path) == caFile {
+				return nil // Skip this file (do not delete)
+			}
+		}
+
+		// If not in the list of files to keep, delete it
+		err = os.Remove(path)
+		if err != nil {
+			return fmt.Errorf("failed to delete CA file %s: %w", path, err)
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return fmt.Errorf("failed to clean up CA files: %w", err)
 	}
 
 	return nil
