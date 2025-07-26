@@ -1,15 +1,11 @@
 package server
 
 import (
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-	"strconv"
-	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/grandcat/zeroconf"
 
 	"ova-cli/source/internal/api"
 	"ova-cli/source/internal/repo"
@@ -85,6 +81,7 @@ func (s *OvaServer) initRoutes() {
 	api.RegisterUserWatchedRoutes(v1, s.RepoManager)
 	api.RegisterStoryboardRoutes(v1, s.RepoManager)
 	api.RegisterMarkerRoutes(v1, s.RepoManager)
+	api.RegisterLatestVideoRoute(v1, s.RepoManager)
 	api.RegisterStatusRoute(v1)
 
 	if s.ServeFrontend {
@@ -107,27 +104,7 @@ func (s *OvaServer) serveFrontendStatic() {
 func (s *OvaServer) Run() error {
 	s.initRoutes()
 
-	// Start mDNS service advertisement
-	go func() {
-		port := parsePort(s.Addr)
-
-		server, err := zeroconf.Register(
-			"ova-server",        // Instance name (visible to network)
-			"_http._tcp",        // Service type
-			"local.",            // Domain
-			port,                // Port from your Addr
-			[]string{"version=1", "app=ova"}, // TXT records
-			nil,                 // Use default interface
-		)
-		if err != nil {
-			log.Printf("mDNS registration failed: %v", err)
-			return
-		}
-		log.Println("✅ mDNS service announced as ova-server._http._tcp.local")
-
-		defer server.Shutdown()
-		select {} // Keep mDNS running
-	}()
+	// mDNS service advertisement removed
 
 	if s.UseHttps {
 		// Get the SSL folder path using GetSSLPath()
@@ -142,13 +119,3 @@ func (s *OvaServer) Run() error {
 	return s.router.Run(s.Addr)
 }
 
-// Helper to extract port from address string like ":8080" or "0.0.0.0:8080"
-func parsePort(addr string) int {
-	parts := strings.Split(addr, ":")
-	portStr := parts[len(parts)-1]
-	port, err := strconv.Atoi(portStr)
-	if err != nil {
-		log.Fatalf("Invalid port in address: %v", addr)
-	}
-	return port
-}

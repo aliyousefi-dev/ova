@@ -13,6 +13,7 @@ import { DiscoverPage } from './pages/discover/discover.page';
 import { DashboardPage } from './pages/dashboard/dashboard.page';
 import { ProfilePage } from './pages/profile/profile.page';
 import { HistoryPage } from './pages/history/history.page';
+import { LatestPage } from './pages/latest/latest.page';
 
 // Custom matcher to catch /library + optional nested folder path
 export function libraryFolderMatcher(
@@ -50,6 +51,10 @@ export const routes: Routes = [
       {
         path: '',
         component: HomePage,
+      },
+      {
+        path: 'latest',
+        component: LatestPage,
       },
       {
         path: 'history',

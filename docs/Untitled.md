@@ -12,3 +12,48 @@ and they are Web Apps that Connect to the API. and Served on the Local host and 
 First i thinking about the Android maybe we can use the Capacitor Http Client Instead of the Angular Http Client.
 
 the SSL folder is inside the .ova-repo 
+
+
+How Get the Latest List of the Videos efficiently ? 
+we need look the upload data 
+
+i want it upload the video at same time and also it add that video to the latest .. 
+ok the latest is an array inside the server ...
+inMemoryLatest
+Latest List
+
+it Fetch from the Database and sort them nad 
+
+but how i can pagination on that 
+do i need a duplicate copy for that ? 
+
+i thinking about a better data structure when load the json data into server 
+to handle this better 
+
+
+Recently Added Videos
+Total Videos. 450
+Page Count Max. 10
+
+is using the boltdb good ? 
+
+
+ok look this 
+VideoID = UploadedAt
+
+ok this
+htis is or boltdb in memory 
+We Need Stages for our database .. Like OnStart , OnShutdown.
+OnStart {
+LoadData from Disk,
+Create Sorted List Cach,
+}
+
+OnChange{
+Update Disk
+Update Sorted List
+}
+
+OnShutdown{
+Done Disk.
+}

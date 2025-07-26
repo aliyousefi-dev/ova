@@ -2,8 +2,8 @@ package interfaces
 
 import "ova-cli/source/internal/datatypes"
 
-// DataStorage defines methods for user and video data operations without context.
-type DataStorage interface {
+// DiskDataStorage defines methods for user and video data operations without context.
+type DiskDataStorage interface {
 
 	// User management
 	CreateUser(user *datatypes.UserData) error
@@ -52,4 +52,7 @@ type DataStorage interface {
 	AddVideoToWatched(username, videoID string) error
 	GetUserWatchedVideos(username string) ([]datatypes.VideoData, error)
 	ClearUserWatchedHistory(username string) error
+
+	// New method to get the latest video (sorted by `uploadedAt` timestamp)
+	// GetLatestVideo() (*datatypes.VideoData, error)
 }

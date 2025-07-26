@@ -9,7 +9,7 @@ import (
 
 // AddVideo adds a new video if it does not already exist.
 func (r *RepoManager) AddVideo(video datatypes.VideoData) error {
-	if !r.IsDataStorageExists() {
+	if !r.IsDataStorageInitialized() {
 		return fmt.Errorf("data storage is not initialized")
 	}
 
@@ -28,69 +28,69 @@ func (r *RepoManager) AddVideo(video datatypes.VideoData) error {
 	}
 
 	// Add video since it does not exist
-	return r.dataStorage.AddVideo(video)
+	return r.diskDataStorage.AddVideo(video)
 }
 
 // DeleteVideoByID removes a video by its ID.
 func (r *RepoManager) DeleteVideoByID(id string) error {
-	if !r.IsDataStorageExists() {
+	if !r.IsDataStorageInitialized() {
 		return fmt.Errorf("data storage is not initialized")
 	}
-	return r.dataStorage.DeleteVideoByID(id)
+	return r.diskDataStorage.DeleteVideoByID(id)
 }
 
 // GetVideoByID returns video data by ID.
 func (r *RepoManager) GetVideoByID(id string) (*datatypes.VideoData, error) {
-	if !r.IsDataStorageExists() {
+	if !r.IsDataStorageInitialized() {
 		return nil, fmt.Errorf("data storage is not initialized")
 	}
-	return r.dataStorage.GetVideoByID(id)
+	return r.diskDataStorage.GetVideoByID(id)
 }
 
 // GetFolderList returns unique folder paths containing videos.
 func (r *RepoManager) GetFolderList() ([]string, error) {
-	if !r.IsDataStorageExists() {
+	if !r.IsDataStorageInitialized() {
 		return nil, fmt.Errorf("data storage is not initialized")
 	}
-	return r.dataStorage.GetFolderList()
+	return r.diskDataStorage.GetFolderList()
 }
 
 // GetAllVideos returns all videos.
 func (r *RepoManager) GetAllVideos() ([]datatypes.VideoData, error) {
-	if !r.IsDataStorageExists() {
+	if !r.IsDataStorageInitialized() {
 		return nil, fmt.Errorf("data storage is not initialized")
 	}
-	return r.dataStorage.GetAllVideos()
+	return r.diskDataStorage.GetAllVideos()
 }
 
 // DeleteAllVideos removes all videos.
 func (r *RepoManager) DeleteAllVideos() error {
-	if !r.IsDataStorageExists() {
+	if !r.IsDataStorageInitialized() {
 		return fmt.Errorf("data storage is not initialized")
 	}
-	return r.dataStorage.DeleteAllVideos()
+	return r.diskDataStorage.DeleteAllVideos()
 }
 
 // GetVideosByFolder returns all videos inside specified folder.
 func (r *RepoManager) GetVideosByFolder(folderPath string) ([]datatypes.VideoData, error) {
-	if !r.IsDataStorageExists() {
+	if !r.IsDataStorageInitialized() {
 		return nil, fmt.Errorf("data storage is not initialized")
 	}
-	return r.dataStorage.GetVideosByFolder(folderPath)
+	return r.diskDataStorage.GetVideosByFolder(folderPath)
 }
 
 // UpdateVideoLocalPath updates the file path of a video by its ID.
 func (r *RepoManager) UpdateVideoLocalPath(videoID, newPath string) error {
-	if !r.IsDataStorageExists() {
+	if !r.IsDataStorageInitialized() {
 		return fmt.Errorf("data storage is not initialized")
 	}
-	return r.dataStorage.UpdateVideoLocalPath(videoID, newPath)
+	return r.diskDataStorage.UpdateVideoLocalPath(videoID, newPath)
 }
 
 // GetTotalVideoCount returns total number of videos.
 func (r *RepoManager) GetTotalVideoCount() (int, error) {
-	if !r.IsDataStorageExists() {
+	if !r.IsDataStorageInitialized() {
 		return 0, fmt.Errorf("data storage is not initialized")
 	}
-	return r.dataStorage.GetTotalVideoCount()
+	return r.diskDataStorage.GetTotalVideoCount()
 }

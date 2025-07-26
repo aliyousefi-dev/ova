@@ -1,9 +1,9 @@
+//video.go
 package api
 
 import (
 	"net/http"
 	"path/filepath"
-	"strconv"
 	"strings"
 
 	"ova-cli/source/internal/datatypes"
@@ -11,17 +11,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-
-func parseQueryInt(c *gin.Context, name string, defaultVal int) int {
-	valStr := c.Query(name)
-	if valStr == "" {
-		return defaultVal
-	}
-	if val, err := strconv.Atoi(valStr); err == nil && val > 0 {
-		return val
-	}
-	return defaultVal
-}
 
 // RegisterVideoRoutes adds video-related endpoints including folder listing.
 func RegisterVideoRoutes(rg *gin.RouterGroup, repoMgr *repo.RepoManager) {

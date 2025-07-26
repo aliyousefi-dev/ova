@@ -1,0 +1,12 @@
+@baseUrl = http://localhost:443
+@session_id = c711210f-8073-482e-a734-34e9a8ee9794
+@start = 195
+@end = 205
+
+
+###
+
+# Get the latest videos in the specified range
+GET {{baseUrl}}/api/v1/videos/latest?start={{start}}&end={{end}}
+Accept: application/json
+Cookie: session_id={{session_id}}

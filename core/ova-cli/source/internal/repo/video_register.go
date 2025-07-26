@@ -10,7 +10,7 @@ import (
 
 // RegisterVideoWithAbsolutePath handles hashing, thumbnail/preview generation, and metadata storage.
 func (r *RepoManager) RegisterVideoWithAbsolutePath(absolutePath string) (datatypes.VideoData, error) {
-	if !r.IsDataStorageExists() {
+	if !r.IsDataStorageInitialized() {
 		return datatypes.VideoData{}, fmt.Errorf("data storage is not initialized")
 	}
 
@@ -75,7 +75,7 @@ func (r *RepoManager) RegisterVideoWithAbsolutePath(absolutePath string) (dataty
 	videoData.FilePath = relativePath   // Use the relative path here
 
 	// 8. Store metadata
-	if err := r.dataStorage.AddVideo(videoData); err != nil {
+	if err := r.diskDataStorage.AddVideo(videoData); err != nil {
 		return datatypes.VideoData{}, fmt.Errorf("failed to save video metadata: %w", err)
 	}
 
@@ -84,7 +84,7 @@ func (r *RepoManager) RegisterVideoWithAbsolutePath(absolutePath string) (dataty
 
 // UnregisterVideo removes a video and its related files and metadata.
 func (r *RepoManager) UnregisterVideo(videoPath string) error {
-	if !r.IsDataStorageExists() {
+	if !r.IsDataStorageInitialized() {
 		return fmt.Errorf("data storage is not initialized")
 	}
 
@@ -122,7 +122,7 @@ func (r *RepoManager) UnregisterVideo(videoPath string) error {
 	// }
 
 	// 4. Remove metadata from storage
-	if err := r.dataStorage.DeleteVideoByID(videoID); err != nil {
+	if err := r.diskDataStorage.DeleteVideoByID(videoID); err != nil {
 		return fmt.Errorf("failed to remove video metadata: %w", err)
 	}
 

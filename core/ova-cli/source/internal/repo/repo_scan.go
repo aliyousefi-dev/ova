@@ -158,7 +158,7 @@ func (r *RepoManager) GetVideoCountOnDisk() (int, error) {
 
 // GetUnindexedVideos scans the disk for video files and returns the absolute paths of unindexed videos.
 func (r *RepoManager) GetUnindexedVideos() ([]string, error) {
-	if !r.IsDataStorageExists() {
+	if !r.IsDataStorageInitialized() {
 		return nil, fmt.Errorf("data storage is not initialized")
 	}
 

@@ -54,4 +54,4 @@ func (b *BoltDB) Close() error {
 	return b.db.Close()
 }
 
-var _ interfaces.DataStorage = (*BoltDB)(nil)
+var _ interfaces.DiskDataStorage = (*BoltDB)(nil)

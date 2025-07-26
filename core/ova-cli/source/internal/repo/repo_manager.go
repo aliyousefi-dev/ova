@@ -11,7 +11,8 @@ import (
 type RepoManager struct {
 	rootDir     string
 	configs     datatypes.Config
-	dataStorage interfaces.DataStorage
+	diskDataStorage interfaces.DiskDataStorage
+	memoryDataStorage interfaces.MemoryDataStorage
 }
 
 // NewRepoManager creates a new instance of RepoManager and initializes data storage.
@@ -24,6 +25,9 @@ func NewRepoManager(rootDir string) (*RepoManager, error) {
 	if err := r.InitDataStorage(); err != nil {
 		return nil, fmt.Errorf("failed to initialize repository: %w", err)
 	}
+
+	// Fire initialization event
+	r.OnInit()
 
 	return r, nil
 }
@@ -45,11 +49,16 @@ func (r *RepoManager) InitDataStorage() error {
 	storageType := r.configs.DataStorageType
 	storagePath := r.GetStoragePath()
 
-	storage, err := datastorage.NewStorage(storageType, storagePath)
+	var err error
+	r.diskDataStorage, err = datastorage.NewDiskStorage(storageType, storagePath)
 	if err != nil {
 		return fmt.Errorf("failed to initialize data storage (%s): %w", storageType, err)
 	}
 
-	r.dataStorage = storage
+	r.memoryDataStorage, err = datastorage.NewMemoryStorage()
+	if err != nil {
+		return fmt.Errorf("failed to initialize memory storage: %w", err)
+	}
+
 	return nil
 }

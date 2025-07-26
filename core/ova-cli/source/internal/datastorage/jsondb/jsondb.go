@@ -14,4 +14,4 @@ func NewJsonDB(storageDir string) *JsonDB {
 	return &JsonDB{storageDir: storageDir}
 }
 
-var _ interfaces.DataStorage = (*JsonDB)(nil)
+var _ interfaces.DiskDataStorage = (*JsonDB)(nil)

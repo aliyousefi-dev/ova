@@ -36,7 +36,7 @@
     (click)="$event.stopPropagation()">
     <div class="flex items-start justify-between">
       <div class="flex-1">
-        <h2 class="font-semibold line-clamp-2 leading-snug">
+        <h2 class="font-semibold break-all">
           {{ video.title }}
         </h2>
         <p class="text-xs /60 mt-1">
@@ -46,10 +46,7 @@
 
       <div class="dropdown dropdown-end" (click)="$event.stopPropagation()">
         <div tabindex="0" role="button" class="btn btn-xs btn-ghost z-30">
-          <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" class="h-4 w-4" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12h.01M12 12h.01M18 12h.01" />
-          </svg>
+          <i class='bx bx-dots-horizontal bx-xs'></i>
         </div>
         <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-44 z-40">
           <li><a (click)="download($event)">Download</a></li>
