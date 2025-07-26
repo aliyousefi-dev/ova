@@ -1,0 +1,36 @@
+<header class="h-14 bg-base-300 flex items-center px-4 md:px-8 gap-6 border-b border-base-100">
+  <div class="font-semibold text-lg flex-shrink-0">
+    {{ pageTitle || "Home" }}
+  </div>
+
+  <div class="flex-grow"></div>
+
+  <div class="flex items-center gap-5 flex-shrink-0 ml-6">
+    <button class="btn btn-ghost btn-circle" title="inbox">
+      <i class="bx bx-envelope bx-sm"></i>
+    </button>
+
+    <button class="btn btn-ghost btn-circle" title="Settings" (click)="openSettingsModal()" aria-label="Settings">
+      <i class="bx bx-cog bx-sm"></i>
+    </button>
+
+    <div class="dropdown dropdown-bottom dropdown-end" [ngClass]="{ 'dropdown-open': dropdownOpen }">
+      <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar dropdown-anchor" (click)="toggleDropdown()"
+        (blur)="closeDropdown()" aria-label="User menu">
+        <div class="w-10 h-10 rounded-full bg-base-100 font-semibold text-lg flex items-center justify-center">
+          <span class="leading-[2.5rem]">{{ userInitial }}</span>
+        </div>
+      </div>
+      <ul class="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 w-52 p-3 shadow">
+        <li><a routerLink="/profile">Profile</a></li>
+        <li>
+          <button (click)="onLogout()" class="text-left w-full">
+            Logout
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<app-settings-modal [showModal]="showSettingsModal" (close)="closeSettingsModal()"></app-settings-modal>

@@ -1,46 +1,56 @@
 <aside class="hidden md:flex md:flex-col w-64 h-full p-6 bg-base-100 border-r border-base-300">
-  <!-- Top: Logo / Title -->
-  <div class="text-2xl mb-6 select-none">ARCHIVE</div>
+  <!-- Top: Logo / Title with toggle button -->
+  <div class="flex justify-between items-center">
+    <div class="text-xl select-none">OVA</div>
+    <!-- Toggle Sidebar Button -->
+    <button class="btn btn-ghost btn-circle p-2" title="Toggle Sidebar">
+      <i class="bx bx-dock-left bx-sm"></i> <!-- Menu Icon -->
+    </button>
+  </div>
+
+  <div class="divider"></div>
 
   <!-- Navigation -->
   <div class="flex flex-col gap-2 flex-grow">
 
     <a routerLink="/discover" routerLinkActive="btn-active"
-      class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center">
-      <i class="bx bx-search text-xl"></i> Search
+      class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center  ">
+      <i class="bx bx-search bx-xs "></i> Search
     </a>
 
     <a routerLink="/" routerLinkActive="btn-active" [routerLinkActiveOptions]="{ exact: true }"
       class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center">
-      <i class="bx bx-home text-xl"></i> Home
+      <i class="bx bx-home bx-xs"></i> Home
     </a>
     <a routerLink="/latest" routerLinkActive="btn-active" [routerLinkActiveOptions]="{ exact: true }"
       class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center">
-      <i class='bx  bx-play-circle  text-xl'></i> Latest
+      <i class='bx  bx-play-circle  bx-xs'></i> Latest
     </a>
     <a routerLink="/library" routerLinkActive="btn-active"
       class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center">
-      <i class="bx bx-folder text-xl"></i> Library
+      <i class="bx bx-folder bx-xs"></i> Library
     </a>
 
+    <!-- Divider line -->
+    <div class="divider"></div>
 
     <!-- ADDITIONAL NAVIGATION LINKS -->
-    <div class="mt-4">
-      <p class="text-xs mb-5">
+    <div class="">
+      <p class="text-lg font-semibold mb-5 uppercase tracking-wide">
         Private
       </p>
       <div class="flex flex-col gap-1">
         <a routerLink="/saved" routerLinkActive="btn-active"
           class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center">
-          <i class="bx bx-bookmark text-xl"></i> Saved
+          <i class="bx bx-bookmark bx-xs"></i> Saved
         </a>
         <a routerLink="/history" routerLinkActive="btn-active"
           class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center">
-          <i class="bx bx-history text-xl"></i> History
+          <i class="bx bx-history bx-xs"></i> History
         </a>
         <a routerLink="/playlists" routerLinkActive="btn-active"
           class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center">
-          <i class="bx bx-list-ul text-xl"></i> Playlists
+          <i class="bx bx-list-ul bx-xs"></i> Playlists
         </a>
       </div>
     </div>
@@ -49,7 +59,11 @@
   </div>
 
   <!-- Bottom: Dashboard + Version -->
-  <div class="mt-6 border-t border-base-200 pt-4">
+  <div>
+    <a routerLink="/dashboard" routerLinkActive="btn-active"
+      class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center mb-4">
+      <i class="bx bx-grid-alt text-xl"></i> Settings
+    </a>
     <a routerLink="/dashboard" routerLinkActive="btn-active"
       class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center mb-4">
       <i class="bx bx-grid-alt text-xl"></i> Admin Dashboard

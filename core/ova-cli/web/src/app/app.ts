@@ -10,11 +10,19 @@ import {
 import { LoadingService } from './services/loading.service';
 import { LoadingSpinnerComponent } from './components/common/spinner-loading/spinner-loading.component';
 import { CommonModule } from '@angular/common';
+import { DesktopSidebarComponent } from './components/common/desktop-sidebar/desktop-sidebar.component';
+import { TopNavbarComponent } from './components/common/top-navbar/top-navbar.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, LoadingSpinnerComponent, CommonModule],
+  imports: [
+    RouterOutlet,
+    LoadingSpinnerComponent,
+    CommonModule,
+    DesktopSidebarComponent,
+    TopNavbarComponent,
+  ],
   templateUrl: './app.html',
 })
 export class App implements OnInit {
@@ -22,6 +30,8 @@ export class App implements OnInit {
   private loadingService = inject(LoadingService);
 
   loading$ = this.loadingService.loading$;
+  isLoginRoute: boolean = false;
+  isNotFoundRoute: boolean = false;
 
   protected title = 'frontend';
 
@@ -40,6 +50,19 @@ export class App implements OnInit {
         event instanceof NavigationError
       ) {
         this.loadingService.hide();
+      }
+
+      // Check if the current route is /login
+      this.isLoginRoute = this.router.url === '/login';
+
+      // Check if the current route is NotFoundPage (wildcard route)
+      if (
+        event instanceof NavigationError ||
+        event instanceof NavigationCancel
+      ) {
+        this.isNotFoundRoute = true; // Set the flag for 404 when error occurs
+      } else {
+        this.isNotFoundRoute = false; // Reset if valid route
       }
     });
   }

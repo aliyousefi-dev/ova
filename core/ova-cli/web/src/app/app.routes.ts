@@ -15,84 +15,61 @@ import { ProfilePage } from './pages/profile/profile.page';
 import { HistoryPage } from './pages/history/history.page';
 import { LatestPage } from './pages/latest/latest.page';
 
-// Custom matcher to catch /library + optional nested folder path
-export function libraryFolderMatcher(
-  segments: UrlSegment[]
-): UrlMatchResult | null {
-  if (segments.length === 0) {
-    return null;
-  }
-  if (segments[0].path !== 'library') {
-    return null;
-  }
-
-  const folderPath =
-    segments.length > 1
-      ? segments
-          .slice(1)
-          .map((s) => s.path)
-          .join('/')
-      : '';
-
-  return {
-    consumed: segments,
-    posParams: {
-      folderPath: new UrlSegment(folderPath, {}),
-    },
-  };
-}
-
 export const routes: Routes = [
   {
     path: '',
-    component: NavBarComponent,
+    component: HomePage,
     canActivate: [AuthGuard],
-    children: [
-      {
-        path: '',
-        component: HomePage,
-      },
-      {
-        path: 'latest',
-        component: LatestPage,
-      },
-      {
-        path: 'history',
-        component: HistoryPage,
-      },
-      {
-        matcher: libraryFolderMatcher,
-        component: LibraryPage,
-      },
-      {
-        path: 'watch/:videoId',
-        component: WatchPage,
-      },
-      {
-        path: 'dashboard',
-        component: DashboardPage,
-      },
-      {
-        path: 'profile',
-        component: ProfilePage,
-      },
-      {
-        path: 'saved',
-        component: SavedPage,
-      },
-      {
-        path: 'discover',
-        component: DiscoverPage,
-      },
-      {
-        path: 'playlists',
-        component: PlaylistsPage,
-      },
-      {
-        path: 'playlists/:title',
-        component: PlaylistDetailPage,
-      },
-    ],
+  },
+  {
+    path: 'latest',
+    component: LatestPage,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'history',
+    component: HistoryPage,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'library',
+    component: LibraryPage,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'watch/:videoId',
+    component: WatchPage,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'dashboard',
+    component: DashboardPage,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'profile',
+    component: ProfilePage,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'saved',
+    component: SavedPage,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'discover',
+    component: DiscoverPage,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'playlists',
+    component: PlaylistsPage,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'playlists/:title',
+    component: PlaylistDetailPage,
+    canActivate: [AuthGuard],
   },
 
   // Public routes outside the layout shell

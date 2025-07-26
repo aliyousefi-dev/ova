@@ -1,5 +1,31 @@
 <app-loading-spinner *ngIf="loading$ | async"></app-loading-spinner>
 
-<div>
-  <router-outlet />
+<div *ngIf="!isLoginRoute && !isNotFoundRoute" class="flex h-screen">
+  <!-- Sidebar on the left, fixed height, full screen (visible only on large screens and up) -->
+  <app-desktop-sidebar
+    class="w-64 bg-base-100 flex flex-col justify-between h-screen fixed top-0 left-0 z-10 lg:block hidden"
+    [title]="title">
+  </app-desktop-sidebar>
+
+  <!-- Main content container (flex column) -->
+  <div class="flex-1 flex flex-col lg:ml-64">
+
+    <!-- Top Navbar -->
+    <app-top-navbar [pageTitle]="'My Page Title'"></app-top-navbar>
+
+    <!-- Main content area -->
+    <div class="p-4 overflow-y-auto flex-1 bg-base-200">
+      <router-outlet></router-outlet> <!-- Routed content will appear here -->
+    </div>
+  </div>
+</div>
+
+<!-- Show content for login route only -->
+<div *ngIf="isLoginRoute">
+  <router-outlet></router-outlet> <!-- Routed content for login page will appear here -->
+</div>
+
+<!-- Show content for NotFoundPage (404) route -->
+<div *ngIf="isNotFoundRoute">
+  <router-outlet></router-outlet> <!-- Routed content for 404 page will appear here -->
 </div>

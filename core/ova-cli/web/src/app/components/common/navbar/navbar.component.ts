@@ -25,10 +25,9 @@ export class NavBarComponent implements OnInit {
   @Input() title = ''; // sidebar title
 
   username = '';
-  showSettingsModal = false; // Changed from isSettingsModalOpen to showSettingsModal
+  showSettingsModal = false;
   dropdownOpen = false;
 
-  // This will hold the dynamic page title like 'Discover', 'Library', etc.
   pageTitle: string = '';
 
   constructor(private authapi: AuthApiService, private router: Router) {}
@@ -36,7 +35,6 @@ export class NavBarComponent implements OnInit {
   ngOnInit(): void {
     this.username = localStorage.getItem('username') || 'Guest';
 
-    // Listen for route changes to update pageTitle
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event) => {
@@ -58,17 +56,16 @@ export class NavBarComponent implements OnInit {
     return ''; // fallback blank if unknown
   }
 
-  get userInitial(): string {
-    return this.username ? this.username.charAt(0).toUpperCase() : '?';
-  }
+  // userInitial is now moved to TopNavbarComponent as it's purely display logic
+  // and operates on an @Input() username.
 
   openSettingsModal(): void {
-    this.showSettingsModal = true; // Updated property name
-    this.dropdownOpen = false; // close dropdown if open
+    this.showSettingsModal = true;
+    this.dropdownOpen = false;
   }
 
   closeSettingsModal(): void {
-    this.showSettingsModal = false; // Updated property name
+    this.showSettingsModal = false;
     this.username = localStorage.getItem('username') || 'Guest';
   }
 
@@ -87,6 +84,7 @@ export class NavBarComponent implements OnInit {
         this.router.navigate(['/login']);
       },
       error: () => {
+        // Handle error, maybe show a message, but still navigate to login
         this.router.navigate(['/login']);
       },
     });
