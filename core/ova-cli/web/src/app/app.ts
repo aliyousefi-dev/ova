@@ -12,6 +12,7 @@ import { LoadingSpinnerComponent } from './components/common/spinner-loading/spi
 import { CommonModule } from '@angular/common';
 import { DesktopSidebarComponent } from './components/common/desktop-sidebar/desktop-sidebar.component';
 import { TopNavbarComponent } from './components/common/top-navbar/top-navbar.component';
+import { MobileDockComponent } from './components/common/mobile-dock/mobile-dock.component';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ import { TopNavbarComponent } from './components/common/top-navbar/top-navbar.co
     CommonModule,
     DesktopSidebarComponent,
     TopNavbarComponent,
+    MobileDockComponent,
   ],
   templateUrl: './app.html',
 })

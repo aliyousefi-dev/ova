@@ -1,4 +1,5 @@
 <app-loading-spinner *ngIf="loading$ | async"></app-loading-spinner>
+<app-mobile-dock></app-mobile-dock>
 
 <div *ngIf="!isLoginRoute && !isNotFoundRoute" class="flex h-screen">
   <!-- Sidebar on the left, fixed height, full screen (visible only on large screens and up) -->
@@ -17,8 +18,12 @@
     <div class="p-4 overflow-y-auto flex-1 bg-base-200">
       <router-outlet></router-outlet> <!-- Routed content will appear here -->
     </div>
+
+
   </div>
 </div>
+
+
 
 <!-- Show content for login route only -->
 <div *ngIf="isLoginRoute">
