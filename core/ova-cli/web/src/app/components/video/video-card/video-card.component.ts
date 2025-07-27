@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PlaylistModalComponent } from '../../playlist/playlist-modal/playlist-modal.component';
-// Removed PlaylistAPIService as it's no longer directly used for playlist management here
+
 import { VideoApiService } from '../../../services/api/video-api.service';
 import { SavedApiService } from '../../../services/api/saved-api.service';
 import { VideoData } from '../../../data-types/video-data';
@@ -172,5 +172,12 @@ export class VideoCardComponent implements OnChanges {
 
   navigateToWatch(): void {
     this.router.navigate(['/watch', this.video.videoId]);
+  }
+
+  truncateTitle(title: string, maxLength: number = 20): string {
+    if (title.length > maxLength) {
+      return title.substring(0, maxLength) + '...';
+    }
+    return title;
   }
 }

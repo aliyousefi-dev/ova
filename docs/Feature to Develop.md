@@ -6,5 +6,6 @@
 - (UI/Cli) **Support VR Videos:** Native support for VR video playback.
 - (UI/Cli) **Trim Download:** Allow users to download trimmed segments of videos.
 - (UI/Cli) **Top Rated:** Show or filter videos by top ratings.
-- History: 
-- Rule Access
+- Rule Based Access 
+- (UI/Cli) Team Workspace
+- (UI/Cli) Search Suggestions 
