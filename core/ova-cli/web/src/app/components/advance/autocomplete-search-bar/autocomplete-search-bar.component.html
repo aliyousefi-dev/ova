@@ -1,0 +1,28 @@
+<div class="flex items-center justify-center m-5 my-10 relative">
+    <label class="input flex items-center gap-2 max-w-md w-full">
+        <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+            </g>
+        </svg>
+        <input type="text" [placeholder]="placeholder" [(ngModel)]="currentValue" (input)="onInputChange()"
+            (focus)="showSuggestions = true" (blur)="hideSuggestions()" (keydown.arrowdown)="onArrowDown()"
+            (keydown.arrowup)="onArrowUp()" (keydown.enter)="onEnter()"
+            class="grow h-10 leading-10 pt-0 pb-0 px-4 text-left" />
+    </label>
+
+    <ul *ngIf="showSuggestions && filteredSuggestions.length > 0"
+        class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-full max-w-md bg-base-100 border border-base-content/20 rounded-lg shadow-lg z-500 p-0 overflow-hidden">
+        <li *ngFor="let suggestion of filteredSuggestions; let i = index"
+            class="px-4 py-2 cursor-pointer hover:bg-base-200" [class.bg-base-300]="i === activeSuggestionIndex"
+            (mousedown)="selectSuggestion(suggestion)">
+            {{ suggestion }}
+        </li>
+    </ul>
+
+    <p *ngIf="loading" class="absolute top-full left-1/2 -translate-x-1/2 mt-2 text-sm text-gray-500">Loading
+        suggestions...</p>
+    <p *ngIf="showSuggestions && !loading && currentValue && filteredSuggestions.length === 0"
+        class="absolute top-full left-1/2 -translate-x-1/2 mt-2 text-sm text-gray-500">No suggestions found.</p>
+</div>

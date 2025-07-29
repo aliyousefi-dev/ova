@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { WatchedApiService } from '../../services/api/watched-api.service';
 import { VideoData } from '../../data-types/video-data';
 import { VideoGridComponent } from '../../components/video/video-grid/video-grid.component';
-import { SearchBarComponent } from '../../components/advance/search-bar/search-bar';
+import { SearchBarComponent } from '../../components/advance/search-bar/search-bar.component';
 
 @Component({
   selector: 'app-history-page',

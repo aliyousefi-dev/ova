@@ -12,14 +12,19 @@ import {
 } from 'rxjs';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 
-import { SearchBarComponent } from '../../components/advance/search-bar/search-bar';
+import { AutoCompleteSearchBarComponent } from '../../components/advance/autocomplete-search-bar/autocomplete-search-bar.component';
 import { VideoGridComponent } from '../../components/video/video-grid/video-grid.component';
 import { SearchApiService } from '../../services/api/search-api.service';
 
 @Component({
   selector: 'app-explore',
   standalone: true,
-  imports: [CommonModule, FormsModule, SearchBarComponent, VideoGridComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    AutoCompleteSearchBarComponent,
+    VideoGridComponent,
+  ],
   templateUrl: './discover.page.html',
 })
 export class DiscoverPage implements OnInit, OnDestroy {
@@ -40,7 +45,9 @@ export class DiscoverPage implements OnInit, OnDestroy {
 
   totalCount: number = 0;
 
-  private searchSubscription!: Subscription;
+  // Change this subscription to listen to the URL query params for the main search
+  // and remove the direct API call in ngOnInit to avoid double-fetching.
+  private queryParamsSubscription!: Subscription;
 
   constructor(
     private searchapi: SearchApiService,
@@ -49,9 +56,9 @@ export class DiscoverPage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.searchSubscription = this.route.queryParams
+    this.queryParamsSubscription = this.route.queryParams
       .pipe(
-        debounceTime(100),
+        debounceTime(100), // Small debounce for URL changes
         map((params: Params) => {
           // Update component state first from URL params
           this.searchTerm = params['q'] || '';
@@ -74,6 +81,7 @@ export class DiscoverPage implements OnInit, OnDestroy {
         distinctUntilChanged(
           (prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)
         ),
+        // Trigger the actual API search here based on URL query params
         switchMap((apiSearchState) => {
           const { q, tagsOnly, adv } = apiSearchState;
 
@@ -117,6 +125,7 @@ export class DiscoverPage implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.videos = response?.data.results || [];
+          this.totalCount = response?.data.totalCount || 0;
           this.loading = false;
         },
         error: (err) => {
@@ -142,7 +151,6 @@ export class DiscoverPage implements OnInit, OnDestroy {
     queryParams['res'] = this.resolutionFilter || null;
     queryParams['dur'] = this.durationFilter || null;
 
-    // FIX: If uploadFrom or uploadTo are empty strings (cleared), set to null to remove from URL
     queryParams['from'] = this.uploadFrom || null;
     queryParams['to'] = this.uploadTo || null;
 
@@ -156,10 +164,20 @@ export class DiscoverPage implements OnInit, OnDestroy {
     });
   }
 
-  onSearchTermChange(term: string) {
-    this.searchTerm = term;
-    this.currentPage = 1;
-    this.updateUrlParams();
+  // This method is now triggered by the autocomplete component's searchSubmitted output
+  // or by the manual "Search" button click.
+  onSearchSubmitted(term: string) {
+    this.searchTerm = term; // Update the local searchTerm property
+    this.currentPage = 1; // Always reset to the first page for a new search
+    this.updateUrlParams(); // Trigger URL update, which then triggers the main search via queryParamsSubscription
+  }
+
+  // This method is called when a suggestion is selected (clicked or Enter on highlighted)
+  onSuggestionSelected(suggestion: string): void {
+    // When a suggestion is selected, the autocomplete component also emits searchSubmitted,
+    // so this method is mostly for logging or any *additional* logic specific to suggestion selection.
+    // The main search will be handled by onSearchSubmitted.
+    console.log('Suggestion selected in DiscoverPage:', suggestion);
   }
 
   onTagSearchToggle() {
@@ -305,8 +323,8 @@ export class DiscoverPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.searchSubscription) {
-      this.searchSubscription.unsubscribe();
+    if (this.queryParamsSubscription) {
+      this.queryParamsSubscription.unsubscribe();
     }
   }
 }

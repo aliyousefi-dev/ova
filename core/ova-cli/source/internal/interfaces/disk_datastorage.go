@@ -53,6 +53,5 @@ type DiskDataStorage interface {
 	GetUserWatchedVideos(username string) ([]datatypes.VideoData, error)
 	ClearUserWatchedHistory(username string) error
 
-	// New method to get the latest video (sorted by `uploadedAt` timestamp)
-	// GetLatestVideo() (*datatypes.VideoData, error)
+	GetSearchSuggestions(query string) ([]string, error)
 }

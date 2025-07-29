@@ -9,3 +9,4 @@
 - Rule Based Access 
 - (UI/Cli) Team Workspace
 - (UI/Cli) Search Suggestions 
+- (UI/Cli) Gallery View - no title - Infinite Scrolll

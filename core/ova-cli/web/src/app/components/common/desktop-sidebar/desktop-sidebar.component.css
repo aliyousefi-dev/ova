@@ -1,0 +1,83 @@
+/* ... (existing CSS rules) ... */
+
+/* Set up the transition for the sidebar */
+aside {
+  transition: width 0.3s ease;
+  width: 16rem; /* Default width */
+  overflow: hidden;
+}
+
+aside.collapsed {
+  width: 5rem; /* Collapsed width */
+}
+
+/* Hide text content within navigation links when collapsed */
+aside.collapsed .btn-ghost span {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease, width 0.3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* Adjust the layout of navigation buttons when collapsed to center icons */
+aside.collapsed .btn-ghost {
+  justify-content: center !important; /* Center icons */
+  padding-left: 0.5rem; /* Adjust padding if needed for centering */
+  padding-right: 0.5rem; /* Adjust padding if needed for centering */
+}
+
+/* Specific elements to hide completely or adjust when collapsed */
+aside.collapsed .text-xl, /* Hide OVA title */
+aside.collapsed .divider, /* Hide dividers */
+aside.collapsed .uppercase, /* Hide "Private" heading */
+aside.collapsed .text-center /* Hide version text */ {
+  opacity: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease, height 0.3s ease;
+  pointer-events: none;
+}
+
+/* Ensure the wrapper for "Private" navigation disappears as well */
+aside.collapsed .gap-1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center icons if needed */
+}
+
+aside.collapsed .mb-5 {
+  margin-bottom: 0 !important;
+}
+
+/* Adjust the top section when collapsed */
+aside.collapsed .flex.justify-between.items-center {
+  justify-content: center; /* Center the toggle button */
+}
+
+aside.collapsed .flex.justify-between.items-center .btn-circle {
+  margin: 0; /* Remove any default margins that might push it */
+}
+
+/* NEW RULES FOR ACTIVE STATE IN COLLAPSED SIDEBAR */
+aside.collapsed .btn-active {
+  /* Ensure it takes full width of the collapsed sidebar */
+  width: 100%; /* Make the button fill the available width */
+  border-radius: 0; /* Remove border-radius if you want a sharp edge */
+  justify-content: center !important; /* Re-center icon within the now full-width button */
+  /* Add padding as needed to match the visual padding in the screenshot */
+  padding-left: 0; /* Remove default left padding */
+  padding-right: 0; /* Remove default right padding */
+  padding-top: 0.75rem; /* Adjust vertical padding */
+  padding-bottom: 0.75rem; /* Adjust vertical padding */
+}
+
+/* You might need to override Tailwind's default padding on btn-active if it's causing issues */
+/* Example if your btn-active has default horizontal padding: */
+aside.collapsed .btn-active.btn-sm {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}

@@ -1,0 +1,38 @@
+@baseUrl = http://localhost:443
+@session_id = df67aab7-e60e-4caf-834a-16746aa43a6a
+
+###
+
+# POST /search-suggestions with a valid query
+POST {{baseUrl}}/api/v1/search-suggestions
+Content-Type: application/json
+Accept: application/json
+Cookie: session_id={{session_id}}
+
+{
+  "query": "test"
+}
+
+###
+
+# POST /search-suggestions with an empty query (should fail)
+POST {{baseUrl}}/api/v1/search-suggestions
+Content-Type: application/json
+Accept: application/json
+Cookie: session_id={{session_id}}
+
+{
+  "query": ""
+}
+
+###
+
+# POST /search-suggestions with malformed JSON (should fail)
+POST {{baseUrl}}/api/v1/search-suggestions
+Content-Type: application/json
+Accept: application/json
+Cookie: session_id={{session_id}}
+
+{
+  "query": 12345
+}

@@ -33,6 +33,7 @@ Ideal for efficiently hosting online video libraries.`,
 
 	// version command
 	cmd.InitCommandVersion(rootCmd)
+	cmd.InitCommandDebug(rootCmd)
 
 	rootCmd.Execute()
 	// Initialize the root command and add subcommands

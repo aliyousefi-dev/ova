@@ -13,6 +13,11 @@ export interface SearchResponse {
   totalCount: number;
 }
 
+export interface SearchSuggestionsResponse {
+  query: string;
+  suggestions: string[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -28,6 +33,17 @@ export class SearchApiService {
   }): Observable<ApiResponse<SearchResponse>> {
     return this.http.post<ApiResponse<SearchResponse>>(
       `${this.baseUrl}/search`,
+      params
+    );
+  }
+
+  getSearchSuggestions(
+    query: string
+  ): Observable<ApiResponse<SearchSuggestionsResponse>> {
+    const params = { query }; // The query parameter to send in the request body
+
+    return this.http.post<ApiResponse<SearchSuggestionsResponse>>(
+      `${this.baseUrl}/search-suggestions`,
       params
     );
   }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { SearchBarComponent } from '../../components/advance/search-bar/search-bar';
+import { SearchBarComponent } from '../../components/advance/search-bar/search-bar.component';
 import { VideoGridComponent } from '../../components/video/video-grid/video-grid.component';
 import { VideoApiService } from '../../services/api/video-api.service';
 import { SavedApiService } from '../../services/api/saved-api.service';

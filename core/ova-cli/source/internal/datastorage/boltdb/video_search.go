@@ -195,3 +195,34 @@ func abs(n int) int {
 	}
 	return n
 }
+
+// GetSearchSuggestions returns a list of video titles that partially match the search query.
+func (b *BoltDB) GetSearchSuggestions(query string) ([]string, error) {
+	// Lock the BoltDB to ensure thread-safety (if necessary in your DB implementation)
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	// Use the existing GetAllVideos method to load the video data
+	videos, err := b.GetAllVideos()
+	if err != nil {
+		return nil, fmt.Errorf("failed to load videos: %w", err)
+	}
+
+	// Trim and prepare the query
+	query = strings.TrimSpace(query)
+	if query == "" {
+		return nil, fmt.Errorf("search query cannot be empty")
+	}
+
+	var suggestions []string
+
+	// Iterate over the videos and check if the title contains the query (case-insensitive)
+	for _, video := range videos {
+		if strings.Contains(strings.ToLower(video.Title), strings.ToLower(query)) {
+			suggestions = append(suggestions, video.Title)
+		}
+	}
+
+	// Return the suggestions (or an empty list if no matches)
+	return suggestions, nil
+}

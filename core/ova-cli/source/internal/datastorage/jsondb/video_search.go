@@ -209,3 +209,41 @@ func abs(n int) int {
 	}
 	return n
 }
+
+
+// GetSearchSuggestions returns a list of video titles that partially match the search query.
+func (s *JsonDB) GetSearchSuggestions(query string) ([]string, error) {
+	// Lock the JSONDB to ensure thread-safety
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	// Load videos directly here instead of calling GetAllVideos
+	videosMap, err := s.loadVideos()
+	if err != nil {
+		return nil, fmt.Errorf("failed to load videos: %w", err)
+	}
+
+	// Convert map to slice
+	videos := make([]datatypes.VideoData, 0, len(videosMap))
+	for _, video := range videosMap {
+		videos = append(videos, video)
+	}
+
+	// Trim and prepare the query
+	query = strings.TrimSpace(query)
+	if query == "" {
+		return nil, fmt.Errorf("search query cannot be empty")
+	}
+
+	var suggestions []string
+
+	// Iterate over the videos and check if the title contains the query (case-insensitive)
+	for _, video := range videos {
+		if strings.Contains(strings.ToLower(video.Title), strings.ToLower(query)) {
+			suggestions = append(suggestions, video.Title)
+		}
+	}
+
+	// Return the suggestions (or an empty list if no matches)
+	return suggestions, nil
+}

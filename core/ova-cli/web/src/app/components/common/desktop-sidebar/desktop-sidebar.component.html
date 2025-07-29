@@ -1,72 +1,111 @@
-<aside class="hidden md:flex md:flex-col w-64 h-full p-6 bg-base-100 border-r border-base-300">
+<aside class="md:flex md:flex-col h-full p-6 bg-base-100 border-r border-base-300
+              transition-all duration-300 ease-in-out" [class.w-64]="sidebarOpen" [class.w-16]="!sidebarOpen"
+  [class.overflow-hidden]="!sidebarOpen">
 
-
-  <!-- Top: Logo / Title with toggle button -->
-  <div class="flex justify-between items-center">
-    <div class="text-xl select-none">OVA</div>
-    <!-- Toggle Sidebar Button -->
-    <button class="btn btn-ghost btn-circle p-2" title="Toggle Sidebar">
-      <i class="bx bx-dock-left bx-sm"></i> <!-- Menu Icon -->
+  <div class="flex items-center" [class.justify-between]="sidebarOpen" [class.justify-center]="!sidebarOpen">
+    <div class="text-xl select-none transition-opacity duration-300" [class.opacity-100]="sidebarOpen"
+      [class.opacity-0]="!sidebarOpen" [class.hidden]="!sidebarOpen">Z-Drive</div>
+    <button class="btn btn-ghost btn-circle p-2 transition-all duration-300" title="Toggle Sidebar"
+      (click)="toggleSidebar()" [class.ml-auto]="sidebarOpen" [class.mx-auto]="!sidebarOpen"> <i class="bx"
+        [class.bx-dock-left]="sidebarOpen" [class.bx-dock-right]="!sidebarOpen"></i>
     </button>
   </div>
 
-  <div class="divider"></div>
+  <div class="divider transition-all duration-300" [class.opacity-100]="sidebarOpen" [class.opacity-0]="!sidebarOpen"
+    [class.my-4]="sidebarOpen" [class.my-0]="!sidebarOpen" [class.h-px]="sidebarOpen" [class.h-0]="!sidebarOpen"></div>
 
-  <!-- Navigation -->
   <div class="flex flex-col gap-2 flex-grow">
-
-    <a routerLink="/discover" routerLinkActive="btn-active"
-      class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center  ">
-      <i class="bx bx-search bx-xs "></i> Search
+    <a routerLink="/discover" routerLinkActive="btn-active" class="btn btn-ghost btn-sm w-full normal-case flex items-center
+             transition-all duration-300" [class.justify-start]="sidebarOpen" [class.justify-center]="!sidebarOpen"
+      [class.gap-3]="sidebarOpen" [class.gap-0]="!sidebarOpen" [class.px-4]="sidebarOpen" [class.px-0]="!sidebarOpen"
+      [class.rounded-none]="!sidebarOpen">
+      <i class="bx bx-search bx-xs"></i>
+      <span class="transition-all duration-300" [class.opacity-100]="sidebarOpen" [class.opacity-0]="!sidebarOpen"
+        [class.w-auto]="sidebarOpen" [class.w-0]="!sidebarOpen" [class.overflow-hidden]="!sidebarOpen"
+        [class.whitespace-nowrap]="!sidebarOpen">Search</span>
     </a>
 
-    <a routerLink="/" routerLinkActive="btn-active" [routerLinkActiveOptions]="{ exact: true }"
-      class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center">
-      <i class="bx bx-home bx-xs"></i> Home
+    <a routerLink="/" routerLinkActive="btn-active" [routerLinkActiveOptions]="{ exact: true }" class="btn btn-ghost btn-sm w-full normal-case flex items-center
+             transition-all duration-300" [class.justify-start]="sidebarOpen" [class.justify-center]="!sidebarOpen"
+      [class.gap-3]="sidebarOpen" [class.gap-0]="!sidebarOpen" [class.px-4]="sidebarOpen" [class.px-0]="!sidebarOpen"
+      [class.rounded-none]="!sidebarOpen">
+      <i class="bx bx-home bx-xs"></i>
+      <span class="transition-all duration-300" [class.opacity-100]="sidebarOpen" [class.opacity-0]="!sidebarOpen"
+        [class.w-auto]="sidebarOpen" [class.w-0]="!sidebarOpen" [class.overflow-hidden]="!sidebarOpen"
+        [class.whitespace-nowrap]="!sidebarOpen">Home</span>
     </a>
-    <a routerLink="/latest" routerLinkActive="btn-active" [routerLinkActiveOptions]="{ exact: true }"
-      class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center">
-      <i class='bx  bx-play-circle  bx-xs'></i> Latest
+    <a routerLink="/latest" routerLinkActive="btn-active" [routerLinkActiveOptions]="{ exact: true }" class="btn btn-ghost btn-sm w-full normal-case flex items-center
+             transition-all duration-300" [class.justify-start]="sidebarOpen" [class.justify-center]="!sidebarOpen"
+      [class.gap-3]="sidebarOpen" [class.gap-0]="!sidebarOpen" [class.px-4]="sidebarOpen" [class.px-0]="!sidebarOpen"
+      [class.rounded-none]="!sidebarOpen">
+      <i class="bx bx-play-circle bx-xs"></i>
+      <span class="transition-all duration-300" [class.opacity-100]="sidebarOpen" [class.opacity-0]="!sidebarOpen"
+        [class.w-auto]="sidebarOpen" [class.w-0]="!sidebarOpen" [class.overflow-hidden]="!sidebarOpen"
+        [class.whitespace-nowrap]="!sidebarOpen">Latest</span>
     </a>
-    <a routerLink="/library" routerLinkActive="btn-active"
-      class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center">
-      <i class="bx bx-folder bx-xs"></i> Library
+    <a routerLink="/library" routerLinkActive="btn-active" class="btn btn-ghost btn-sm w-full normal-case flex items-center
+             transition-all duration-300" [class.justify-start]="sidebarOpen" [class.justify-center]="!sidebarOpen"
+      [class.gap-3]="sidebarOpen" [class.gap-0]="!sidebarOpen" [class.px-4]="sidebarOpen" [class.px-0]="!sidebarOpen"
+      [class.rounded-none]="!sidebarOpen">
+      <i class="bx bx-folder bx-xs"></i>
+      <span class="transition-all duration-300" [class.opacity-100]="sidebarOpen" [class.opacity-0]="!sidebarOpen"
+        [class.w-auto]="sidebarOpen" [class.w-0]="!sidebarOpen" [class.overflow-hidden]="!sidebarOpen"
+        [class.whitespace-nowrap]="!sidebarOpen">Library</span>
     </a>
 
-    <!-- Divider line -->
-    <div class="divider"></div>
+    <div class="divider transition-all duration-300" [class.opacity-100]="sidebarOpen" [class.opacity-0]="!sidebarOpen"
+      [class.my-4]="sidebarOpen" [class.my-0]="!sidebarOpen" [class.h-px]="sidebarOpen" [class.h-0]="!sidebarOpen">
+    </div>
 
-    <!-- ADDITIONAL NAVIGATION LINKS -->
     <div class="">
-      <p class="text-lg font-semibold mb-5 uppercase tracking-wide">
-        Private
-      </p>
+      <p class="text-lg font-semibold mb-5 uppercase tracking-wide
+                transition-all duration-300" [class.opacity-100]="sidebarOpen" [class.opacity-0]="!sidebarOpen"
+        [class.h-auto]="sidebarOpen" [class.h-0]="!sidebarOpen" [class.mb-5]="sidebarOpen" [class.mb-0]="!sidebarOpen">
+        Private</p>
       <div class="flex flex-col gap-1">
-        <a routerLink="/saved" routerLinkActive="btn-active"
-          class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center">
-          <i class="bx bx-bookmark bx-xs"></i> Saved
+        <a routerLink="/saved" routerLinkActive="btn-active" class="btn btn-ghost btn-sm w-full normal-case flex items-center
+                 transition-all duration-300" [class.justify-start]="sidebarOpen" [class.justify-center]="!sidebarOpen"
+          [class.gap-3]="sidebarOpen" [class.gap-0]="!sidebarOpen" [class.px-4]="sidebarOpen"
+          [class.px-0]="!sidebarOpen" [class.rounded-none]="!sidebarOpen">
+          <i class="bx bx-bookmark bx-xs"></i>
+          <span class="transition-all duration-300" [class.opacity-100]="sidebarOpen" [class.opacity-0]="!sidebarOpen"
+            [class.w-auto]="sidebarOpen" [class.w-0]="!sidebarOpen" [class.overflow-hidden]="!sidebarOpen"
+            [class.whitespace-nowrap]="!sidebarOpen">Saved</span>
         </a>
-        <a routerLink="/history" routerLinkActive="btn-active"
-          class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center">
-          <i class="bx bx-history bx-xs"></i> History
+        <a routerLink="/history" routerLinkActive="btn-active" class="btn btn-ghost btn-sm w-full normal-case flex items-center
+                 transition-all duration-300" [class.justify-start]="sidebarOpen" [class.justify-center]="!sidebarOpen"
+          [class.gap-3]="sidebarOpen" [class.gap-0]="!sidebarOpen" [class.px-4]="sidebarOpen"
+          [class.px-0]="!sidebarOpen" [class.rounded-none]="!sidebarOpen">
+          <i class="bx bx-history bx-xs"></i>
+          <span class="transition-all duration-300" [class.opacity-100]="sidebarOpen" [class.opacity-0]="!sidebarOpen"
+            [class.w-auto]="sidebarOpen" [class.w-0]="!sidebarOpen" [class.overflow-hidden]="!sidebarOpen"
+            [class.whitespace-nowrap]="!sidebarOpen">History</span>
         </a>
-        <a routerLink="/playlists" routerLinkActive="btn-active"
-          class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center">
-          <i class="bx bx-list-ul bx-xs"></i> Playlists
+        <a routerLink="/playlists" routerLinkActive="btn-active" class="btn btn-ghost btn-sm w-full normal-case flex items-center
+                 transition-all duration-300" [class.justify-start]="sidebarOpen" [class.justify-center]="!sidebarOpen"
+          [class.gap-3]="sidebarOpen" [class.gap-0]="!sidebarOpen" [class.px-4]="sidebarOpen"
+          [class.px-0]="!sidebarOpen" [class.rounded-none]="!sidebarOpen">
+          <i class="bx bx-list-ul bx-xs"></i>
+          <span class="transition-all duration-300" [class.opacity-100]="sidebarOpen" [class.opacity-0]="!sidebarOpen"
+            [class.w-auto]="sidebarOpen" [class.w-0]="!sidebarOpen" [class.overflow-hidden]="!sidebarOpen"
+            [class.whitespace-nowrap]="!sidebarOpen">Playlists</span>
         </a>
       </div>
     </div>
-
-
   </div>
 
-  <!-- Bottom: Dashboard + Version -->
   <div>
-
-    <a routerLink="/dashboard" routerLinkActive="btn-active"
-      class="btn btn-ghost btn-sm w-full normal-case justify-start gap-3 flex items-center mb-4">
-      <i class="bx bx-grid-alt text-xl"></i> Admin Dashboard
+    <a routerLink="/dashboard" routerLinkActive="btn-active" class="btn btn-ghost btn-sm w-full normal-case flex items-center mb-4
+             transition-all duration-300" [class.justify-start]="sidebarOpen" [class.justify-center]="!sidebarOpen"
+      [class.gap-3]="sidebarOpen" [class.gap-0]="!sidebarOpen" [class.px-4]="sidebarOpen" [class.px-0]="!sidebarOpen"
+      [class.rounded-none]="!sidebarOpen">
+      <i class="bx bx-grid-alt text-xl"></i>
+      <span class="transition-all duration-300" [class.opacity-100]="sidebarOpen" [class.opacity-0]="!sidebarOpen"
+        [class.w-auto]="sidebarOpen" [class.w-0]="!sidebarOpen" [class.overflow-hidden]="!sidebarOpen"
+        [class.whitespace-nowrap]="!sidebarOpen">Admin Dashboard</span>
     </a>
-    <div class="text-xs text-center opacity-60 select-none">OVA Web UI v1.0.0</div>
+    <div class="text-xs text-center opacity-60 select-none
+                transition-all duration-300" [class.opacity-60]="sidebarOpen" [class.opacity-0]="!sidebarOpen"
+      [class.h-auto]="sidebarOpen" [class.h-0]="!sidebarOpen">OVA Web UI v1.0.0</div>
   </div>
 </aside>
