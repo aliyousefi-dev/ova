@@ -1,22 +1,9 @@
-<media-player
-  #mediaPlayer
-  view-type="video"
-  stream-type="on-demand"
-  crossorigin
-  playsinline
-  [muted]="isMuted"
-  [volume]="volume"
-  [poster]="posterUrl"
->
+<media-player #mediaPlayer view-type="video" stream-type="on-demand" crossorigin playsinline [poster]="posterUrl"
+  storage="storage-key">
   <media-provider>
     <media-poster class="vds-poster"></media-poster>
     <source [src]="videoUrl" type="video/mp4" />
-    <!-- Marker track (chapters) -->
-    <track
-      kind="chapters"
-      [src]="vttMarkersUrl ? vttMarkersUrl : null"
-      default
-    />
+    <track kind="chapters" [src]="vttMarkersUrl ? vttMarkersUrl : null" default />
   </media-provider>
 
   <media-audio-layout></media-audio-layout>

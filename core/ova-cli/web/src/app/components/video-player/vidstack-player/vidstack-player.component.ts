@@ -17,41 +17,19 @@ import 'vidstack/player/ui';
   selector: 'app-vidstack-player',
   standalone: true,
   templateUrl: './vidstack-player.component.html',
-  styleUrl: './vidstack-player.component.css',
+  styleUrls: ['./vidstack-player.component.css'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [CommonModule],
 })
-export class VidstackPlayerComponent implements OnInit, AfterViewInit {
+export class VidstackPlayerComponent {
   @Input() videoUrl!: string;
   @Input() posterUrl?: string;
   @Input() vttUrl?: string;
   @Input() vttMarkersUrl?: string;
 
-  isMuted = false;
-  volume = 1;
-
   @ViewChild('mediaPlayer', { static: false }) mediaPlayerRef!: ElementRef;
 
-  ngOnInit() {
-    this.isMuted = localStorage.getItem('playerMuted') === 'true';
-    const vol = parseFloat(localStorage.getItem('playerVolume') || '');
-    if (!isNaN(vol)) this.volume = vol;
-  }
-
-  ngAfterViewInit() {
-    const mediaPlayer: any = this.mediaPlayerRef.nativeElement;
-
-    mediaPlayer.addEventListener('loadedmetadata', () => {
-      mediaPlayer.muted = this.isMuted;
-      mediaPlayer.volume = this.volume;
-    });
-
-    mediaPlayer.addEventListener('volume-change', () => {
-      localStorage.setItem('playerMuted', String(mediaPlayer.muted));
-      localStorage.setItem('playerVolume', String(mediaPlayer.volume));
-    });
-  }
-
+  // Get current playback time of the media player
   getCurrentTime(): number {
     const mediaPlayer: any = this.mediaPlayerRef?.nativeElement;
     return mediaPlayer?.currentTime || 0;
