@@ -5,9 +5,9 @@ import { Router } from '@angular/router';
 import { PlaylistAPIService } from '../../services/api/playlist-api.service';
 import { PlaylistData } from '../../data-types/playlist-data';
 
-import { ToastComponent } from '../../components/common/toast/toast.component';
+import { ToastComponent } from '../../components/pop-ups/toast/toast.component';
 
-import { PlaylistManagerComponent } from '../../components/playlist/playlist-manager/playlist-manager.component';
+import { PlaylistManagerComponent } from '../../components/containers/playlist-manager/playlist-manager.component';
 
 @Component({
   selector: 'app-playlists',

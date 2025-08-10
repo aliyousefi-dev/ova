@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core'; // Removed Output for 
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router'; // Import Router
 
-import { SettingsModalComponent } from '../../settings/setting-modal/settings-modal.component';
+import { SettingsModalComponent } from '../../pop-ups/setting-modal/settings-modal.component';
 import { UtilsService } from '../../../services/utils.service';
 import { AuthApiService } from '../../../services/api/auth-api.service'; // Import AuthApiService
 

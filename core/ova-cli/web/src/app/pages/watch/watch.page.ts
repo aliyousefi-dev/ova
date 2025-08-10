@@ -7,8 +7,8 @@ import { VideoApiService } from '../../services/api/video-api.service';
 import { SavedApiService } from '../../services/api/saved-api.service';
 import { PlaylistAPIService } from '../../services/api/playlist-api.service';
 import { WatchedApiService } from '../../services/api/watched-api.service';
-import { VidstackPlayerComponent } from '../../components/video-player/vidstack-player/vidstack-player.component';
-import { DefaultVideoPlayerComponent } from '../../components/video-player/default-video-player/default-video-player.component';
+import { VidstackPlayerComponent } from '../../components/media-player/vidstack-player/vidstack-player.component';
+import { DefaultVideoPlayerComponent } from '../../components/media-player/default-video-player/default-video-player.component';
 import { MarkerApiService } from '../../services/api/marker-api.service';
 
 // Updated: Import new child components

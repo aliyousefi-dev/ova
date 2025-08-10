@@ -12,7 +12,7 @@ import {
   Film,
 } from 'lucide-angular';
 import { VideoApiService } from '../../../services/api/video-api.service';
-import { PlaylistModalComponent } from '../../../components/playlist/playlist-modal/playlist-modal.component';
+import { PlaylistModalComponent } from '../../../components/pop-ups/playlist-modal/playlist-modal.component';
 
 @Component({
   selector: 'app-video-action-bar',

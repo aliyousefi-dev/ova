@@ -12,8 +12,8 @@ import {
 } from 'rxjs';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 
-import { AutoCompleteSearchBarComponent } from '../../components/advance/autocomplete-search-bar/autocomplete-search-bar.component';
-import { VideoGridComponent } from '../../components/video/video-grid/video-grid.component';
+import { AutoCompleteSearchBarComponent } from '../../components/utility/autocomplete-search-bar/autocomplete-search-bar.component';
+import { VideoGridComponent } from '../../components/containers/video-grid/video-grid.component';
 import { SearchApiService } from '../../services/api/search-api.service';
 
 @Component({

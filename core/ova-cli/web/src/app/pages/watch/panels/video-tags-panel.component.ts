@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { LucideAngularModule, Tag } from 'lucide-angular';
 
-import { TagLinkComponent } from '../../../components/video/tag-link/tag-link.component';
+import { TagLinkComponent } from '../../../components/utility/tag-link/tag-link.component';
 
 @Component({
   selector: 'app-video-tags-panel',

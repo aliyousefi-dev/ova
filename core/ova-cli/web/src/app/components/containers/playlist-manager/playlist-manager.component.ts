@@ -4,9 +4,9 @@ import { RouterModule, Router } from '@angular/router';
 
 import { PlaylistData } from '../../../data-types/playlist-data';
 import { PlaylistAPIService } from '../../../services/api/playlist-api.service';
-import { PlaylistGridComponent } from '../playlist-grid/playlist-grid.component';
-import { PlaylistCreatorModalComponent } from '../playlist-creator-modal/playlist-creator-modal.component';
-import { ConfirmModalComponent } from '../../common/confirm-modal/confirm-modal.component';
+import { PlaylistGridComponent } from '../../containers/playlist-grid/playlist-grid.component';
+import { PlaylistCreatorModalComponent } from '../../pop-ups/playlist-creator-modal/playlist-creator-modal.component';
+import { ConfirmModalComponent } from '../../pop-ups/confirm-modal/confirm-modal.component';
 import { UtilsService } from '../../../services/utils.service';
 
 import { LucideAngularModule, FolderPlus, Trash2, List } from 'lucide-angular';

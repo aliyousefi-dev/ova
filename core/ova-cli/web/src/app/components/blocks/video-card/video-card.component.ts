@@ -8,12 +8,12 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { PlaylistModalComponent } from '../../playlist/playlist-modal/playlist-modal.component';
+import { PlaylistModalComponent } from '../../pop-ups/playlist-modal/playlist-modal.component';
 
 import { VideoApiService } from '../../../services/api/video-api.service';
 import { SavedApiService } from '../../../services/api/saved-api.service';
 import { VideoData } from '../../../data-types/video-data';
-import { TagLinkComponent } from '../tag-link/tag-link.component';
+import { TagLinkComponent } from '../../utility/tag-link/tag-link.component';
 import { UtilsService } from '../../../services/utils.service'; // Import UtilsService
 
 @Component({

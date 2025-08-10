@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { VideoApiService } from '../../../services/api/video-api.service'; // Assuming path
-import { TagChipComponent } from '../../../components/video/tag-chip/tag-chip.component'; // Keep existing path for TagChipComponent
+import { TagChipComponent } from '../../../components/utility/tag-chip/tag-chip.component'; // Keep existing path for TagChipComponent
 
 @Component({
   selector: 'app-tag-management-panel', // Changed selector

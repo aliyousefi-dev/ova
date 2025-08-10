@@ -7,7 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { PlaylistData } from '../../../data-types/playlist-data';
-import { PlaylistCardComponent } from '../playlist-card/playlist-card.component';
+import { PlaylistCardComponent } from '../../blocks/playlist-card/playlist-card.component';
 import { CommonModule } from '@angular/common';
 
 import {

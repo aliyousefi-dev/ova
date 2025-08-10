@@ -18,5 +18,6 @@
 - On Everyone Profile be the Uploaded Collections.
 - Enable Cooking by Default.
 - Runtime Change Watcher
+- When Click on a Space Show the Space Info like Videos.
 
 

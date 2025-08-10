@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { VideoCardComponent } from '../video-card/video-card.component';
+import { VideoCardComponent } from '../../blocks/video-card/video-card.component';
 import { CommonModule } from '@angular/common';
 import { VideoData } from '../../../data-types/video-data';
 import { SavedApiService } from '../../../services/api/saved-api.service';

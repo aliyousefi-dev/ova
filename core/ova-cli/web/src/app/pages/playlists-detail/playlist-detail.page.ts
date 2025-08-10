@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { VideoGridComponent } from '../../components/video/video-grid/video-grid.component';
+import { VideoGridComponent } from '../../components/containers/video-grid/video-grid.component';
 import { PlaylistAPIService } from '../../services/api/playlist-api.service';
 import { VideoApiService } from '../../services/api/video-api.service';
 

@@ -8,11 +8,11 @@ import {
   NavigationError,
 } from '@angular/router';
 import { LoadingService } from './services/loading.service';
-import { LoadingSpinnerComponent } from './components/common/spinner-loading/spinner-loading.component';
+import { LoadingSpinnerComponent } from './components/utility/spinner-loading/spinner-loading.component';
 import { CommonModule } from '@angular/common';
-import { DesktopSidebarComponent } from './components/common/desktop-sidebar/desktop-sidebar.component';
-import { TopNavbarComponent } from './components/common/top-navbar/top-navbar.component';
-import { MobileDockComponent } from './components/common/mobile-dock/mobile-dock.component';
+import { DesktopSidebarComponent } from './components/navigation/desktop-sidebar/desktop-sidebar.component';
+import { TopNavbarComponent } from './components/navigation/top-navbar/top-navbar.component';
+import { MobileDockComponent } from './components/navigation/mobile-dock/mobile-dock.component';
 
 @Component({
   selector: 'app-root',

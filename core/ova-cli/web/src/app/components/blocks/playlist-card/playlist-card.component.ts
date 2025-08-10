@@ -13,8 +13,8 @@ import { PlaylistData } from '../../../data-types/playlist-data';
 import { VideoData } from '../../../data-types/video-data';
 import { VideoApiService } from '../../../services/api/video-api.service';
 import { PlaylistAPIService } from '../../../services/api/playlist-api.service';
-import { ConfirmModalComponent } from '../../common/confirm-modal/confirm-modal.component';
-import { EditPlaylistModalComponent } from '../edit-playlist-modal/edit-playlist-modal.component';
+import { ConfirmModalComponent } from '../../pop-ups/confirm-modal/confirm-modal.component';
+import { EditPlaylistModalComponent } from '../../pop-ups/edit-playlist-modal/edit-playlist-modal.component';
 
 @Component({
   selector: 'app-playlist-card',

@@ -1,11 +1,12 @@
 <div class="bg-base-100 rounded-xl p-4 w-full">
-  <h2 class="text-base md:text-lg font-semibold mb-4">Similar Videos</h2>
+
+  <div class="flex justify-between">
+    <h2 class="text-base md:text-lg font-semibold mb-4">Similar Videos</h2>
+    <a href="#">More</a>
+  </div>
 
   <!-- Loading -->
-  <div
-    *ngIf="similarVideosLoading"
-    class="text-center py-4 text-sm text-gray-500"
-  >
+  <div *ngIf="similarVideosLoading" class="text-center py-4 text-sm text-gray-500">
     Loading similar videos...
   </div>
 
@@ -15,40 +16,26 @@
   </div>
 
   <!-- Grid Layout -->
-  <div
-    *ngIf="
+  <div *ngIf="
       !similarVideosLoading && !similarVideosError && similarVideos.length > 0
-    "
-    class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4"
-  >
-    <div
-      *ngFor="let sv of similarVideos"
+    " class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+    <div *ngFor="let sv of similarVideos"
       class="group cursor-pointer transition-transform hover:scale-[1.02] rounded overflow-hidden"
-      (click)="navigateToVideo.emit(sv.videoId)"
-    >
+      (click)="navigateToVideo.emit(sv.videoId)">
       <div class="aspect-video w-full bg-base-300 rounded overflow-hidden">
-        <img
-          [src]="videoapi.getThumbnailUrl(sv.videoId)"
-          [alt]="sv.title"
-          class="w-full h-full object-cover group-hover:brightness-90 transition"
-        />
+        <img [src]="videoapi.getThumbnailUrl(sv.videoId)" [alt]="sv.title"
+          class="w-full h-full object-cover group-hover:brightness-90 transition" />
       </div>
-      <div
-        class="mt-2 text-[0.7rem] sm:text-xs font-medium truncate"
-        [title]="sv.title"
-      >
+      <div class="mt-2 text-[0.7rem] sm:text-xs font-medium truncate" [title]="sv.title">
         {{ sv.title }}
       </div>
     </div>
   </div>
 
   <!-- No Results -->
-  <div
-    *ngIf="
+  <div *ngIf="
       !similarVideosLoading && !similarVideosError && similarVideos.length === 0
-    "
-    class="text-center py-4 text-sm text-gray-500"
-  >
+    " class="text-center py-4 text-sm text-gray-500">
     No similar videos found.
   </div>
 </div>

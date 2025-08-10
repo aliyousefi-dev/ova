@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UploadApiService } from '../../services/api/upload-api.service';
-import { FolderTreeComponent } from '../../components/advance/folder-tree/folder-tree.component';
+import { FolderTreeComponent } from '../../components/utility/folder-tree/folder-tree.component';
 import { HttpEventType } from '@angular/common/http';
 
 @Component({

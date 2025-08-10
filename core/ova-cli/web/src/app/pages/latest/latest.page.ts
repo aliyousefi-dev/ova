@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs'; // Import Subscription
 import { LatestVideosService } from '../../services/api/latest-api.service';
 import { VideoApiService } from '../../services/api/video-api.service';
 import { VideoData } from '../../data-types/video-data';
-import { VideoGridComponent } from '../../components/video/video-grid/video-grid.component';
+import { VideoGridComponent } from '../../components/containers/video-grid/video-grid.component';
 
 @Component({
   selector: 'app-latest-page',
