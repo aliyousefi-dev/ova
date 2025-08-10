@@ -4,19 +4,17 @@
 
 <div *ngIf="!isLoginRoute && !isNotFoundRoute" class="flex h-screen">
   <!-- Sidebar on the left, fixed height, full screen (visible only on large screens and up) -->
-  <app-desktop-sidebar
-    class="w-64 bg-base-100 flex flex-col justify-between h-screen fixed top-0 left-0 z-10 lg:block hidden"
-    [title]="title">
+  <app-desktop-sidebar class="lg:block hidden">
   </app-desktop-sidebar>
 
   <!-- Main content container (flex column) -->
-  <div class="flex-1 flex flex-col lg:ml-64">
+  <div class="flex-1 flex flex-col">
 
     <!-- Top Navbar -->
-    <app-top-navbar [pageTitle]="'Z-Drive'"></app-top-navbar>
+    <app-top-navbar [pageTitle]="'Saved'"></app-top-navbar>
 
     <!-- Main content area -->
-    <div class="w-full overflow-y-auto flex-1 bg-base-200">
+    <div class="w-full overflow-y-auto flex-1 bg-base-300">
       <router-outlet></router-outlet> <!-- Routed content will appear here -->
     </div>
 

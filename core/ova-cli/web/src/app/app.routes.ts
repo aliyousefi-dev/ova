@@ -1,5 +1,4 @@
-import { Routes, UrlSegment, UrlMatchResult } from '@angular/router';
-import { NavBarComponent } from './components/common/navbar/navbar.component';
+import { Routes } from '@angular/router';
 import { LibraryPage } from './pages/library/library.page';
 import { WatchPage } from './pages/watch/watch.page';
 import { NotFoundPage } from './pages/NotFoundComponent/not-found.page';
@@ -14,6 +13,7 @@ import { DashboardPage } from './pages/dashboard/dashboard.page';
 import { ProfilePage } from './pages/profile/profile.page';
 import { HistoryPage } from './pages/history/history.page';
 import { LatestPage } from './pages/latest/latest.page';
+import { UploadPage } from './pages/upload/upload.page';
 
 export const routes: Routes = [
   {
@@ -44,6 +44,11 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardPage,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'upload',
+    component: UploadPage,
     canActivate: [AuthGuard],
   },
   {

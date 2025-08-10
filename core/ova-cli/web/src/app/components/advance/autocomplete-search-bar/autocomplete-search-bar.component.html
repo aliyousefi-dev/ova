@@ -1,11 +1,8 @@
 <div class="flex items-center justify-center m-5 my-10 relative">
     <label class="input flex items-center gap-2 max-w-md w-full">
-        <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.3-4.3"></path>
-            </g>
-        </svg>
+
+        <i class='bx  bx-search'></i>
+
         <input type="text" [placeholder]="placeholder" [(ngModel)]="currentValue" (input)="onInputChange()"
             (focus)="showSuggestions = true" (blur)="hideSuggestions()" (keydown.arrowdown)="onArrowDown()"
             (keydown.arrowup)="onArrowUp()" (keydown.enter)="onEnter()"

@@ -1,15 +1,13 @@
-<!-- Loading Spinner -->
-<div *ngIf="loading" class="py-10 text-center text-base-content/70">
-  Loading playlists...
+<div class="pb-50">
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="py-10 text-center text-base-content/70">
+    Loading playlists...
+  </div>
+
+  <!-- Playlist Manager -->
+  <app-playlist-manager> </app-playlist-manager>
+
+  <!-- Toast -->
+  <app-toast *ngIf="creationError" [message]="creationError" type="error" (close)="creationError = null"></app-toast>
 </div>
-
-<!-- Playlist Manager -->
-<app-playlist-manager> </app-playlist-manager>
-
-<!-- Toast -->
-<app-toast
-  *ngIf="creationError"
-  [message]="creationError"
-  type="error"
-  (close)="creationError = null"
-></app-toast>

@@ -10,11 +10,6 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./desktop-sidebar.component.css'],
 })
 export class DesktopSidebarComponent {
-  @Input() title = '';
-  @Input() userInitial = '';
-  @Output() openSettingsModal = new EventEmitter<void>();
-  @Output() logout = new EventEmitter<void>();
-
   sidebarOpen = true; // Initial state: sidebar is open
 
   toggleSidebar() {

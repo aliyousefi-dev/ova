@@ -1,23 +1,27 @@
-<div class="z-300 dock lg:hidden bg-base-300 flex justify-around p-2 fixed bottom-0 w-full">
-  <button routerLink="/discover" routerLinkActive="active" class="flex flex-col items-center" mat-ripple
-    matRippleColor="rgba(0, 0, 0, 0.6)">
-    <i class="bx bx-search text-2xl"></i>
-    <span class="dock-label text-xs">Discover</span>
+<div class="z-300 dock dock-xl lg:hidden bg-base-100 flex justify-around p-2 fixed bottom-0 w-full">
+  <button routerLink="/latest" routerLinkActive="active" [ngClass]="{ 'dock-active': isActive('/latest') }"
+    class="flex flex-col items-center " mat-ripple matRippleColor="rgba(0, 0, 0, 0.6)">
+    <i class="bx bx-play-circle bx-sm"></i>
+    <span class="dock-label text-xs">Latest</span>
   </button>
-  <button routerLink="/library" routerLinkActive="active" class="flex flex-col items-center" mat-ripple
-    matRippleColor="rgba(0, 0, 0, 0.6)">
-    <i class="bx bx-folder text-2xl"></i>
+  <button routerLink="/discover" routerLinkActive="active" [ngClass]="{ 'dock-active': isActive('/discover') }"
+    class="flex flex-col items-center" mat-ripple matRippleColor="rgba(0, 0, 0, 0.6)">
+    <i class="bx bx-search bx-sm"></i>
+    <span class="dock-label text-xs">Search</span>
+  </button>
+  <button routerLink="/library" routerLinkActive="active" [ngClass]="{ 'dock-active': isActive('/library') }"
+    class="flex flex-col items-center" mat-ripple matRippleColor="rgba(0, 0, 0, 0.6)">
+    <i class="bx bx-folder bx-sm"></i>
     <span class="dock-label text-xs">Library</span>
   </button>
-  <button routerLink="/saved" routerLinkActive="active" class="flex flex-col items-center" mat-ripple
-    matRippleColor="rgba(0, 0, 0, 0.6)">
-    <i class="bx bx-bookmark text-2xl"></i>
+  <button routerLink="/saved" routerLinkActive="active" [ngClass]="{ 'dock-active': isActive('/saved') }"
+    class="flex flex-col items-center" mat-ripple matRippleColor="rgba(0, 0, 0, 0.6)">
+    <i class="bx bx-bookmark bx-sm"></i>
     <span class="dock-label text-xs">Saved</span>
   </button>
-  <button routerLink="/playlists" routerLinkActive="active" class="flex flex-col items-center" mat-ripple
-    matRippleColor="rgba(0, 0, 0, 0.6)">
-    <i class="bx bx-list-ul text-2xl"></i>
+  <button routerLink="/playlists" routerLinkActive="active" [ngClass]="{ 'dock-active': isActive('/playlists') }"
+    class="flex flex-col items-center" mat-ripple matRippleColor="rgba(0, 0, 0, 0.6)">
+    <i class="bx bx-list-ul bx-sm"></i>
     <span class="dock-label text-xs">Playlists</span>
   </button>
-
 </div>

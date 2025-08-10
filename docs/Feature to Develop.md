@@ -9,4 +9,20 @@
 - Rule Based Access 
 - (UI/Cli) Team Workspace
 - (UI/Cli) Search Suggestions 
-- (UI/Cli) Gallery View - no title - Infinite Scrolll
+- Gallery View - no title - Infinite Scrolll
+- Clear Saved Videos
+- Prompt for Logout
+- Most Viewed
+- Remove Duplicates
+- On Everyone Profile be the Uploaded Collections.
+- Enable Cooking by Default.
+
+
+Private Space and Public Space.
+by Default is Private
+Support Join Link for Space
+Limit Space creation number per user
+Limit Default Space disk size
+Total Videos on Spaces
+Total Space Disk Size
+

@@ -1,0 +1,8 @@
+.dock-active {
+  &:after {
+    width: calc(0.3rem /* 4px */ * 10) /* 2.5rem = 40px */;
+    height: 2px;
+    background-color: currentColor;
+    color: currentColor;
+  }
+}

@@ -1,5 +1,5 @@
 <!-- Container that clears the global sidebar with padding-left: 256px -->
-<div class="w-full mx-auto  flex flex-col md:flex-row gap-8">
+<div class="w-full px-4 pt-5 flex flex-col md:flex-row gap-8">
   <ng-container *ngIf="video; else loading">
     <!-- Video Area: 70% width on md+ -->
     <div class="w-full md:w-[70%] flex flex-col">
@@ -11,9 +11,9 @@
           [videoResolution]="video.resolution"></app-video-action-bar>
       </div>
 
-      <app-video-title-bar [videoTitle]="video.title"></app-video-title-bar>
+      <app-video-title-bar class=" break-all" [videoTitle]="video.title"></app-video-title-bar>
 
-      <div class="w-full overflow-hidden">
+      <div>
         <ng-container *ngIf="true; else defaultPlayer">
           <app-vidstack-player #vidstackPlayer [videoUrl]="videoUrl" [posterUrl]="thumbnailUrl"
             [vttUrl]="storyboardVttUrl" [vttMarkersUrl]="markerFileUrl"></app-vidstack-player>

@@ -1,7 +1,5 @@
 all console commadns tha Support
 
-
-
 ## Commands
 ```
 - ovacli debug
