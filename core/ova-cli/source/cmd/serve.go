@@ -3,7 +3,9 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"os/signal"
 	"path/filepath"
+	"syscall"
 
 	"ova-cli/source/internal/logs"
 	"ova-cli/source/internal/repo"
@@ -33,6 +35,16 @@ var serveCmd = &cobra.Command{
 			return
 		}
 
+
+		// Handle Ctrl+C (SIGINT) to call repository.OnShutdown()
+		shutdownCh := make(chan os.Signal, 1)
+		signal.Notify(shutdownCh, os.Interrupt, syscall.SIGTERM)
+		go func() {
+			<-shutdownCh
+			serveLogger.Info("Received interrupt signal, shutting down...")
+			repository.OnShutdown()
+			os.Exit(0)
+		}()
 
 		cfg := repository.GetConfigs()
 

@@ -5,6 +5,7 @@ import (
 	"ova-cli/source/internal/datastorage/boltdb"
 	"ova-cli/source/internal/datastorage/jsondb"
 	"ova-cli/source/internal/datastorage/memorydb"
+	"ova-cli/source/internal/datastorage/sessiondb"
 	"ova-cli/source/internal/interfaces"
 )
 
@@ -28,4 +29,8 @@ func NewDiskStorage(storageType, dataStoragePath string) (interfaces.DiskDataSto
 
 func NewMemoryStorage() (interfaces.MemoryDataStorage, error) {
 	return memorydb.NewMemoryDB()
+}
+
+func NewSessionStorage(dataStoragePath string) (interfaces.SessionDataStorage, error) {
+	return sessiondb.NewSessionDB(dataStoragePath), nil
 }

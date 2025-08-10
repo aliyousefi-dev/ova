@@ -64,9 +64,9 @@ func (s *OvaServer) initRoutes() {
 	}
 
 	v1 := s.router.Group("/api/v1")
-	v1.Use(api.AuthMiddleware(s.SessionManager, publicPaths, publicPrefixes))
+	v1.Use(api.AuthMiddleware(s.RepoManager, publicPaths, publicPrefixes))
 
-	api.RegisterAuthRoutes(v1, s.RepoManager, s.SessionManager)
+	api.RegisterAuthRoutes(v1, s.RepoManager)
 	api.RegisterUserPlaylistRoutes(v1, s.RepoManager)
 	api.RegisterUserSavedRoutes(v1, s.RepoManager)
 	api.RegisterVideoRoutes(v1, s.RepoManager)

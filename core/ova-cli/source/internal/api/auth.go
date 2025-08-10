@@ -28,19 +28,19 @@ type ChangePasswordRequest struct {
 }
 
 // RegisterAuthRoutes sets up the /auth routes with session and repo manager.
-func RegisterAuthRoutes(rg *gin.RouterGroup, repoMgr *repo.RepoManager, sm *SessionManager) {
+func RegisterAuthRoutes(rg *gin.RouterGroup, repoMgr *repo.RepoManager) {
 	auth := rg.Group("/auth")
 	{
-		auth.POST("/login", func(c *gin.Context) { loginHandler(c, sm, repoMgr) })
-		auth.POST("/logout", sm.logoutHandler)
-		auth.GET("/status", sm.authStatusHandler)
-		auth.GET("/profile", sm.profileHandler(repoMgr))
-		auth.POST("/password", sm.passwordHandler(repoMgr))
+		auth.POST("/login", func(c *gin.Context) { loginHandler(c, repoMgr) })
+		auth.POST("/logout", func(c *gin.Context) { logoutHandler(c, repoMgr) })
+		auth.GET("/status", func(c *gin.Context) { authStatusHandler(c, repoMgr) })
+		auth.GET("/profile", func(c *gin.Context) { profileHandler(c, repoMgr) })
+		auth.POST("/password", func(c *gin.Context) { passwordHandler(c, repoMgr) })
 	}
 }
 
 // loginHandler authenticates the user and issues a session.
-func loginHandler(c *gin.Context, sm *SessionManager, repoMgr *repo.RepoManager) {
+func loginHandler(c *gin.Context, repoMgr *repo.RepoManager) {
 	var req LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		respondError(c, http.StatusBadRequest, "Invalid JSON")
@@ -59,12 +59,12 @@ func loginHandler(c *gin.Context, sm *SessionManager, repoMgr *repo.RepoManager)
 	}
 
 	sessionID := uuid.NewString()
-	sm.sessions[sessionID] = req.Username
-    http.SetCookie(c.Writer, &http.Cookie{
-        Name:     "session_id",
-        Value:    sessionID,
-        Path:     "/",
-        MaxAge:   int(24 * time.Hour.Seconds()),
+	repoMgr.AddSession(sessionID, req.Username)
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     "session_id",
+		Value:    sessionID,
+		Path:     "/",
+		MaxAge:   int(24 * time.Hour.Seconds()),
 		HttpOnly: true,  // Set to true for security
 		Secure:   false,  // Keep as false for HTTP
 	})
@@ -72,28 +72,29 @@ func loginHandler(c *gin.Context, sm *SessionManager, repoMgr *repo.RepoManager)
 	respondSuccess(c, http.StatusOK, LoginResponse{SessionID: sessionID}, "Login successful")
 }
 
-func (sm *SessionManager) logoutHandler(c *gin.Context) {
-	sessionID, err := c.Cookie("session_id")
-	if err != nil {
-		respondError(c, http.StatusUnauthorized, "No session found")
-		return
-	}
+func logoutHandler(c *gin.Context, repoMgr *repo.RepoManager) {
+	   sessionID, err := c.Cookie("session_id")
+	   if err != nil {
+			   respondError(c, http.StatusUnauthorized, "No session found")
+			   return
+	   }
 
-	if _, exists := sm.sessions[sessionID]; !exists {
-		respondError(c, http.StatusUnauthorized, "Invalid session")
-		return
-	}
+	   username, err := repoMgr.GetUsernameBySession(sessionID)
+	   if err != nil || username == "" {
+			   respondError(c, http.StatusUnauthorized, "Invalid session")
+			   return
+	   }
 
-	delete(sm.sessions, sessionID)
+	   repoMgr.DeleteSession(sessionID)
 
-	clearCookie := "session_id=; Path=/; Max-Age=0; HttpOnly; SameSite=None;"
-	c.Writer.Header().Add("Set-Cookie", clearCookie)
+	   clearCookie := "session_id=; Path=/; Max-Age=0; HttpOnly; SameSite=None;"
+	   c.Writer.Header().Add("Set-Cookie", clearCookie)
 
-	respondSuccess(c, http.StatusOK, gin.H{}, "Logged out successfully")
+	   respondSuccess(c, http.StatusOK, gin.H{}, "Logged out successfully")
 }
 
-func (sm *SessionManager) authStatusHandler(c *gin.Context) {
-	if sm.DisableAuth {
+func authStatusHandler(c *gin.Context, repoMgr *repo.RepoManager) {
+	if !repoMgr.AuthEnabled {
 		respondSuccess(c, http.StatusOK, gin.H{
 			"authenticated": true,
 			"username":      "guest",
@@ -107,8 +108,8 @@ func (sm *SessionManager) authStatusHandler(c *gin.Context) {
 		return
 	}
 
-	username, exists := sm.sessions[sessionID]
-	if exists {
+	username, _ := repoMgr.GetUsernameBySession(sessionID)
+	if username != "" {
 		respondSuccess(c, http.StatusOK, gin.H{
 			"authenticated": true,
 			"username":      username,
@@ -118,75 +119,71 @@ func (sm *SessionManager) authStatusHandler(c *gin.Context) {
 	}
 }
 
-func (sm *SessionManager) profileHandler(repoMgr *repo.RepoManager) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		sessionID, err := c.Cookie("session_id")
-		if err != nil {
-			respondError(c, http.StatusUnauthorized, "No session found")
-			return
-		}
+func profileHandler(c *gin.Context, repoMgr *repo.RepoManager) {
+	   sessionID, err := c.Cookie("session_id")
+	   if err != nil {
+			   respondError(c, http.StatusUnauthorized, "No session found")
+			   return
+	   }
 
-		username, exists := sm.sessions[sessionID]
-		if !exists {
-			respondError(c, http.StatusUnauthorized, "Invalid session")
-			return
-		}
+	   username, err := repoMgr.GetUsernameBySession(sessionID)
+	   if err != nil || username == "" {
+			   respondError(c, http.StatusUnauthorized, "Invalid session")
+			   return
+	   }
 
-		user, err := repoMgr.GetUserByUsername(username)
-		if err != nil {
-			respondError(c, http.StatusNotFound, "User not found")
-			return
-		}
+	   user, err := repoMgr.GetUserByUsername(username)
+	   if err != nil {
+			   respondError(c, http.StatusNotFound, "User not found")
+			   return
+	   }
 
-		c.JSON(http.StatusOK, gin.H{
-			"username": user.Username,
-			"roles":    user.Roles,
-		})
-	}
+	   c.JSON(http.StatusOK, gin.H{
+			   "username": user.Username,
+			   "roles":    user.Roles,
+	   })
 }
 
-func (sm *SessionManager) passwordHandler(repoMgr *repo.RepoManager) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		var req ChangePasswordRequest
-		if err := c.ShouldBindJSON(&req); err != nil {
-			respondError(c, http.StatusBadRequest, "Invalid JSON payload")
-			return
-		}
+func passwordHandler(c *gin.Context,repoMgr *repo.RepoManager) {
+	   var req ChangePasswordRequest
+	   if err := c.ShouldBindJSON(&req); err != nil {
+			   respondError(c, http.StatusBadRequest, "Invalid JSON payload")
+			   return
+	   }
 
-		sessionID, err := c.Cookie("session_id")
-		if err != nil {
-			respondSuccess(c, http.StatusOK, gin.H{"authenticated": false}, "Not authenticated")
-			return
-		}
+	   sessionID, err := c.Cookie("session_id")
+	   if err != nil {
+			   respondSuccess(c, http.StatusOK, gin.H{"authenticated": false}, "Not authenticated")
+			   return
+	   }
 
-		username, exists := sm.sessions[sessionID]
-		if !exists {
-			respondError(c, http.StatusUnauthorized, "Not authenticated")
-			return
-		}
+	   username, _ := repoMgr.GetUsernameBySession(sessionID)
+	   if username == "" {
+			   respondError(c, http.StatusUnauthorized, "Not authenticated")
+			   return
+	   }
 
-		user, err := repoMgr.GetUserByUsername(username)
-		if err != nil {
-			respondError(c, http.StatusUnauthorized, "Invalid username")
-			return
-		}
+	   user, err := repoMgr.GetUserByUsername(username)
+	   if err != nil {
+			   respondError(c, http.StatusUnauthorized, "Invalid username")
+			   return
+	   }
 
-		if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.OldPassword)); err != nil {
-			respondError(c, http.StatusUnauthorized, "Invalid password")
-			return
-		}
+	   if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.OldPassword)); err != nil {
+			   respondError(c, http.StatusUnauthorized, "Invalid password")
+			   return
+	   }
 
-		hashBytes, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
-		if err != nil {
-			respondError(c, http.StatusInternalServerError, "Cannot create hash from password")
-			return
-		}
-		hashedPassword := string(hashBytes)
+	   hashBytes, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
+	   if err != nil {
+			   respondError(c, http.StatusInternalServerError, "Cannot create hash from password")
+			   return
+	   }
+	   hashedPassword := string(hashBytes)
 
-		if err := repoMgr.UpdateUserPassword(username, hashedPassword); err != nil {
-			respondError(c, http.StatusForbidden, err.Error())
-		} else {
-			respondSuccess(c, http.StatusOK, gin.H{"status": "ok"}, "Password changed!")
-		}
-	}
+	   if err := repoMgr.UpdateUserPassword(username, hashedPassword); err != nil {
+			   respondError(c, http.StatusForbidden, err.Error())
+	   } else {
+			   respondSuccess(c, http.StatusOK, gin.H{"status": "ok"}, "Password changed!")
+	   }
 }

@@ -11,14 +11,17 @@ import (
 type RepoManager struct {
 	rootDir     string
 	configs     datatypes.Config
+	AuthEnabled bool
 	diskDataStorage interfaces.DiskDataStorage
 	memoryDataStorage interfaces.MemoryDataStorage
+	sessionDataStorage interfaces.SessionDataStorage
 }
 
 // NewRepoManager creates a new instance of RepoManager and initializes data storage.
 func NewRepoManager(rootDir string) (*RepoManager, error) {
 	r := &RepoManager{
 		rootDir: rootDir,
+		AuthEnabled: true,
 	}
 
 	// Initialize the repository, which includes creating the folder, loading the config, and initializing data storage
@@ -58,6 +61,11 @@ func (r *RepoManager) InitDataStorage() error {
 	r.memoryDataStorage, err = datastorage.NewMemoryStorage()
 	if err != nil {
 		return fmt.Errorf("failed to initialize memory storage: %w", err)
+	}
+
+	r.sessionDataStorage, err = datastorage.NewSessionStorage(storagePath)
+	if err != nil {
+		return fmt.Errorf("failed to initialize session storage: %w", err)
 	}
 
 	return nil

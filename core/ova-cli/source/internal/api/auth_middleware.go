@@ -3,14 +3,15 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"ova-cli/source/internal/repo"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware(sm *SessionManager, publicPaths map[string]bool, publicPrefixes []string) gin.HandlerFunc {
+func AuthMiddleware(repoMgr *repo.RepoManager, publicPaths map[string]bool, publicPrefixes []string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if sm.DisableAuth {
+		if repoMgr.AuthEnabled {
 			fmt.Println("[AuthMiddleware] Auth disabled: skipping all auth checks")
 			// Skip all authentication checks
 			c.Next()
@@ -35,8 +36,8 @@ func AuthMiddleware(sm *SessionManager, publicPaths map[string]bool, publicPrefi
 		ovaAuthHeader := c.GetHeader("OVA-AUTH")
 		if ovaAuthHeader != "" {
 			// Check for session in the OVA-AUTH header
-			username, ok := sm.sessions[ovaAuthHeader]
-			if !ok {
+			username, ok := repoMgr.GetUsernameBySession(ovaAuthHeader)
+			if ok != nil {
 				respondError(c, http.StatusUnauthorized, "Invalid OVA-AUTH session")
 				c.Abort()
 				return
@@ -54,8 +55,8 @@ func AuthMiddleware(sm *SessionManager, publicPaths map[string]bool, publicPrefi
 			return
 		}
 
-		username, ok := sm.sessions[sessionID]
-		if !ok {
+		username, ok := repoMgr.GetUsernameBySession(sessionID)
+		if  ok != nil {
 			respondError(c, http.StatusUnauthorized, "Invalid session")
 			c.Abort()
 			return

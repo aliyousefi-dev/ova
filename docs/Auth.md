@@ -1,6 +1,2 @@
-Currently it Use the Session ID that Stored on the RAM 
-for Authentications.
-
-Admin have to Full Write and Read Access
-Uploader have Video Write Access and Read
-User have Read Access Just
+It Using the Session ID on the RAM.
+And When Close the Server it Clear the Sessions.

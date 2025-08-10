@@ -13,16 +13,10 @@
 - Clear Saved Videos
 - Prompt for Logout
 - Most Viewed
+- Most Rated
 - Remove Duplicates
 - On Everyone Profile be the Uploaded Collections.
 - Enable Cooking by Default.
+- Runtime Change Watcher
 
-
-Private Space and Public Space.
-by Default is Private
-Support Join Link for Space
-Limit Space creation number per user
-Limit Default Space disk size
-Total Videos on Spaces
-Total Space Disk Size
 

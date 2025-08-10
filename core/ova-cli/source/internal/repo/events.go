@@ -5,6 +5,10 @@ import "fmt"
 // OnInit initializes the repository by caching the latest videos
 func (r *RepoManager) OnInit() error {
 
+	if err := r.LoadUserSessionsFromDisk(); err != nil {
+		return fmt.Errorf("failed to load user sessions from disk: %w", err)
+	}
+
 	fmt.Printf("Successfully initialized repository.\n")
 
 	// Call CacheLatestVideos to load the latest videos into memory storage
@@ -33,5 +37,18 @@ func (r *RepoManager) OnInit() error {
 	}
 	fmt.Printf("Total cached video IDs: %d\n", len(videoIds)) // Print the length of cached video IDs
 
+	return nil
+}
+
+// OnShutdown gracefully shuts down the repository, ensuring all data is persisted and resources are released.
+func (r *RepoManager) OnShutdown() error {
+	fmt.Println("Shutting down repository...")
+
+	// Attempt to save all user session data to disk
+	if err := r.SaveUserSessionOnDisk(); err != nil {
+		fmt.Printf("Warning: failed to save session data: %v\n", err)
+	}
+
+	fmt.Println("Repository shut down successfully.")
 	return nil
 }
