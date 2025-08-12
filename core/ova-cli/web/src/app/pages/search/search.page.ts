@@ -25,9 +25,9 @@ import { SearchApiService } from '../../services/api/search-api.service';
     AutoCompleteSearchBarComponent,
     VideoGridComponent,
   ],
-  templateUrl: './discover.page.html',
+  templateUrl: './search.page.html',
 })
-export class DiscoverPage implements OnInit, OnDestroy {
+export class SearchPage implements OnInit, OnDestroy {
   searchTerm: string = '';
   sortOption: string = 'titleAsc';
   advancedSearchEnabled: boolean = false;

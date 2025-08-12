@@ -8,7 +8,7 @@
     </aside>
   </div>
 
-  <div class=" flex h-[calc(100vh-56px)] overflow-hidden ">
+  <div class=" flex h-[calc(100vh-56px)] overflow-hidden w-full ">
 
     <!-- Desktop Folder Tree: Fixed and offset beside main sidebar and below top navbar -->
     <div class="hidden lg:block bg-base-100 w-128 sticky  overflow-y-auto z-30  border-base-200">
@@ -20,23 +20,33 @@
 
     <!-- Main Content (with left margin to clear both sidebars) -->
     <div class="flex flex-col flex-grow w-full overflow-auto">
-      <div class="flex items-center gap-6 p-6 bg-base-200">
-        <!-- Avatar Section -->
-        <div class="avatar avatar-placeholder">
-          <div class="bg-neutral text-neutral-content w-24 rounded-full">
-            <span class="text-3xl">S</span>
+      <div class="flex justify-between items-center gap-6 p-6 px-20 bg-base-200">
+
+        <div class="flex items-center gap-5">
+
+          <!-- Avatar Section -->
+          <div class="avatar avatar-placeholder">
+            <div class="bg-neutral text-neutral-content w-24 rounded-full">
+              <span class="text-3xl">{{ SpaceSelected ? SpaceSelected.charAt(0) : '' }}</span>
+            </div>
+          </div>
+
+          <!-- Content Section -->
+          <div class="flex flex-col space-y-2">
+            <span class="text-xl font-semibold ">{{ SpaceSelected }}</span>
+            <div class="text-sm  flex items-center gap-2">
+              <span id="spaceId">#sdkfjs23kdsflkjdsf</span>
+              <button class="text-primary text-xs flex items-center gap-1" (click)="copySpaceId()"
+                [attr.aria-label]="copyButtonLabel">
+                <i class="bx bx-copy"></i>
+                <span *ngIf="!copied">Copy</span>
+                <span *ngIf="copied">Copied!</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- Content Section -->
-        <div class="flex flex-col space-y-2">
-          <span class="text-xl font-semibold ">Space Name</span>
-          <div class="text-sm  flex items-center gap-2">
-            <span>#sdkfjs23kdsflkjdsf</span>
-            <button class="text-primary text-xs">Copy</button>
-          </div>
-          <a href="#" class="text-primary hover:underline text-sm">More</a>
-        </div>
+        <a href="#" class="text-primary hover:underline text-sm">More</a>
       </div>
 
 

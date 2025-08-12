@@ -33,6 +33,23 @@ import { CommonModule } from '@angular/common';
   templateUrl: './library.page.html',
 })
 export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
+  copied = false;
+  copyButtonLabel = 'Copy space ID to clipboard';
+  SpaceSelected = 'root';
+  // Clipboard copy for space ID
+  copySpaceId() {
+    const spaceId = '#sdkfjs23kdsflkjdsf'; // Replace with dynamic value if needed
+    if (navigator && navigator.clipboard) {
+      navigator.clipboard.writeText(spaceId).then(() => {
+        this.copied = true;
+        this.copyButtonLabel = 'Copied!';
+        setTimeout(() => {
+          this.copied = false;
+          this.copyButtonLabel = 'Copy space ID to clipboard';
+        }, 1200);
+      });
+    }
+  }
   allVideos: VideoData[] = [];
   videos: VideoData[] = [];
   folders: string[] = [];
@@ -180,6 +197,12 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
 
   onFolderSelected(folder: string) {
     if (folder !== null && folder !== undefined) {
+      this.SpaceSelected = folder;
+
+      if (folder == '') {
+        this.SpaceSelected = 'root';
+      }
+
       this.router.navigate(['/library'], {
         queryParams: { folder, page: 1 },
         queryParamsHandling: 'merge',
@@ -189,16 +212,6 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
         queryParams: { folder: null, page: 1 },
         queryParamsHandling: 'merge',
       });
-    }
-
-    // Close drawer on mobile by unchecking drawer toggle
-    if (this.isMobile) {
-      const drawerCheckbox = document.getElementById(
-        'my-drawer-2'
-      ) as HTMLInputElement | null;
-      if (drawerCheckbox) {
-        drawerCheckbox.checked = false;
-      }
     }
   }
 

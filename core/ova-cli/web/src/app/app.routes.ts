@@ -8,7 +8,7 @@ import { AuthGuard } from './services/auth.guard';
 import { SavedPage } from './pages/saved/saved.page';
 import { PlaylistsPage } from './pages/playlists/playlists.page';
 import { PlaylistDetailPage } from './pages/playlists-detail/playlist-detail.page';
-import { DiscoverPage } from './pages/discover/discover.page';
+import { SearchPage } from './pages/search/search.page';
 import { DashboardPage } from './pages/dashboard/dashboard.page';
 import { ProfilePage } from './pages/profile/profile.page';
 import { HistoryPage } from './pages/history/history.page';
@@ -80,8 +80,8 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'discover',
-    component: DiscoverPage,
+    path: 'search',
+    component: SearchPage,
     canActivate: [AuthGuard],
   },
   {

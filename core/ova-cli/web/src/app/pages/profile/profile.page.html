@@ -142,9 +142,18 @@
         <p class="text-sm mb-4">
           You can clear your entire watch history here.
         </p>
-        <button class="btn btn-error" (click)="openClearWatchHistoryConfirm()">
-          🗑️ Clear Watch History
-        </button>
+        <div class="flex justify-start items-center gap-10 w-full">
+          <span>Watching History:</span>
+          <button class=" btn btn-error" (click)="openClearWatchHistoryConfirm()">
+            Clear
+          </button>
+        </div>
+        <div class="flex items-center gap-10 w-full">
+          <span>User Settings:</span>
+          <button class=" btn btn-error" (click)="openClearWatchHistoryConfirm()">
+            Clear
+          </button>
+        </div>
       </div>
     </div>
   </div>
