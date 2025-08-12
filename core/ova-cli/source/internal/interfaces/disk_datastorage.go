@@ -36,6 +36,7 @@ type DiskDataStorage interface {
 	DeleteVideoByID(id string) error
 	DeleteAllVideos() error
 	GetVideoByID(id string) (*datatypes.VideoData, error)
+	GetVideoByPath(path string) (*datatypes.VideoData, error)
 
 	SearchVideos(criteria datatypes.VideoSearchCriteria) ([]datatypes.VideoData, error)
 	GetAllVideos() ([]datatypes.VideoData, error)

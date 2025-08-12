@@ -7,8 +7,8 @@ import (
 
 // SaveOnDisk saves the session data to disk as JSON.
 func (db *SessionDB) SaveOnDisk() error {
-	db.mu.RLock()
-	defer db.mu.RUnlock()
+	db.mu.Lock()
+	defer db.mu.Unlock()
 	path := db.getSessionDataFilePath()
 	f, err := os.Create(path)
 	if err != nil {
@@ -22,15 +22,14 @@ func (db *SessionDB) SaveOnDisk() error {
 
 // LoadFromDisk loads the session data from disk (JSON).
 func (db *SessionDB) LoadFromDisk() error {
-	db.mu.Lock()
-	defer db.mu.Unlock()
 	path := db.getSessionDataFilePath()
 	f, err := os.Open(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			// File does not exist, create it with an empty map
+			db.mu.Lock()
 			db.SessionIDs = make(map[string]string)
-			// Save the empty map to disk
+			db.mu.Unlock()
+			// Save the empty map to disk (SaveOnDisk will lock internally)
 			if createErr := db.SaveOnDisk(); createErr != nil {
 				return createErr
 			}
@@ -44,6 +43,8 @@ func (db *SessionDB) LoadFromDisk() error {
 	if err := dec.Decode(&m); err != nil {
 		return err
 	}
+	db.mu.Lock()
 	db.SessionIDs = m
+	db.mu.Unlock()
 	return nil
 }

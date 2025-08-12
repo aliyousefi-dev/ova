@@ -15,12 +15,12 @@ import (
 func RegisterStoryboardRoutes(rg *gin.RouterGroup, repoManager *repo.RepoManager) {
 
 	// Serve individual thumbnail elements
-	rg.GET("/storyboards/:videoId/:filename", func(c *gin.Context) {
+	rg.GET("/preview-thumbnails/:videoId/:filename", func(c *gin.Context) {
 		videoId := c.Param("videoId")
 		filename := c.Param("filename")
 
-		// Get the correct folder path for the storyboard using GetStoryboardFolderPathByVideoID
-		storyboardPath := filepath.Join(repoManager.GetStoryboardFolderPathByVideoID(videoId), filename)
+		// Get the correct folder path for the storyboard using GetPreviewThumbnailsFolderPathByVideoID
+		storyboardPath := filepath.Join(repoManager.GetPreviewThumbnailsFolderPathByVideoID(videoId), filename)
 
 		// Check if the file exists
 		info, err := os.Stat(storyboardPath)

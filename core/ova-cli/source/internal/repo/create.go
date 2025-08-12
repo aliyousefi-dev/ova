@@ -6,7 +6,7 @@ import (
 )
 
 func (r *RepoManager) CreateDefaultConfigFile() error {
-	defaultCfg := GetDefaultConfig()
+	defaultCfg := r.GetDefaultConfig()
 	r.configs = *defaultCfg
 
 	if err := r.SaveRepoConfig(defaultCfg); err != nil {

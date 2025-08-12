@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-// RegisterVideoWithAbsolutePath handles hashing, thumbnail/preview generation, and metadata storage.
-func (r *RepoManager) RegisterVideoWithAbsolutePath(absolutePath string) (datatypes.VideoData, error) {
+// IndexVideo handles hashing, thumbnail/preview generation, and metadata storage.
+func (r *RepoManager) IndexVideo(absolutePath string) (datatypes.VideoData, error) {
 	if !r.IsDataStorageInitialized() {
 		return datatypes.VideoData{}, fmt.Errorf("data storage is not initialized")
 	}
@@ -24,7 +24,7 @@ func (r *RepoManager) RegisterVideoWithAbsolutePath(absolutePath string) (dataty
 	}
 
 	// 2. Get the root directory of the repository (or base directory)
-	rootPath := r.GetRootPath()  // Assuming this is a method that gets the root path
+	rootPath := r.GetRootPath() // Assuming this is a method that gets the root path
 
 	// 3. Generate the relative path from rootPath to absolutePath
 	relativePath, err := utils.MakeRelative(rootPath, absolutePath)
@@ -36,6 +36,10 @@ func (r *RepoManager) RegisterVideoWithAbsolutePath(absolutePath string) (dataty
 	videoID, err := r.GenerateVideoID(absolutePath)
 	if err != nil {
 		return datatypes.VideoData{}, err
+	}
+
+	if r.CheckVideoIndexedByID(videoID) {
+		return datatypes.VideoData{}, fmt.Errorf("video with ID %s is already indexed", videoID)
 	}
 
 	// 5. Extract metadata
@@ -72,7 +76,7 @@ func (r *RepoManager) RegisterVideoWithAbsolutePath(absolutePath string) (dataty
 	videoData.DurationSeconds = int(duration)
 	videoData.Codecs = codec
 	videoData.Resolution = resolution
-	videoData.FilePath = relativePath   // Use the relative path here
+	videoData.FilePath = relativePath // Use the relative path here
 
 	// 8. Store metadata
 	if err := r.diskDataStorage.AddVideo(videoData); err != nil {
@@ -82,8 +86,49 @@ func (r *RepoManager) RegisterVideoWithAbsolutePath(absolutePath string) (dataty
 	return videoData, nil
 }
 
-// UnregisterVideo removes a video and its related files and metadata.
-func (r *RepoManager) UnregisterVideo(videoPath string) error {
+func (r *RepoManager) IndexMultiVideos(absolutePaths []string, progressChan chan int, errorChan chan error) ([]datatypes.VideoData, error) {
+	var indexedVideos []datatypes.VideoData
+	totalVideos := len(absolutePaths)
+
+	// If a progressChan is provided, initialize progress to 0
+	if progressChan != nil {
+		progressChan <- 0 // Initialize progress to 0
+	}
+
+	for i, absPath := range absolutePaths {
+		// Index the video
+		videoData, err := r.IndexVideo(absPath)
+		if err != nil {
+			if errorChan != nil {
+				errorChan <- fmt.Errorf("failed to index video %s: %w", absPath, err)
+			}
+			// Continue to next video instead of returning
+			continue
+		}
+
+		// Append the successfully indexed video
+		indexedVideos = append(indexedVideos, videoData)
+
+		// Calculate progress as a percentage (0-100)
+		progress := int((float64(i+1) / float64(totalVideos)) * 100)
+
+		// Send progress update if progressChan is provided
+		if progressChan != nil {
+			progressChan <- progress
+		}
+	}
+
+	// Final progress update to 100% if progressChan is provided
+	if progressChan != nil {
+		progressChan <- 100
+		// Do not close progressChan here; let the caller close it if needed
+	}
+
+	return indexedVideos, nil
+}
+
+// UnIndexVideo removes a video and its related files and metadata.
+func (r *RepoManager) UnIndexVideo(videoPath string) error {
 	if !r.IsDataStorageInitialized() {
 		return fmt.Errorf("data storage is not initialized")
 	}

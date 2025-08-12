@@ -47,7 +47,7 @@ func (r *RepoManager) ScanDiskForVideosRelPath() ([]string, error) {
 			}
 			return nil
 		}
-		
+
 		// Check if it's a video file
 		if r.IsVideoFile(info.Name()) {
 			// Get the relative path from the repository root to the video file
@@ -64,7 +64,6 @@ func (r *RepoManager) ScanDiskForVideosRelPath() ([]string, error) {
 
 	return videos, err
 }
-
 
 func (r *RepoManager) IsVideoFile(filename string) bool {
 	lower := strings.ToLower(filename)
@@ -155,7 +154,6 @@ func (r *RepoManager) GetVideoCountOnDisk() (int, error) {
 	return len(videoPaths), nil
 }
 
-
 // GetUnindexedVideos scans the disk for video files and returns the absolute paths of unindexed videos.
 func (r *RepoManager) GetUnindexedVideos() ([]string, error) {
 	if !r.IsDataStorageInitialized() {
@@ -163,7 +161,7 @@ func (r *RepoManager) GetUnindexedVideos() ([]string, error) {
 	}
 
 	// Fetch all already indexed videos
-	indexedVideos, err := r.GetAllVideos()
+	indexedVideos, err := r.GetAllIndexedVideos()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get indexed videos: %w", err)
 	}
@@ -196,15 +194,12 @@ func (r *RepoManager) GetUnindexedVideos() ([]string, error) {
 	return unindexedPaths, nil
 }
 
-
-
 // Define a struct to hold the result of each hashing operation
 type VideoHashResult struct {
 	RelPath string
 	Hash    string
 	Err     error
 }
-
 
 // ScanDiskForDuplicateVideos scans the repository for duplicate video files by checking their hashes.
 // It returns a map where keys are video hashes and values are slices of relative paths
@@ -226,7 +221,7 @@ func (r *RepoManager) ScanDiskForDuplicateVideos() (map[string][]string, error) 
 	// Determine the number of concurrent workers.
 	// A common practice is to use GOMAXPROCS or a slightly higher number to account for I/O bound tasks.
 	numWorkers := runtime.NumCPU() * 2 // Or a fixed number like 8, 16, depending on I/O capacity
-	if numWorkers == 0 { // Fallback if NumCPU returns 0 (unlikely)
+	if numWorkers == 0 {               // Fallback if NumCPU returns 0 (unlikely)
 		numWorkers = 4
 	}
 

@@ -6,13 +6,12 @@ import (
 
 	"ova-cli/source/internal/repo"
 
-	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 )
 
-var useBoltDB bool       // flag for using BoltDB
-var username string     // flag for username
-var password string     // flag for password
+var useBoltDB bool  // flag for using BoltDB
+var username string // flag for username
+var password string // flag for password
 
 var initCmd = &cobra.Command{
 	Use:   "init [path]",
@@ -21,13 +20,23 @@ var initCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		absPath, err := filepath.Abs(args[0])
 		if err != nil {
-			pterm.Error.Printf("Error resolving absolute path: %v\n", err)
+			fmt.Printf("Error resolving absolute path: %v\n", err)
 			return
 		}
 
-		// If username or password is empty, show an error
+		// Prompt for username if not provided
+		if username == "" {
+			fmt.Print("Enter admin username: ")
+			fmt.Scanln(&username)
+		}
+		// Prompt for password if not provided
+		if password == "" {
+			fmt.Print("Enter admin password: ")
+			fmt.Scanln(&password)
+		}
+
 		if username == "" || password == "" {
-			pterm.Error.Println("Username and password are required.")
+			fmt.Println("Username and password are required.")
 			return
 		}
 
@@ -37,17 +46,13 @@ var initCmd = &cobra.Command{
 			return
 		}
 
-
 		// No need to call repository.Init() here because CreateRepoWithUser calls it internally
 		if err := repository.CreateRepoWithUser(username, password, useBoltDB); err != nil {
-			pterm.Error.Printf("Error initializing repository with user: %v\n", err)
+			fmt.Printf("Error initializing repository with user: %v\n", err)
 			return
 		}
 
-		pterm.Success.Println("Initialized empty ova repository.")
-		pterm.Println(pterm.LightGreen("Admin user created:"))
-		pterm.FgLightGreen.Println("  Username:", username)
-		pterm.FgLightGreen.Println("  Password:", password)
+		fmt.Println("Initialized empty ova repository.")
 	},
 }
 

@@ -12,13 +12,10 @@ func (r *RepoManager) CacheLatestVideos() error {
 	}
 
 	// Get all videos from disk storage (handle any potential errors)
-	allVideos, err := r.diskDataStorage.GetAllVideos()
+	allVideos, err := r.GetAllIndexedVideos()
 	if err != nil {
 		return fmt.Errorf("failed to get all videos from disk storage: %w", err)
 	}
-
-		// Print the length of all videos to see how many are being fetched
-	fmt.Printf("Total videos fetched from disk storage: %d\n", len(allVideos))
 
 	// Cache videos by upload date into memory storage
 	if err := r.memoryDataStorage.CacheVideosByUploadDate(allVideos); err != nil {

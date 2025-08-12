@@ -19,6 +19,7 @@
 - Enable Cooking by Default.
 - Runtime Change Watcher
 - When Click on a Space Show the Space Info like Videos.
+- Live Stream Solution
 
 Create Space API - Creating a Folder inside Repo Root.
 

@@ -1,3 +1,5 @@
+Ova is a Self Video Hosting Platform.
+
 OVA is a Internal Server and Web Application to Save and Archive Videos on the Server.
 and then Access Them in the a Web Ui Interface.
 

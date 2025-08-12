@@ -1,19 +1,22 @@
 package repo
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 )
 
 // GetExecutableFolderPath returns the folder path of the currently running executable (ovacli).
-func (r *RepoManager) GetExecutableFolderPath() (string, error) {
+func (r *RepoManager) GetExecutableFolderPath() string {
 	exePath, err := os.Executable()
 	if err != nil {
-		return "", fmt.Errorf("failed to get executable path: %w", err)
+		return ""
 	}
 	exeDir := filepath.Dir(exePath)
-	return exeDir, nil
+	return exeDir
+}
+
+func (r *RepoManager) GetDefaultConfigTemplateFilePath() string {
+	return filepath.Join(r.GetExecutableFolderPath(), "default-config-template.json")
 }
 
 func (r *RepoManager) GetRootPath() string {
@@ -48,10 +51,9 @@ func (r *RepoManager) GetVideoMarkerDir() string {
 	return filepath.Join(r.rootDir, ".ova-repo", "storage", "video_markers")
 }
 
-func (r *RepoManager) GetStoryboardDir() string {
-	return filepath.Join(r.rootDir, ".ova-repo", "storage", "sprite_thumbnails")
+func (r *RepoManager) GetPreviewThumbnailsDir() string {
+	return filepath.Join(r.rootDir, ".ova-repo", "storage", "preview_thumbnails")
 }
-
 
 func (r *RepoManager) GetPreviewFilePathByVideoID(videoID string) string {
 	// Get the first two characters of the videoID
@@ -75,12 +77,12 @@ func (r *RepoManager) GetThumbnailFilePathByVideoID(videoID string) string {
 	return thumbnailPath
 }
 
-func (r *RepoManager) GetStoryboardFolderPathByVideoID(videoID string) string {
+func (r *RepoManager) GetPreviewThumbnailsFolderPathByVideoID(videoID string) string {
 	// Get the first two characters of the videoID to create the subfolder
 	subfolder := videoID[:2]
 
 	// Build the full path to the storyboard folder
-	storyboardFolderPath := filepath.Join(r.GetStoryboardDir(), subfolder, videoID)
+	storyboardFolderPath := filepath.Join(r.GetPreviewThumbnailsDir(), subfolder, videoID)
 
 	// Return the storyboard folder path directly without checking if the folder exists
 	return storyboardFolderPath

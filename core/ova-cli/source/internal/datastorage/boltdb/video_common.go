@@ -51,6 +51,20 @@ func (b *BoltDB) GetVideoByID(id string) (*datatypes.VideoData, error) {
 	return &video, nil
 }
 
+func (b *BoltDB) GetVideoByPath(path string) (*datatypes.VideoData, error) {
+	videos, err := b.loadVideos()
+	if err != nil {
+		return nil, fmt.Errorf("failed to load videos: %w", err)
+	}
+
+	for _, video := range videos {
+		if video.FilePath == path {
+			return &video, nil
+		}
+	}
+	return nil, fmt.Errorf("video with path %q not found", path)
+}
+
 // UpdateVideo replaces an existing video with the provided new video data.
 // Returns an error if the video to be updated does not exist.
 func (b *BoltDB) UpdateVideo(newVideo datatypes.VideoData) error {

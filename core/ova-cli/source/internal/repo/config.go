@@ -3,20 +3,76 @@ package repo
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"ova-cli/source/internal/datatypes"
 	"time"
 )
 
-func GetDefaultConfig() *datatypes.Config {
-	return &datatypes.Config{
-		Version:              "1.0.0",
-		ServerHost:           "0.0.0.0",
-		ServerPort:           4040,
-		EnableAuthentication: true,
-		DataStorageType:      "jsondb",
-		CreatedAt:            time.Now(),
+func (r *RepoManager) GetDefaultConfig() *datatypes.Config {
+	config, err := r.GetDefaultConfigTemplate()
+	if err != nil {
+		// Log the error or handle it internally (you can customize this part)
+		log.Printf("Error getting default config: %v", err)
+		// Return a fallback config in case of error
+		return &datatypes.Config{
+			Version:              "1.0.0",
+			ServerHost:           "0.0.0.0",
+			ServerPort:           4040,
+			EnableAuthentication: true,
+			DataStorageType:      "jsondb",
+			CreatedAt:            time.Now(),
+		}
 	}
+	return config
+}
+
+func (r *RepoManager) GetDefaultConfigTemplate() (*datatypes.Config, error) {
+	templatepath := r.GetDefaultConfigTemplateFilePath()
+
+	// Check if the file exists
+	if _, err := os.Stat(templatepath); os.IsNotExist(err) {
+		// File doesn't exist, create it with the default config
+		defaultConfig := &datatypes.Config{
+			Version:              "1.0.0",
+			ServerHost:           "0.0.0.0",
+			ServerPort:           4040,
+			EnableAuthentication: true,
+			DataStorageType:      "jsondb",
+			CreatedAt:            time.Now(),
+		}
+
+		// Create and write to the file
+		file, err := os.Create(templatepath)
+		if err != nil {
+			return nil, fmt.Errorf("could not create config file: %v", err)
+		}
+		defer file.Close()
+
+		// Marshal and write the config data to the file (assuming the Config struct is JSON serializable)
+		encoder := json.NewEncoder(file)
+		encoder.SetIndent("", "  ")
+		if err := encoder.Encode(defaultConfig); err != nil {
+			return nil, fmt.Errorf("could not write config to file: %v", err)
+		}
+
+		return defaultConfig, nil
+	}
+
+	// If the file exists, read and return the existing config
+	file, err := os.Open(templatepath)
+	if err != nil {
+		return nil, fmt.Errorf("could not open config file: %v", err)
+	}
+	defer file.Close()
+
+	var config datatypes.Config
+	decoder := json.NewDecoder(file)
+	if err := decoder.Decode(&config); err != nil {
+		return nil, fmt.Errorf("could not read config from file: %v", err)
+	}
+
+	return &config, nil
 }
 
 func (r *RepoManager) LoadRepoConfig() error {
@@ -25,7 +81,7 @@ func (r *RepoManager) LoadRepoConfig() error {
 	data, err := os.ReadFile(configPath)
 	if os.IsNotExist(err) {
 		// Use default config and save it
-		defaultCfg := GetDefaultConfig()
+		defaultCfg := r.GetDefaultConfig()
 		r.configs = *defaultCfg
 		if err := r.SaveRepoConfig(defaultCfg); err != nil {
 			return fmt.Errorf("failed to save default config: %w", err)
@@ -66,7 +122,7 @@ func (r *RepoManager) GetConfigs() *datatypes.Config {
 }
 
 func (r *RepoManager) CreateDefaultConfigFileWithStorageType(storageType string) error {
-	defaultCfg := GetDefaultConfig()
+	defaultCfg := r.GetDefaultConfig()
 	defaultCfg.DataStorageType = storageType
 	r.configs = *defaultCfg
 

@@ -45,7 +45,6 @@ var repoInfoCmd = &cobra.Command{
 			return
 		}
 
-
 		// Fetch the repository info using the GetRepoInfo method
 		repoInfo, err := repository.GetRepoInfo()
 		if err != nil {
@@ -79,8 +78,6 @@ var repoInfoCmd = &cobra.Command{
 	},
 }
 
-
-
 var repoVideosCmd = &cobra.Command{
 	Use:   "videos",
 	Short: "Scan the repository for videos and list their paths",
@@ -106,7 +103,6 @@ var repoVideosCmd = &cobra.Command{
 			fmt.Println("Failed to initialize repository:", err)
 			return
 		}
-
 
 		// Fetch videos from repository by scanning the disk
 		videos, err := repository.ScanDiskForVideosRelPath()
@@ -150,7 +146,7 @@ var repoVideosCmd = &cobra.Command{
 }
 
 var repoUnindexedCmd = &cobra.Command{
-	Use:   "unindexed",  // Shortened the command name
+	Use:   "unindexed", // Shortened the command name
 	Short: "List unindexed videos in the repository",
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get the repository address from the --repository flag
@@ -174,7 +170,6 @@ var repoUnindexedCmd = &cobra.Command{
 			fmt.Println("Failed to initialize repository:", err)
 			return
 		}
-
 
 		// Fetch unindexed videos from the repository
 		unindexedVideos, err := repository.GetUnindexedVideos()
@@ -292,22 +287,69 @@ var repoDuplicateCmd = &cobra.Command{
 	},
 }
 
+var repoPurgeCmd = &cobra.Command{
+	Use:   "purge",
+	Short: "Purge repository",
+	Run: func(cmd *cobra.Command, args []string) {
+
+		// Get the repository address from the --repository flag
+		repoAddress, _ := cmd.Flags().GetString("repository")
+
+		// If repository address is not provided, use the current working directory (os.Getwd())
+		if repoAddress == "" {
+			repoAddress, _ = os.Getwd() // Default to the current working directory
+		}
+
+		// Resolve the absolute path of the repository
+		absPath, err := filepath.Abs(repoAddress)
+		if err != nil {
+			fmt.Printf("Error resolving absolute path: %v\n", err)
+			return
+		}
+
+		// Create a new RepoManager instance
+		repository, err := repo.NewRepoManager(absPath)
+		if err != nil {
+			fmt.Println("Failed to initialize repository:", err)
+			return
+		}
+
+		// Ask for confirmation before purging
+		fmt.Print("Are you sure you want to purge the repository? This action cannot be undone. (y/N): ")
+		var response string
+		fmt.Scanln(&response)
+		if response != "y" && response != "Y" {
+			fmt.Println("Purge cancelled.")
+			return
+		}
+
+		if err := repository.PurgeRepository(); err != nil {
+			fmt.Println("Failed to purge repository:", err)
+			return
+		}
+
+	},
+}
 
 func InitCommandRepo(rootCmd *cobra.Command) {
+
+	repoCmd.AddCommand(repoPurgeCmd)
+	repoPurgeCmd.Flags().StringP("repository", "r", "", "Specify the repository directory")
+
 	// Add flags for the repo info and videos commands
 	repoCmd.AddCommand(repoInfoCmd)
 	repoInfoCmd.Flags().BoolP("json", "j", false, "Output the repository information in JSON format")
 	repoInfoCmd.Flags().StringP("repository", "r", "", "Specify the repository directory")
 
 	// Add flags for the unindexed command
-	repoCmd.AddCommand(repoUnindexedCmd)	
+	repoCmd.AddCommand(repoUnindexedCmd)
 	repoUnindexedCmd.Flags().BoolP("json", "j", false, "Output the unindexed video paths in JSON format")
 	repoUnindexedCmd.Flags().StringP("repository", "r", "", "Specify the repository directory")
 
 	repoCmd.AddCommand(repoDuplicateCmd)
 	repoDuplicateCmd.Flags().StringP("repository", "r", "", "Path to the video repository (default: current directory)")
 	repoDuplicateCmd.Flags().BoolP("json", "j", false, "Output results in JSON format")
-	
+
 	repoCmd.AddCommand(repoVideosCmd)
 	repoVideosCmd.Flags().BoolP("json", "j", false, "Output the video paths in JSON format")
 	repoVideosCmd.Flags().StringP("repository", "r", "", "Specify the repository directory")

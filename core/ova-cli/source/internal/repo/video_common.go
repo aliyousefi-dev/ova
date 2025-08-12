@@ -2,7 +2,6 @@ package repo
 
 import (
 	"fmt"
-	"strings"
 
 	"ova-cli/source/internal/datatypes"
 )
@@ -13,22 +12,75 @@ func (r *RepoManager) AddVideo(video datatypes.VideoData) error {
 		return fmt.Errorf("data storage is not initialized")
 	}
 
-	// Check if video exists
-	_, err := r.GetVideoByID(video.VideoID)
-	if err == nil {
-		// Video exists, so return error
+	if r.CheckVideoIndexedByID(video.VideoID) {
 		return fmt.Errorf("video with ID %q already exists", video.VideoID)
 	}
+
+	// Add video to database
+	return r.diskDataStorage.AddVideo(video)
+}
+
+// AddVideo adds a new video if it does not already exist.
+func (r *RepoManager) AddOneVideo(VideoPath string, cook bool) error {
+	if !r.IsDataStorageInitialized() {
+		return fmt.Errorf("data storage is not initialized")
+	}
+
+	// indexing video
+	_, err := r.IndexVideo(VideoPath)
 	if err != nil {
-		// If error is something other than "not found", return it
-		if !strings.Contains(err.Error(), "not found") {
-			return err
+		return fmt.Errorf("failed to index video with path %q: %w", VideoPath, err)
+	}
+
+	// optionality cook video if enabled
+	if cook {
+		if err := r.CookOneVideo(VideoPath); err != nil {
+			return fmt.Errorf("failed to cook video with path %q: %w", VideoPath, err)
 		}
-		// else err indicates video not found, so continue to add
 	}
 
 	// Add video since it does not exist
-	return r.diskDataStorage.AddVideo(video)
+	return nil
+}
+
+func (r *RepoManager) AddMultiVideos(
+	VideoPaths []string,
+	cook bool,
+	indexingProgressChan chan int,
+	cookingProgressChan chan int,
+	stateChan chan string,
+	indexingErrorChan chan error,
+	cookingErrorChan chan error,
+) error {
+	if !r.IsDataStorageInitialized() {
+		return fmt.Errorf("data storage is not initialized")
+	}
+
+	// Notify the state as "Indexing"
+	stateChan <- "Indexing"
+
+	// Index all videos at once with progress and error tracking
+	_, _ = r.IndexMultiVideos(VideoPaths, indexingProgressChan, indexingErrorChan)
+	close(indexingProgressChan)
+	if indexingErrorChan != nil {
+		close(indexingErrorChan)
+	}
+
+	// Optionally cook videos if enabled with progress and error tracking
+	if cook {
+		// Notify the state as "Cooking"
+		stateChan <- "Cooking"
+		_ = r.CookMultiVideos(VideoPaths, cookingProgressChan, cookingErrorChan)
+		close(cookingProgressChan)
+		if cookingErrorChan != nil {
+			close(cookingErrorChan)
+		}
+	}
+
+	// All videos processed successfully
+	stateChan <- "Completed" // Final state
+	close(stateChan)
+	return nil
 }
 
 // DeleteVideoByID removes a video by its ID.
@@ -36,15 +88,7 @@ func (r *RepoManager) DeleteVideoByID(id string) error {
 	if !r.IsDataStorageInitialized() {
 		return fmt.Errorf("data storage is not initialized")
 	}
-	return r.diskDataStorage.DeleteVideoByID(id)
-}
-
-// GetVideoByID returns video data by ID.
-func (r *RepoManager) GetVideoByID(id string) (*datatypes.VideoData, error) {
-	if !r.IsDataStorageInitialized() {
-		return nil, fmt.Errorf("data storage is not initialized")
-	}
-	return r.diskDataStorage.GetVideoByID(id)
+	return r.UnIndexVideo(id)
 }
 
 // GetFolderList returns unique folder paths containing videos.
@@ -55,8 +99,8 @@ func (r *RepoManager) GetFolderList() ([]string, error) {
 	return r.diskDataStorage.GetFolderList()
 }
 
-// GetAllVideos returns all videos.
-func (r *RepoManager) GetAllVideos() ([]datatypes.VideoData, error) {
+// GetAllIndexedVideos returns all videos.
+func (r *RepoManager) GetAllIndexedVideos() ([]datatypes.VideoData, error) {
 	if !r.IsDataStorageInitialized() {
 		return nil, fmt.Errorf("data storage is not initialized")
 	}
@@ -71,8 +115,8 @@ func (r *RepoManager) DeleteAllVideos() error {
 	return r.diskDataStorage.DeleteAllVideos()
 }
 
-// GetVideosByFolder returns all videos inside specified folder.
-func (r *RepoManager) GetVideosByFolder(folderPath string) ([]datatypes.VideoData, error) {
+// GetIndexedVideosByFolder returns all videos inside specified folder.
+func (r *RepoManager) GetIndexedVideosByFolder(folderPath string) ([]datatypes.VideoData, error) {
 	if !r.IsDataStorageInitialized() {
 		return nil, fmt.Errorf("data storage is not initialized")
 	}
@@ -87,8 +131,8 @@ func (r *RepoManager) UpdateVideoLocalPath(videoID, newPath string) error {
 	return r.diskDataStorage.UpdateVideoLocalPath(videoID, newPath)
 }
 
-// GetTotalVideoCount returns total number of videos.
-func (r *RepoManager) GetTotalVideoCount() (int, error) {
+// GetTotalIndexedVideoCount returns total number of videos.
+func (r *RepoManager) GetTotalIndexedVideoCount() (int, error) {
 	if !r.IsDataStorageInitialized() {
 		return 0, fmt.Errorf("data storage is not initialized")
 	}

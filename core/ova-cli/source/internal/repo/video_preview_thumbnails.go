@@ -7,8 +7,20 @@ import (
 	"path/filepath"
 )
 
-// GenerateStoryboardForVideo generates sprite sheet thumbnails and VTT files for a single video.
-func (r *RepoManager) GenerateStoryboardForVideo(videoPath string) error {
+func (r *RepoManager) CheckPreviewThumbnailGenerated(videoID string) bool {
+	// Check if the preview thumbnail exists
+	videoSpriteDir := r.GetPreviewThumbnailsFolderPathByVideoID(videoID)
+	vttPath := filepath.Join(videoSpriteDir, "thumbnails.vtt")
+	if _, err := os.Stat(vttPath); err == nil {
+		// Preview thumbnail exists
+		return true
+	}
+	// Preview thumbnail does not exist
+	return false
+}
+
+// GenerateVideoPreviewThumbnails generates sprite sheet thumbnails and VTT files for a single video.
+func (r *RepoManager) GenerateVideoPreviewThumbnails(videoPath string) error {
 	// Use existing method to generate unique video ID (content hash)
 	videoID, err := r.GenerateVideoID(videoPath)
 	if err != nil {
@@ -16,7 +28,7 @@ func (r *RepoManager) GenerateStoryboardForVideo(videoPath string) error {
 	}
 
 	// Use GetStoryboardFolderPathByVideoID to get the folder path for the storyboard
-	videoSpriteDir := r.GetStoryboardFolderPathByVideoID(videoID)
+	videoSpriteDir := r.GetPreviewThumbnailsFolderPathByVideoID(videoID)
 
 	// Create the storyboard directory if it doesn't exist
 	if err := os.MkdirAll(videoSpriteDir, 0755); err != nil {
@@ -50,7 +62,7 @@ func (r *RepoManager) GenerateStoryboardForVideo(videoPath string) error {
 		return fmt.Errorf("no keyframes found for %s", filepath.Base(videoPath))
 	}
 
-	vttPattern := filepath.Join("/api/v1/storyboards", videoID, "thumb_L0_%03d.jpg")
+	vttPattern := filepath.Join("/api/v1/preview-thumbnails", videoID, "thumb_L0_%03d.jpg")
 	if err := thirdparty.GenerateVTT(keyframeTimes, "5x5", 160, 90, vttPattern, vttPath, ""); err != nil {
 		return fmt.Errorf("VTT generation error for %s: %w", filepath.Base(videoPath), err)
 	}

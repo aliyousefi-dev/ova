@@ -90,7 +90,7 @@ export class VideoApiService {
   }
 
   getStoryboardVttUrl(videoId: string): string {
-    return `${this.baseUrl}/storyboards/${videoId}/thumbnails.vtt`;
+    return `${this.baseUrl}/preview-thumbnails/${videoId}/thumbnails.vtt`;
   }
 
   getTrimmedDownloadUrl(videoId: string, start: number, end?: number): string {
