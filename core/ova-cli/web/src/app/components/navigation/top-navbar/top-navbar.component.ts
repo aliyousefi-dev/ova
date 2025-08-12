@@ -1,10 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core'; // Removed Output for logout
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router'; // Import Router
+import { Router, RouterModule } from '@angular/router';
+import { Location } from '@angular/common';
 
 import { SettingsModalComponent } from '../../pop-ups/setting-modal/settings-modal.component';
 import { UtilsService } from '../../../services/utils.service';
-import { AuthApiService } from '../../../services/api/auth-api.service'; // Import AuthApiService
+import { AuthApiService } from '../../../services/api/auth-api.service';
 
 @Component({
   selector: 'app-top-navbar',
@@ -14,17 +15,15 @@ import { AuthApiService } from '../../../services/api/auth-api.service'; // Impo
 })
 export class TopNavbarComponent implements OnInit {
   @Input() pageTitle: string = 'Home';
-
   username: string = 'Guest';
-
   dropdownOpen = false;
-
   showSettingsModal = false;
 
   constructor(
     private utilsService: UtilsService,
-    private authapi: AuthApiService, // Inject AuthApiService
-    private router: Router // Inject Router
+    private authapi: AuthApiService,
+    private router: Router,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -53,19 +52,35 @@ export class TopNavbarComponent implements OnInit {
     this.username = this.utilsService.getUsername() || 'Guest';
   }
 
-  // Moved the onLogout logic here
   onLogout(): void {
     this.authapi.logout().subscribe({
       next: () => {
-        localStorage.removeItem('username'); // Clear username from local storage
-        this.username = 'Guest'; // Update the displayed username
-        this.router.navigate(['/login']); // Navigate to login page
+        localStorage.removeItem('username');
+        this.username = 'Guest';
+        this.router.navigate(['/login']);
       },
       error: () => {
-        // Handle error, maybe show a message, but still navigate to login
         this.router.navigate(['/login']);
       },
     });
-    this.dropdownOpen = false; // Close the dropdown immediately
+    this.dropdownOpen = false;
   }
+
+  // // Dynamically set page title based on the route
+  // setPageTitle(): void {
+  //   const currentRoute = this.location.path().split('?')[0]; // Get the route without query parameters
+
+  //   // Grab the last part of the path to set it as the title
+  //   const pathSegment = currentRoute.split('/').pop();
+
+  //   // Set the title dynamically, fall back to 'Home' if empty or unrecognized path
+  //   this.pageTitle = pathSegment
+  //     ? this.capitalizeFirstLetter(pathSegment)
+  //     : 'Home';
+  // }
+
+  // // Helper function to capitalize the first letter of a string
+  // capitalizeFirstLetter(string: string): string {
+  //   return string.charAt(0).toUpperCase() + string.slice(1);
+  // }
 }

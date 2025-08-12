@@ -3,13 +3,10 @@
   <div class="w-64 flex-shrink-0 space-y-4">
     <div class="card bg-base-100 shadow-md items-center p-6">
       <div class="avatar">
-        <div
-          class="w-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
-        >
+        <div class="w-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
           <img
             src="https://img.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3383.jpg"
-            alt="Profile Picture"
-          />
+            alt="Profile Picture" />
         </div>
       </div>
       <h2 class="mt-4 text-xl font-bold text-center">{{ username }}</h2>
@@ -23,51 +20,21 @@
   <div class="flex-1">
     <!-- Tabs -->
     <div role="tablist" class="tabs tabs-boxed mb-4">
-      <a
-        role="tab"
-        class="tab tab-active"
-        (click)="activeTab = 'overview'"
-        [class.tab-active]="activeTab === 'overview'"
-        >Overview</a
-      >
-      <a
-        role="tab"
-        class="tab"
-        (click)="activeTab = 'security'"
-        [class.tab-active]="activeTab === 'security'"
-        >Security</a
-      >
-      <a
-        role="tab"
-        class="tab"
-        (click)="activeTab = 'sessions'"
-        [class.tab-active]="activeTab === 'sessions'"
-        >Sessions</a
-      >
-      <a
-        role="tab"
-        class="tab"
-        (click)="activeTab = 'history'"
-        [class.tab-active]="activeTab === 'history'"
-        >History</a
-      >
+      <a role="tab" class="tab tab-active" (click)="activeTab = 'overview'"
+        [class.tab-active]="activeTab === 'overview'">Overview</a>
+      <a role="tab" class="tab" (click)="activeTab = 'security'"
+        [class.tab-active]="activeTab === 'security'">Security</a>
+      <a role="tab" class="tab" (click)="activeTab = 'history'" [class.tab-active]="activeTab === 'history'">History</a>
     </div>
 
     <!-- Tab Content -->
-    <div
-      *ngIf="activeTab === 'overview'"
-      class="grid grid-cols-1 md:grid-cols-2 gap-6"
-    >
+    <div *ngIf="activeTab === 'overview'" class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Subscription Stat -->
       <div class="card bg-base-100 shadow-md">
         <div class="card-body flex flex-col gap-2">
           <div class="flex items-center justify-between">
             <span class="font-medium">Subscription</span>
-            <div
-              class="radial-progress text-primary"
-              style="--value: 80; --size: 3rem"
-              role="progressbar"
-            >
+            <div class="radial-progress text-primary" style="--value: 80; --size: 3rem" role="progressbar">
               20
             </div>
           </div>
@@ -75,12 +42,7 @@
             20 <span class="text-sm">/ 30</span>
           </div>
           <div class="text-sm text-success flex items-center gap-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              class="size-4"
-              viewBox="0 0 16 16"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="size-4" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="..." clip-rule="evenodd" />
             </svg>
             Left Days
@@ -94,12 +56,7 @@
           <div class="font-medium">Joined</div>
           <div class="text-2xl font-bold">12 Jun 2025</div>
           <div class="text-sm text-success flex items-center gap-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              class="size-4"
-              viewBox="0 0 16 16"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="size-4" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="..." clip-rule="evenodd" />
             </svg>
             21% more than last month
@@ -113,12 +70,7 @@
           <div class="font-medium">Uploaded Videos</div>
           <div class="text-2xl font-bold">25</div>
           <div class="text-sm text-success flex items-center gap-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              class="size-4"
-              viewBox="0 0 16 16"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="size-4" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="..." clip-rule="evenodd" />
             </svg>
             21% more than last month
@@ -130,60 +82,22 @@
     <!-- Security Tab -->
     <div *ngIf="activeTab === 'security'" class="card bg-base-100 shadow-md">
       <div class="card-body space-y-4">
-        <h2 class="text-lg font-bold flex items-center gap-2">
-          🔒 Change Password
-        </h2>
 
-        <label class="input input-bordered flex items-center gap-2">
-          <input
-            type="password"
-            class="grow"
-            placeholder="Current Password"
-            [(ngModel)]="oldPassword"
-          />
-        </label>
+        <div class="flex items-center gap-10">
 
-        <label class="input input-bordered flex items-center gap-2">
-          <input
-            type="password"
-            class="grow"
-            placeholder="New Password"
-            [(ngModel)]="newPassword"
-          />
-        </label>
+          <span>
+            Change Password:
+          </span>
 
-        <label class="input input-bordered flex items-center gap-2">
-          <input
-            type="password"
-            class="grow"
-            placeholder="Repeat New Password"
-            [(ngModel)]="rewritePassword"
-          />
-        </label>
 
-        <p class="text-xs text-base-content/60 flex items-center gap-2">
-          <span class="status status-error inline-block"></span>
-          Password must be at least 8 characters
-        </p>
-
-        <div class="card-actions justify-between pt-2">
-          <button class="btn btn-primary" (click)="submitPasswordChange()">
+          <button class="btn btn-secondary" (click)="submitPasswordChange()">
             Change Password
           </button>
         </div>
-      </div>
-    </div>
 
-    <!-- Sessions Tab -->
-    <div *ngIf="activeTab === 'sessions'" class="card bg-base-100 shadow-md">
-      <div class="card-body">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-bold">Active Sessions</h2>
-          <button
-            class="btn btn-sm btn-error"
-            (click)="terminateAllSessions()"
-            [disabled]="sessions.length <= 1"
-          >
+          <button class="btn btn-sm btn-error" (click)="terminateAllSessions()" [disabled]="sessions.length <= 1">
             Terminate All
           </button>
         </div>
@@ -199,27 +113,18 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              *ngFor="let session of sessions; let i = index"
-              [ngClass]="{ 'bg-primary/10': session.id === currentSessionId }"
-            >
+            <tr *ngFor="let session of sessions; let i = index"
+              [ngClass]="{ 'bg-primary/10': session.id === currentSessionId }">
               <th>{{ i + 1 }}</th>
               <td>
                 {{ session.id }}
-                <span
-                  *ngIf="session.id === currentSessionId"
-                  class="badge badge-sm badge-info ml-2"
-                  >Current</span
-                >
+                <span *ngIf="session.id === currentSessionId" class="badge badge-sm badge-info ml-2">Current</span>
               </td>
               <td>{{ session.ip }}</td>
               <td>{{ session.device }}</td>
               <td class="text-right">
-                <button
-                  class="btn btn-xs btn-outline btn-error"
-                  (click)="terminateSession(session.id)"
-                  [disabled]="session.id === currentSessionId"
-                >
+                <button class="btn btn-xs btn-outline btn-error" (click)="terminateSession(session.id)"
+                  [disabled]="session.id === currentSessionId">
                   Terminate
                 </button>
               </td>
@@ -228,6 +133,7 @@
         </table>
       </div>
     </div>
+
 
     <!-- History Tab -->
     <div *ngIf="activeTab === 'history'" class="card bg-base-100 shadow-md">
@@ -244,7 +150,4 @@
   </div>
 </div>
 
-<app-confirm-modal
-  #confirmClearHistoryModal
-  (confirmed)="clearWatchHistory()"
-></app-confirm-modal>
+<app-confirm-modal #confirmClearHistoryModal (confirmed)="clearWatchHistory()"></app-confirm-modal>

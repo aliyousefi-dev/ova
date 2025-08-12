@@ -2,7 +2,7 @@
   [class.w-14]="!sidebarOpen">
 
   <div class="flex items-center  p-5" [class.justify-between]="sidebarOpen" [class.justify-center]="!sidebarOpen">
-    <div class="text-xl" [class.hidden]="!sidebarOpen">V-Drive</div>
+    <div class="text-xl" [class.hidden]="!sidebarOpen">OVA</div>
     <a class="btn btn-ghost" title="Toggle Sidebar" (click)="toggleSidebar()">
       <i class="bx bx-dock-left"></i>
     </a>
@@ -88,17 +88,17 @@
             <span [class.hidden]="sidebarOpen">S</span>
           </summary>
           <ul>
-            <li><a routerLink="/add-team" routerLinkActive="menu-active">
+            <li><a routerLink="/create-space" routerLinkActive="menu-active">
                 <i class="bx bx-plus bx-xs"></i>
                 <span [class.hidden]="!sidebarOpen">Create Space</span>
               </a>
             </li>
-            <li> <a routerLink="/teams" routerLinkActive="menu-active">
+            <li> <a routerLink="/create-team-space" routerLinkActive="menu-active">
                 <i class='bx bx-group bx-xs'></i>
                 <span [class.hidden]="!sidebarOpen">Create Team Space</span>
               </a>
             </li>
-            <li> <a routerLink="/join-team" routerLinkActive="menu-active">
+            <li> <a routerLink="/join-team-space" routerLinkActive="menu-active">
                 <i class='bx  bx-link bx-xs'></i>
                 <span [class.hidden]="!sidebarOpen">Join Team Space</span>
               </a>

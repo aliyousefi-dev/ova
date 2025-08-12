@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../../data-types/responses';
+import { ApiResponse } from './response-type';
 
 // This interface defines the shape of the marker data as the Angular frontend expects it,
 // matching the 'VideoMarker' struct in the Go API, using hour, minute, and second.

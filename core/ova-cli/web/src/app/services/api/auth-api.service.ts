@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ApiResponse } from '../../data-types/responses';
+import { ApiResponse } from './response-type';
 import { environment } from '../../../environments/environment';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';

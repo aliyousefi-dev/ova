@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import { VideoData } from '../../data-types/video-data';
-import { ApiResponse } from '../../data-types/responses';
+import { ApiResponse } from './response-type';
 
 import { environment } from '../../../environments/environment';
 

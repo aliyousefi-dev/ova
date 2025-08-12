@@ -20,7 +20,28 @@
 
     <!-- Main Content (with left margin to clear both sidebars) -->
     <div class="flex flex-col flex-grow w-full overflow-auto">
-      <div class="">
+      <div class="flex items-center gap-6 p-6 bg-base-200">
+        <!-- Avatar Section -->
+        <div class="avatar avatar-placeholder">
+          <div class="bg-neutral text-neutral-content w-24 rounded-full">
+            <span class="text-3xl">S</span>
+          </div>
+        </div>
+
+        <!-- Content Section -->
+        <div class="flex flex-col space-y-2">
+          <span class="text-xl font-semibold ">Space Name</span>
+          <div class="text-sm  flex items-center gap-2">
+            <span>#sdkfjs23kdsflkjdsf</span>
+            <button class="text-primary text-xs">Copy</button>
+          </div>
+          <a href="#" class="text-primary hover:underline text-sm">More</a>
+        </div>
+      </div>
+
+
+
+      <div>
         <!-- Search Bar -->
         <app-search-bar [(value)]="searchTerm" (valueChange)="setSearchTerm($event)" placeholder="Local Search ..."
           class="mb-6"></app-search-bar>

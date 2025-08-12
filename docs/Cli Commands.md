@@ -2,11 +2,6 @@ here is all commands the the Cli Supports
 
 
 ```
-- ovacli debug
-- ovacli debug hash
-- ovacli debug hash video <video-path>
-- ovacli debug hash repo <root-path>
-- ovacli debug hash duplicates <root-path>
 - ovacli init [path]
 - ovacli repo
 - ovacli repo links [path]

@@ -7,7 +7,6 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './desktop-sidebar.component.html',
-  styleUrls: ['./desktop-sidebar.component.css'],
 })
 export class DesktopSidebarComponent {
   sidebarOpen = true; // Initial state: sidebar is open

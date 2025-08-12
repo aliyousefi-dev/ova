@@ -5,8 +5,3 @@ export interface PlaylistData {
   slug: string;
   Order: number;
 }
-
-export interface PlaylistDataResponse {
-  playlists: PlaylistData[];
-  username: string;
-}

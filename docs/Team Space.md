@@ -1,15 +1,8 @@
-Team Space
-what is this feature 
-this feature lets to multiple peoples work on the a space for the videos.
 
-for example the space lets you to Edit the video and Upload a New One. 
-
-Video 
-
-Every Space have a Owner.
+What is Team Space.
+is a Space that you Can Join others to that Space and Define the Roles on that.
 
 
-Default User:
-- Create Space ? 
-- Comment ? 
-- 
+We need a Section like the Broadcasting that want to just Read and not have Access to Edit or Re Upload.
+
+As New Uploads.

@@ -4,12 +4,14 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
-import {
-  PlaylistData,
-  PlaylistDataResponse,
-} from '../../data-types/playlist-data';
+import { PlaylistData } from '../../data-types/playlist-data';
 
-import { ApiResponse } from '../../data-types/responses';
+import { ApiResponse } from './response-type';
+
+export interface PlaylistDataResponse {
+  playlists: PlaylistData[];
+  username: string;
+}
 
 @Injectable({
   providedIn: 'root',

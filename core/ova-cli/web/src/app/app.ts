@@ -14,6 +14,8 @@ import { DesktopSidebarComponent } from './components/navigation/desktop-sidebar
 import { TopNavbarComponent } from './components/navigation/top-navbar/top-navbar.component';
 import { MobileDockComponent } from './components/navigation/mobile-dock/mobile-dock.component';
 
+import { Location } from '@angular/common';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -35,12 +37,26 @@ export class App implements OnInit {
   isLoginRoute: boolean = false;
   isNotFoundRoute: boolean = false;
 
-  protected title = 'frontend';
+  constructor(private location: Location) {}
+
+  pageTitle: string = 'home';
+
+  // Dynamically set page title based on the route
+  setPageTitle(): void {
+    const currentRoute = this.location.path().split('?')[0]; // Get the route without query parameters
+
+    // Grab the last part of the path to set it as the title
+    const pathSegment = currentRoute.split('/').pop();
+
+    // Set the title dynamically, fall back to 'Home' if empty or unrecognized path
+    this.pageTitle = pathSegment ? pathSegment : 'home';
+  }
 
   ngOnInit() {
     // Set theme from localStorage
     const savedTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
+    this.setPageTitle();
 
     // Listen to router navigation events to toggle loading spinner
     this.router.events.subscribe((event) => {
@@ -52,6 +68,7 @@ export class App implements OnInit {
         event instanceof NavigationError
       ) {
         this.loadingService.hide();
+        this.setPageTitle();
       }
 
       // Check if the current route is /login

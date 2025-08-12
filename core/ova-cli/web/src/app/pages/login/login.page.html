@@ -1,31 +1,35 @@
-<div class="min-h-screen flex flex-col items-center justify-center bg-base-300 px-4">
-  <h1 class="text-4xl font-bold mb-5 ">Login</h1>
+<div class="flex min-h-screen">
+  <!-- Login Form on the Left -->
+  <div class="flex-1 flex flex-col items-center justify-center bg-base-300 px-4">
+    <h1 class="text-4xl font-bold mb-5">Login</h1>
+    <div class="w-full max-w-sm bg-base-100 p-8 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-default">
+      <form (ngSubmit)="onSubmit()" class="space-y-3">
+        <!-- Username field -->
+        <label class="input flex items-center gap-2">
+          <i class='bx bx-user'></i>
+          <input id="username" type="text" placeholder="Username" class="grow" [(ngModel)]="username" name="username"
+            required autocomplete="username" />
+        </label>
+        <!-- Password field -->
+        <label class="input flex items-center gap-2">
+          <i class='bx bx-key'></i>
+          <input id="password" type="password" placeholder="Password" class="grow focus:outline-none"
+            [(ngModel)]="password" name="password" required minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+            title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+            autocomplete="current-password" />
+        </label>
+        <div *ngIf="error" class="text-red-500 text-sm font-medium">{{ error }}</div>
+        <button type="submit" class="btn btn-primary w-full text-lg font-semibold transition-transform active:scale-95">
+          Login
+        </button>
+      </form>
+    </div>
+  </div>
 
-  <div class="w-full max-w-sm bg-base-100 p-8 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-default">
-    <form (ngSubmit)="onSubmit()" class="space-y-3">
-
-      <!-- Username field -->
-      <label class="input flex items-center gap-2">
-        <i class='bx  bx-user'></i>
-        <input id="username" type="text" placeholder="Username" class="grow" [(ngModel)]="username" name="username"
-          required autocomplete="username" />
-
-      </label>
-
-      <!-- Password field -->
-      <label class="input flex items-center gap-2">
-        <i class='bx  bx-key'></i>
-        <input id="password" type="password" placeholder="Password" class="grow focus:outline-none "
-          [(ngModel)]="password" name="password" required minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-          title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
-          autocomplete="current-password" />
-      </label>
-
-      <div *ngIf="error" class="text-red-500 text-sm font-medium">{{ error }}</div>
-
-      <button type="submit" class="btn btn-primary w-full text-lg font-semibold transition-transform active:scale-95">
-        Login
-      </button>
-    </form>
+  <!-- Image on the Right -->
+  <div class="flex-1 hidden md:block">
+    <img
+      src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=2274&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      alt="Image" class="object-cover w-full h-full">
   </div>
 </div>

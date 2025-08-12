@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { ApiResponse } from '../../data-types/responses'; // Assuming this interface is correct
+import { ApiResponse } from './response-type';
 
 import { environment } from '../../../environments/environment'; // Assuming your environment setup is correct
 

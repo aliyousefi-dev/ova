@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { LibraryPage } from './pages/library/library.page';
 import { WatchPage } from './pages/watch/watch.page';
-import { NotFoundPage } from './pages/NotFoundComponent/not-found.page';
+import { NotFoundPage } from './pages/404/404.page';
 import { HomePage } from './pages/home/home.page';
 import { LoginPage } from './pages/login/login.page';
 import { AuthGuard } from './services/auth.guard';
@@ -14,6 +14,9 @@ import { ProfilePage } from './pages/profile/profile.page';
 import { HistoryPage } from './pages/history/history.page';
 import { LatestPage } from './pages/latest/latest.page';
 import { UploadPage } from './pages/upload/upload.page';
+import { CreateSpacePage } from './pages/create-space/create-space.page';
+import { CreateTeamSpacePage } from './pages/create-team-space/create-team-space.page';
+import { JoinTeamSpacePage } from './pages/join-team-space/join-team-space.page';
 
 export const routes: Routes = [
   {
@@ -44,6 +47,21 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardPage,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'create-space',
+    component: CreateSpacePage,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'create-team-space',
+    component: CreateTeamSpacePage,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'join-team-space',
+    component: JoinTeamSpacePage,
     canActivate: [AuthGuard],
   },
   {
