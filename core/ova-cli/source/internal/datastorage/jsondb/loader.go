@@ -4,34 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"ova-cli/source/internal/datatypes"
-	"path/filepath"
 )
-
-func (s *JsonDB) createEmptyJSONFileIfMissing(filePath string) error {
-	_, err := os.Stat(filePath)
-	if os.IsNotExist(err) {
-		// Ensure the parent directory exists
-		dir := filepath.Dir(filePath)
-		if err := os.MkdirAll(dir, 0755); err != nil {
-			return err
-		}
-
-		f, err := os.Create(filePath)
-		if err != nil {
-			return err
-		}
-		defer f.Close()
-
-		// Write empty JSON object
-		_, err = f.Write([]byte("{}"))
-		if err != nil {
-			return err
-		}
-	} else if err != nil {
-		return err
-	}
-	return nil
-}
 
 func (s *JsonDB) loadUsers() (map[string]datatypes.UserData, error) {
 	path := s.getUserDataFilePath()
@@ -91,4 +64,32 @@ func (s *JsonDB) saveVideos(videos map[string]datatypes.VideoData) error {
 		return err
 	}
 	return os.WriteFile(s.getVideoDataFilePath(), data, 0644)
+}
+
+func (s *JsonDB) loadSpaces() (map[string]datatypes.SpaceData, error) {
+	path := s.getSpaceDataFilePath()
+
+	// Ensure file exists with "{}" if missing
+	if err := s.createEmptyJSONFileIfMissing(path); err != nil {
+		return nil, err
+	}
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	var spaces map[string]datatypes.SpaceData
+	if err := json.Unmarshal(data, &spaces); err != nil {
+		return nil, err
+	}
+	return spaces, nil
+}
+
+func (s *JsonDB) saveSpaces(spaces map[string]datatypes.SpaceData) error {
+	data, err := json.MarshalIndent(spaces, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(s.getSpaceDataFilePath(), data, 0644)
 }

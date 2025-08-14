@@ -20,6 +20,8 @@
 - Runtime Change Watcher
 - When Click on a Space Show the Space Info like Videos.
 - Live Stream Solution
+- Showing each folder how many videos contain on Tree View
+- Download Counts
 
 Create Space API - Creating a Folder inside Repo Root.
 

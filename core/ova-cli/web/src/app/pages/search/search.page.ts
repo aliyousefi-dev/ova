@@ -13,7 +13,7 @@ import {
 import { ActivatedRoute, Router, Params } from '@angular/router';
 
 import { AutoCompleteSearchBarComponent } from '../../components/utility/autocomplete-search-bar/autocomplete-search-bar.component';
-import { VideoGridComponent } from '../../components/containers/video-grid/video-grid.component';
+import { VideoGalleryComponent } from '../../components/containers/video-gallery/video-gallery.component';
 import { SearchApiService } from '../../services/api/search-api.service';
 
 @Component({
@@ -23,7 +23,7 @@ import { SearchApiService } from '../../services/api/search-api.service';
     CommonModule,
     FormsModule,
     AutoCompleteSearchBarComponent,
-    VideoGridComponent,
+    VideoGalleryComponent,
   ],
   templateUrl: './search.page.html',
 })

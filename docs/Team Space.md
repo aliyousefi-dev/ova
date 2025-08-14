@@ -1,8 +1,23 @@
+Team Space is a shared Space between multiple users. 
+and enable them to work with each other on that.
 
-What is Team Space.
-is a Space that you Can Join others to that Space and Define the Roles on that.
+Publish Confirmation.
+Draft Videos
 
 
-We need a Section like the Broadcasting that want to just Read and not have Access to Edit or Re Upload.
+it must help to get a better version of a video. and then finally
+it keep tracks the video versions.
 
-As New Uploads.
+i thinking about a vertical timeline that keep track the video changes.
+
+the team space create a good way to edit timeing the video.
+Rule Based Access 
+
+When you Access a Space . Where this 
+Each Space have Users.
+Users.
+
+The admin is default user to all spaces.
+
+Supporting the Reactions.
+

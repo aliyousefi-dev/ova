@@ -16,7 +16,7 @@ import { VideoApiService } from '../../services/api/video-api.service';
 
 import { FolderTreeComponent } from '../../components/utility/folder-tree/folder-tree.component';
 import { SearchBarComponent } from '../../components/utility/search-bar/search-bar.component';
-import { VideoGridComponent } from '../../components/containers/video-grid/video-grid.component';
+import { VideoGalleryComponent } from '../../components/containers/video-gallery/video-gallery.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -26,7 +26,7 @@ import { CommonModule } from '@angular/common';
   imports: [
     FolderTreeComponent,
     SearchBarComponent,
-    VideoGridComponent,
+    VideoGalleryComponent,
     FormsModule,
     CommonModule,
   ],

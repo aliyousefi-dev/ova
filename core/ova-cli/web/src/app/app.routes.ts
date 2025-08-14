@@ -7,12 +7,12 @@ import { LoginPage } from './pages/login/login.page';
 import { AuthGuard } from './services/auth.guard';
 import { SavedPage } from './pages/saved/saved.page';
 import { PlaylistsPage } from './pages/playlists/playlists.page';
-import { PlaylistDetailPage } from './pages/playlists-detail/playlist-detail.page';
+import { PlaylistContentPage } from './pages/playlists-content/playlist-content.page';
 import { SearchPage } from './pages/search/search.page';
 import { DashboardPage } from './pages/dashboard/dashboard.page';
 import { ProfilePage } from './pages/profile/profile.page';
 import { HistoryPage } from './pages/history/history.page';
-import { LatestPage } from './pages/latest/latest.page';
+import { RecentPage } from './pages/recent/recent.page';
 import { UploadPage } from './pages/upload/upload.page';
 import { CreateSpacePage } from './pages/create-space/create-space.page';
 import { CreateTeamSpacePage } from './pages/create-team-space/create-team-space.page';
@@ -25,8 +25,8 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'latest',
-    component: LatestPage,
+    path: 'recent',
+    component: RecentPage,
     canActivate: [AuthGuard],
   },
   {
@@ -91,7 +91,7 @@ export const routes: Routes = [
   },
   {
     path: 'playlists/:title',
-    component: PlaylistDetailPage,
+    component: PlaylistContentPage,
     canActivate: [AuthGuard],
   },
 

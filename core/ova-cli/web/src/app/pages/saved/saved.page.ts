@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { SearchBarComponent } from '../../components/utility/search-bar/search-bar.component';
-import { VideoGridComponent } from '../../components/containers/video-grid/video-grid.component';
+import { VideoGalleryComponent } from '../../components/containers/video-gallery/video-gallery.component';
 import { VideoApiService } from '../../services/api/video-api.service';
 import { SavedApiService } from '../../services/api/saved-api.service';
 
@@ -12,7 +12,12 @@ import { SavedApiService } from '../../services/api/saved-api.service';
 @Component({
   selector: 'app-favorites',
   standalone: true,
-  imports: [CommonModule, FormsModule, SearchBarComponent, VideoGridComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    SearchBarComponent,
+    VideoGalleryComponent,
+  ],
   templateUrl: './saved.page.html',
 })
 export class SavedPage implements OnInit {

@@ -19,17 +19,18 @@ type VideoResolution struct {
 
 // VideoData represents a single video entry.
 type VideoData struct {
-	VideoID         string          `json:"videoId"`                 // Unique identifier for the video
-	Title           string          `json:"title"`                   // Title of the video
-	Description     string          `json:"description"`             // Added for richer data
-	FilePath        string          `json:"filePath"`                // Path to the main video file
-	Rating          float64         `json:"rating"`                  // Average user rating (e.g., 0.0 to 5.0)
-	DurationSeconds int             `json:"durationSeconds"`         // Duration in seconds
-	Tags            []string        `json:"tags"`                    // Tags for categorization and search
-	Views           int             `json:"views"`                   // Number of views
-	Resolution      VideoResolution `json:"resolution"`              // Video resolution (width, height)
-	UploadedAt      time.Time       `json:"uploadedAt"`              // Timestamp of upload
-	Codecs          VideoCodecs     `json:"codecs"`                  // Codec information
+	VideoID         string          `json:"videoId"`         // Unique identifier for the video
+	Title           string          `json:"title"`           // Title of the video
+	Description     string          `json:"description"`     // Added for richer data
+	FilePath        string          `json:"filePath"`        // Path to the main video file
+	Rating          float64         `json:"rating"`          // Average user rating (e.g., 0.0 to 5.0)
+	DurationSeconds int             `json:"durationSeconds"` // Duration in seconds
+	Tags            []string        `json:"tags"`            // Tags for categorization and search
+	Views           int             `json:"views"`           // Number of views
+	Resolution      VideoResolution `json:"resolution"`      // Video resolution (width, height)
+	UploadedAt      time.Time       `json:"uploadedAt"`      // Timestamp of upload
+	Codecs          VideoCodecs     `json:"codecs"`          // Codec information
+	TotalDownloads  int             `json:"totalDownloads"`  // Number of downloads
 }
 
 // NewVideoData returns an initialized VideoData struct.

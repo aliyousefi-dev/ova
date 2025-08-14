@@ -22,7 +22,7 @@
     Showing {{ (currentPage - 1) * limit + 1 }} - {{ (currentPage - 1) * limit + videos.length }} of {{ totalVideos }}
     videos
   </p>
-  <app-video-grid *ngIf="!loading && videos.length > 0" [videos]="videos"></app-video-grid>
+  <app-video-gallery *ngIf="!loading && videos.length > 0" [videos]="videos"></app-video-gallery>
   <p *ngIf="!loading && videos.length === 0" class="font-medium text-center">
     No videos found.
   </p>

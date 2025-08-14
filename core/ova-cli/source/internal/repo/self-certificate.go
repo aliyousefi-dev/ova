@@ -40,7 +40,6 @@ func (r *RepoManager) GenerateCA(password string, commonName string) error {
 	return nil
 }
 
-
 // GenerateCertificate generates a certificate from a CSR using the CA's key and certificate
 func (r *RepoManager) GenerateCertificate(dns, ip, password string) error {
 	// Get the path to the SSL folder
@@ -69,7 +68,7 @@ func (r *RepoManager) GenerateCertificate(dns, ip, password string) error {
 	}
 
 	caPath := filepath.Join(sslFolderPath, "self-ca")
-	
+
 	// Get the CA certificate path
 	caCertPath := filepath.Join(caPath, "ca.pem")
 	// Get the CA key path
@@ -100,9 +99,9 @@ func (r *RepoManager) CleanCertificate() error {
 
 	// Define the files to keep
 	filesToKeep := []string{
-		"ca.pem",        // Public CA certificate (from self-ca folder)
-		"cert-key.pem",  // Certificate key (without passphrase)
-		"cert.pem",      // Renamed certificate
+		"ca.pem",       // Public CA certificate (from self-ca folder)
+		"cert-key.pem", // Certificate key (without passphrase)
+		"cert.pem",     // Renamed certificate
 	}
 
 	// Define the path for the CA folder
@@ -173,8 +172,8 @@ func (r *RepoManager) CleanCertificate() error {
 
 		// Define files in the CA folder to keep
 		caFilesToKeep := []string{
-			"ca.pem",        // The CA public certificate
-			"ca-key.pem",    // The CA private key
+			"ca.pem",     // The CA public certificate
+			"ca-key.pem", // The CA private key
 		}
 
 		// Check if the file is in the list of files to keep

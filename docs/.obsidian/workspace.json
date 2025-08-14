@@ -27,6 +27,20 @@
             "state": {
               "type": "markdown",
               "state": {
+                "file": "Space.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Space"
+            }
+          },
+          {
+            "id": "e06f8c13bfa19ff1",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
                 "file": "Overview.md",
                 "mode": "source",
                 "source": false
@@ -34,9 +48,65 @@
               "icon": "lucide-file",
               "title": "Overview"
             }
+          },
+          {
+            "id": "e981544267b2f8fa",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Quality Control.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Quality Control"
+            }
+          },
+          {
+            "id": "ee5b9e1363648dc8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Space.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Space"
+            }
+          },
+          {
+            "id": "cf934f6598c982b1",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "SSL.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "SSL"
+            }
+          },
+          {
+            "id": "4529097881db8cc7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Infinite Scroll.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Infinite Scroll"
+            }
           }
         ],
-        "currentTab": 1
+        "currentTab": 6
       }
     ],
     "direction": "vertical"
@@ -180,34 +250,34 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "8bcfd448e7656b29",
+  "active": "4529097881db8cc7",
   "lastOpenFiles": [
-    "Feature to Develop.md",
-    "Untitled.md",
-    "User Roles.md",
     "SSL.md",
+    "Infinite Scroll.md",
+    "Untitled.md",
     "Space.md",
+    "Overview.md",
+    "Feature to Develop.md",
+    "Realtime Feedback.md",
+    "Quality Control.md",
     "Server Configs.md",
-    "Team Space.md",
-    "Cli Commands.md",
-    "Authentication.md",
+    "Shared Repository.md",
+    "Disk Types.md",
     "Cooking.md",
     "Components.md",
+    "Cli Commands.md",
+    "Authentication.md",
+    "API Endpoints.md",
+    "Adding Videos.md",
+    "User Roles.md",
+    "Team Space.md",
+    "User Profile.md",
     "Components/Blocks.md",
     "Components/Utility.md",
     "Components/Pop-Ups.md",
     "Components/Navigation.md",
     "Components/Media Player.md",
     "Components/Container.md",
-    "API Endpoints.md",
-    "Adding Videos.md",
-    "Disk Types.md",
-    "OVA CLI/Configs.md",
-    "Server API/Videos.md",
-    "Server API/User.md",
-    "Server API/Spaces.md",
-    "Server API/Search.md",
-    "Server API/Data Types.md",
     "Components",
     "Components/Untitled",
     "Server API/Untitled",

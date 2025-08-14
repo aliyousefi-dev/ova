@@ -24,6 +24,7 @@
         <i class='bx  bx-folder bx-xs'></i>
         {{ node.name }}
         <i class='bx  bx-lock'></i>
+        <div class="badge badge-sm">+99</div>
       </a>
       <ul *ngIf="node.children?.length" class="ml-4">
         <ng-container *ngFor="let child of node.children">

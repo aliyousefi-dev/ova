@@ -7,20 +7,20 @@ import { Subscription } from 'rxjs'; // Import Subscription
 import { LatestVideosService } from '../../services/api/latest-api.service';
 import { VideoApiService } from '../../services/api/video-api.service';
 import { VideoData } from '../../data-types/video-data';
-import { VideoGridComponent } from '../../components/containers/video-grid/video-grid.component';
+import { VideoGalleryComponent } from '../../components/containers/video-gallery/video-gallery.component';
 
 @Component({
   selector: 'app-latest-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, VideoGridComponent],
-  templateUrl: './latest.page.html',
+  imports: [CommonModule, FormsModule, VideoGalleryComponent],
+  templateUrl: './recent.page.html',
 })
-export class LatestPage implements OnInit, OnDestroy {
+export class RecentPage implements OnInit, OnDestroy {
   videos: VideoData[] = [];
   loading = true;
 
   currentPage = 1;
-  limit = 20; // Number of videos per page
+  limit = 100; // Number of videos per page
   totalVideos = 0;
   totalPages = 1; // Default to 1 page
 
