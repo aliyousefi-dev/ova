@@ -11,8 +11,6 @@
     </div>
 
 
-
-
     <div *ngIf="selectedFile" class="text-sm opacity-70">
         Selected: <strong>{{ selectedFile.name }}</strong>
     </div>
@@ -44,8 +42,8 @@
 
 
         <label class="label text-sm font-medium mb-1">Select a Space</label>
-        <app-folder-tree [currentFolder]="selectedFolder" (folderSelected)="onFolderSelected($event)">
-        </app-folder-tree>
+        <app-tree-view [currentFolder]="selectedFolder" (folderSelected)="onFolderSelected($event)">
+        </app-tree-view>
 
 
     </div>

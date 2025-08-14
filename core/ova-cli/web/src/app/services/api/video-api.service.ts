@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 import { VideoData } from '../../data-types/video-data';
 import { ApiResponse } from './response-type';
-
-import { environment } from '../../../environments/environment';
 
 interface SimilarVideosResponse {
   similarVideos: VideoData[];
@@ -17,8 +15,6 @@ interface SimilarVideosResponse {
 })
 export class VideoApiService {
   private baseUrl = environment.apiBaseUrl;
-
-  private videoCache = new Map<string, VideoData>();
 
   constructor(private http: HttpClient) {}
 
@@ -34,32 +30,16 @@ export class VideoApiService {
   }
 
   getVideoById(videoId: string): Observable<ApiResponse<VideoData>> {
-    const cached = this.videoCache.get(videoId);
-    if (cached) {
-      return of({
-        data: cached,
-        message: 'Loaded from cache',
-        status: 'success',
-      });
-    }
-
-    return this.http
-      .get<ApiResponse<VideoData>>(`${this.baseUrl}/videos/${videoId}`, {
-        withCredentials: true,
-      })
-      .pipe(
-        tap((res) => {
-          if (res.status === 'success') {
-            this.videoCache.set(videoId, res.data);
-          }
-        })
-      );
+    return this.http.get<ApiResponse<VideoData>>(
+      `${this.baseUrl}/videos/${videoId}`,
+      { withCredentials: true }
+    );
   }
 
   getVideosByIds(ids: string[]): Observable<ApiResponse<VideoData[]>> {
     return this.http.post<ApiResponse<VideoData[]>>(
       `${this.baseUrl}/videos/batch`,
-      { IDs: ids }, // <-- send array of string IDs, not video objects
+      { IDs: ids },
       { withCredentials: true }
     );
   }
@@ -102,8 +82,6 @@ export class VideoApiService {
     return `${this.baseUrl}/download/${videoId}/trim?${params.toString()}`;
   }
 
-  // Remove whole update of tags; instead add & remove individual tags
-
   addVideoTag(
     videoId: string,
     tag: string
@@ -124,10 +102,5 @@ export class VideoApiService {
       { tag },
       { withCredentials: true }
     );
-  }
-
-  // Optional: Clear cache (e.g. if you want to invalidate on logout or refresh)
-  clearCache(): void {
-    this.videoCache.clear();
   }
 }

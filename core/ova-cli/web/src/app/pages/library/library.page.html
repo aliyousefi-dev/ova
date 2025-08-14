@@ -3,8 +3,8 @@
   <!-- Mobile Folder Tree (scrolls with content) -->
   <div class="bg-base-100 border-b border-base-200 lg:hidden">
     <aside class="p-4">
-      <app-folder-tree [currentFolder]="currentFolder" (folderSelected)="onFolderSelected($event)"
-        class="w-full"></app-folder-tree>
+      <app-tree-view [currentFolder]="currentFolder" (folderSelected)="onFolderSelected($event)"
+        class="w-full"></app-tree-view>
     </aside>
   </div>
 
@@ -13,8 +13,8 @@
     <!-- Desktop Folder Tree: Fixed and offset beside main sidebar and below top navbar -->
     <div class="hidden lg:block bg-base-100 w-128 sticky  overflow-y-auto z-30  border-base-200">
       <aside class="p-4">
-        <app-folder-tree [currentFolder]="currentFolder" (folderSelected)="onFolderSelected($event)"
-          class="w-full"></app-folder-tree>
+        <app-tree-view [currentFolder]="currentFolder" (folderSelected)="onFolderSelected($event)"
+          class="w-full"></app-tree-view>
       </aside>
     </div>
 
@@ -87,7 +87,7 @@
         <!-- Videos Grid -->
         <div class="mx-auto px-4 flex-grow w-full">
           <p *ngIf="loading" class="font-medium text-center">Loading videos...</p>
-          <app-video-gallery *ngIf="!loading" [videos]="videos"></app-video-gallery>
+          <app-gallery-view *ngIf="!loading" [videos]="videos"></app-gallery-view>
         </div>
 
         <!-- Bottom Pagination -->

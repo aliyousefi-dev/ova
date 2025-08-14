@@ -14,9 +14,9 @@ import { PlaylistData } from '../../data-types/playlist-data';
 import { VideoData } from '../../data-types/video-data';
 import { VideoApiService } from '../../services/api/video-api.service';
 
-import { FolderTreeComponent } from '../../components/utility/folder-tree/folder-tree.component';
+import { TreeViewComponent } from '../../components/containers/tree-view/tree-view.component';
 import { SearchBarComponent } from '../../components/utility/search-bar/search-bar.component';
-import { VideoGalleryComponent } from '../../components/containers/video-gallery/video-gallery.component';
+import { GalleryViewComponent } from '../../components/containers/gallery-view/gallery-view.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -24,9 +24,9 @@ import { CommonModule } from '@angular/common';
   selector: 'app-video',
   standalone: true,
   imports: [
-    FolderTreeComponent,
+    TreeViewComponent,
     SearchBarComponent,
-    VideoGalleryComponent,
+    GalleryViewComponent,
     FormsModule,
     CommonModule,
   ],

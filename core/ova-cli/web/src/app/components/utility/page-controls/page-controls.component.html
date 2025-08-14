@@ -1,0 +1,12 @@
+<div class="join">
+  <ng-container *ngFor="let page of getPageRange(); let idx = index">
+    <!-- Show page numbers -->
+    <input *ngIf="typeof page === 'number'" (change)="loadPage(page)" class="join-item btn btn-square btn-sm"
+      type="radio" [attr.aria-label]="page" name="paginationTop" [checked]="CurrentBucket === page" />
+
+    <!-- Display ellipsis for "..." -->
+    <span *ngIf="page === '...'" class="join-item btn btn-square btn-sm">
+      ...
+    </span>
+  </ng-container>
+</div>

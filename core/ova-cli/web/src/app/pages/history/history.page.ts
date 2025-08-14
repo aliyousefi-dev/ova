@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 
 import { WatchedApiService } from '../../services/api/watched-api.service';
 import { VideoData } from '../../data-types/video-data';
-import { VideoGalleryComponent } from '../../components/containers/video-gallery/video-gallery.component';
+import { GalleryViewComponent } from '../../components/containers/gallery-view/gallery-view.component';
 import { SearchBarComponent } from '../../components/utility/search-bar/search-bar.component';
 
 @Component({
@@ -15,7 +15,7 @@ import { SearchBarComponent } from '../../components/utility/search-bar/search-b
     CommonModule,
     RouterModule,
     FormsModule,
-    VideoGalleryComponent,
+    GalleryViewComponent,
     SearchBarComponent,
   ],
   templateUrl: './history.page.html',

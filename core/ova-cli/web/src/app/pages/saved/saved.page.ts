@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { SearchBarComponent } from '../../components/utility/search-bar/search-bar.component';
-import { VideoGalleryComponent } from '../../components/containers/video-gallery/video-gallery.component';
+import { GalleryViewComponent } from '../../components/containers/gallery-view/gallery-view.component';
 import { VideoApiService } from '../../services/api/video-api.service';
 import { SavedApiService } from '../../services/api/saved-api.service';
 
@@ -16,7 +16,7 @@ import { SavedApiService } from '../../services/api/saved-api.service';
     CommonModule,
     FormsModule,
     SearchBarComponent,
-    VideoGalleryComponent,
+    GalleryViewComponent,
   ],
   templateUrl: './saved.page.html',
 })

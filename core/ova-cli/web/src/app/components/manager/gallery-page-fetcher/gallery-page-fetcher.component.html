@@ -1,0 +1,28 @@
+<div class="flex flex-col w-full h-full overflow-y-hidden">
+    <div class="p-5 flex w-full justify-between items-center">
+        <div class="flex justify-start items-center text-xs gap-5">
+            <span class="font-medium">
+                Videos in Range:
+                <span class="font-semibold">
+                    {{ ((CurrentBucket - 1) * BucketContentSize) + 1 }} -
+                    {{ (CurrentBucket * BucketContentSize) > TotalVideos ? TotalVideos : CurrentBucket *
+                    BucketContentSize }}
+                </span>
+            </span>
+
+            <span class="font-medium">
+                Total Videos: <span class="font-semibold">{{ TotalVideos }}</span>
+            </span>
+        </div>
+
+        <!-- Page controls component integration -->
+        <app-page-controls [TotalBuckets]="TotalBuckets" [CurrentBucket]="CurrentBucket"
+            (pageChange)="loadPage($event)">
+        </app-page-controls>
+    </div>
+
+    <div #Container class="h-full overflow-y-auto">
+        <app-gallery-view [ViewMode]="isMiniView ? 'mini' : 'full'" [PreviewPlayback]="PreviewPlayback"
+            [videos]="videos"></app-gallery-view>
+    </div>
+</div>

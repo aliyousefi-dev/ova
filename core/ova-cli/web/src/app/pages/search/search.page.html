@@ -128,7 +128,7 @@
 <div class="mx-auto px-4 mt-6">
   <p *ngIf="loading" class="font-medium text-center">Loading videos...</p>
 
-  <app-video-gallery *ngIf="!loading && filteredVideos.length > 0" [videos]="filteredVideos"></app-video-gallery>
+  <app-gallery-view *ngIf="!loading && filteredVideos.length > 0" [videos]="filteredVideos"></app-gallery-view>
 
   <div class="w-full mb-30 overflow-x-auto">
     <div *ngIf="totalPages > 1 && !loading" class="w-max mx-auto">

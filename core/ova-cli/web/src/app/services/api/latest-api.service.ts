@@ -9,6 +9,9 @@ import { environment } from '../../../environments/environment'; // Assuming you
 export interface LatestVideosResponse {
   videoIds: string[]; // Array of video IDs
   totalVideos: number; // Total number of videos cached
+  currentBucket: number; // The current bucket requested
+  bucketContentSize: number; // Size of each bucket (fixed to 20)
+  totalBuckets: number; // Total number of buckets
 }
 
 @Injectable({
@@ -19,13 +22,12 @@ export class LatestVideosService {
 
   constructor(private http: HttpClient) {}
 
-  // Fetch the latest videos in the specified range [start, end] (inclusive, 0-based)
+  // Fetch the latest videos based on the specified bucket
   getLatestVideos(
-    start: number = 0, // This is the 0-based starting index
-    end: number = 19 // This is the 0-based inclusive ending index
+    bucket: number = 1
   ): Observable<ApiResponse<LatestVideosResponse>> {
-    // Construct the URL with start and end query parameters
-    const url = `${this.baseUrl}/videos/latest?start=${start}&end=${end}`;
+    // Construct the URL with bucket query parameter
+    const url = `${this.baseUrl}/videos/latest?bucket=${bucket}`;
     console.log(`[LatestVideosService] Requesting URL: ${url}`); // Log the exact URL being requested
     return this.http.get<ApiResponse<LatestVideosResponse>>(url);
   }

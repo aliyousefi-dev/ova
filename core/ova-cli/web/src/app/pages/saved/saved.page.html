@@ -31,7 +31,7 @@
 <!-- Videos Block -->
 <div class="mx-auto px-4 mt-6">
   <p *ngIf="loading" class="font-medium text-center">Loading favorites...</p>
-  <app-video-gallery *ngIf="!loading" [videos]="filteredVideos"></app-video-gallery>
+  <app-gallery-view *ngIf="!loading" [videos]="filteredVideos"></app-gallery-view>
 </div>
 
 <!-- Bottom Pagination -->

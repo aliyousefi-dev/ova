@@ -7,7 +7,7 @@ import { PlaylistData } from '../../data-types/playlist-data';
 
 import { ToastComponent } from '../../components/pop-ups/toast/toast.component';
 
-import { PlaylistManagerComponent } from '../../components/containers/playlist-manager/playlist-manager.component';
+import { PlaylistManagerComponent } from '../../components/manager/playlist-manager/playlist-manager.component';
 
 @Component({
   selector: 'app-playlists',

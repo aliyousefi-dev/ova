@@ -4,6 +4,9 @@ import {
   ChangeDetectorRef,
   OnChanges,
   SimpleChanges,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -26,34 +29,67 @@ import { UtilsService } from '../../../services/utils.service';
 }`,
   imports: [CommonModule, RouterModule, FormsModule, PlaylistModalComponent],
 })
-export class MiniVideoCardComponent implements OnChanges {
+export class MiniVideoCardComponent implements OnChanges, AfterViewInit {
   @Input() video!: VideoData;
   @Input() isSaved: boolean = false;
-  @Input() username: string = ''; // Keep username input for other components that might use it
+  @Input() username: string = '';
   @Input() isWatched: boolean = false;
+  @Input() PreviewPlayback: boolean = false;
 
-  hovering = false;
-  // 'Saved' property is no longer needed as 'isSaved' directly reflects the state
-  // Saved = false;
+  @ViewChild('preview') videoElement!: ElementRef<HTMLVideoElement>;
+
+  private observer: IntersectionObserver | null = null;
+
+  // Updated ngAfterViewInit
+  ngAfterViewInit() {
+    if (this.PreviewPlayback && this.videoElement) {
+      const video_preview: HTMLVideoElement = this.videoElement.nativeElement;
+
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              this.PlayPreviewVideo();
+            } else {
+              this.StopPreviewVideo();
+            }
+          });
+        },
+        { threshold: 1 }
+      );
+
+      this.observer.observe(video_preview);
+    }
+  }
+
+  // Updated ngOnChanges
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['PreviewPlayback']) {
+      if (this.PreviewPlayback) {
+        this.cd.detectChanges(); // Ensure change detection to make videoElement ready
+        setTimeout(() => {
+          if (this.videoElement?.nativeElement) {
+            this.ngAfterViewInit(); // Re-initialize observer safely
+          }
+        }, 0);
+      } else {
+        this.StopPreviewVideo(); // Stop video when PreviewPlayback is false
+        if (this.observer) {
+          this.observer.disconnect(); // Disconnect observer when no longer needed
+        }
+      }
+    }
+  }
 
   playlistModalVisible = false;
-  // Removed 'playlists' and 'originalPlaylists' as they are now managed inside PlaylistModalComponent
 
   constructor(
-    // Removed private playlistapi: PlaylistAPIService,
     private savedapi: SavedApiService,
     private videoapi: VideoApiService,
     private router: Router,
     private cd: ChangeDetectorRef,
-    private utilsService: UtilsService // Inject UtilsService to get username for other API calls
+    private utilsService: UtilsService
   ) {}
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['isWatched']) {
-      // console.log('isWatched changed to:', changes['isWatched'].currentValue);
-    }
-    this.cd.detectChanges(); // Ensure bindings update when video input changes
-  }
 
   getThumbnailUrl(): string {
     return this.videoapi.getThumbnailUrl(this.video.videoId);
@@ -64,7 +100,6 @@ export class MiniVideoCardComponent implements OnChanges {
   }
 
   get videoQuality(): string {
-    if (!this.video) return '';
     const width = this.video.resolution.width;
     const height = this.video.resolution.height;
 
@@ -76,9 +111,23 @@ export class MiniVideoCardComponent implements OnChanges {
 
   addToPlaylist(event: MouseEvent): void {
     event.stopPropagation();
-    // No need to check this.username here, the modal will fetch it
     this.playlistModalVisible = true;
     this.cd.detectChanges();
+  }
+
+  StopPreviewVideo() {
+    if (this.videoElement?.nativeElement && this.PreviewPlayback) {
+      const video: HTMLVideoElement = this.videoElement.nativeElement;
+      video.pause();
+      video.currentTime = 0;
+    }
+  }
+
+  PlayPreviewVideo() {
+    if (this.videoElement?.nativeElement && this.PreviewPlayback) {
+      const video: HTMLVideoElement = this.videoElement.nativeElement;
+      video.play();
+    }
   }
 
   closePlaylistModal(): void {
@@ -88,36 +137,30 @@ export class MiniVideoCardComponent implements OnChanges {
 
   toggleSaved(event: MouseEvent): void {
     event.stopPropagation();
-    const username = this.utilsService.getUsername(); // Get username from UtilsService
+    const username = this.utilsService.getUsername();
     if (!username) {
       console.warn('Cannot save/unsave: Username is not available.');
       return;
     }
 
-    // this.Saved = true; // No longer needed
-
     if (this.isSaved) {
       this.savedapi.removeUserSaved(username, this.video.videoId).subscribe({
         next: () => {
           this.isSaved = false;
-          // this.Saved = false;
           this.cd.detectChanges();
         },
         error: (err) => {
           console.error('Error removing from saved:', err);
-          // this.Saved = false;
         },
       });
     } else {
       this.savedapi.addUserSaved(username, this.video.videoId).subscribe({
         next: () => {
           this.isSaved = true;
-          // this.Saved = false;
           this.cd.detectChanges();
         },
         error: (err) => {
           console.error('Error adding to saved:', err);
-          // this.Saved = false;
         },
       });
     }
@@ -146,8 +189,6 @@ export class MiniVideoCardComponent implements OnChanges {
   }
 
   get timeSinceAdded(): string {
-    if (!this.video.uploadedAt) return 'unknown';
-
     const addedDate = new Date(this.video.uploadedAt);
     const now = new Date();
     const diffMs = now.getTime() - addedDate.getTime();
@@ -169,9 +210,8 @@ export class MiniVideoCardComponent implements OnChanges {
   }
 
   truncateTitle(title: string, maxLength: number = 20): string {
-    if (title.length > maxLength) {
-      return title.substring(0, maxLength) + '...';
-    }
-    return title;
+    return title.length > maxLength
+      ? title.substring(0, maxLength) + '...'
+      : title;
   }
 }

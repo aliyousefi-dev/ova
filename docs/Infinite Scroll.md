@@ -37,3 +37,52 @@ Each Bucket holds 20 Videos.
   },
 }
 ```
+
+```
+<app-video-gallery *ngIf="!loading" [videos]="videos"></app-video-gallery>
+
+<app-video-gallery viewmode="mini" *ngIf="!loading"></app-video-gallery>
+```
+
+i thinking about infinit scroll 
+infinite scroll need to trigger an event that reached to end and need add more videos.
+
+
+Initial Load
+
+Load Bucket
+
+Add Bucket
+
+
+```
+  <div class="flex w-full justify-between items-center py-2 px-10 gap-5 bg-base-200"
+
+    *ngIf="totalPages > 1 && !loading && viewMode !== 'mini'">
+
+    <p *ngIf="!loading && videos.length > 0" class="font-medium">
+
+      Showing {{ (currentPage - 1) * 20 + 1 }} - {{ (currentPage - 1) * 20 + videos.length }} of {{ totalVideos }}
+
+      videos
+
+    </p>
+
+    <div class="join">
+
+      <ng-container *ngFor="let page of paginationPages">
+
+        <input *ngIf="page !== '...'" class="join-item btn btn-square btn-sm" type="radio" name="paginationTop"
+
+          [attr.aria-label]="page" [checked]="currentPage === page" (change)="goToPage(page)" />
+
+        <span *ngIf="page === '...'" class="join-item btn btn-square btn-sm btn-disabled">...</span>
+
+      </ng-container>
+
+    </div>
+
+  </div>
+```
+
+Pagination Component 

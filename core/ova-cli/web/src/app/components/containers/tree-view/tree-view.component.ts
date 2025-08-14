@@ -9,12 +9,12 @@ export interface FolderNode {
 }
 
 @Component({
-  selector: 'app-folder-tree',
+  selector: 'app-tree-view',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './folder-tree.component.html',
+  templateUrl: './tree-view.component.html',
 })
-export class FolderTreeComponent implements OnInit {
+export class TreeViewComponent implements OnInit {
   @Input() currentFolder: string = '';
   @Output() folderSelected = new EventEmitter<string>();
 
