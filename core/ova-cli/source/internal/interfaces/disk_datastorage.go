@@ -51,7 +51,7 @@ type DiskDataStorage interface {
 
 	// New method to add video to user's watched list
 	AddVideoToWatched(username, videoID string) error
-	GetUserWatchedVideos(username string) ([]datatypes.VideoData, error)
+	GetUserWatchedVideos(username string) ([]string, error)
 	ClearUserWatchedHistory(username string) error
 
 	GetSearchSuggestions(query string) ([]string, error)

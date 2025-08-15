@@ -2,7 +2,6 @@ package jsondb
 
 import (
 	"fmt"
-	"ova-cli/source/internal/datatypes"
 )
 
 func (s *JsonDB) AddVideoToWatched(username, videoID string) error {
@@ -43,7 +42,7 @@ func (s *JsonDB) AddVideoToWatched(username, videoID string) error {
 	return s.saveUsers(users)
 }
 
-func (s *JsonDB) GetUserWatchedVideos(username string) ([]datatypes.VideoData, error) {
+func (s *JsonDB) GetUserWatchedVideos(username string) ([]string, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -59,21 +58,7 @@ func (s *JsonDB) GetUserWatchedVideos(username string) ([]datatypes.VideoData, e
 		return nil, fmt.Errorf("user %q not found", username)
 	}
 
-	// Load all videos to map videoID -> VideoData
-	videos, err := s.loadVideos()
-	if err != nil {
-		return nil, fmt.Errorf("failed to load videos: %w", err)
-	}
-
-	// Collect watched videos data
-	var watchedVideos []datatypes.VideoData
-	for _, videoID := range user.Watched {
-		if video, ok := videos[videoID]; ok {
-			watchedVideos = append(watchedVideos, video)
-		}
-	}
-
-	return watchedVideos, nil
+	return user.Watched, nil
 }
 
 // ClearUserWatchedHistory clears all watched videos for a given user.

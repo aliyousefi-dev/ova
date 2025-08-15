@@ -44,7 +44,7 @@ export class GalleryViewComponent implements OnInit {
       // Fetch watched videos
       this.watchedapi.getUserWatched(storedUsername).subscribe({
         next: (watchedData) => {
-          this.WatchedIds = new Set(watchedData.map((video) => video.videoId));
+          this.WatchedIds = new Set(watchedData.data.videoIds);
         },
         error: (err) => {
           console.error('Error fetching watched videos:', err);

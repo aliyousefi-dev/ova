@@ -1,11 +1,9 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { GalleryViewComponent } from '../../containers/gallery-view/gallery-view.component';
-import { LatestVideosService } from '../../../services/api/latest-api.service';
-import { VideoApiService } from '../../../services/api/video-api.service';
 import { VideoData } from '../../../data-types/video-data';
-import { Input } from '@angular/core';
+import { CentralFetchService } from '../../../services/api/central-fetch';
 
 @Component({
   selector: 'app-gallery-infinite-fetcher',
@@ -16,69 +14,77 @@ import { Input } from '@angular/core';
 export class GalleryInfiniteFetcher implements OnInit {
   @Input() isMiniView: boolean = false;
   @Input() PreviewPlayback: boolean = false;
+  @Input() route: string = 'recent'; // @Input for route, default is 'recent'
 
   videos: VideoData[] = [];
   CurrentBucket: number = 1;
   TotalBuckets: number = 1;
   TotalVideos: number = 0;
   loading: boolean = false;
+  noVideos: boolean = false; // Track if there are no videos
 
   @ViewChild('scrollContainer') scrollContainer: any;
+
+  constructor(
+    private centralFetchService: CentralFetchService // Inject CentralFetchService
+  ) {}
 
   ngOnInit(): void {
     this.initialLoad();
   }
 
-  constructor(
-    private latestVideosService: LatestVideosService,
-    private videoApiService: VideoApiService
-  ) {}
-
   initialLoad() {
     this.videos = [];
     this.loading = true;
 
-    this.latestVideosService.getLatestVideos(1).subscribe((videos) => {
-      this.CurrentBucket = videos.data.currentBucket;
-      this.TotalBuckets = videos.data.totalBuckets;
-      this.TotalVideos = videos.data.totalVideos;
+    // Fetch gallery data based on the input route
+    this.centralFetchService
+      .fetchGallery(this.route, 1)
+      .subscribe((videoDetails) => {
+        this.CurrentBucket = 1; // First bucket
+        this.TotalBuckets = videoDetails.totalBuckets; // Total number of buckets (can be adjusted)
+        this.TotalVideos = videoDetails.totalVideos; // Total videos count, can be updated based on response
 
-      this.videoApiService
-        .getVideosByIds(videos.data.videoIds)
-        .subscribe((videoDetails) => {
-          this.videos = videoDetails.data;
-          this.loading = false;
-        });
-    });
+        // If no videos are found, set the noVideos flag to true
+        if (this.TotalVideos === 0) {
+          this.noVideos = true;
+        } else {
+          this.videos = videoDetails.videos;
+        }
+
+        this.loading = false;
+      });
   }
 
   loadMore() {
-    if (this.CurrentBucket < this.TotalBuckets && !this.loading) {
-      this.loading = true;
-      this.CurrentBucket++;
-
-      this.latestVideosService
-        .getLatestVideos(this.CurrentBucket)
-        .subscribe((videos) => {
-          this.videoApiService
-            .getVideosByIds(videos.data.videoIds)
-            .subscribe((videoDetails) => {
-              this.videos = [...this.videos, ...videoDetails.data];
-              this.loading = false;
-            });
-        });
+    if (
+      this.TotalBuckets === 1 ||
+      this.CurrentBucket >= this.TotalBuckets ||
+      this.loading ||
+      this.noVideos // Prevent loading more if there are no videos
+    ) {
+      return;
     }
+
+    this.loading = true;
+    this.CurrentBucket++;
+
+    // Fetch more videos based on the current bucket and route
+    this.centralFetchService
+      .fetchGallery(this.route, this.CurrentBucket)
+      .subscribe((videoDetails) => {
+        this.videos = [...this.videos, ...videoDetails.videos];
+        this.loading = false;
+      });
   }
 
   onScroll(event: any) {
-    console.log(event.target.scrollHeight);
-
-    // Calculate if we have scrolled to the bottom
+    // Check if we've scrolled to the bottom
     const condition: boolean =
       event.target.offsetHeight + event.target.scrollTop + 2 >=
       event.target.scrollHeight;
 
-    if (condition && !this.loading) {
+    if (condition && !this.loading && !this.noVideos) {
       this.loadMore();
     }
   }

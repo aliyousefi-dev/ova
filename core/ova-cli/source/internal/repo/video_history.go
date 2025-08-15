@@ -2,7 +2,6 @@ package repo
 
 import (
 	"fmt"
-	"ova-cli/source/internal/datatypes"
 )
 
 // AddVideoToWatched adds a video ID to the watched list of a user.
@@ -14,7 +13,7 @@ func (r *RepoManager) AddVideoToWatched(username, videoID string) error {
 }
 
 // GetUserWatchedVideos returns the list of watched videos for a user.
-func (r *RepoManager) GetUserWatchedVideos(username string) ([]datatypes.VideoData, error) {
+func (r *RepoManager) GetUserWatchedVideos(username string) ([]string, error) {
 	if !r.IsDataStorageInitialized() {
 		return nil, fmt.Errorf("data storage is not initialized")
 	}
@@ -22,24 +21,24 @@ func (r *RepoManager) GetUserWatchedVideos(username string) ([]datatypes.VideoDa
 }
 
 // GetUserWatchedVideosInRange returns a range of watched videos for a user.
-func (r *RepoManager) GetUserWatchedVideosInRange(username string, start, end int) ([]datatypes.VideoData, error) {
+func (r *RepoManager) GetUserWatchedVideosInRange(username string, start, end int) ([]string, error) {
 	if !r.IsDataStorageInitialized() {
 		return nil, fmt.Errorf("data storage is not initialized")
 	}
 
-	// Retrieve the full list of watched videos first
-	videos, err := r.diskDataStorage.GetUserWatchedVideos(username)
+	// Retrieve the full list of watched videoIds first
+	videoIds, err := r.diskDataStorage.GetUserWatchedVideos(username)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get watched videos: %v", err)
 	}
 
 	// Validate the range values
-	if start < 0 || end > len(videos) || start >= end {
+	if start < 0 || end > len(videoIds) || start >= end {
 		return nil, fmt.Errorf("invalid range")
 	}
 
 	// Return the videos in the specified range
-	return videos[start:end], nil
+	return videoIds[start:end], nil
 }
 
 // GetUserWatchedVideosCount returns the count of watched videos for a user.

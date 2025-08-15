@@ -1,125 +1,57 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { WatchedApiService } from '../../services/api/watched-api.service';
-import { VideoData } from '../../data-types/video-data';
-import { GalleryViewComponent } from '../../components/containers/gallery-view/gallery-view.component';
-import { SearchBarComponent } from '../../components/utility/search-bar/search-bar.component';
+import { GalleryInfiniteFetcher } from '../../components/manager/gallery-infinite-fetcher/gallery-infinite-fetcher.component';
+import { GalleryPageFetcher } from '../../components/manager/gallery-page-fetcher/gallery-page-fetcher.component';
+import { UserSettingsService } from '../../services/user-settings.service';
 
 @Component({
   selector: 'app-history-page',
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
     FormsModule,
-    GalleryViewComponent,
-    SearchBarComponent,
+    GalleryInfiniteFetcher,
+    GalleryPageFetcher,
   ],
   templateUrl: './history.page.html',
 })
-export class HistoryPage implements OnInit {
-  allVideos: VideoData[] = [];
-  videos: VideoData[] = [];
-  loading = true;
+export class HistoryPage implements OnInit, OnDestroy {
+  infiniteMode: boolean = false; // Bind to Infinite Fetch checkbox
+  isMiniView: boolean = true; // Bind to Mini View checkbox
+  previewPlayback: boolean = false; // Bind to Preview Playback checkbox
 
-  currentPage = 1;
-  limit = 20;
-  totalPages = 1;
+  constructor(private userSettingsService: UserSettingsService) {}
 
-  searchTerm = '';
-  sortOption = 'titleAsc';
+  ngOnInit(): void {
+    // Get the initial infinite mode status from the service
+    this.infiniteMode = this.userSettingsService.isGalleryInInfiniteMode();
 
-  constructor(private watchedApi: WatchedApiService) {}
+    // Get the initial mini view mode status from the service (if needed)
+    this.isMiniView = this.userSettingsService.isGalleryInMiniViewMode();
 
-  ngOnInit() {
-    const username = localStorage.getItem('username');
-    if (!username) return;
-
-    this.loading = true;
-    this.watchedApi.getUserWatched(username).subscribe({
-      next: (videos) => {
-        this.allVideos = videos;
-        this.filterAndPaginate();
-        this.loading = false;
-      },
-      error: () => {
-        this.allVideos = [];
-        this.videos = [];
-        this.totalPages = 1;
-        this.loading = false;
-      },
-    });
+    // Get the initial preview playback mode status from the service
+    this.previewPlayback = this.userSettingsService.isPreviewPlaybackEnabled();
   }
 
-  filterAndPaginate() {
-    let filtered = this.allVideos.filter((v) =>
-      v.title.toLowerCase().includes(this.searchTerm.toLowerCase())
-    );
+  ngOnDestroy(): void {}
 
-    filtered = this.sortVideos(filtered);
-
-    this.totalPages = Math.ceil(filtered.length / this.limit);
-    if (this.currentPage > this.totalPages) this.currentPage = 1;
-
-    const start = (this.currentPage - 1) * this.limit;
-    const end = start + this.limit;
-    this.videos = filtered.slice(start, end);
+  // Toggle the infinite mode and update the localStorage
+  toggleInfiniteMode(): void {
+    this.infiniteMode = !this.infiniteMode;
+    this.userSettingsService.setGalleryInfiniteMode(this.infiniteMode);
   }
 
-  goToPage(page: number) {
-    if (page < 1 || page > this.totalPages) return;
-    this.currentPage = page;
-    this.filterAndPaginate();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Toggle the mini view mode and update the localStorage
+  toggleMiniView(): void {
+    this.isMiniView = !this.isMiniView;
+    this.userSettingsService.setGalleryMiniViewMode(this.isMiniView);
   }
 
-  setSearchTerm(term: string) {
-    this.searchTerm = term;
-    this.currentPage = 1;
-    this.filterAndPaginate();
-  }
-
-  setSortOption(option: string) {
-    this.sortOption = option;
-    this.currentPage = 1;
-    this.filterAndPaginate();
-  }
-
-  sortVideos(videos: VideoData[]): VideoData[] {
-    switch (this.sortOption) {
-      case 'titleAsc':
-        return [...videos].sort((a, b) => a.title.localeCompare(b.title));
-      case 'titleDesc':
-        return [...videos].sort((a, b) => b.title.localeCompare(a.title));
-      case 'durationAsc':
-        return [...videos].sort(
-          (a, b) => a.durationSeconds - b.durationSeconds
-        );
-      case 'durationDesc':
-        return [...videos].sort(
-          (a, b) => b.durationSeconds - a.durationSeconds
-        );
-      case 'newest':
-        return [...videos].sort(
-          (a, b) =>
-            new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
-        );
-      case 'oldest':
-        return [...videos].sort(
-          (a, b) =>
-            new Date(a.uploadedAt).getTime() - new Date(b.uploadedAt).getTime()
-        );
-      default:
-        return videos;
-    }
-  }
-
-  get filteredVideosCount(): number {
-    return this.allVideos.filter((v) =>
-      v.title.toLowerCase().includes(this.searchTerm.toLowerCase())
-    ).length;
+  // Toggle the preview playback mode and update the localStorage
+  togglePreviewPlayback(): void {
+    this.previewPlayback = !this.previewPlayback;
+    this.userSettingsService.setPreviewPlaybackEnabled(this.previewPlayback);
   }
 }

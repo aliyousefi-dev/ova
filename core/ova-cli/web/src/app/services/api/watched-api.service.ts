@@ -2,13 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { ApiResponse } from './response-type';
 
 import { environment } from '../../../environments/environment';
-import { VideoData } from '../../data-types/video-data';
 
 export interface WatchedResponse {
-  username: string;
-  data: VideoData[]; // The backend returns a JSON array of VideoData as the "data" field
+  videoIds: string[]; // Array of video IDs
+  totalVideos: number; // Total number of videos cached
+  currentBucket: number; // The current bucket requested
+  bucketContentSize: number; // Size of each bucket (fixed to 20)
+  totalBuckets: number; // Total number of buckets
 }
 
 @Injectable({
@@ -20,23 +23,18 @@ export class WatchedApiService {
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Get watched videos list for a user.
-   * @param username The username for whom to fetch watched videos.
-   * @returns An Observable of an array of VideoData.
-   */
-  getUserWatched(username: string): Observable<VideoData[]> {
+  getUserWatched(
+    username: string,
+    bucket: number = 1
+  ): Observable<ApiResponse<WatchedResponse>> {
+    // Use ApiResponse wrapper
     return this.http
-      .get<{ data: VideoData[] }>(
-        `${this.baseUrl}/users/${username}/watched`,
+      .get<ApiResponse<WatchedResponse>>(
+        `${this.baseUrl}/users/${username}/watched?bucket=${bucket}`,
         this.httpOptions
       )
-      .pipe(
-        map((response) => response.data),
-        catchError(this.handleError)
-      );
+      .pipe(catchError(this.handleError)); // Handle errors as before
   }
-
   /**
    * Mark a video as watched for a specific user.
    * @param username The username for whom to mark the video as watched.

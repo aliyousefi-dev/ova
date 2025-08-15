@@ -2,7 +2,6 @@ package boltdb
 
 import (
 	"fmt"
-	"ova-cli/source/internal/datatypes"
 )
 
 // AddVideoToWatched adds a videoID to the watched list for a user.
@@ -44,7 +43,7 @@ func (b *BoltDB) AddVideoToWatched(username, videoID string) error {
 }
 
 // GetUserWatchedVideos returns VideoData for all videos watched by a user.
-func (b *BoltDB) GetUserWatchedVideos(username string) ([]datatypes.VideoData, error) {
+func (b *BoltDB) GetUserWatchedVideos(username string) ([]string, error) {
 	users, err := b.loadUsers()
 	if err != nil {
 		return nil, fmt.Errorf("failed to load users: %w", err)
@@ -55,19 +54,7 @@ func (b *BoltDB) GetUserWatchedVideos(username string) ([]datatypes.VideoData, e
 		return nil, fmt.Errorf("user %q not found", username)
 	}
 
-	videos, err := b.loadVideos()
-	if err != nil {
-		return nil, fmt.Errorf("failed to load videos: %w", err)
-	}
-
-	var watchedVideos []datatypes.VideoData
-	for _, videoID := range user.Watched {
-		if video, ok := videos[videoID]; ok {
-			watchedVideos = append(watchedVideos, video)
-		}
-	}
-
-	return watchedVideos, nil
+	return user.Watched, nil
 }
 
 // ClearUserWatchedHistory clears the watched videos list for a user.

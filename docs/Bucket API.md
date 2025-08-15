@@ -13,3 +13,8 @@ for example on the /recent use that api but on the /history use that api.
 we need a way to give that the Fetch Service to that
 
 Creating a CentralFetch Service
+
+/watched
+Bucekt
+
+this api also need response the bucket ids.

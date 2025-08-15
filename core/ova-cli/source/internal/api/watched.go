@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"ova-cli/source/internal/repo"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -42,15 +43,71 @@ func addVideoToWatched(r *repo.RepoManager) gin.HandlerFunc {
 
 func getUserWatchedVideos(r *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// Get the username from the URL parameter
 		username := c.Param("username")
 
-		videos, err := r.GetUserWatchedVideos(username)
+		// Parse the bucket from query parameters (default to 1 if not provided)
+		bucketStr := c.DefaultQuery("bucket", "1")
+		bucket, err := strconv.Atoi(bucketStr)
+		if err != nil || bucket <= 0 {
+			respondError(c, http.StatusBadRequest, "Invalid bucket parameter")
+			return
+		}
+
+		// Hardcode the bucket size to 20 (or any other appropriate size)
+		bucketContentSize := 20
+
+		// Get the count of watched videos for the user
+		totalVideos, err := r.GetUserWatchedVideosCount(username)
+		if err != nil {
+			respondError(c, http.StatusInternalServerError, "Failed to get watched video count")
+			return
+		}
+
+		// If no videos are found, return an empty list
+		if totalVideos == 0 {
+			response := gin.H{
+				"videoIds":          []string{}, // Return an empty videoIds array
+				"totalVideos":       0,
+				"currentBucket":     bucket,
+				"bucketContentSize": bucketContentSize,
+				"totalBuckets":      0, // No buckets if there are no videos
+			}
+			respondSuccess(c, http.StatusOK, response, "No watched videos found")
+			return
+		}
+
+		// Calculate the start and end indices based on the bucket and bucket size
+		start := (bucket - 1) * bucketContentSize
+		end := start + bucketContentSize
+
+		// Ensure the end index does not exceed the total number of videos
+		if end > totalVideos {
+			end = totalVideos
+		}
+
+		// Fetch the specific range of watched videos
+		videosInRange, err := r.GetUserWatchedVideosInRange(username, start, end)
 		if err != nil {
 			respondError(c, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		respondSuccess(c, http.StatusOK, videos, "Fetched watched videos")
+		// If no videos in the range, return an empty videoIds list
+		if len(videosInRange) == 0 {
+			videosInRange = []string{}
+		}
+
+		// Prepare the response with the videos in the current bucket, total count, and number of buckets
+		response := gin.H{
+			"videoIds":          videosInRange,
+			"totalVideos":       totalVideos, // Add total video count to the response
+			"currentBucket":     bucket,
+			"bucketContentSize": bucketContentSize,
+			"totalBuckets":      (totalVideos + bucketContentSize - 1) / bucketContentSize, // Calculate total number of buckets
+		}
+
+		respondSuccess(c, http.StatusOK, response, "Fetched watched videos")
 	}
 }
 

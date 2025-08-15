@@ -1,12 +1,10 @@
-import { Component, input, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
-import { LatestVideosService } from '../../../services/api/latest-api.service';
-import { VideoApiService } from '../../../services/api/video-api.service';
 import { VideoData } from '../../../data-types/video-data';
 import { GalleryViewComponent } from '../../containers/gallery-view/gallery-view.component';
 import { PageControlsComponent } from '../../utility/page-controls/page-controls.component';
-import { Input } from '@angular/core';
+import { CentralFetchService } from '../../../services/api/central-fetch';
 
 @Component({
   selector: 'app-gallery-page-fetcher',
@@ -22,6 +20,7 @@ import { Input } from '@angular/core';
 export class GalleryPageFetcher implements OnInit {
   @Input() isMiniView: boolean = false;
   @Input() PreviewPlayback: boolean = false;
+  @Input() route: string = 'recent'; // @Input for route, default is 'recent'
 
   videos: VideoData[] = [];
   CurrentBucket: number = 1;
@@ -31,15 +30,15 @@ export class GalleryPageFetcher implements OnInit {
   loading: boolean = false;
 
   constructor(
-    private latestVideosService: LatestVideosService,
-    private videoApiService: VideoApiService,
+    private centralFetchService: CentralFetchService, // Inject CentralFetchService
     private router: Router,
-    private route: ActivatedRoute // Injecting the ActivatedRoute here
+    private activatedRoute: ActivatedRoute // Make sure to inject ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     // Read the page number from the URL (query parameter 'bucket')
-    const bucketParam = this.route.snapshot.queryParamMap.get('bucket');
+    const bucketParam =
+      this.activatedRoute.snapshot.queryParamMap.get('bucket');
     const bucketNumber = bucketParam ? parseInt(bucketParam, 10) : 1; // Default to 1 if no bucket param is found
     this.loadPage(bucketNumber);
   }
@@ -47,30 +46,30 @@ export class GalleryPageFetcher implements OnInit {
   loadPage(number: number): void {
     this.loading = true;
 
-    this.latestVideosService.getLatestVideos(number).subscribe({
+    // Fetch gallery data based on the route
+    this.centralFetchService.fetchGallery(this.route, number).subscribe({
       next: (response) => {
-        if (response.data) {
-          this.CurrentBucket = response.data.currentBucket;
-          this.TotalBuckets = response.data.totalBuckets;
-          this.TotalVideos = response.data.totalVideos;
-          this.BucketContentSize = response.data.bucketContentSize;
+        if (response) {
+          this.CurrentBucket = response.currentBucket;
+          this.TotalBuckets = response.totalBuckets; // You can update this based on the response structure
+          this.TotalVideos = response.totalVideos; // Adjust this if the total count is provided differently
+          this.BucketContentSize = response.bucketContentSize; // Adjust if needed
 
-          this.videoApiService
-            .getVideosByIds(response.data.videoIds)
-            .subscribe((videoDetails) => {
-              this.videos = videoDetails.data;
-              this.loading = false;
+          console.log(this.TotalBuckets);
 
-              // Update the URL with the current bucket number
-              this.router.navigate([], {
-                queryParams: { bucket: number },
-                queryParamsHandling: 'merge', // Keep existing query params
-              });
-            });
+          this.videos = response.videos;
+          this.loading = false;
+
+          // Update the URL with the current bucket number
+          this.router.navigate([], {
+            queryParams: { bucket: number },
+            queryParamsHandling: 'merge', // Keep existing query params
+          });
         }
       },
       error: (error) => {
-        console.error('[GalleryFetcherFull] Error loading videos:', error);
+        console.error('[GalleryPageFetcher] Error loading videos:', error);
+        this.loading = false;
       },
     });
   }
