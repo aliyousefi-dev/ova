@@ -11,3 +11,5 @@ First of all we neet maek the Infinite Fetch and Page Fetch some how to use an A
 for example on the /recent use that api but on the /history use that api.
 
 we need a way to give that the Fetch Service to that
+
+Creating a CentralFetch Service
