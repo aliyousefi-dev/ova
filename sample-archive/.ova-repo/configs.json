@@ -1,8 +1,8 @@
 {
   "version": "1.0.0",
   "serverHost": "0.0.0.0",
-  "serverPort": 4040,
+  "serverPort": 443,
   "enableAuthentication": true,
-  "dataStorageType": "boltdb",
-  "createdAt": "2025-06-29T06:35:59.4656449+03:30"
+  "dataStorageType": "jsondb",
+  "createdAt": "2025-08-12T19:49:16.9240393+03:30"
 }

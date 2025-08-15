@@ -44,12 +44,16 @@ export class App implements OnInit {
   // Dynamically set page title based on the route
   setPageTitle(): void {
     const currentRoute = this.location.path().split('?')[0]; // Get the route without query parameters
+    console.log(currentRoute);
 
-    // Grab the last part of the path to set it as the title
-    const pathSegment = currentRoute.split('/').pop();
+    // Grab the first part of the path to set it as the title
+    const pathSegments = currentRoute
+      .split('/')
+      .filter((segment) => segment.length > 0); // Filter out any empty segments
+    const firstPathSegment = pathSegments[0];
 
     // Set the title dynamically, fall back to 'Home' if empty or unrecognized path
-    this.pageTitle = pathSegment ? pathSegment : 'home';
+    this.pageTitle = firstPathSegment ? firstPathSegment : 'home';
   }
 
   ngOnInit() {

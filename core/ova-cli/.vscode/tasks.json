@@ -64,6 +64,36 @@
 			},
 			"problemMatcher": [],
 			"group": "build"
+		},
+		{
+			"label": "Serve Doc (Angular)",
+			"type": "shell",
+			"command": "npm start",
+			"options": {
+				"cwd": "${workspaceFolder}/docs"
+			},
+			"problemMatcher": [],
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "Build Docs (Angular)",
+			"type": "shell",
+			"command": "npm run build",
+			"options": {
+				"cwd": "${workspaceFolder}/docs"
+			},
+			"problemMatcher": [],
+			"group": "build"
 		}
 	]
 }

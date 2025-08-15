@@ -1,0 +1,17 @@
+{
+  "user": {
+    "username": "user",
+    "passwordHash": "$2a$10$GUYsOUxCTRYe8bF86uss7.Aq9vYfWqWLrHj6MtHdVaZ175yaALIIi",
+    "roles": [
+      "user",
+      "admin"
+    ],
+    "createdAt": "2025-08-15T10:33:07.350203Z",
+    "lastLoginAt": "0001-01-01T00:00:00Z",
+    "favorites": [],
+    "playlists": [],
+    "watched": [
+      "087be485e0acad6fb1ba026e75542fed5f52e073496c649bc4a3ce345a63f48f"
+    ]
+  }
+}
