@@ -14,6 +14,6 @@ export class TagLinkComponent {
   constructor(private router: Router) {}
 
   onClick() {
-    this.router.navigate(['/discover'], { queryParams: { q: this.tag } });
+    this.router.navigate(['/search'], { queryParams: { q: this.tag } });
   }
 }

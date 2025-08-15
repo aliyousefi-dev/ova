@@ -10,7 +10,7 @@
   </div>
 
   <div *ngIf="ViewMode === 'mini'"
-    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-1 w-full">
+    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-1 w-full">
     <app-mini-video-card *ngFor="let video of videos" [video]="video" [PreviewPlayback]="PreviewPlayback"
       [isSaved]="isSaved(video.videoId)" [username]="username!"
       [isWatched]="isWatched(video.videoId)"></app-mini-video-card>
