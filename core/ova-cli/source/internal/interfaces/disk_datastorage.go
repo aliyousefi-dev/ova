@@ -12,7 +12,7 @@ type DiskDataStorage interface {
 	GetAllUsers() ([]datatypes.UserData, error)
 
 	// User favorites management
-	GetUserSavedVideos(username string) ([]datatypes.VideoData, error)
+	GetUserSavedVideos(username string) ([]string, error)
 	AddVideoToSaved(username, videoID string) error
 	RemoveVideoFromSaved(username, videoID string) error
 

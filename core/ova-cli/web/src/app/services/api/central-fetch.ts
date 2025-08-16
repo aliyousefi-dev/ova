@@ -7,6 +7,7 @@ import { VideoData } from '../../data-types/video-data';
 import { LatestVideosService } from './latest-api.service';
 import { VideoApiService } from './video-api.service';
 import { WatchedApiService } from './watched-api.service';
+import { SavedApiService } from './saved-api.service';
 import { UtilsService } from '../utils.service';
 
 export interface GalleryResponse {
@@ -25,6 +26,7 @@ export class CentralFetchService {
     private latestVideosService: LatestVideosService,
     private videoApiService: VideoApiService,
     private watchedApiService: WatchedApiService,
+    private savedApiService: SavedApiService,
     private utilsService: UtilsService
   ) {}
 
@@ -76,6 +78,36 @@ export class CentralFetchService {
 
             // Fetch video details using VideoApiService
             return this.videoApiService.getVideosByIds(videoIds).pipe(
+              map((videoDetails) => {
+                const videos: VideoData[] = videoDetails.data;
+                // Construct and return the final GalleryResponse
+                return {
+                  videos: videos,
+                  totalVideos: totalVideos,
+                  currentBucket: currentBucket,
+                  bucketContentSize: bucketContentSize,
+                  totalBuckets: totalBuckets,
+                };
+              })
+            );
+          })
+        );
+      }
+
+      case 'saved': {
+        const username: string = this.utilsService.getUsername() || '';
+
+        // Use SavedApiService to fetch the saved videos for the given bucket
+        return this.savedApiService.getUserSaved(username, bucket).pipe(
+          switchMap((response) => {
+            const savedVideoIds = response.data.saved; // Get the list of saved video IDs
+            const totalVideos = response.data.totalVideos;
+            const currentBucket = response.data.currentBucket;
+            const bucketContentSize = response.data.bucketContentSize;
+            const totalBuckets = response.data.totalBuckets;
+
+            // Fetch video details using VideoApiService
+            return this.videoApiService.getVideosByIds(savedVideoIds).pipe(
               map((videoDetails) => {
                 const videos: VideoData[] = videoDetails.data;
                 // Construct and return the final GalleryResponse

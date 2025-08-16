@@ -43,3 +43,5 @@ return this
 /saved
 /spaces/space-name/space-name?bucket=1
 /spaces?spacename=newfolder&bucket=1
+
+each section access . tag editing 

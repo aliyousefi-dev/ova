@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"strconv"
 
 	"ova-cli/source/internal/repo"
 
@@ -22,25 +23,53 @@ func getUserSaved(repoManager *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
 
-		videos, err := repoManager.GetUserSavedVideos(username)
-		if err != nil {
-			if err.Error() == "user not found" {
-				respondError(c, http.StatusNotFound, "User not found")
-			} else {
-				respondError(c, http.StatusInternalServerError, "Failed to retrieve saved videos: "+err.Error())
-			}
+		// Parse bucket from query parameters (default to 1 if not provided)
+		bucketStr := c.DefaultQuery("bucket", "1")
+
+		// Convert bucket to integer
+		bucket, err := strconv.Atoi(bucketStr)
+		if err != nil || bucket <= 0 {
+			respondError(c, http.StatusBadRequest, "Invalid bucket parameter")
 			return
 		}
 
-		savedIDs := make([]string, 0, len(videos))
-		for _, video := range videos {
-			savedIDs = append(savedIDs, video.VideoID)
+		// Hardcode the bucket size to 20
+		bucketContentSize := 20
+
+		// Call GetUserSavedVideos to get the total count of saved videos for the user
+		totalVideos, err := repoManager.GetUserSavedVideosCount(username)
+		if err != nil {
+			respondError(c, http.StatusInternalServerError, "Failed to get saved videos count")
+			return
 		}
 
-		respondSuccess(c, http.StatusOK, gin.H{
-			"username": username,
-			"saved":    savedIDs,
-		}, "Saved videos retrieved")
+		// Calculate the start and end indices based on bucket and hardcoded bucket_size (20)
+		start := (bucket - 1) * bucketContentSize
+		end := start + bucketContentSize
+
+		// Ensure the end index does not exceed the total number of saved videos
+		if end > totalVideos {
+			end = totalVideos
+		}
+
+		// Fetch saved video IDs in the calculated range from memory storage
+		savedVideos, err := repoManager.GetUserSavedVideosInRange(username, start, end)
+		if err != nil {
+			respondError(c, http.StatusInternalServerError, "Failed to retrieve saved videos in range")
+			return
+		}
+
+		// Prepare the response with saved video IDs, total video count, and bucket details
+		response := gin.H{
+			"username":          username,
+			"saved":             savedVideos,
+			"totalVideos":       totalVideos,
+			"currentBucket":     bucket,
+			"bucketContentSize": bucketContentSize,
+			"totalBuckets":      (totalVideos + bucketContentSize - 1) / bucketContentSize, // Calculate total number of buckets
+		}
+
+		respondSuccess(c, http.StatusOK, response, "Saved videos retrieved successfully")
 	}
 }
 

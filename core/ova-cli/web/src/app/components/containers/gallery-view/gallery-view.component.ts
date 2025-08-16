@@ -34,7 +34,7 @@ export class GalleryViewComponent implements OnInit {
       // Fetch saved videos
       this.savedapi.getUserSaved(storedUsername).subscribe({
         next: (favData) => {
-          this.SavedIds = new Set(favData.saved);
+          this.SavedIds = new Set(favData.data.saved);
         },
         error: (err) => {
           console.error('Error fetching saved videos:', err);

@@ -2,12 +2,11 @@ package jsondb
 
 import (
 	"fmt"
-	"ova-cli/source/internal/datatypes"
 )
 
 // GetUserSavedVideos retrieves the full VideoData for a user's favorite videos.
 // Returns an error if the user is not found or loading videos fails.
-func (s *JsonDB) GetUserSavedVideos(username string) ([]datatypes.VideoData, error) {
+func (s *JsonDB) GetUserSavedVideos(username string) ([]string, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -21,22 +20,7 @@ func (s *JsonDB) GetUserSavedVideos(username string) ([]datatypes.VideoData, err
 		return nil, fmt.Errorf("user %q not found", username)
 	}
 
-	videos, err := s.loadVideos() // Assuming loadVideos is also under the same mutex
-	if err != nil {
-		return nil, fmt.Errorf("failed to load videos to retrieve favorites for user %q: %w", username, err)
-	}
-
-	var favorites []datatypes.VideoData
-	for _, vidID := range user.Favorites {
-		if video, exists := videos[vidID]; exists {
-			favorites = append(favorites, video)
-		} else {
-			// Optionally log that a favorite video ID was not found, but don't fail the entire list.
-			fmt.Printf("Warning: Favorite video ID %q for user %q not found in video storage.\n", vidID, username)
-		}
-	}
-
-	return favorites, nil
+	return user.Favorites, nil
 }
 
 // AddVideoToSaved adds a video ID to a user's favorites list.
