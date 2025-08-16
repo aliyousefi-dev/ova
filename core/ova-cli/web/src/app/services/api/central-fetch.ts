@@ -100,7 +100,7 @@ export class CentralFetchService {
         // Use SavedApiService to fetch the saved videos for the given bucket
         return this.savedApiService.getUserSaved(username, bucket).pipe(
           switchMap((response) => {
-            const savedVideoIds = response.data.saved; // Get the list of saved video IDs
+            const savedVideoIds = response.data.videoIds; // Get the list of saved video IDs
             const totalVideos = response.data.totalVideos;
             const currentBucket = response.data.currentBucket;
             const bucketContentSize = response.data.bucketContentSize;

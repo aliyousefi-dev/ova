@@ -180,7 +180,7 @@ export class WatchPage implements AfterViewInit {
 
     this.savedapi.getUserSaved(this.username).subscribe({
       next: (res) => {
-        this.isSaved = res.data.saved.includes(this.videoId!);
+        this.isSaved = res.data.videoIds.includes(this.videoId!);
       },
       error: () => {
         this.isSaved = false;

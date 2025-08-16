@@ -52,8 +52,13 @@ export class App implements OnInit {
       .filter((segment) => segment.length > 0); // Filter out any empty segments
     const firstPathSegment = pathSegments[0];
 
-    // Set the title dynamically, fall back to 'Home' if empty or unrecognized path
-    this.pageTitle = firstPathSegment ? firstPathSegment : 'home';
+    // Capitalize the first letter of the first path segment
+    const capitalizedSegment = firstPathSegment
+      ? firstPathSegment.charAt(0).toUpperCase() + firstPathSegment.slice(1)
+      : 'Home'; // Default to 'Home' if empty
+
+    // Set the title dynamically
+    this.pageTitle = capitalizedSegment;
   }
 
   ngOnInit() {

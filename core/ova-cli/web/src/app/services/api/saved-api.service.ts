@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
 
 export interface SavedResponse {
   username: string;
-  saved: string[]; // array of video IDs (strings)
+  videoIds: string[]; // array of video IDs (strings)
   totalVideos: number; // Total number of saved videos
   currentBucket: number; // The current bucket requested
   bucketContentSize: number; // Size of each bucket (fixed to 20)

@@ -22,8 +22,7 @@ export class TopNavbarComponent implements OnInit {
   constructor(
     private utilsService: UtilsService,
     private authapi: AuthApiService,
-    private router: Router,
-    private location: Location
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -65,22 +64,4 @@ export class TopNavbarComponent implements OnInit {
     });
     this.dropdownOpen = false;
   }
-
-  // // Dynamically set page title based on the route
-  // setPageTitle(): void {
-  //   const currentRoute = this.location.path().split('?')[0]; // Get the route without query parameters
-
-  //   // Grab the last part of the path to set it as the title
-  //   const pathSegment = currentRoute.split('/').pop();
-
-  //   // Set the title dynamically, fall back to 'Home' if empty or unrecognized path
-  //   this.pageTitle = pathSegment
-  //     ? this.capitalizeFirstLetter(pathSegment)
-  //     : 'Home';
-  // }
-
-  // // Helper function to capitalize the first letter of a string
-  // capitalizeFirstLetter(string: string): string {
-  //   return string.charAt(0).toUpperCase() + string.slice(1);
-  // }
 }

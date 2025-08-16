@@ -43,6 +43,19 @@ func getUserSaved(repoManager *repo.RepoManager) gin.HandlerFunc {
 			return
 		}
 
+		// If there are no saved videos, return an empty response
+		if totalVideos == 0 {
+			respondSuccess(c, http.StatusOK, gin.H{
+				"username":          username,
+				"videoIds":          []string{}, // Empty array for saved videos
+				"totalVideos":       0,
+				"currentBucket":     bucket,
+				"bucketContentSize": bucketContentSize,
+				"totalBuckets":      0, // No buckets if no videos
+			}, "No saved videos found")
+			return
+		}
+
 		// Calculate the start and end indices based on bucket and hardcoded bucket_size (20)
 		start := (bucket - 1) * bucketContentSize
 		end := start + bucketContentSize
@@ -62,7 +75,7 @@ func getUserSaved(repoManager *repo.RepoManager) gin.HandlerFunc {
 		// Prepare the response with saved video IDs, total video count, and bucket details
 		response := gin.H{
 			"username":          username,
-			"saved":             savedVideos,
+			"videoIds":          savedVideos,
 			"totalVideos":       totalVideos,
 			"currentBucket":     bucket,
 			"bucketContentSize": bucketContentSize,

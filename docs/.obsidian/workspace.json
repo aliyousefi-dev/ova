@@ -111,12 +111,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Feature to Develop.md",
+                "file": "Bucket Fetching.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Feature to Develop"
+              "title": "Bucket Fetching"
             }
           }
         ],
@@ -266,8 +266,8 @@
   },
   "active": "509550f97dac8e29",
   "lastOpenFiles": [
-    "Bucket API.md",
     "Feature to Develop.md",
+    "Bucket Fetching.md",
     "Components.md",
     "Infinite Scroll.md",
     "SSL.md",
