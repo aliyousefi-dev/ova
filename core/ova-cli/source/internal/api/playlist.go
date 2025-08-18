@@ -19,7 +19,7 @@ func RegisterUserPlaylistRoutes(rg *gin.RouterGroup, rm *repo.RepoManager) {
 		users.DELETE("/:username/playlists/:slug", deleteUserPlaylistBySlug(rm))
 		users.POST("/:username/playlists/:slug/videos", addVideoToPlaylist(rm))
 		users.DELETE("/:username/playlists/:slug/videos/:videoId", deleteVideoFromPlaylist(rm))
-		users.PUT("/:username/playlists/order", setPlaylistsOrder(rm))
+		users.PUT("/:username/playlists/order", setUserPlaylistsOrder(rm))
 		users.PUT("/:username/playlists/:slug", updateUserPlaylistInfo(rm))
 	}
 }
@@ -134,7 +134,7 @@ func deleteVideoFromPlaylist(rm *repo.RepoManager) gin.HandlerFunc {
 	}
 }
 
-func setPlaylistsOrder(rm *repo.RepoManager) gin.HandlerFunc {
+func setUserPlaylistsOrder(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username := c.Param("username")
 
