@@ -55,24 +55,15 @@ export class PlaylistCardComponent implements OnInit {
   ngOnInit(): void {
     // Load the first video from the playlist to show its thumbnail as header
     const firstVideoId = this.playlist.videoIds?.[0];
-    if (firstVideoId) {
-      this.videoapi.getVideoById(firstVideoId).subscribe({
-        next: (res) => {
-          if (res.status === 'success' && res.data) {
-            this.headerVideo = res.data;
-          }
-        },
-        error: (err) => {
-          console.error(`❌ Failed to load video ${firstVideoId}:`, err);
-        },
-      });
-    }
   }
 
   getThumbnailUrl(): string {
-    return this.headerVideo?.videoId
-      ? this.videoapi.getThumbnailUrl(this.headerVideo.videoId)
-      : '';
+    const videoId =
+      this.playlist.videoIds && this.playlist.videoIds.length > 0
+        ? this.playlist.videoIds[0]
+        : null;
+
+    return videoId ? this.videoapi.getThumbnailUrl(videoId) : '';
   }
 
   get hasHeaderVideo(): boolean {

@@ -45,37 +45,38 @@ export class PlaylistContentPage implements OnInit {
 
   loadPlaylistVideos(title: string) {
     this.loading = true;
-    this.playlistapi.getUserPlaylists(this.username!).subscribe({
-      next: (response) => {
-        const playlists = response.data.playlists;
-        const playlist = playlists.find((p) => p.title === title);
+    this.playlistapi
+      .getUserPlaylistBySlug(this.username!, title.toLowerCase())
+      .subscribe({
+        next: (response) => {
+          const playlist = response.data;
 
-        if (!playlist) {
-          this.router.navigate(['/playlists']);
-          return;
-        }
+          if (!playlist) {
+            this.router.navigate(['/playlists']);
+            return;
+          }
 
-        if (!playlist.videoIds || playlist.videoIds.length === 0) {
-          this.videos = [];
-          this.loading = false;
-          return;
-        }
-
-        this.videoapi.getVideosByIds(playlist.videoIds).subscribe({
-          next: (res) => {
-            this.videos = res.data || [];
-            this.loading = false;
-          },
-          error: () => {
+          if (!playlist.videoIds || playlist.videoIds.length === 0) {
             this.videos = [];
             this.loading = false;
-          },
-        });
-      },
-      error: () => {
-        this.loading = false;
-        this.router.navigate(['/playlists']);
-      },
-    });
+            return;
+          }
+
+          this.videoapi.getVideosByIds(playlist.videoIds).subscribe({
+            next: (res) => {
+              this.videos = res.data || [];
+              this.loading = false;
+            },
+            error: () => {
+              this.videos = [];
+              this.loading = false;
+            },
+          });
+        },
+        error: () => {
+          this.loading = false;
+          this.router.navigate(['/playlists']);
+        },
+      });
   }
 }

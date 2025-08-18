@@ -1,19 +1,13 @@
 <!-- Actions -->
 <div class="my-8 flex flex-wrap justify-center gap-4 px-4">
-  <button
-    class="btn btn-primary text-sm px-6 py-2 min-w-[160px]"
-    (click)="OnCreatePlaylistButton()"
-    aria-label="Create New Playlist"
-  >
-    <i-lucide [img]="FolderPlus" class="w-5 h-5 mr-2"></i-lucide>
-    + Create New Playlist
+  <button class="btn btn-primary text-sm px-6 py-2 min-w-[160px]" (click)="OnCreatePlaylistButton()"
+    aria-label="Create New Playlist">
+    <i class='bx  bx-folder-plus bx-sm'></i>
+    Create New Playlist
   </button>
 
-  <button
-    class="btn text-sm px-6 py-2 min-w-[160px] border border-base-content/10 hover:bg-base-300"
-    (click)="toggleManageMode()"
-    [attr.aria-pressed]="manageMode"
-  >
+  <button class="btn text-sm px-6 py-2 min-w-[160px] border border-base-content/10 hover:bg-base-300"
+    (click)="toggleManageMode()" [attr.aria-pressed]="manageMode">
     {{ manageMode ? "Done" : "Manage" }}
   </button>
 </div>
@@ -22,19 +16,12 @@
 <div class="w-full h-15">
   <div *ngIf="manageMode" class="flex flex-wrap justify-around gap-4">
     <div class="flex flex-row justify-center items-center gap-4">
-      <input
-        type="checkbox"
-        class="checkbox checkbox-sm"
-        (change)="toggleSelectAll($event)"
-      />
+      <input type="checkbox" class="checkbox checkbox-sm" (change)="toggleSelectAll($event)" />
       <span class="label-text text-base select-none">Select All</span>
     </div>
     <div class="flex justify-end">
-      <button
-        (click)="onDeleteButton()"
-        class="btn btn-error flex items-center gap-2"
-      >
-        <i-lucide [img]="Trash2" class="w-5 h-5"></i-lucide>
+      <button (click)="onDeleteButton()" class="btn btn-error flex items-center gap-2">
+        <i class='bx  bx-trash bx-sm'></i>
         Delete
       </button>
     </div>
@@ -42,41 +29,21 @@
 </div>
 
 <!-- Playlist Grid -->
-<section
-  *ngIf="!loading && playlists.length > 0"
-  class="px-6 py-2 max-w-7xl mx-auto"
->
-  <app-playlist-grid
-    [playlists]="playlists"
-    [manageMode]="manageMode"
-    (select)="onSelectPlaylist($event)"
-  ></app-playlist-grid>
+<section *ngIf="!loading && playlists.length > 0" class="px-6 py-2 max-w-7xl mx-auto">
+  <app-playlist-grid [playlists]="playlists" [manageMode]="manageMode"
+    (select)="onSelectPlaylist($event)"></app-playlist-grid>
 </section>
 
 <!-- Playlist Creator Modal -->
-<app-playlist-creator-modal
-  #createPlaylistModal
-  (created)="onPlaylistCreated($event)"
-  (cancelled)="(null)"
-></app-playlist-creator-modal>
+<app-playlist-creator-modal #createPlaylistModal (created)="onPlaylistCreated($event)"
+  (cancelled)="(null)"></app-playlist-creator-modal>
 
 <!-- Confirm Delete Selected Playlist Modal -->
-<app-confirm-modal
-  #confirmModal
-  (confirmed)="confirmDelete()"
-  (cancelled)="(null)"
-></app-confirm-modal>
+<app-confirm-modal #confirmModal (confirmed)="confirmDelete()" (cancelled)="(null)"></app-confirm-modal>
 
 <!-- Empty State -->
-<section
-  *ngIf="!loading && playlists.length === 0"
-  class="flex flex-col items-center justify-center text-center px-6 py-12 max-w-md mx-auto text-base-content/70"
->
-  <i-lucide
-    [img]="List"
-    class="w-16 h-16 text-base-content/20 mb-4"
-    aria-hidden="true"
-  ></i-lucide>
+<section *ngIf="!loading && playlists.length === 0"
+  class="flex flex-col items-center justify-center text-center px-6 py-12 max-w-md mx-auto text-base-content/70">
   <h2 class="text-xl font-semibold text-base-content/80 mb-2">
     No playlists yet
   </h2>

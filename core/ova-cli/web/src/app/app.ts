@@ -37,35 +37,10 @@ export class App implements OnInit {
   isLoginRoute: boolean = false;
   isNotFoundRoute: boolean = false;
 
-  constructor(private location: Location) {}
-
-  pageTitle: string = 'home';
-
-  // Dynamically set page title based on the route
-  setPageTitle(): void {
-    const currentRoute = this.location.path().split('?')[0]; // Get the route without query parameters
-    console.log(currentRoute);
-
-    // Grab the first part of the path to set it as the title
-    const pathSegments = currentRoute
-      .split('/')
-      .filter((segment) => segment.length > 0); // Filter out any empty segments
-    const firstPathSegment = pathSegments[0];
-
-    // Capitalize the first letter of the first path segment
-    const capitalizedSegment = firstPathSegment
-      ? firstPathSegment.charAt(0).toUpperCase() + firstPathSegment.slice(1)
-      : 'Home'; // Default to 'Home' if empty
-
-    // Set the title dynamically
-    this.pageTitle = capitalizedSegment;
-  }
-
   ngOnInit() {
     // Set theme from localStorage
     const savedTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
-    this.setPageTitle();
 
     // Listen to router navigation events to toggle loading spinner
     this.router.events.subscribe((event) => {
@@ -77,7 +52,6 @@ export class App implements OnInit {
         event instanceof NavigationError
       ) {
         this.loadingService.hide();
-        this.setPageTitle();
       }
 
       // Check if the current route is /login

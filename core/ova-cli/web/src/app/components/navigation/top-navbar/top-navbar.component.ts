@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { Location } from '@angular/common';
 
 import { SettingsModalComponent } from '../../pop-ups/setting-modal/settings-modal.component';
@@ -14,7 +14,7 @@ import { AuthApiService } from '../../../services/api/auth-api.service';
   templateUrl: './top-navbar.component.html',
 })
 export class TopNavbarComponent implements OnInit {
-  @Input() pageTitle: string = 'Home';
+  pageTitle: string = 'Home';
   username: string = 'Guest';
   dropdownOpen = false;
   showSettingsModal = false;
@@ -22,11 +22,18 @@ export class TopNavbarComponent implements OnInit {
   constructor(
     private utilsService: UtilsService,
     private authapi: AuthApiService,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
     this.username = this.utilsService.getUsername() || 'Guest';
+    // Subscribe to router events to detect route changes
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.getPageTitle();
+      }
+    });
   }
 
   get userInitial(): string {
@@ -49,6 +56,26 @@ export class TopNavbarComponent implements OnInit {
   closeSettingsModal(): void {
     this.showSettingsModal = false;
     this.username = this.utilsService.getUsername() || 'Guest';
+  }
+
+  // Dynamically set page title based on the route
+  getPageTitle(): void {
+    const currentRoute = this.location.path().split('?')[0]; // Get the route without query parameters
+    console.log(currentRoute);
+
+    // Grab the first part of the path to set it as the title
+    const pathSegments = currentRoute
+      .split('/')
+      .filter((segment) => segment.length > 0); // Filter out any empty segments
+    const firstPathSegment = pathSegments[0];
+
+    // Capitalize the first letter of the first path segment
+    const capitalizedSegment = firstPathSegment
+      ? firstPathSegment.charAt(0).toUpperCase() + firstPathSegment.slice(1)
+      : 'Home'; // Default to 'Home' if empty
+
+    // Set the title dynamically
+    this.pageTitle = capitalizedSegment;
   }
 
   onLogout(): void {

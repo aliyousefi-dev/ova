@@ -1,61 +1,84 @@
-@baseUrl = http://localhost:4040
-@session_id = 723984b9-8860-4e6e-b1b9-9c729d6e1e39
+@baseUrl = http://localhost:443/api/v1
+@session_id = e0ecf163-b6d5-4feb-9e12-e43212e12c90
 @username = user
-@playlistSlug = my-playlist
+@password = pass
 
 ###
 
-# Get all playlists for user
-GET {{baseUrl}}/api/v1/users/{{username}}/playlists
+# Get User Playlists
+GET {{baseUrl}}/users/{{username}}/playlists
 Accept: application/json
 Cookie: session_id={{session_id}}
 
 ###
 
-# Create a new playlist for user
-POST {{baseUrl}}/api/v1/users/{{username}}/playlists
+# Create User Playlist
+POST {{baseUrl}}/users/{{username}}/playlists
 Content-Type: application/json
 Accept: application/json
 Cookie: session_id={{session_id}}
 
 {
-  "title": "asdasd asddd",
-  "description": "This is a test playlist",
-  "videoIds": [
-    "fab4e66962f5a46c9463fab68405a129d0cbf7992244a4a",
-    "81110d56b05a59d7df8dddd7d883c078bf8e14592c01a0e71e8076a3dd4a969e"
-  ]
+  "title": "New Playlist",
+  "description": "A new playlist created via test client"
 }
 
 ###
 
-# Get a playlist by slug
-GET {{baseUrl}}/api/v1/users/{{username}}/playlists/{{playlistSlug}}
+# Get User Playlist By Slug
+GET {{baseUrl}}/users/user/playlists/super-cute
 Accept: application/json
 Cookie: session_id={{session_id}}
 
 ###
 
-# Delete a playlist by slug
-DELETE {{baseUrl}}/api/v1/users/{{username}}/playlists/{{playlistSlug}}
+# Delete User Playlist By Slug
+DELETE {{baseUrl}}/users/{{username}}/playlists/{{slug}}
 Accept: application/json
 Cookie: session_id={{session_id}}
 
 ###
 
-# Add a video to a playlist by slug
-POST {{baseUrl}}/api/v1/users/{{username}}/playlists/{{playlistSlug}}/videos
+# Add Video to Playlist
+POST {{baseUrl}}/users/{{username}}/playlists/new/videos
 Content-Type: application/json
 Accept: application/json
 Cookie: session_id={{session_id}}
 
 {
-  "videoId": "video3"
+  "videoId": "some-video-id"
 }
 
 ###
 
-# Delete a video from a playlist by slug
-DELETE {{baseUrl}}/api/v1/users/{{username}}/playlists/{{playlistSlug}}/videos
+# Delete Video from Playlist
+DELETE {{baseUrl}}/users/{{username}}/playlists/{{slug}}/videos/{{videoId}}
 Accept: application/json
 Cookie: session_id={{session_id}}
+
+###
+
+# Set User Playlists Order
+PUT {{baseUrl}}/users/{{username}}/playlists/order
+Content-Type: application/json
+Accept: application/json
+Cookie: session_id={{session_id}}
+
+{
+  "order": ["playlist1", "playlist2", "playlist3"]
+}
+
+###
+
+# Update User Playlist Info
+PUT {{baseUrl}}/users/{{username}}/playlists/{{slug}}
+Content-Type: application/json
+Accept: application/json
+Cookie: session_id={{session_id}}
+
+{
+  "title": "Updated Playlist Title",
+  "description": "Updated description of the playlist"
+}
+
+###

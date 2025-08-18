@@ -9,8 +9,6 @@ import { PlaylistCreatorModalComponent } from '../../pop-ups/playlist-creator-mo
 import { ConfirmModalComponent } from '../../pop-ups/confirm-modal/confirm-modal.component';
 import { UtilsService } from '../../../services/utils.service';
 
-import { LucideAngularModule, FolderPlus, Trash2, List } from 'lucide-angular';
-
 @Component({
   selector: 'app-playlist-manager',
   standalone: true,
@@ -20,7 +18,6 @@ import { LucideAngularModule, FolderPlus, Trash2, List } from 'lucide-angular';
     PlaylistGridComponent,
     PlaylistCreatorModalComponent,
     ConfirmModalComponent,
-    LucideAngularModule,
   ],
   templateUrl: './playlist-manager.component.html',
 })
@@ -35,11 +32,6 @@ export class PlaylistManagerComponent implements OnInit {
   playlists: PlaylistData[] = [];
   selectedPlaylists = new Set<string>();
   selectedPlaylistTitle: string | null = null;
-
-  // Lucide icons exposed to template
-  readonly FolderPlus = FolderPlus; // for create new playlist button (optional)
-  readonly Trash2 = Trash2; // for delete button
-  readonly List = List; // fallback icon if needed
 
   constructor(
     private playlistApi: PlaylistAPIService,
