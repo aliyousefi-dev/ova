@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { VideoApiService } from '../../../services/api/video-api.service';
+import { VideoApiService } from '../../../services/ova-backend/video-api.service';
 
 @Component({
   selector: 'app-tag-chip',

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FolderApiService } from '../../../services/api/folder-api.service';
+import { FolderApiService } from '../../../services/ova-backend/folder-api.service';
 
 export interface FolderNode {
   name: string;

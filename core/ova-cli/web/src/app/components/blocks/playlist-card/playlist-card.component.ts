@@ -9,8 +9,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PlaylistData } from '../../../data-types/playlist-data';
-import { VideoApiService } from '../../../services/api/video-api.service';
-import { PlaylistAPIService } from '../../../services/api/playlist-api.service';
+import { VideoApiService } from '../../../services/ova-backend/video-api.service';
+import { PlaylistAPIService } from '../../../services/ova-backend/playlist-api.service';
 import { ConfirmModalComponent } from '../../pop-ups/confirm-modal/confirm-modal.component';
 import { EditPlaylistModalComponent } from '../../pop-ups/edit-playlist-modal/edit-playlist-modal.component';
 import { Router } from '@angular/router';

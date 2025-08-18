@@ -3,8 +3,8 @@ import { VideoCardComponent } from '../../blocks/video-card/video-card.component
 import { MiniVideoCardComponent } from '../../blocks/mini-video-card/mini-video-card.component';
 import { CommonModule } from '@angular/common';
 import { VideoData } from '../../../data-types/video-data';
-import { SavedApiService } from '../../../services/api/saved-api.service';
-import { WatchedApiService } from '../../../services/api/watched-api.service';
+import { SavedApiService } from '../../../services/ova-backend/saved-api.service';
+import { WatchedApiService } from '../../../services/ova-backend/watched-api.service';
 
 @Component({
   selector: 'app-gallery-view',

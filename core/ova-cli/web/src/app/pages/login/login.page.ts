@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import {
   AuthApiService,
   LoginResponse,
-} from '../../services/api/auth-api.service';
+} from '../../services/ova-backend/auth-api.service';
 
 @Component({
   selector: 'app-login',

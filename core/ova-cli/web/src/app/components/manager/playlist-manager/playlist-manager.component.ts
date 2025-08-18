@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 
 import { PlaylistData } from '../../../data-types/playlist-data';
-import { PlaylistAPIService } from '../../../services/api/playlist-api.service';
+import { PlaylistAPIService } from '../../../services/ova-backend/playlist-api.service';
 import { PlaylistGridComponent } from '../../containers/playlist-grid/playlist-grid.component';
 import { PlaylistCreatorModalComponent } from '../../pop-ups/playlist-creator-modal/playlist-creator-modal.component';
 import { ConfirmModalComponent } from '../../pop-ups/confirm-modal/confirm-modal.component';

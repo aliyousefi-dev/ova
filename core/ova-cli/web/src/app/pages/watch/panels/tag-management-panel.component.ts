@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { VideoApiService } from '../../../services/api/video-api.service'; // Assuming path
+import { VideoApiService } from '../../../services/ova-backend/video-api.service'; // Assuming path
 import { TagChipComponent } from '../../../components/utility/tag-chip/tag-chip.component'; // Keep existing path for TagChipComponent
 
 @Component({

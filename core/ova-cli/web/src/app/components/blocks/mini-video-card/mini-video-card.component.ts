@@ -14,8 +14,8 @@ import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PlaylistModalComponent } from '../../pop-ups/playlist-modal/playlist-modal.component';
 
-import { VideoApiService } from '../../../services/api/video-api.service';
-import { SavedApiService } from '../../../services/api/saved-api.service';
+import { VideoApiService } from '../../../services/ova-backend/video-api.service';
+import { SavedApiService } from '../../../services/ova-backend/saved-api.service';
 import { VideoData } from '../../../data-types/video-data';
 import { UtilsService } from '../../../services/utils.service';
 

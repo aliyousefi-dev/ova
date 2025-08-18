@@ -5,7 +5,7 @@ import { Location } from '@angular/common';
 
 import { SettingsModalComponent } from '../../pop-ups/setting-modal/settings-modal.component';
 import { UtilsService } from '../../../services/utils.service';
-import { AuthApiService } from '../../../services/api/auth-api.service';
+import { AuthApiService } from '../../../services/ova-backend/auth-api.service';
 
 import { MobileDrawerComponent } from '../mobile-drawer/mobile-drawer.component';
 

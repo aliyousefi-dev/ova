@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PlaylistData } from '../../../data-types/playlist-data';
-import { PlaylistAPIService } from '../../../services/api/playlist-api.service';
+import { PlaylistAPIService } from '../../../services/ova-backend/playlist-api.service';
 import { UtilsService } from '../../../services/utils.service'; // Import UtilsService
 
 // Define PlaylistWrapper interface outside the component class

@@ -14,7 +14,7 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 
 import { AutoCompleteSearchBarComponent } from '../../components/utility/autocomplete-search-bar/autocomplete-search-bar.component';
 import { GalleryViewComponent } from '../../components/containers/gallery-view/gallery-view.component';
-import { SearchApiService } from '../../services/api/search-api.service';
+import { SearchApiService } from '../../services/ova-backend/search-api.service';
 
 @Component({
   selector: 'app-explore',

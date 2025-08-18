@@ -8,7 +8,7 @@ import {
   Film,
   Download,
 } from 'lucide-angular';
-import { VideoApiService } from '../../../services/api/video-api.service';
+import { VideoApiService } from '../../../services/ova-backend/video-api.service';
 
 @Component({
   selector: 'app-video-metadata-panel',

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UploadApiService } from '../../services/api/upload-api.service';
+import { UploadApiService } from '../../services/ova-backend/upload-api.service';
 import { TreeViewComponent } from '../../components/containers/tree-view/tree-view.component';
 import { HttpEventType } from '@angular/common/http';
 

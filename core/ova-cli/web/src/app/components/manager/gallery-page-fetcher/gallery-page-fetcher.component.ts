@@ -4,7 +4,7 @@ import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { VideoData } from '../../../data-types/video-data';
 import { GalleryViewComponent } from '../../containers/gallery-view/gallery-view.component';
 import { PageControlsComponent } from '../../utility/page-controls/page-controls.component';
-import { CentralFetchService } from '../../../services/api/central-fetch';
+import { CentralFetchService } from '../../../services/ova-backend/central-fetch';
 
 @Component({
   selector: 'app-gallery-page-fetcher',

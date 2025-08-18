@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { GalleryViewComponent } from '../../components/containers/gallery-view/gallery-view.component';
-import { PlaylistAPIService } from '../../services/api/playlist-api.service';
-import { VideoApiService } from '../../services/api/video-api.service';
+import { PlaylistAPIService } from '../../services/ova-backend/playlist-api.service';
+import { VideoApiService } from '../../services/ova-backend/video-api.service';
 
 @Component({
   selector: 'app-playlist-detail',

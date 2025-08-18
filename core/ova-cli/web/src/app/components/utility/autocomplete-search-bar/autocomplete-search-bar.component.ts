@@ -19,7 +19,7 @@ import {
   catchError,
 } from 'rxjs';
 
-import { SearchApiService } from '../../../services/api/search-api.service';
+import { SearchApiService } from '../../../services/ova-backend/search-api.service';
 
 @Component({
   selector: 'app-autocomplete-search-bar',

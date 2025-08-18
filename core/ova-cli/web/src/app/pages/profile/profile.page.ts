@@ -7,8 +7,8 @@ import { ConfirmModalComponent } from '../../components/pop-ups/confirm-modal/co
 import {
   AuthApiService,
   UserProfile,
-} from '../../services/api/auth-api.service';
-import { WatchedApiService } from '../../services/api/watched-api.service';
+} from '../../services/ova-backend/auth-api.service';
+import { WatchedApiService } from '../../services/ova-backend/watched-api.service';
 
 // Define session type
 interface SessionEntry {

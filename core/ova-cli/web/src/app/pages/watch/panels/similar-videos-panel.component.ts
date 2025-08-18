@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VideoData } from '../../../data-types/video-data'; // Assuming path
-import { VideoApiService } from '../../../services/api/video-api.service'; // Assuming path
+import { VideoApiService } from '../../../services/ova-backend/video-api.service'; // Assuming path
 
 @Component({
   selector: 'app-similar-videos-panel', // Changed selector

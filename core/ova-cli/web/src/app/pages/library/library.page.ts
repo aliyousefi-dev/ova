@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 
 import { PlaylistData } from '../../data-types/playlist-data';
 import { VideoData } from '../../data-types/video-data';
-import { VideoApiService } from '../../services/api/video-api.service';
+import { VideoApiService } from '../../services/ova-backend/video-api.service';
 
 import { TreeViewComponent } from '../../components/containers/tree-view/tree-view.component';
 import { SearchBarComponent } from '../../components/utility/search-bar/search-bar.component';

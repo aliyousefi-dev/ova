@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { GalleryViewComponent } from '../../containers/gallery-view/gallery-view.component';
 import { VideoData } from '../../../data-types/video-data';
-import { CentralFetchService } from '../../../services/api/central-fetch';
+import { CentralFetchService } from '../../../services/ova-backend/central-fetch';
 
 @Component({
   selector: 'app-gallery-infinite-fetcher',
