@@ -1,13 +1,11 @@
 <!-- Actions -->
 <div class="my-8 flex flex-wrap justify-center gap-4 px-4">
-  <button class="btn btn-primary text-sm px-6 py-2 min-w-[160px]" (click)="OnCreatePlaylistButton()"
-    aria-label="Create New Playlist">
+  <button class="btn btn-primary text-sm px-6 py-2 " (click)="OnCreatePlaylistButton()">
     <i class='bx  bx-folder-plus bx-sm'></i>
     Create New Playlist
   </button>
 
-  <button class="btn text-sm px-6 py-2 min-w-[160px] border border-base-content/10 hover:bg-base-300"
-    (click)="toggleManageMode()" [attr.aria-pressed]="manageMode">
+  <button class="btn text-sm px-6 py-2 border border-base-content/10 hover:bg-base-300" (click)="toggleManageMode()">
     {{ manageMode ? "Done" : "Manage" }}
   </button>
 </div>
@@ -29,21 +27,15 @@
 </div>
 
 <!-- Playlist Grid -->
-<section *ngIf="!loading && playlists.length > 0" class="px-6 py-2 max-w-7xl mx-auto">
-  <app-playlist-grid [playlists]="playlists" [manageMode]="manageMode"
-    (select)="onSelectPlaylist($event)"></app-playlist-grid>
+@if (!loading && playlists.length > 0) {
+<section class="px-6 py-2 max-w-7xl mx-auto">
+  <app-playlist-grid [playlists]="playlists" [manageMode]="manageMode"></app-playlist-grid>
 </section>
+}
 
-<!-- Playlist Creator Modal -->
-<app-playlist-creator-modal #createPlaylistModal (created)="onPlaylistCreated($event)"
-  (cancelled)="(null)"></app-playlist-creator-modal>
-
-<!-- Confirm Delete Selected Playlist Modal -->
-<app-confirm-modal #confirmModal (confirmed)="confirmDelete()" (cancelled)="(null)"></app-confirm-modal>
-
+@if (!loading && playlists.length === 0) {
 <!-- Empty State -->
-<section *ngIf="!loading && playlists.length === 0"
-  class="flex flex-col items-center justify-center text-center px-6 py-12 max-w-md mx-auto text-base-content/70">
+<section class="flex flex-col items-center justify-center text-center px-6 py-12 max-w-md mx-auto text-base-content/70">
   <h2 class="text-xl font-semibold text-base-content/80 mb-2">
     No playlists yet
   </h2>
@@ -52,3 +44,12 @@
     favorite videos!
   </p>
 </section>
+}
+
+
+<!-- Playlist Creator Modal -->
+<app-playlist-creator-modal #createPlaylistModal (created)="onPlaylistCreated($event)"
+  (cancelled)="(null)"></app-playlist-creator-modal>
+
+<!-- Confirm Delete Selected Playlist Modal -->
+<app-confirm-modal #confirmModal (confirmed)="confirmDelete()" (cancelled)="(null)"></app-confirm-modal>

@@ -5,6 +5,7 @@
 - enableAuth
 - dataStorageType
 - createdAt
+- DefaultVideoBucketSize
 - MaxSpaceSize
 - MaxSpace
 ```

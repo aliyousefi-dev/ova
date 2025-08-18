@@ -4,7 +4,6 @@ and enable them to work with each other on that.
 Publish Confirmation.
 Draft Videos
 
-
 it must help to get a better version of a video. and then finally
 it keep tracks the video versions.
 

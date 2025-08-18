@@ -1,57 +1,27 @@
-<dialog
-  id="playlist_modal"
-  *ngIf="isVisible"
-  class="modal modal-open bg-black/40 backdrop-blur-sm z-200"
-  (keydown.escape)="onCancel()"
-  (keydown.enter)="playlistName.trim() && submit()"
-  aria-labelledby="playlist_modal_title"
-  role="dialog"
-  aria-modal="true"
->
+<dialog id="playlist_modal" *ngIf="isVisible" class="modal modal-open bg-black/40  z-200" (keydown.escape)="onCancel()"
+  (keydown.enter)="playlistName.trim() && submit()" aria-labelledby="playlist_modal_title" role="dialog"
+  aria-modal="true">
 
-  <div
-    class="modal-box " (click)="$event.stopPropagation()"
-  >
+  <div class="modal-box " (click)="$event.stopPropagation()">
     <h3 id="playlist_modal_title" class="font-bold text-xl mb-4">
-      Create New Playlistssss
+      Create New Playlist
     </h3>
 
     <label for="playlistNameInput" class="sr-only">Playlist Name</label>
-    <input
-      #playlistInput
-      id="playlistNameInput"
-      type="text"
-      [(ngModel)]="playlistName"
-      placeholder="Enter playlist name"
-      class="input input-bordered w-full"
-      aria-required="true"
-      autocomplete="off"
-    />
+    <input #playlistInput id="playlistNameInput" type="text" [(ngModel)]="playlistName"
+      placeholder="Enter playlist name" class="input input-bordered w-full" aria-required="true" autocomplete="off" />
 
     <div class="modal-action mt-6 flex justify-end space-x-3">
       <!-- Close Button -->
-      <button
-        type="button"
-        class="btn btn-ghost"
-        (click)="onCancel()"
-        aria-label="Cancel creating playlist"
-      >
+      <button type="button" class="btn btn-ghost" (click)="onCancel()" aria-label="Cancel creating playlist">
         Cancel
       </button>
 
       <!-- Create Button -->
-      <button
-      type="button"
-      class="btn btn-primary"
-      (click)="submit()"
-      [disabled]="!playlistName.trim()"
-      [attr.aria-disabled]="!playlistName.trim()"
-    >
-      Create
-    </button>
+      <button type="button" class="btn btn-primary" (click)="submit()" [disabled]="!playlistName.trim()"
+        [attr.aria-disabled]="!playlistName.trim()">
+        Create
+      </button>
     </div>
   </div>
 </dialog>
-
-
-  

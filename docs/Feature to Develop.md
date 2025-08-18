@@ -22,26 +22,7 @@
 - Live Stream Solution
 - Showing each folder how many videos contain on Tree View
 - Download Counts
-
-Create Space API - Creating a Folder inside Repo Root.
-
-
-Set Recent Videos a Time.
-Like This Day. This Month. This Year.
+- Share Playlist
 
 
-Space Gallery Fetching
-how we can make the Infinite Fetching also works for others like the Watched.
 
-a technical question 
-i have an api that return the video ids liike 
-/watched
-return this 
-
-/recent
-/watched
-/saved
-/spaces/space-name/space-name?bucket=1
-/spaces?spacename=newfolder&bucket=1
-
-each section access . tag editing 

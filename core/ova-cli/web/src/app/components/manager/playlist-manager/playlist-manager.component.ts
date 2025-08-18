@@ -116,10 +116,4 @@ export class PlaylistManagerComponent implements OnInit {
   onPlaylistCreated(title: string): void {
     this.FetchPlaylists();
   }
-
-  onSelectPlaylist(title: string): void {
-    if (!this.manageMode) {
-      this.router.navigate(['/playlists', title]);
-    }
-  }
 }

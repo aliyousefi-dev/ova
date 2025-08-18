@@ -7,10 +7,17 @@ import { SettingsModalComponent } from '../../pop-ups/setting-modal/settings-mod
 import { UtilsService } from '../../../services/utils.service';
 import { AuthApiService } from '../../../services/api/auth-api.service';
 
+import { MobileDrawerComponent } from '../mobile-drawer/mobile-drawer.component';
+
 @Component({
   selector: 'app-top-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, SettingsModalComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    SettingsModalComponent,
+    MobileDrawerComponent,
+  ],
   templateUrl: './top-navbar.component.html',
 })
 export class TopNavbarComponent implements OnInit {

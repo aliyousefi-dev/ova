@@ -4,17 +4,16 @@ import {
   Output,
   EventEmitter,
   OnInit,
-  HostListener,
   ElementRef,
   ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PlaylistData } from '../../../data-types/playlist-data';
-import { VideoData } from '../../../data-types/video-data';
 import { VideoApiService } from '../../../services/api/video-api.service';
 import { PlaylistAPIService } from '../../../services/api/playlist-api.service';
 import { ConfirmModalComponent } from '../../pop-ups/confirm-modal/confirm-modal.component';
 import { EditPlaylistModalComponent } from '../../pop-ups/edit-playlist-modal/edit-playlist-modal.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-playlist-card',
@@ -24,14 +23,9 @@ import { EditPlaylistModalComponent } from '../../pop-ups/edit-playlist-modal/ed
 })
 export class PlaylistCardComponent implements OnInit {
   @Input() playlist!: PlaylistData;
-  @Output() select = new EventEmitter<void>();
   @Output() playlistDeleted = new EventEmitter<string>();
 
   @ViewChild(ConfirmModalComponent) confirmModal!: ConfirmModalComponent;
-
-  headerVideo?: VideoData;
-
-  menuOpen = false;
 
   username: string | null = null;
 
@@ -43,7 +37,7 @@ export class PlaylistCardComponent implements OnInit {
   constructor(
     private videoapi: VideoApiService,
     private playlistapi: PlaylistAPIService,
-    private elRef: ElementRef<HTMLElement>
+    private router: Router
   ) {
     this.username = localStorage.getItem('username');
     if (!this.username) {
@@ -66,16 +60,8 @@ export class PlaylistCardComponent implements OnInit {
     return videoId ? this.videoapi.getThumbnailUrl(videoId) : '';
   }
 
-  get hasHeaderVideo(): boolean {
-    return !!this.headerVideo?.videoId;
-  }
-
   onSelect() {
-    this.select.emit();
-  }
-
-  toggleMenu() {
-    this.menuOpen = !this.menuOpen;
+    this.router.navigate(['/playlists', this.playlist.slug]);
   }
 
   onDelete() {
@@ -94,7 +80,6 @@ export class PlaylistCardComponent implements OnInit {
       .subscribe({
         next: () => {
           this.playlistDeleted.emit(this.playlist.slug);
-          this.menuOpen = false;
         },
         error: (err) => {
           alert('Failed to delete playlist: ' + err.message);
@@ -106,7 +91,6 @@ export class PlaylistCardComponent implements OnInit {
     this.editTitle = this.playlist.title;
     this.editDescription = this.playlist.description || '';
     this.editModalVisible = true;
-    this.menuOpen = false;
   }
 
   onEditCancelled() {
@@ -134,13 +118,5 @@ export class PlaylistCardComponent implements OnInit {
           alert('Failed to update playlist info: ' + err.message);
         },
       });
-  }
-
-  // Close menu if user clicks outside this component
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-    if (!this.elRef.nativeElement.contains(event.target as Node)) {
-      this.menuOpen = false;
-    }
   }
 }
