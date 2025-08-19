@@ -79,6 +79,7 @@ func (s *OvaServer) initRoutes() {
 	api.RegisterPreviewRoutes(v1, s.RepoManager)
 	api.RegisterFolderRoutes(v1, s.RepoManager)
 	api.RegisterUserWatchedRoutes(v1, s.RepoManager)
+	api.RegisterUserPlaylistContentRoutes(v1, s.RepoManager)
 	api.RegisterStoryboardRoutes(v1, s.RepoManager)
 	api.RegisterMarkerRoutes(v1, s.RepoManager)
 	api.RegisterLatestVideoRoute(v1, s.RepoManager)
@@ -119,4 +120,3 @@ func (s *OvaServer) Run() error {
 	}
 	return s.router.Run(s.Addr)
 }
-

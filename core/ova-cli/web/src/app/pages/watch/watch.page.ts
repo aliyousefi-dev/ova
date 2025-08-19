@@ -18,6 +18,7 @@ import { VideoActionBarComponent } from './panels/video-action-bar.component';
 import { VideoTagsPanelComponent } from './panels/video-tags-panel.component';
 import { VideoAdminTabsComponent } from './panels/video-admin-tabs.component';
 import { VideoCommentPanelComponent } from './panels/video-comment-panel.component';
+import { PlaylistContentAPIService } from '../../services/ova-backend/playlist-content-api.service';
 
 import { ViewChild } from '@angular/core';
 
@@ -77,6 +78,7 @@ export class WatchPage implements AfterViewInit {
     private playlistapi: PlaylistAPIService,
     private watchedapi: WatchedApiService,
     private markerapi: MarkerApiService,
+    private playlistContentAPI: PlaylistContentAPIService,
     private cd: ChangeDetectorRef
   ) {
     this.videoId = this.route.snapshot.paramMap.get('videoId');
@@ -226,7 +228,7 @@ export class WatchPage implements AfterViewInit {
         checkList.map(
           (playlist) =>
             new Promise<void>((resolve) => {
-              this.playlistapi
+              this.playlistContentAPI
                 .fetchPlaylistContent(this.username, playlist.slug)
                 .subscribe((plData) => {
                   playlist.checked = plData.data.videoIds.includes(
@@ -258,11 +260,11 @@ export class WatchPage implements AfterViewInit {
       if (!original) return;
 
       if (playlist.checked && !original.checked) {
-        this.playlistapi
+        this.playlistContentAPI
           .addVideoToPlaylist(this.username, playlist.slug, this.video.videoId)
           .subscribe();
       } else if (!playlist.checked && original.checked) {
-        this.playlistapi
+        this.playlistContentAPI
           .deleteVideoFromPlaylist(
             this.username,
             playlist.slug,

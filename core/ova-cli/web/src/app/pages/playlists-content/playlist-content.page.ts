@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { GalleryViewComponent } from '../../components/containers/gallery-view/gallery-view.component';
 import { PlaylistAPIService } from '../../services/ova-backend/playlist-api.service';
 import { VideoApiService } from '../../services/ova-backend/video-api.service';
+import { PlaylistContentAPIService } from '../../services/ova-backend/playlist-content-api.service';
 
 @Component({
   selector: 'app-playlist-detail',
@@ -21,6 +22,7 @@ export class PlaylistContentPage implements OnInit {
     private route: ActivatedRoute,
     private playlistapi: PlaylistAPIService,
     private videoapi: VideoApiService,
+    private playlistContentAPI: PlaylistContentAPIService,
     private router: Router
   ) {}
 
@@ -45,7 +47,7 @@ export class PlaylistContentPage implements OnInit {
 
   getPlaylistContents(title: string) {
     this.loading = true;
-    this.playlistapi
+    this.playlistContentAPI
       .fetchPlaylistContent(this.username!, title.toLowerCase())
       .subscribe({
         next: (response) => {

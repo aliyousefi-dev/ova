@@ -9,7 +9,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PlaylistData } from '../../../data-types/playlist-data';
+import { PlaylistContentAPIService } from '../../../services/ova-backend/playlist-content-api.service';
 import { PlaylistAPIService } from '../../../services/ova-backend/playlist-api.service';
 import { UtilsService } from '../../../services/utils.service'; // Import UtilsService
 import { PlaylistSummary } from '../../../services/ova-backend/playlist-api.service';
@@ -41,7 +41,8 @@ export class PlaylistModalComponent implements OnChanges {
   constructor(
     private router: Router,
     private playlistapi: PlaylistAPIService,
-    private utilsService: UtilsService // Inject UtilsService
+    private utilsService: UtilsService, // Inject UtilsService
+    private playlistContentAPI: PlaylistContentAPIService
   ) {
     this.username = this.utilsService.getUsername(); // Fetch username on component initialization
   }
@@ -92,7 +93,7 @@ export class PlaylistModalComponent implements OnChanges {
           checkList.map(
             (playlist) =>
               new Promise<void>((resolve) => {
-                this.playlistapi
+                this.playlistContentAPI
                   .fetchPlaylistContent(this.username as string, playlist.slug) // Cast to string as we've checked for null
                   .subscribe({
                     next: (plData) => {
@@ -160,7 +161,7 @@ export class PlaylistModalComponent implements OnChanges {
 
       // If playlist is now checked but was not originally, add the video
       if (playlist.checked && !original.checked) {
-        this.playlistapi
+        this.playlistContentAPI
           .addVideoToPlaylist(
             this.username as string,
             playlist.slug,
@@ -180,7 +181,7 @@ export class PlaylistModalComponent implements OnChanges {
       }
       // If playlist is now unchecked but was originally checked, remove the video
       else if (!playlist.checked && original.checked) {
-        this.playlistapi
+        this.playlistContentAPI
           .deleteVideoFromPlaylist(
             this.username as string, // Cast to string
             playlist.slug,
