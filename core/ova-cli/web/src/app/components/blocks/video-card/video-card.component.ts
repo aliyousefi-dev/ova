@@ -4,6 +4,9 @@ import {
   ChangeDetectorRef,
   OnChanges,
   SimpleChanges,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
@@ -14,16 +17,16 @@ import { VideoApiService } from '../../../services/ova-backend/video-api.service
 import { SavedApiService } from '../../../services/ova-backend/saved-api.service';
 import { VideoData } from '../../../data-types/video-data';
 import { TagLinkComponent } from '../../utility/tag-link/tag-link.component';
-import { UtilsService } from '../../../services/utils.service'; // Import UtilsService
+import { UtilsService } from '../../../services/utils.service';
 
 @Component({
   selector: 'app-video-card',
   templateUrl: './video-card.component.html',
   standalone: true,
   styles: `.filled-icon {
-  fill: #fff !important;
-  stroke: none !important; /* or set stroke color if you want */
-}`,
+    fill: #fff !important;
+    stroke: none !important;
+  }`,
   imports: [
     CommonModule,
     RouterModule,
@@ -32,57 +35,85 @@ import { UtilsService } from '../../../services/utils.service'; // Import UtilsS
     TagLinkComponent,
   ],
 })
-export class VideoCardComponent implements OnChanges {
+export class VideoCardComponent implements OnChanges, AfterViewInit {
   @Input() video!: VideoData;
   @Input() isSaved: boolean = false;
-  @Input() username: string = ''; // Keep username input for other components that might use it
+  @Input() username: string = '';
   @Input() isWatched: boolean = false;
+  @Input() PreviewPlayback: boolean = false;
 
-  hovering = false;
-  // 'Saved' property is no longer needed as 'isSaved' directly reflects the state
-  // Saved = false;
+  @ViewChild('preview') videoElement!: ElementRef<HTMLVideoElement>;
+
+  private observer: IntersectionObserver | null = null;
 
   playlistModalVisible = false;
-  // Removed 'playlists' and 'originalPlaylists' as they are now managed inside PlaylistModalComponent
 
   constructor(
-    // Removed private playlistapi: PlaylistAPIService,
     private savedapi: SavedApiService,
     private videoapi: VideoApiService,
     private router: Router,
     private cd: ChangeDetectorRef,
-    private utilsService: UtilsService // Inject UtilsService to get username for other API calls
+    private utilsService: UtilsService
   ) {}
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['isWatched']) {
-      // console.log('isWatched changed to:', changes['isWatched'].currentValue);
+  ngAfterViewInit() {
+    if (this.PreviewPlayback && this.videoElement) {
+      const video_preview: HTMLVideoElement = this.videoElement.nativeElement;
+
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              this.playPreviewVideo();
+            } else {
+              this.stopPreviewVideo();
+            }
+          });
+        },
+        { threshold: 1 }
+      );
+
+      this.observer.observe(video_preview);
     }
-    this.cd.detectChanges(); // Ensure bindings update when video input changes
   }
 
-  getThumbnailUrl(): string {
-    return this.videoapi.getThumbnailUrl(this.video.videoId);
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['PreviewPlayback']) {
+      if (this.PreviewPlayback) {
+        this.cd.detectChanges();
+        setTimeout(() => {
+          if (this.videoElement?.nativeElement) {
+            this.ngAfterViewInit();
+          }
+        }, 0);
+      } else {
+        this.stopPreviewVideo();
+        if (this.observer) {
+          this.observer.disconnect();
+        }
+      }
+    }
   }
 
-  getPreviewUrl(): string {
-    return this.videoapi.getPreviewUrl(this.video.videoId);
+  // Play and Stop Preview Video
+  playPreviewVideo() {
+    if (this.videoElement?.nativeElement && this.PreviewPlayback) {
+      const video: HTMLVideoElement = this.videoElement.nativeElement;
+      video.play();
+    }
   }
 
-  get videoQuality(): string {
-    if (!this.video) return '';
-    const width = this.video.resolution.width;
-    const height = this.video.resolution.height;
-
-    if (width >= 3840 || height >= 2160) return '4K';
-    if (width >= 1920 || height >= 1080) return 'HD';
-    if (width >= 1280 || height >= 720) return '720p';
-    return '';
+  stopPreviewVideo() {
+    if (this.videoElement?.nativeElement && this.PreviewPlayback) {
+      const video: HTMLVideoElement = this.videoElement.nativeElement;
+      video.pause();
+      video.currentTime = 0;
+    }
   }
 
+  // Methods for playlist and saving
   addToPlaylist(event: MouseEvent): void {
     event.stopPropagation();
-    // No need to check this.username here, the modal will fetch it
     this.playlistModalVisible = true;
     this.cd.detectChanges();
   }
@@ -94,36 +125,30 @@ export class VideoCardComponent implements OnChanges {
 
   toggleSaved(event: MouseEvent): void {
     event.stopPropagation();
-    const username = this.utilsService.getUsername(); // Get username from UtilsService
+    const username = this.utilsService.getUsername();
     if (!username) {
       console.warn('Cannot save/unsave: Username is not available.');
       return;
     }
 
-    // this.Saved = true; // No longer needed
-
     if (this.isSaved) {
       this.savedapi.removeUserSaved(username, this.video.videoId).subscribe({
         next: () => {
           this.isSaved = false;
-          // this.Saved = false;
           this.cd.detectChanges();
         },
         error: (err) => {
           console.error('Error removing from saved:', err);
-          // this.Saved = false;
         },
       });
     } else {
       this.savedapi.addUserSaved(username, this.video.videoId).subscribe({
         next: () => {
           this.isSaved = true;
-          // this.Saved = false;
           this.cd.detectChanges();
         },
         error: (err) => {
           console.error('Error adding to saved:', err);
-          // this.Saved = false;
         },
       });
     }
@@ -140,6 +165,25 @@ export class VideoCardComponent implements OnChanges {
     document.body.removeChild(anchor);
   }
 
+  getThumbnailUrl(): string {
+    return this.videoapi.getThumbnailUrl(this.video.videoId);
+  }
+
+  getPreviewUrl(): string {
+    return this.videoapi.getPreviewUrl(this.video.videoId);
+  }
+
+  get videoQuality(): string {
+    const width = this.video.resolution.width;
+    const height = this.video.resolution.height;
+
+    if (width >= 3840 || height >= 2160) return '4K';
+    if (width >= 1920 || height >= 1080) return 'HD';
+    if (width >= 1280 || height >= 720) return '720p';
+    return '';
+  }
+
+  // Helper methods
   formatDuration(seconds: number): string {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);

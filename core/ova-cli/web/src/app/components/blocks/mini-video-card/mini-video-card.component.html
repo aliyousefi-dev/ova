@@ -11,15 +11,19 @@
       </div>
 
       <!-- Thumbnail if PreviewPlayback is false -->
-      <div *ngIf="!PreviewPlayback" (click)="navigateToWatch()" class="relative w-full h-full">
+      @if (!PreviewPlayback) {
+      <div (click)="navigateToWatch()" class="relative w-full h-full">
         <img [src]="getThumbnailUrl()" [alt]="video.title" class="w-full h-full object-cover absolute top-0 left-0" />
       </div>
-
+      } @else {
       <!-- Video playback if PreviewPlayback is true -->
-      <div *ngIf="PreviewPlayback" (click)="navigateToWatch()" class="relative w-full h-full">
+      <div (click)="navigateToWatch()" class="relative w-full h-full">
         <video #preview *ngIf="PreviewPlayback" [src]="getPreviewUrl()" muted loop playsinline
           class="w-full h-full object-cover absolute top-0 left-0"></video>
       </div>
+      }
+
+
 
       <!-- Watched label -->
       <div *ngIf="isWatched"

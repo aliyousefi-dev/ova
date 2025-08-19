@@ -1,5 +1,4 @@
-<div class="h-full flex flex-col cursor-pointer overflow-visible relative rounded-lg" (mouseenter)="hovering = true"
-  (mouseleave)="hovering = false">
+<div class="h-full flex flex-col cursor-pointer overflow-visible relative rounded-lg">
   <div class="block w-full h-40 rounded-lg overflow-hidden relative" (click)="navigateToWatch()">
     <figure class="relative w-full h-40 rounded-lg overflow-hidden bg-transparent">
       <div *ngIf="isSaved" class="absolute bottom-2 left-2 z-30">
@@ -14,12 +13,18 @@
         <span>Watched</span>
       </div>
 
-      <img [src]="getThumbnailUrl()" [alt]="video.title"
-        class="w-full h-full object-cover absolute top-0 left-0 transition-opacity duration-200"
-        [class.opacity-0]="hovering" [class.opacity-100]="!hovering" />
-      <video [src]="getPreviewUrl()" autoplay muted loop playsinline
-        class="w-full h-full object-cover absolute top-0 left-0 transition-opacity duration-200"
-        [class.opacity-100]="hovering" [class.opacity-0]="!hovering" style="pointer-events: none"></video>
+      <!-- Thumbnail if PreviewPlayback is false -->
+      @if (!PreviewPlayback) {
+      <div (click)="navigateToWatch()" class="relative w-full h-full">
+        <img [src]="getThumbnailUrl()" [alt]="video.title" class="w-full h-full object-cover absolute top-0 left-0" />
+      </div>
+      } @else {
+      <!-- Video playback if PreviewPlayback is true -->
+      <div (click)="navigateToWatch()" class="relative w-full h-full">
+        <video #preview *ngIf="PreviewPlayback" [src]="getPreviewUrl()" muted loop playsinline
+          class="w-full h-full object-cover absolute top-0 left-0"></video>
+      </div>
+      }
 
       <div class="absolute bottom-2 right-2 bg-black text-white bg-opacity-60 text-xs px-2 py-1 rounded">
         {{ formatDuration(video.durationSeconds) }}
