@@ -14,7 +14,8 @@ import { CentralFetchService } from '../../../services/ova-backend/central-fetch
 export class GalleryInfiniteFetcher implements OnInit {
   @Input() isMiniView: boolean = false;
   @Input() PreviewPlayback: boolean = false;
-  @Input() route: string = 'recent'; // @Input for route, default is 'recent'
+  @Input() route: string = 'recent'; // Default route is 'recent'
+  @Input() slug: string = ''; // New Input for slug
 
   videos: VideoData[] = [];
   CurrentBucket: number = 1;
@@ -37,23 +38,41 @@ export class GalleryInfiniteFetcher implements OnInit {
     this.videos = [];
     this.loading = true;
 
-    // Fetch gallery data based on the input route
-    this.centralFetchService
-      .fetchGallery(this.route, 1)
-      .subscribe((videoDetails) => {
-        this.CurrentBucket = 1; // First bucket
-        this.TotalBuckets = videoDetails.totalBuckets; // Total number of buckets (can be adjusted)
-        this.TotalVideos = videoDetails.totalVideos; // Total videos count, can be updated based on response
+    if (this.route === 'playlists' && this.slug) {
+      // Fetch playlist content if route is 'playlists' and slug is provided
+      this.centralFetchService
+        .fetchGallery(this.route, 1, this.slug) // Pass slug for playlist
+        .subscribe((videoDetails) => {
+          this.CurrentBucket = 1; // First bucket
+          this.TotalBuckets = videoDetails.totalBuckets;
+          this.TotalVideos = videoDetails.totalVideos;
 
-        // If no videos are found, set the noVideos flag to true
-        if (this.TotalVideos === 0) {
-          this.noVideos = true;
-        } else {
-          this.videos = videoDetails.videos;
-        }
+          if (this.TotalVideos === 0) {
+            this.noVideos = true;
+          } else {
+            this.videos = videoDetails.videos;
+          }
 
-        this.loading = false;
-      });
+          this.loading = false;
+        });
+    } else {
+      // Fetch gallery data for other routes (e.g., 'recent', 'watched', 'saved')
+      this.centralFetchService
+        .fetchGallery(this.route, 1)
+        .subscribe((videoDetails) => {
+          this.CurrentBucket = 1; // First bucket
+          this.TotalBuckets = videoDetails.totalBuckets;
+          this.TotalVideos = videoDetails.totalVideos;
+
+          if (this.TotalVideos === 0) {
+            this.noVideos = true;
+          } else {
+            this.videos = videoDetails.videos;
+          }
+
+          this.loading = false;
+        });
+    }
   }
 
   loadMore() {
@@ -61,7 +80,7 @@ export class GalleryInfiniteFetcher implements OnInit {
       this.TotalBuckets === 1 ||
       this.CurrentBucket >= this.TotalBuckets ||
       this.loading ||
-      this.noVideos // Prevent loading more if there are no videos
+      this.noVideos
     ) {
       return;
     }
@@ -69,17 +88,26 @@ export class GalleryInfiniteFetcher implements OnInit {
     this.loading = true;
     this.CurrentBucket++;
 
-    // Fetch more videos based on the current bucket and route
-    this.centralFetchService
-      .fetchGallery(this.route, this.CurrentBucket)
-      .subscribe((videoDetails) => {
-        this.videos = [...this.videos, ...videoDetails.videos];
-        this.loading = false;
-      });
+    if (this.route === 'playlists' && this.slug) {
+      // Fetch more playlist content if route is 'playlists'
+      this.centralFetchService
+        .fetchGallery(this.route, this.CurrentBucket, this.slug) // Pass slug for playlist
+        .subscribe((videoDetails) => {
+          this.videos = [...this.videos, ...videoDetails.videos];
+          this.loading = false;
+        });
+    } else {
+      // Fetch more videos for other routes
+      this.centralFetchService
+        .fetchGallery(this.route, this.CurrentBucket)
+        .subscribe((videoDetails) => {
+          this.videos = [...this.videos, ...videoDetails.videos];
+          this.loading = false;
+        });
+    }
   }
 
   onScroll(event: any) {
-    // Check if we've scrolled to the bottom
     const condition: boolean =
       event.target.offsetHeight + event.target.scrollTop + 2 >=
       event.target.scrollHeight;

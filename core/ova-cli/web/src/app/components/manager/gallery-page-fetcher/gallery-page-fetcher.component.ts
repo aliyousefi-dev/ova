@@ -20,7 +20,8 @@ import { CentralFetchService } from '../../../services/ova-backend/central-fetch
 export class GalleryPageFetcher implements OnInit {
   @Input() isMiniView: boolean = false;
   @Input() PreviewPlayback: boolean = false;
-  @Input() route: string = 'recent'; // @Input for route, default is 'recent'
+  @Input() route: string = 'recent'; // Default route is 'recent'
+  @Input() slug: string = ''; // New Input for slug (for playlists)
 
   videos: VideoData[] = [];
   CurrentBucket: number = 1;
@@ -32,7 +33,7 @@ export class GalleryPageFetcher implements OnInit {
   constructor(
     private centralFetchService: CentralFetchService, // Inject CentralFetchService
     private router: Router,
-    private activatedRoute: ActivatedRoute // Make sure to inject ActivatedRoute
+    private activatedRoute: ActivatedRoute // Inject ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -46,31 +47,62 @@ export class GalleryPageFetcher implements OnInit {
   loadPage(number: number): void {
     this.loading = true;
 
-    // Fetch gallery data based on the route
-    this.centralFetchService.fetchGallery(this.route, number).subscribe({
-      next: (response) => {
-        if (response) {
-          this.CurrentBucket = response.currentBucket;
-          this.TotalBuckets = response.totalBuckets; // You can update this based on the response structure
-          this.TotalVideos = response.totalVideos; // Adjust this if the total count is provided differently
-          this.BucketContentSize = response.bucketContentSize; // Adjust if needed
+    if (this.route === 'playlists' && this.slug) {
+      // If route is 'playlists', use the slug for fetching playlist content
+      this.centralFetchService
+        .fetchGallery(this.route, number, this.slug)
+        .subscribe({
+          next: (response) => {
+            if (response) {
+              this.CurrentBucket = response.currentBucket;
+              this.TotalBuckets = response.totalBuckets;
+              this.TotalVideos = response.totalVideos;
+              this.BucketContentSize = response.bucketContentSize;
 
-          console.log(this.TotalBuckets);
+              console.log(this.TotalBuckets);
 
-          this.videos = response.videos;
+              this.videos = response.videos;
+              this.loading = false;
+
+              // Update the URL with the current bucket number
+              this.router.navigate([], {
+                queryParams: { bucket: number },
+                queryParamsHandling: 'merge',
+              });
+            }
+          },
+          error: (error) => {
+            console.error('[GalleryPageFetcher] Error loading videos:', error);
+            this.loading = false;
+          },
+        });
+    } else {
+      // For other routes like 'recent', 'watched', etc.
+      this.centralFetchService.fetchGallery(this.route, number).subscribe({
+        next: (response) => {
+          if (response) {
+            this.CurrentBucket = response.currentBucket;
+            this.TotalBuckets = response.totalBuckets;
+            this.TotalVideos = response.totalVideos;
+            this.BucketContentSize = response.bucketContentSize;
+
+            console.log(this.TotalBuckets);
+
+            this.videos = response.videos;
+            this.loading = false;
+
+            // Update the URL with the current bucket number
+            this.router.navigate([], {
+              queryParams: { bucket: number },
+              queryParamsHandling: 'merge',
+            });
+          }
+        },
+        error: (error) => {
+          console.error('[GalleryPageFetcher] Error loading videos:', error);
           this.loading = false;
-
-          // Update the URL with the current bucket number
-          this.router.navigate([], {
-            queryParams: { bucket: number },
-            queryParamsHandling: 'merge', // Keep existing query params
-          });
-        }
-      },
-      error: (error) => {
-        console.error('[GalleryPageFetcher] Error loading videos:', error);
-        this.loading = false;
-      },
-    });
+        },
+      });
+    }
   }
 }

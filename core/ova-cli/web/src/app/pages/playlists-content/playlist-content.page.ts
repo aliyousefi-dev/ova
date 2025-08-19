@@ -1,30 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { GalleryViewComponent } from '../../components/containers/gallery-view/gallery-view.component';
-import { PlaylistAPIService } from '../../services/ova-backend/playlist-api.service';
-import { VideoApiService } from '../../services/ova-backend/video-api.service';
-import { PlaylistContentAPIService } from '../../services/ova-backend/playlist-content-api.service';
+import { FormsModule } from '@angular/forms';
+import { GalleryInfiniteFetcher } from '../../components/manager/gallery-infinite-fetcher/gallery-infinite-fetcher.component';
+import { GalleryPageFetcher } from '../../components/manager/gallery-page-fetcher/gallery-page-fetcher.component'; // Assuming this is the other component
 
 @Component({
   selector: 'app-playlist-detail',
   standalone: true,
-  imports: [CommonModule, GalleryViewComponent],
+  imports: [
+    CommonModule,
+    GalleryInfiniteFetcher,
+    GalleryPageFetcher,
+    FormsModule,
+  ],
   templateUrl: './playlist-content.page.html',
 })
 export class PlaylistContentPage implements OnInit {
   playlistTitle = '';
-  videos: any[] = [];
   loading = true;
   username: string | null = null;
+  infiniteMode = true; // Default to infinite mode, you can change based on preference
+  previewPlayback = true; // Default for preview playback
+  isMiniView = false; // Default to full view
 
-  constructor(
-    private route: ActivatedRoute,
-    private playlistapi: PlaylistAPIService,
-    private videoapi: VideoApiService,
-    private playlistContentAPI: PlaylistContentAPIService,
-    private router: Router
-  ) {}
+  constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
     this.username = localStorage.getItem('username');
@@ -38,47 +38,22 @@ export class PlaylistContentPage implements OnInit {
       const title = params.get('title');
       if (title) {
         this.playlistTitle = title;
-        this.getPlaylistContents(title);
+        this.loading = false; // No need for loading anymore, gallery will handle it
       } else {
         this.router.navigate(['/playlists']);
       }
     });
   }
 
-  getPlaylistContents(title: string) {
-    this.loading = true;
-    this.playlistContentAPI
-      .fetchPlaylistContent(this.username!, title.toLowerCase())
-      .subscribe({
-        next: (response) => {
-          const playlist = response.data;
+  toggleInfiniteMode() {
+    this.infiniteMode = !this.infiniteMode;
+  }
 
-          if (!playlist) {
-            this.router.navigate(['/playlists']);
-            return;
-          }
+  togglePreviewPlayback() {
+    this.previewPlayback = !this.previewPlayback;
+  }
 
-          if (!playlist.videoIds || playlist.videoIds.length === 0) {
-            this.videos = [];
-            this.loading = false;
-            return;
-          }
-
-          this.videoapi.getVideosByIds(playlist.videoIds).subscribe({
-            next: (res) => {
-              this.videos = res.data || [];
-              this.loading = false;
-            },
-            error: () => {
-              this.videos = [];
-              this.loading = false;
-            },
-          });
-        },
-        error: () => {
-          this.loading = false;
-          this.router.navigate(['/playlists']);
-        },
-      });
+  toggleMiniView() {
+    this.isMiniView = !this.isMiniView;
   }
 }
