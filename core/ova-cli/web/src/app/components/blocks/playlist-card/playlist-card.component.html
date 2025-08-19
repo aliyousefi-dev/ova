@@ -1,5 +1,5 @@
 <!-- Playlist Card -->
-<div class="flex bg-base-100 w-full items-center gap-3" (click)="onSelect()">
+<div class="flex bg-base-100 w-full items-center gap-3">
 
   <!-- Thumbnail -->
   <div class="h-26 overflow-hidden">
@@ -14,8 +14,9 @@
   </div>
 
   <!-- Info Section -->
-  <div class="flex-1 flex flex-col justify-center min-w-0">
-    <h3 class="text-sm font-semibold truncate min-w-0" [title]="playlist.title">
+  <div class="flex-1 flex flex-col justify-center items-start">
+    <h3 class="text-sm font-semibold truncate link " [title]="playlist.title"
+      (click)="goToPlaylistContent();$event.stopPropagation();">
       {{ playlist.title }}
     </h3>
     <!-- Description -->

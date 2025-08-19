@@ -1,5 +1,7 @@
 how enable this on the Gallery Component ?
 
+Using the Bucket Fetch API.
+
 API that send the bunch of videos
 - Recent
 - Library

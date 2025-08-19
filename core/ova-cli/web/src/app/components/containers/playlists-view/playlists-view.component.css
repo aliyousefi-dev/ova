@@ -1,16 +1,13 @@
-
-
 .cdk-drag-placeholder {
   opacity: 0;
 }
 
 .cdk-drag-animating {
   /* This targets items that are animating into their new position */
-  transition: transform 300ms ease;
-  
+  transition: transform 250ms ease-in-out;
 }
 
 /* This is the key rule for animating other items when the list is being dragged */
-#playlist-draggable-list.cdk-drop-list-dragging li:not(.cdk-drag-placeholder) {
+#dragging-animation.cdk-drop-list-dragging li:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }

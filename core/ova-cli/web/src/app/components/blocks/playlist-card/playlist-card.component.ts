@@ -60,7 +60,7 @@ export class PlaylistCardComponent implements OnInit {
     return videoId ? this.videoapi.getThumbnailUrl(videoId) : '';
   }
 
-  onSelect() {
+  goToPlaylistContent() {
     this.router.navigate(['/playlists', this.playlist.slug]);
   }
 

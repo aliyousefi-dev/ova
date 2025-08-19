@@ -1,0 +1,42 @@
+<ul id="dragging-animation" class="w-full" cdkDropList [cdkDropListData]="playlists" [cdkDropListDisabled]="!manageMode"
+  (cdkDropListDropped)="drop($event)">
+
+  @if (playlists.length > 0) {
+  <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">
+    Your saved playlists
+  </li>
+  }
+
+  @for (playlist of playlists; track playlist.slug ; let idx = $index) {
+  @if (manageMode) {
+  <li cdkDrag class="flex items-center gap-5 hover:bg-base-200 px-4 py-2"
+    (click)="onSelect(playlist.title);$event.stopPropagation()">
+    <div class="flex-shrink-0">
+      <input type="checkbox" class="checkbox checkbox-neutral checkbox-sm" [checked]="isChecked(playlist.slug)"
+        (click)="togglePlaylistSelection(playlist.slug, $event)" />
+    </div>
+
+    <div class="flex-1 min-w-0">
+      <app-playlist-card [playlist]="playlist" (select)="onSelect(playlist.title)"
+        (playlistDeleted)="OnPlaylistDeleted($event)"></app-playlist-card>
+    </div>
+
+    <div class="w-8 text-xl cursor-grab flex-shrink-0" cdkDragHandle>
+      ☰
+    </div>
+  </li>
+  } @else {
+  <li class="flex items-center gap-2 hover:bg-base-200  px-2 py-2 ">
+    <div class="text-4xl  opacity-20 w-12 text-center">
+      {{ idx + 1 | number : "2.0" }}
+    </div>
+
+    <div class="flex-1 min-w-0">
+      <app-playlist-card (click)="$event.stopPropagation()" [playlist]="playlist"
+        (playlistDeleted)="OnPlaylistDeleted($event)"></app-playlist-card>
+    </div>
+  </li>
+  }
+  }
+
+</ul>

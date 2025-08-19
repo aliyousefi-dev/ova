@@ -1,0 +1,8 @@
+views:
+  - type: cards
+    name: View
+    order:
+      - file.name
+    cardSize: 520
+    imageFit: contain
+    imageAspectRatio: 0.8

@@ -1,5 +1,5 @@
 
-Arrangeable Playlist Grid
+Playlists View
 
 Enable Select Mode
 Add New Playlist

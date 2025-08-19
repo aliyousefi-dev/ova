@@ -4,7 +4,7 @@ import { RouterModule, Router } from '@angular/router';
 
 import { PlaylistData } from '../../../data-types/playlist-data';
 import { PlaylistAPIService } from '../../../services/ova-backend/playlist-api.service';
-import { PlaylistGridComponent } from '../../containers/playlist-grid/playlist-grid.component';
+import { PlaylistGridComponent } from '../../containers/playlists-view/playlists-view.component';
 import { PlaylistCreatorModalComponent } from '../../pop-ups/playlist-creator-modal/playlist-creator-modal.component';
 import { ConfirmModalComponent } from '../../pop-ups/confirm-modal/confirm-modal.component';
 import { UtilsService } from '../../../services/utils.service';

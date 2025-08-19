@@ -18,11 +18,13 @@
       </aside>
     </div>
 
-    <!-- Main Content (with left margin to clear both sidebars) -->
-    <div class="flex flex-col flex-grow w-full overflow-auto">
-      <div class="flex justify-between items-center gap-6 p-6 px-20 bg-base-200">
 
-        <div class="flex items-center gap-5">
+    <!-- Main Content (with left margin to clear both sidebars) -->
+    <div class="flex flex-col flex-grow w-full h-full overflow-auto">
+      <div class="flex justify-between items-center gap-6 p-6 px-20 bg-base-200 ">
+
+        <div class="flex items-center gap-6">
+
 
           <!-- Avatar Section -->
           <div class="avatar avatar-placeholder">
@@ -32,73 +34,184 @@
           </div>
 
           <!-- Content Section -->
-          <div class="flex flex-col space-y-2">
-            <span class="text-xl font-semibold ">{{ SpaceSelected }}</span>
-            <div class="text-sm  flex items-center gap-2">
-              <span id="spaceId">#sdkfjs23kdsflkjdsf</span>
-              <button class="text-primary text-xs flex items-center gap-1" (click)="copySpaceId()"
+          <div class="flex flex-col">
+            <!-- Space Title -->
+            <span class="text-2xl font-semibold text-base-content">{{ SpaceSelected }}</span>
+
+            <!-- Space ID & Copy Button -->
+            <div class="flex items-center gap-3 text-sm text-base-content/70">
+              <span id="spaceId" class="truncate max-w-[200px]" title="Space ID">{{ '#sdkfjs23kdsflkjdsf' }}</span>
+
+              <!-- Copy Button -->
+              <button class="btn btn-xs btn-outline text-primary flex items-center gap-1" (click)="copySpaceId()"
                 [attr.aria-label]="copyButtonLabel">
                 <i class="bx bx-copy"></i>
                 <span *ngIf="!copied">Copy</span>
                 <span *ngIf="copied">Copied!</span>
               </button>
             </div>
+
+            <!-- Joined Members Info -->
+            <span class="text-sm text-base-content/70">5 members</span>
+
+            <!-- Joined Members Info -->
+            <span class="text-sm text-base-content/70">10 videos</span>
+          </div>
+
+        </div>
+
+        <!-- Bio Section -->
+        <div class="w-full flex justify-center items-center">
+          <p class="text-sm max-w-[500px] opacity-70 text-center">
+            Developer focused on debugging, performance optimization, and building scalable applications.
+            Proficient in JavaScript, TypeScript, Angular, and Node.js. Always learning new tools and improving
+            workflows.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="tabs tabs-border h-full">
+        <input type="radio" name="my_tabs_2" class="tab" aria-label="Videos" checked="checked" />
+        <div class="tab-content border-base-300 bg-base-100 h-full">
+          <div>
+            <!-- Search Bar -->
+            <app-search-bar [(value)]="searchTerm" (valueChange)="setSearchTerm($event)" placeholder="Local Search ..."
+              class="mb-6"></app-search-bar>
+
+            <!-- Top Pagination -->
+            <div class="flex justify-center mb-5" *ngIf="totalPages > 1 && !loading">
+              <div class="join">
+                <input *ngFor="let page of [].constructor(totalPages); let i = index" class="join-item btn btn-square"
+                  type="radio" name="paginationTop" [attr.aria-label]="i + 1" [checked]="currentPage === i + 1"
+                  (change)="goToPage(i + 1)" />
+              </div>
+            </div>
+
+            <!-- Sort & Count -->
+            <div class="flex justify-between items-center gap-4 mb-6 max-w-7xl mx-auto px-4">
+              <div class="font-medium text-base-content">
+                Total videos: {{ filteredVideosCount }}
+              </div>
+              <div class="flex items-center gap-2">
+                <label for="sort" class="text-sm font-medium">Sort by:</label>
+                <select id="sort" [(ngModel)]="sortOption" (change)="setSortOption(sortOption)"
+                  class="select select-sm select-bordered w-44">
+                  <option value="titleAsc">Title (A–Z)</option>
+                  <option value="titleDesc">Title (Z–A)</option>
+                  <option value="durationAsc">Duration (Short → Long)</option>
+                  <option value="durationDesc">Duration (Long → Short)</option>
+                  <option value="newest">Newest</option>
+                  <option value="oldest">Oldest</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Videos Grid -->
+            <div class="mx-auto px-4 flex-grow w-full">
+              <p *ngIf="loading" class="font-medium text-center">Loading videos...</p>
+              <app-gallery-view *ngIf="!loading" [videos]="videos"></app-gallery-view>
+            </div>
+
+            <!-- Bottom Pagination -->
+            <div class="flex justify-center mt-6" *ngIf="totalPages > 1 && !loading">
+              <div class="join">
+                <input *ngFor="let page of [].constructor(totalPages); let i = index" class="join-item btn btn-square"
+                  type="radio" name="paginationBottom" [attr.aria-label]="i + 1" [checked]="currentPage === i + 1"
+                  (change)="goToPage(i + 1)" />
+              </div>
+            </div>
           </div>
         </div>
 
-        <a href="#" class="text-primary hover:underline text-sm">More</a>
+        <input type="radio" name="my_tabs_2" class="tab" aria-label="Space Info" />
+        <div class="tab-content border-base-300 bg-base-100 p-10 h-full">Space Info</div>
+
+        <input type="radio" name="my_tabs_2" class="tab" aria-label="Members" />
+        <div class="tab-content border-base-300 bg-base-100 p-10 h-full">
+          <ul class="list bg-base-100 rounded-box shadow-md">
+
+            <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Space Members</li>
+
+            <li class="list-row">
+              <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp" /></div>
+              <div>
+                <div>Dio Lupa</div>
+                <div class="text-xs opacity-60">&#64;dio_lupa</div>
+              </div>
+              <button class="btn btn-square btn-ghost">
+                <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor">
+                    <path d="M6 3L20 12 6 21 6 3z"></path>
+                  </g>
+                </svg>
+              </button>
+              <button class="btn btn-square btn-ghost">
+                <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor">
+                    <path
+                      d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z">
+                    </path>
+                  </g>
+                </svg>
+              </button>
+            </li>
+
+            <li class="list-row">
+              <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/4@94.webp" /></div>
+              <div>
+                <div>Ellie Beilish</div>
+                <div class="text-xs opacity-60">&#64;ellie_beilish</div>
+
+              </div>
+              <button class="btn btn-square btn-ghost">
+                <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor">
+                    <path d="M6 3L20 12 6 21 6 3z"></path>
+                  </g>
+                </svg>
+              </button>
+              <button class="btn btn-square btn-ghost">
+                <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor">
+                    <path
+                      d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z">
+                    </path>
+                  </g>
+                </svg>
+              </button>
+            </li>
+
+            <li class="list-row">
+              <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/3@94.webp" /></div>
+              <div>
+                <div>Sabrino Gardener</div>
+                <div class="text-xs opacity-60">&#64;sabrino_gardener</div>
+              </div>
+              <button class="btn btn-square btn-ghost">
+                <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor">
+                    <path d="M6 3L20 12 6 21 6 3z"></path>
+                  </g>
+                </svg>
+              </button>
+              <button class="btn btn-square btn-ghost">
+                <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor">
+                    <path
+                      d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z">
+                    </path>
+                  </g>
+                </svg>
+              </button>
+            </li>
+
+          </ul>
+        </div>
       </div>
 
 
 
-      <div>
-        <!-- Search Bar -->
-        <app-search-bar [(value)]="searchTerm" (valueChange)="setSearchTerm($event)" placeholder="Local Search ..."
-          class="mb-6"></app-search-bar>
-
-        <!-- Top Pagination -->
-        <div class="flex justify-center mb-5" *ngIf="totalPages > 1 && !loading">
-          <div class="join">
-            <input *ngFor="let page of [].constructor(totalPages); let i = index" class="join-item btn btn-square"
-              type="radio" name="paginationTop" [attr.aria-label]="i + 1" [checked]="currentPage === i + 1"
-              (change)="goToPage(i + 1)" />
-          </div>
-        </div>
-
-        <!-- Sort & Count -->
-        <div class="flex justify-between items-center gap-4 mb-6 max-w-7xl mx-auto px-4">
-          <div class="font-medium text-base-content">
-            Total videos: {{ filteredVideosCount }}
-          </div>
-          <div class="flex items-center gap-2">
-            <label for="sort" class="text-sm font-medium">Sort by:</label>
-            <select id="sort" [(ngModel)]="sortOption" (change)="setSortOption(sortOption)"
-              class="select select-sm select-bordered w-44">
-              <option value="titleAsc">Title (A–Z)</option>
-              <option value="titleDesc">Title (Z–A)</option>
-              <option value="durationAsc">Duration (Short → Long)</option>
-              <option value="durationDesc">Duration (Long → Short)</option>
-              <option value="newest">Newest</option>
-              <option value="oldest">Oldest</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Videos Grid -->
-        <div class="mx-auto px-4 flex-grow w-full">
-          <p *ngIf="loading" class="font-medium text-center">Loading videos...</p>
-          <app-gallery-view *ngIf="!loading" [videos]="videos"></app-gallery-view>
-        </div>
-
-        <!-- Bottom Pagination -->
-        <div class="flex justify-center mt-6" *ngIf="totalPages > 1 && !loading">
-          <div class="join">
-            <input *ngFor="let page of [].constructor(totalPages); let i = index" class="join-item btn btn-square"
-              type="radio" name="paginationBottom" [attr.aria-label]="i + 1" [checked]="currentPage === i + 1"
-              (change)="goToPage(i + 1)" />
-          </div>
-        </div>
-      </div>
     </div>
 
   </div>

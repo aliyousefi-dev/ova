@@ -21,10 +21,10 @@ import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 @Component({
-  selector: 'app-playlist-grid',
-  templateUrl: './playlist-grid.component.html',
+  selector: 'app-playlists-view',
+  templateUrl: './playlists-view.component.html',
   imports: [PlaylistCardComponent, CommonModule, DragDropModule],
-  styleUrls: ['./playlist-grid.component.css'],
+  styleUrls: ['./playlists-view.component.css'],
 })
 export class PlaylistGridComponent implements OnInit {
   @Input() playlists: PlaylistData[] = [];
@@ -90,7 +90,7 @@ export class PlaylistGridComponent implements OnInit {
     console.log(this.selectedPlaylists);
   }
 
-  toggleSelection(slug: string, event: Event): void {
+  togglePlaylistSelection(slug: string, event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
     if (checked) {
       this.selectedPlaylists.add(slug);
@@ -123,7 +123,7 @@ export class PlaylistGridComponent implements OnInit {
     }
   }
 
-  handlePlaylistDeleted(deletedSlug: string) {
+  OnPlaylistDeleted(deletedSlug: string) {
     // Remove playlist with matching slug from the array
     this.playlists = this.playlists.filter((pl) => pl.slug !== deletedSlug);
 
