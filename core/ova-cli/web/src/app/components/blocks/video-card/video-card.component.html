@@ -13,6 +13,8 @@
         <span>Watched</span>
       </div>
 
+
+
       <!-- Thumbnail if PreviewPlayback is false -->
       @if (!PreviewPlayback) {
       <div (click)="navigateToWatch()" class="relative w-full h-full">
@@ -26,14 +28,17 @@
       </div>
       }
 
+
       <div class="absolute bottom-2 right-2 bg-black text-white bg-opacity-60 text-xs px-2 py-1 rounded">
         {{ formatDuration(video.durationSeconds) }}
       </div>
 
-      <div *ngIf="videoQuality"
-        class="absolute top-2 left-2 bg-black bg-opacity-60 text-white text-xs font-semibold px-2 py-0.5 rounded">
+      @if (videoQuality) {
+      <div class="absolute top-2 left-2 bg-black bg-opacity-60 text-white text-xs font-semibold px-2 py-0.5 rounded">
         {{ videoQuality }}
       </div>
+      }
+
     </figure>
   </div>
 
