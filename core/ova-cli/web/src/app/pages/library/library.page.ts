@@ -203,12 +203,12 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
         this.SpaceSelected = 'root';
       }
 
-      this.router.navigate(['/library'], {
+      this.router.navigate(['/spaces'], {
         queryParams: { folder, page: 1 },
         queryParamsHandling: 'merge',
       });
     } else {
-      this.router.navigate(['/library'], {
+      this.router.navigate(['/spaces'], {
         queryParams: { folder: null, page: 1 },
         queryParamsHandling: 'merge',
       });
