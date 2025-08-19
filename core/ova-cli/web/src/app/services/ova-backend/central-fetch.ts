@@ -129,7 +129,7 @@ export class CentralFetchService {
         );
       }
 
-      case 'playlists': {
+      case 'playlist-content': {
         const username: string = this.utilsService.getUsername() || '';
 
         // Ensure we have the slug for the playlist route
@@ -147,8 +147,6 @@ export class CentralFetchService {
               const currentBucket = response.data.currentBucket;
               const bucketContentSize = response.data.bucketContentSize;
               const totalBuckets = response.data.totalBuckets;
-
-              console.log(savedVideoIds);
 
               // Fetch video details using VideoApiService
               return this.videoApiService.getVideosByIds(savedVideoIds).pipe(

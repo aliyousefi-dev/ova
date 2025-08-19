@@ -68,7 +68,6 @@ export class TopNavbarComponent implements OnInit {
   // Dynamically set page title based on the route
   getPageTitle(): void {
     const currentRoute = this.location.path().split('?')[0]; // Get the route without query parameters
-    console.log(currentRoute);
 
     // Grab the first part of the path to set it as the title
     const pathSegments = currentRoute

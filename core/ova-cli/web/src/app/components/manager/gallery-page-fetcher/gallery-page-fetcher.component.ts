@@ -47,7 +47,7 @@ export class GalleryPageFetcher implements OnInit {
   loadPage(number: number): void {
     this.loading = true;
 
-    if (this.route === 'playlists' && this.slug) {
+    if (this.route === 'playlist-content' && this.slug) {
       // If route is 'playlists', use the slug for fetching playlist content
       this.centralFetchService
         .fetchGallery(this.route, number, this.slug)

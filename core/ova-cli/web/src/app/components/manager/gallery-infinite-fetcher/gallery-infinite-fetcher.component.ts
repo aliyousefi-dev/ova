@@ -38,7 +38,7 @@ export class GalleryInfiniteFetcher implements OnInit {
     this.videos = [];
     this.loading = true;
 
-    if (this.route === 'playlists' && this.slug) {
+    if (this.route === 'playlist-content' && this.slug) {
       // Fetch playlist content if route is 'playlists' and slug is provided
       this.centralFetchService
         .fetchGallery(this.route, 1, this.slug) // Pass slug for playlist
