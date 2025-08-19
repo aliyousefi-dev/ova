@@ -23,13 +23,18 @@
   </div>
 
   <div class="h-full overflow-hidden">
-    <!-- Conditionally render the appropriate component based on infiniteMode -->
-    <app-gallery-infinite-fetcher *ngIf="infiniteMode" [isMiniView]="isMiniView" [PreviewPlayback]="previewPlayback"
-      [route]="'playlists'" [slug]="playlistTitle.toLowerCase()">
-    </app-gallery-infinite-fetcher>
 
-    <app-gallery-page-fetcher *ngIf="!infiniteMode" [isMiniView]="isMiniView" [PreviewPlayback]="previewPlayback"
-      [route]="'playlists'" [slug]="playlistTitle.toLowerCase()">
+    @if (infiniteMode) {
+    <!-- Conditionally render the appropriate component based on infiniteMode -->
+    <app-gallery-infinite-fetcher [isMiniView]="isMiniView" [PreviewPlayback]="previewPlayback" [route]="'playlists'"
+      [slug]="playlistTitle.toLowerCase()">
+    </app-gallery-infinite-fetcher>
+    }
+    @else {
+    <app-gallery-page-fetcher [isMiniView]="isMiniView" [PreviewPlayback]="previewPlayback" [route]="'playlists'"
+      [slug]="playlistTitle.toLowerCase()">
     </app-gallery-page-fetcher>
+    }
+
   </div>
 </div>
