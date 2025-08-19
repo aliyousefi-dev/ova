@@ -14,6 +14,7 @@ import { PlaylistAPIService } from '../../../services/ova-backend/playlist-api.s
 import { ConfirmModalComponent } from '../../pop-ups/confirm-modal/confirm-modal.component';
 import { EditPlaylistModalComponent } from '../../pop-ups/edit-playlist-modal/edit-playlist-modal.component';
 import { Router } from '@angular/router';
+import { PlaylistSummary } from '../../../services/ova-backend/playlist-api.service';
 
 @Component({
   selector: 'app-playlist-card',
@@ -22,7 +23,7 @@ import { Router } from '@angular/router';
   templateUrl: './playlist-card.component.html',
 })
 export class PlaylistCardComponent implements OnInit {
-  @Input() playlist!: PlaylistData;
+  @Input() playlist!: PlaylistSummary;
   @Output() playlistDeleted = new EventEmitter<string>();
 
   @ViewChild(ConfirmModalComponent) confirmModal!: ConfirmModalComponent;
@@ -46,16 +47,12 @@ export class PlaylistCardComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    // Load the first video from the playlist to show its thumbnail as header
-    const firstVideoId = this.playlist.videoIds?.[0];
-  }
+  ngOnInit(): void {}
 
   getThumbnailUrl(): string {
-    const videoId =
-      this.playlist.videoIds && this.playlist.videoIds.length > 0
-        ? this.playlist.videoIds[0]
-        : null;
+    const videoId = this.playlist.headVideoId
+      ? this.playlist.headVideoId
+      : null;
 
     return videoId ? this.videoapi.getThumbnailUrl(videoId) : '';
   }

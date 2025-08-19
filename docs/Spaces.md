@@ -5,3 +5,6 @@ there is some playlist that can shared to other users.
 
 ## Creating Space
 When making a space .
+
+
+Search on the Spaces.

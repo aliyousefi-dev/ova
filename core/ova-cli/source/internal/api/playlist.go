@@ -32,7 +32,25 @@ func getUserPlaylists(rm *repo.RepoManager) gin.HandlerFunc {
 			respondError(c, http.StatusNotFound, "User not found")
 			return
 		}
-		respondSuccess(c, http.StatusOK, gin.H{"username": username, "playlists": user.Playlists}, "Playlists retrieved")
+
+		// Process each playlist to add headVideoId and totalVideos
+		playlists := []map[string]interface{}{}
+		for _, playlist := range user.Playlists {
+			playlists = append(playlists, map[string]interface{}{
+				"title":       playlist.Title,
+				"description": playlist.Description,
+				"headVideoId": playlist.VideoIDs[0],   // first video ID in the playlist
+				"totalVideos": len(playlist.VideoIDs), // count of videos
+				"slug":        playlist.Slug,
+				"order":       playlist.Order,
+			})
+		}
+
+		respondSuccess(c, http.StatusOK, gin.H{
+			"username":       username,
+			"playlists":      playlists,
+			"totalPlaylists": len(playlists), // total number of playlists
+		}, "Playlists retrieved")
 	}
 }
 

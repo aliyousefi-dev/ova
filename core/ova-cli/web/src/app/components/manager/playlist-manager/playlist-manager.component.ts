@@ -8,6 +8,7 @@ import { PlaylistGridComponent } from '../../containers/playlists-view/playlists
 import { PlaylistCreatorModalComponent } from '../../pop-ups/playlist-creator-modal/playlist-creator-modal.component';
 import { ConfirmModalComponent } from '../../pop-ups/confirm-modal/confirm-modal.component';
 import { UtilsService } from '../../../services/utils.service';
+import { PlaylistSummary } from '../../../services/ova-backend/playlist-api.service';
 
 @Component({
   selector: 'app-playlist-manager',
@@ -29,14 +30,13 @@ export class PlaylistManagerComponent implements OnInit {
   manageMode = false;
   username: string | null = null;
   loading = true;
-  playlists: PlaylistData[] = [];
+  playlists: PlaylistSummary[] = [];
   selectedPlaylists = new Set<string>();
   selectedPlaylistTitle: string | null = null;
 
   constructor(
     private playlistApi: PlaylistAPIService,
-    private utils: UtilsService,
-    private router: Router
+    private utils: UtilsService
   ) {}
 
   ngOnInit(): void {
@@ -59,7 +59,7 @@ export class PlaylistManagerComponent implements OnInit {
   }
 
   private sortPlaylists(): void {
-    this.playlists.sort((a, b) => (a.Order ?? 0) - (b.Order ?? 0));
+    this.playlists.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   }
 
   toggleSelectAll(event: Event): void {

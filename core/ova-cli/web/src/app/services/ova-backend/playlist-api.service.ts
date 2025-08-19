@@ -8,8 +8,18 @@ import { PlaylistData } from '../../data-types/playlist-data';
 
 import { ApiResponse } from './response-type';
 
+export interface PlaylistSummary {
+  title: string;
+  description?: string;
+  headVideoId: string;
+  totalVideos: number;
+  slug: string;
+  order: number;
+}
+
 export interface PlaylistDataResponse {
-  playlists: PlaylistData[];
+  playlists: PlaylistSummary[];
+  totalPlaylists: number;
   username: string;
 }
 
@@ -32,7 +42,7 @@ export class PlaylistAPIService {
       .pipe(
         map((response) => {
           response.data.playlists = [...response.data.playlists].sort(
-            (a, b) => (a.Order ?? 0) - (b.Order ?? 0)
+            (a, b) => (a.order ?? 0) - (b.order ?? 0)
           );
           return response;
         })

@@ -12,9 +12,10 @@ import { Router } from '@angular/router';
 import { PlaylistData } from '../../../data-types/playlist-data';
 import { PlaylistAPIService } from '../../../services/ova-backend/playlist-api.service';
 import { UtilsService } from '../../../services/utils.service'; // Import UtilsService
+import { PlaylistSummary } from '../../../services/ova-backend/playlist-api.service';
 
 // Define PlaylistWrapper interface outside the component class
-export interface PlaylistWrapper extends PlaylistData {
+export interface PlaylistWrapper extends PlaylistSummary {
   checked: boolean;
 }
 
@@ -81,7 +82,7 @@ export class PlaylistModalComponent implements OnChanges {
       next: (response) => {
         const pls = response.data.playlists;
         // Initialize playlists with checked status as false
-        const checkList: PlaylistWrapper[] = pls.map((p: PlaylistData) => ({
+        const checkList: PlaylistWrapper[] = pls.map((p: PlaylistSummary) => ({
           ...p,
           checked: false,
         }));

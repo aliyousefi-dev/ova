@@ -9,6 +9,7 @@ import {
 import { PlaylistData } from '../../../data-types/playlist-data';
 import { PlaylistCardComponent } from '../../blocks/playlist-card/playlist-card.component';
 import { CommonModule } from '@angular/common';
+import { PlaylistSummary } from '../../../services/ova-backend/playlist-api.service';
 
 import {
   DragDropModule,
@@ -27,7 +28,7 @@ import { of } from 'rxjs';
   styleUrls: ['./playlists-view.component.css'],
 })
 export class PlaylistGridComponent implements OnInit {
-  @Input() playlists: PlaylistData[] = [];
+  @Input() playlists: PlaylistSummary[] = [];
   @Input() manageMode = false;
 
   @Output() select = new EventEmitter<string>();
@@ -50,7 +51,7 @@ export class PlaylistGridComponent implements OnInit {
     }
   }
 
-  drop(event: CdkDragDrop<PlaylistData[]>): void {
+  drop(event: CdkDragDrop<PlaylistSummary[]>): void {
     if (!this.username) {
       console.error(
         'Cannot update playlist order: username not found in localStorage.'
