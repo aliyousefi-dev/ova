@@ -14,8 +14,7 @@
     <div class="menu w-full rounded-box">
 
       <li>
-        <a routerLink="/recent" class="tooltip tooltip-right" data-tip="Latest" routerLinkActive="menu-active"
-          [routerLinkActiveOptions]="{ exact: true }">
+        <a routerLink="/recent" routerLinkActive="menu-active" [routerLinkActiveOptions]="{ exact: true }">
           <i class="bx bx-play-circle bx-xs"></i>
           <span [class.hidden]="!sidebarOpen" [class.hidden]="!sidebarOpen">Recent</span>
         </a>

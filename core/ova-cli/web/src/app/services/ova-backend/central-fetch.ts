@@ -109,8 +109,6 @@ export class CentralFetchService {
             const bucketContentSize = response.data.bucketContentSize;
             const totalBuckets = response.data.totalBuckets;
 
-            console.log(savedVideoIds);
-
             // Fetch video details using VideoApiService
             return this.videoApiService.getVideosByIds(savedVideoIds).pipe(
               map((videoDetails) => {

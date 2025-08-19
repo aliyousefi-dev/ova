@@ -28,7 +28,6 @@ export class LatestVideosService {
   ): Observable<ApiResponse<LatestVideosResponse>> {
     // Construct the URL with bucket query parameter
     const url = `${this.baseUrl}/videos/latest?bucket=${bucket}`;
-    console.log(`[LatestVideosService] Requesting URL: ${url}`); // Log the exact URL being requested
     return this.http.get<ApiResponse<LatestVideosResponse>>(url);
   }
 }
