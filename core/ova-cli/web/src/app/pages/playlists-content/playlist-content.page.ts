@@ -36,17 +36,17 @@ export class PlaylistContentPage implements OnInit {
       const title = params.get('title');
       if (title) {
         this.playlistTitle = title;
-        this.loadPlaylistVideos(title);
+        this.getPlaylistContents(title);
       } else {
         this.router.navigate(['/playlists']);
       }
     });
   }
 
-  loadPlaylistVideos(title: string) {
+  getPlaylistContents(title: string) {
     this.loading = true;
     this.playlistapi
-      .getUserPlaylistBySlug(this.username!, title.toLowerCase())
+      .fetchPlaylistContent(this.username!, title.toLowerCase())
       .subscribe({
         next: (response) => {
           const playlist = response.data;

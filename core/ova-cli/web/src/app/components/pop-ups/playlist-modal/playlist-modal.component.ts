@@ -93,7 +93,7 @@ export class PlaylistModalComponent implements OnChanges {
             (playlist) =>
               new Promise<void>((resolve) => {
                 this.playlistapi
-                  .getUserPlaylistBySlug(this.username as string, playlist.slug) // Cast to string as we've checked for null
+                  .fetchPlaylistContent(this.username as string, playlist.slug) // Cast to string as we've checked for null
                   .subscribe({
                     next: (plData) => {
                       playlist.checked = plData.data.videoIds.includes(

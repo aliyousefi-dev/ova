@@ -280,3 +280,52 @@ func (s *JsonDB) UpdatePlaylistInfo(username, playlistSlug, newTitle, newDescrip
 
 	return s.saveUsers(users)
 }
+
+func (s *JsonDB) GetUserPlaylistContentVideosCount(username, playlistSlug string) (int, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	users, err := s.loadUsers()
+	if err != nil {
+		return 0, fmt.Errorf("failed to load users: %w", err)
+	}
+
+	user, exists := users[username]
+	if !exists {
+		return 0, fmt.Errorf("user %q not found", username)
+	}
+
+	for _, pl := range user.Playlists {
+		if pl.Slug == playlistSlug {
+			return len(pl.VideoIDs), nil
+		}
+	}
+
+	return 0, fmt.Errorf("playlist %q not found for user %q", playlistSlug, username)
+}
+
+func (s *JsonDB) GetUserPlaylistContentVideosInRange(username, playlistSlug string, start, end int) ([]string, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	users, err := s.loadUsers()
+	if err != nil {
+		return nil, fmt.Errorf("failed to load users: %w", err)
+	}
+
+	user, exists := users[username]
+	if !exists {
+		return nil, fmt.Errorf("user %q not found", username)
+	}
+
+	for _, pl := range user.Playlists {
+		if pl.Slug == playlistSlug {
+			if start < 0 || end > len(pl.VideoIDs) || start >= end {
+				return nil, fmt.Errorf("invalid range [%d, %d)", start, end)
+			}
+			return pl.VideoIDs[start:end], nil
+		}
+	}
+
+	return nil, fmt.Errorf("playlist %q not found for user %q", playlistSlug, username)
+}

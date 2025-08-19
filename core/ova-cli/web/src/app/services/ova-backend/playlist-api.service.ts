@@ -23,6 +23,16 @@ export interface PlaylistDataResponse {
   username: string;
 }
 
+export interface PlaylistContentResponse {
+  username: string; // The username of the user
+  slug: string; // The slug of the playlist
+  videoIds: string[]; // Array of video IDs
+  totalVideos: number; // Total number of videos cached
+  currentBucket: number; // The current bucket requested
+  bucketContentSize: number; // Size of each bucket (fixed to 20)
+  totalBuckets: number; // Total number of buckets
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -74,12 +84,13 @@ export class PlaylistAPIService {
       );
   }
 
-  getUserPlaylistBySlug(
+  fetchPlaylistContent(
     username: string,
-    slug: string
-  ): Observable<ApiResponse<PlaylistData>> {
-    return this.http.get<ApiResponse<PlaylistData>>(
-      `${this.baseUrl}/users/${username}/playlists/${slug}`,
+    slug: string,
+    bucket: number = 1
+  ): Observable<ApiResponse<PlaylistContentResponse>> {
+    return this.http.get<ApiResponse<PlaylistContentResponse>>(
+      `${this.baseUrl}/users/${username}/playlists/${slug}?bucket=${bucket}`,
       { withCredentials: true } // ✅ important
     );
   }
@@ -117,7 +128,7 @@ export class PlaylistAPIService {
     );
   }
 
-  setPlaylistsOrder(
+  savePlaylistsOrder(
     username: string,
     order: string[]
   ): Observable<ApiResponse<null>> {

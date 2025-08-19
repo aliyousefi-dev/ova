@@ -227,7 +227,7 @@ export class WatchPage implements AfterViewInit {
           (playlist) =>
             new Promise<void>((resolve) => {
               this.playlistapi
-                .getUserPlaylistBySlug(this.username, playlist.slug)
+                .fetchPlaylistContent(this.username, playlist.slug)
                 .subscribe((plData) => {
                   playlist.checked = plData.data.videoIds.includes(
                     this.video.videoId

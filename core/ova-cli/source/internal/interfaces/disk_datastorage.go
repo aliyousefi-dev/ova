@@ -26,6 +26,8 @@ type DiskDataStorage interface {
 	SetPlaylistsOrder(username string, newOrderSlugs []string) error
 	UpdatePlaylistInfo(username, playlistSlug, newTitle, newDescription string) error
 	UpdateUserPassword(username, newHashedPassword string) error
+	GetUserPlaylistContentVideosCount(username, playlistSlug string) (int, error)
+	GetUserPlaylistContentVideosInRange(username, playlistSlug string, start, end int) ([]string, error)
 
 	// Video tags management
 	AddTagToVideo(videoID, tag string) error

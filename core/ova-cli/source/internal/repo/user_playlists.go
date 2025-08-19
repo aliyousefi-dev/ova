@@ -60,3 +60,17 @@ func (r *RepoManager) UpdatePlaylistInfo(username, slug, title, description stri
 	}
 	return r.diskDataStorage.UpdatePlaylistInfo(username, slug, title, description)
 }
+
+func (r *RepoManager) GetUserPlaylistContentVideosInRange(username, playlistSlug string, start, end int) ([]string, error) {
+	if !r.IsDataStorageInitialized() {
+		return nil, fmt.Errorf("data storage is not initialized")
+	}
+	return r.diskDataStorage.GetUserPlaylistContentVideosInRange(username, playlistSlug, start, end)
+}
+
+func (r *RepoManager) GetUserPlaylistContentVideosCount(username, playlistSlug string) (int, error) {
+	if !r.IsDataStorageInitialized() {
+		return 0, fmt.Errorf("data storage is not initialized")
+	}
+	return r.diskDataStorage.GetUserPlaylistContentVideosCount(username, playlistSlug)
+}
