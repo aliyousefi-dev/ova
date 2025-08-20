@@ -2,70 +2,74 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-	"ova-cli/source/internal/repo"
 
-	"github.com/pterm/pterm" // Assuming pterm is used for pretty printing/logging
+	"ova-cli/source/internal/thirdparty" // Assuming you have the GetVideoDetails function in this package
+
 	"github.com/spf13/cobra"
+	// Assuming the datatypes package contains VideoResolution struct
 )
 
 // debugCmd is the root debug command
-var debugCmd = &cobra.Command{	
+var debugCmd = &cobra.Command{
 	Use:   "debug",
 	Short: "Print debugging information for the application",
 	Run: func(cmd *cobra.Command, args []string) {
 		// This will be triggered when no subcommands are provided for `debug`
-		fmt.Println("Debug command invoked: use a subcommand like 'search' to perform operations.")
+		fmt.Println("Debug command invoked: use a subcommand like 'videodet' to perform operations.")
 	},
 }
 
-// searchCmd is the subcommand for searching
-var searchString string
-
-var searchCmd = &cobra.Command{
-	Use:   "search",
-	Short: "Search for videos based on a query",
+var videoDetailsCmd = &cobra.Command{
+	Use:   "videodet <path>",
+	Short: "Return details about a video",
+	Args:  cobra.ExactArgs(1), // Ensures exactly one argument is provided (the video path)
 	Run: func(cmd *cobra.Command, args []string) {
-		// Get the current working directory
-		repoRoot, err := os.Getwd()
+		videoPath := args[0] // Get the path from the arguments
+
+		// Call GetVideoDetails to get the video details
+		videoDetails, err := thirdparty.GetVideoDetails(videoPath)
 		if err != nil {
-			pterm.Error.Println("Failed to get working directory:", err)
+			fmt.Printf("Error retrieving video details: %v\n", err)
 			return
 		}
 
-		// Initialize the RepoManager
-		repoManager, err := repo.NewRepoManager(repoRoot)
-		if err != nil {
-			fmt.Println("Failed to initialize repository:", err)
-			return
-		}
-
-		// Perform the search for suggestions based on the query
-		suggestions, err := repoManager.GetSearchSuggestions(searchString)
-		if err != nil {
-			pterm.Error.Println("Failed to get search suggestions:", err)
-			return
-		}
-
-		// Print search results (or an appropriate message if no results)
-		if len(suggestions) > 0 {
-			pterm.Success.Println("Search results for query:", searchString)
-			for _, suggestion := range suggestions {
-				pterm.Info.Println(suggestion)
-			}
-		} else {
-			pterm.Warning.Println("No search suggestions found for query:", searchString)
-		}
+		// Print the video details
+		fmt.Printf("Video Details:\n")
+		fmt.Printf("Duration: %f seconds\n", videoDetails.Duration)
+		fmt.Printf("FPS: %f\n", videoDetails.FPS)
+		fmt.Printf("Resolution: %d x %d\n", videoDetails.Resolution.Width, videoDetails.Resolution.Height)
+		fmt.Printf("BitRate: %d bps\n", videoDetails.BitRate)
+		fmt.Printf("Video Codec: %s\n", videoDetails.VideoCodec) // Print video codec
+		fmt.Printf("Audio Codec: %s\n", videoDetails.AudioCodec) // Print audio codec
 	},
 }
 
+// mp4infoCmd is a subcommand to retrieve and display MP4 information
+var mp4infoCmd = &cobra.Command{
+	Use:   "mp4info <path>",
+	Short: "Retrieve MP4 info for the provided video file",
+	Args:  cobra.ExactArgs(1), // Ensures exactly one argument is provided (the video path)
+	Run: func(cmd *cobra.Command, args []string) {
+		videoPath := args[0] // Get the path from the arguments
+
+		// Call GetMP4Info to get MP4 info
+		mp4Info, err := thirdparty.GetMP4Info(videoPath)
+		if err != nil {
+			fmt.Printf("Error retrieving MP4 info: %v\n", err)
+			return
+		}
+
+		// Print the MP4 info
+		fmt.Printf("MP4 Info:\n")
+		fmt.Println(mp4Info)
+	},
+}
 
 func InitCommandDebug(rootCmd *cobra.Command) {
 	// Add the root `debug` command
 	rootCmd.AddCommand(debugCmd)
 
-	searchCmd.Flags().StringVarP(&searchString, "query", "q", "", "The search query string")
-
-	// Add `search` as a subcommand of `debug`
-	debugCmd.AddCommand(searchCmd)
+	// Add `videoDetails` as a subcommand of `debug`
+	debugCmd.AddCommand(videoDetailsCmd)
+	debugCmd.AddCommand(mp4infoCmd)
 }

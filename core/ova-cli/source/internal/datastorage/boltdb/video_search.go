@@ -133,9 +133,6 @@ func (b *BoltDB) SearchVideos(criteria datatypes.VideoSearchCriteria) ([]datatyp
 	resultsMap := make(map[string]datatypes.VideoData)
 
 	filterExtras := func(video datatypes.VideoData) bool {
-		if criteria.MinRating > 0 && video.Rating < criteria.MinRating {
-			return false
-		}
 		if criteria.MaxDuration > 0 && video.DurationSeconds > criteria.MaxDuration {
 			return false
 		}

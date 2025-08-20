@@ -53,11 +53,6 @@ func (r *RepoManager) IndexVideo(absolutePath string) (datatypes.VideoData, erro
 		return datatypes.VideoData{}, fmt.Errorf("failed to get codecs for file: %w", err)
 	}
 
-	resolution, err := r.GetVideoResolution(absolutePath)
-	if err != nil {
-		return datatypes.VideoData{}, fmt.Errorf("failed to get resolution for %s: %w", absolutePath, err)
-	}
-
 	// 6. Generate thumbnail and preview
 	_, err = r.GenerateThumb(absolutePath, videoID)
 	if err != nil {
@@ -75,7 +70,6 @@ func (r *RepoManager) IndexVideo(absolutePath string) (datatypes.VideoData, erro
 	videoData.Title = title
 	videoData.DurationSeconds = int(duration)
 	videoData.Codecs = codec
-	videoData.Resolution = resolution
 	videoData.FilePath = relativePath // Use the relative path here
 
 	// 8. Store metadata

@@ -30,9 +30,15 @@ func GetCodecsForFile(filePath string) (datatypes.VideoCodecs, error) {
 		return datatypes.VideoCodecs{}, fmt.Errorf("no supported video/audio codec found in mp4info output")
 	}
 
+	resolution, err := GetVideoResolution(filePath)
+	if err != nil {
+		return datatypes.VideoCodecs{}, fmt.Errorf("failed to get resolution for %s: %w", filePath, err)
+	}
+
 	return datatypes.VideoCodecs{
 		Container:   "video/mp4", // hardcoded container format since using mp4info
 		VideoCodect: videoCodec,
 		AudioCodect: audioCodec,
+		Resolution:  resolution,
 	}, nil
 }

@@ -35,12 +35,3 @@ func (r *RepoManager) GetVideoCodect(videoPath string) (datatypes.VideoCodecs, e
 
 	return codec, nil
 }
-
-// GetVideoResolution returns the resolution of the given video file.
-func (r *RepoManager) GetVideoResolution(videoPath string) (datatypes.VideoResolution, error) {
-	resolution, err := thirdparty.GetVideoResolution(videoPath)
-	if err != nil {
-		return datatypes.VideoResolution{}, fmt.Errorf("failed to get resolution for %s: %w", videoPath, err)
-	}
-	return resolution, nil
-}

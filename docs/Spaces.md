@@ -23,7 +23,13 @@ FilePath
 
 RootSpace.
 
+PrimarySpace
+LinkedSpaces
+
 we don't have a sub channel.
 maybe we have the topics but we don't have the sub channel 
 
 but the 
+
+what if we link the video with space id ? 
+this open a new way to a video can be link on multiple spaces. without duplication 

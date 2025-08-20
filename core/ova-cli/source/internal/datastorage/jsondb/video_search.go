@@ -143,9 +143,6 @@ func (s *JsonDB) SearchVideos(criteria datatypes.VideoSearchCriteria) ([]datatyp
 
 	// Helper function to apply rating and duration filters
 	filterExtras := func(video datatypes.VideoData) bool {
-		if criteria.MinRating > 0 && video.Rating < criteria.MinRating {
-			return false
-		}
 		if criteria.MaxDuration > 0 && video.DurationSeconds > criteria.MaxDuration {
 			return false
 		}
@@ -209,7 +206,6 @@ func abs(n int) int {
 	}
 	return n
 }
-
 
 // GetSearchSuggestions returns a list of video titles that partially match the search query.
 func (s *JsonDB) GetSearchSuggestions(query string) ([]string, error) {
