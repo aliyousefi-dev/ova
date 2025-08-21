@@ -1,0 +1,11 @@
+@baseUrl = http://localhost:443
+@session_id = 1f30da92-57f0-46ee-a047-520a9d0f207b
+
+###
+
+# GET /spaces with a valid space and bucket parameter
+GET {{baseUrl}}/api/v1/spaces/list
+Accept: application/json
+Cookie: session_id={{session_id}}
+
+###

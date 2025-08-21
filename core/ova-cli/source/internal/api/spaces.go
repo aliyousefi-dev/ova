@@ -8,20 +8,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// RegisterFolderRoutes sets up the GET /folders route using RepoManager.
-func RegisterFolderRoutes(rg *gin.RouterGroup, rm *repo.RepoManager) {
-	rg.GET("/folders", getFolderList(rm))
+// RegisterSpaceRoutes sets up the GET /folders route using RepoManager.
+func RegisterSpaceRoutes(rg *gin.RouterGroup, rm *repo.RepoManager) {
+	rg.GET("/spaces/list", getSpaceList(rm))
 }
 
-// getFolderList returns a list of unique folder paths containing videos.
-func getFolderList(rm *repo.RepoManager) gin.HandlerFunc {
+// getSpaceList returns a list of unique folder paths containing videos.
+func getSpaceList(rm *repo.RepoManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		folders, err := rm.ScanDiskForFolders()
+		spaces, err := rm.ScanDiskForFolders()
 		if err != nil {
 			respondError(c, http.StatusInternalServerError, "Failed to load folders")
 			return
 		}
 
-		respondSuccess(c, http.StatusOK, folders, "Folders retrieved successfully")
+		spaces = append(spaces, ".")
+
+		respondSuccess(c, http.StatusOK, spaces, "Folders retrieved successfully")
 	}
 }

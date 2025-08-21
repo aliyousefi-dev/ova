@@ -69,7 +69,7 @@ export class VideoApiService {
     return `${this.baseUrl}/preview/${videoId}`;
   }
 
-  getStoryboardVttUrl(videoId: string): string {
+  getPreviewThumbsUrl(videoId: string): string {
     return `${this.baseUrl}/preview-thumbnails/${videoId}/thumbnails.vtt`;
   }
 

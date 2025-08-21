@@ -1,18 +1,42 @@
 package datatypes
 
+import "time"
+
+type SpaceSettings struct {
+	MaxDiskLimit string `json:"maxDiskLimit"`
+	IsPrivate    bool   `json:"isPrivate"`
+}
+
+type SpaceGroup struct {
+	GroupName string   `json:"groupName"`
+	VideoIds  []string `json:"videoIds"`
+}
+
 type SpaceData struct {
-	Name             string      `json:"name"`
-	Owner            string      `json:"owner"`
-	Visibility       bool        `json:"visibility"`
-	ChildSpaces      []SpaceData `json:"childSpaces"`
-	InviteLink       string      `json:"inviteLink"`
-	DiskSizeLimit    int64       `json:"diskSizeLimit"`
-	TotalVideos      int64       `json:"totalVideos"`
-	CurrentDiskUsage int64       `json:"currentDiskUsage"`
-	VideoLimit       int64       `json:"videoLimit"`
-	MaxChildSpaces   int64       `json:"maxChildSpaces"`
-	CreatedAt        string      `json:"createdAt"`
-	CreatedBy        string      `json:"createdBy"`
-	Users            []string    `json:"users"`
-	Spectors         []string    `json:"spectors"`
+	SpaceName     string        `json:"spaceName"`
+	SpaceOwner    string        `json:"spaceOwner"`
+	DiskPath      string        `json:"diskPath"`
+	SpaceId       string        `json:"spaceId"`
+	Groups        []string      `json:"groups"`
+	SpaceSettings SpaceSettings `json:"spaceSettings"`
+	InviteLink    string        `json:"inviteLink"`
+	MemberIds     []string      `json:"membersIds"`
+	CreatedAt     time.Time     `json:"createdAt"`
+}
+
+// CreateDefaultSpaceData returns an initialized SpaceData struct for a new space.
+func CreateDefaultSpaceData(spaceName string, owner string) SpaceData {
+	return SpaceData{
+		SpaceName:  spaceName,
+		SpaceOwner: owner,
+		SpaceId:    "",         // Placeholder for space ID generation logic
+		Groups:     []string{}, // No groups by default
+		SpaceSettings: SpaceSettings{
+			MaxDiskLimit: "100GB", // Default disk limit
+			IsPrivate:    true,    // Default privacy setting
+		},
+		InviteLink: "",
+		MemberIds:  []string{owner},  // Owner is the first member
+		CreatedAt:  time.Now().UTC(), // Placeholder for current time logic
+	}
 }

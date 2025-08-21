@@ -1,0 +1,46 @@
+@baseUrl = http://localhost:443
+@session_id = 1f30da92-57f0-46ee-a047-520a9d0f207b
+
+###
+
+# GET /spaces with a valid space and bucket parameter
+GET {{baseUrl}}/api/v1/spaces?space=&bucket=1
+Accept: application/json
+Cookie: session_id={{session_id}}
+
+###
+
+# GET /spaces with a valid space and bucket parameter (page 2)
+GET {{baseUrl}}/api/v1/spaces?space=New&bucket=2
+Accept: application/json
+Cookie: session_id={{session_id}}
+
+###
+
+# GET /spaces with an empty space parameter (should fail)
+GET {{baseUrl}}/api/v1/spaces?space=&bucket=1
+Accept: application/json
+Cookie: session_id={{session_id}}
+
+###
+
+# GET /spaces with an invalid space parameter (should fail)
+GET {{baseUrl}}/api/v1/spaces?space=nonexistentfolder&bucket=1
+Accept: application/json
+Cookie: session_id={{session_id}}
+
+###
+
+# GET /spaces with an invalid bucket parameter (should fail)
+GET {{baseUrl}}/api/v1/spaces?space=New&bucket=0
+Accept: application/json
+Cookie: session_id={{session_id}}
+
+###
+
+# GET /spaces with bucket value greater than available buckets
+GET {{baseUrl}}/api/v1/spaces?space=New&bucket=100
+Accept: application/json
+Cookie: session_id={{session_id}}
+
+###

@@ -154,7 +154,7 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
 
   paginateVideos() {
     let filtered = this.allVideos.filter((v) =>
-      v.title.toLowerCase().includes(this.searchTerm.toLowerCase())
+      v.fileName.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
 
     filtered = this.sortVideos(filtered);
@@ -229,19 +229,19 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
     this.updateQueryParams();
   }
 
-  sortVideos(videos: any[]) {
+  sortVideos(videos: VideoData[]) {
     switch (this.sortOption) {
       case 'titleAsc':
-        return [...videos].sort((a, b) => a.title.localeCompare(b.title));
+        return [...videos].sort((a, b) => a.fileName.localeCompare(b.fileName));
       case 'titleDesc':
-        return [...videos].sort((a, b) => b.title.localeCompare(a.title));
+        return [...videos].sort((a, b) => b.fileName.localeCompare(a.fileName));
       case 'durationAsc':
         return [...videos].sort(
-          (a, b) => a.durationSeconds - b.durationSeconds
+          (a, b) => a.codecs.durationSec - b.codecs.durationSec
         );
       case 'durationDesc':
         return [...videos].sort(
-          (a, b) => b.durationSeconds - a.durationSeconds
+          (a, b) => b.codecs.durationSec - a.codecs.durationSec
         );
       case 'newest':
         return [...videos].sort(
@@ -260,7 +260,7 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
 
   get filteredVideosCount(): number {
     const term = this.searchTerm.toLowerCase();
-    return this.allVideos.filter((v) => v.title.toLowerCase().includes(term))
+    return this.allVideos.filter((v) => v.fileName.toLowerCase().includes(term))
       .length;
   }
 }

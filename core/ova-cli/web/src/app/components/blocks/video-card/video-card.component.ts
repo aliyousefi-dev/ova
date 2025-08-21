@@ -159,7 +159,7 @@ export class VideoCardComponent implements OnChanges, AfterViewInit {
     const streamUrl = this.videoapi.getDownloadUrl(this.video.videoId);
     const anchor = document.createElement('a');
     anchor.href = streamUrl;
-    anchor.download = `${this.video.title}.mp4`;
+    anchor.download = `${this.video.fileName}.mp4`;
     document.body.appendChild(anchor);
     anchor.click();
     document.body.removeChild(anchor);
@@ -174,8 +174,8 @@ export class VideoCardComponent implements OnChanges, AfterViewInit {
   }
 
   get videoQuality(): string {
-    const width = this.video.resolution.width;
-    const height = this.video.resolution.height;
+    const width = this.video.codecs.resolution.width;
+    const height = this.video.codecs.resolution.height;
 
     if (width >= 3840 || height >= 2160) return '4K';
     if (width >= 1920 || height >= 1080) return 'HD';

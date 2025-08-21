@@ -72,7 +72,7 @@ func (s *JsonDB) GetVideoByPath(path string) (*datatypes.VideoData, error) {
 	}
 
 	for _, video := range videos {
-		if video.FilePath == path {
+		if video.FileName == path {
 			return &video, nil
 		}
 	}
@@ -114,7 +114,7 @@ func (s *JsonDB) GetFolderList() ([]string, error) {
 
 	for _, video := range allVideosMap {
 		// Ensure paths are consistently slash-separated
-		relPath := filepath.ToSlash(video.FilePath)
+		relPath := filepath.ToSlash(video.FileName)
 		folder := filepath.Dir(relPath)
 
 		// Trim leading/trailing slashes and handle root directory
@@ -166,38 +166,6 @@ func (s *JsonDB) DeleteAllVideos() error {
 	return s.saveVideos(videos)
 }
 
-// GetVideosByFolder returns all videos located inside the specified folder path.
-// The folderPath is expected to be a relative path with slashes normalized.
-// If folderPath is empty, it returns videos in the root folder.
-func (s *JsonDB) GetVideosByFolder(folderPath string) ([]datatypes.VideoData, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	videosMap, err := s.loadVideos()
-	if err != nil {
-		return nil, fmt.Errorf("failed to load videos: %w", err)
-	}
-
-	// Normalize folder path to slash-separated and trimmed, empty string means root
-	folderPath = filepath.ToSlash(strings.Trim(folderPath, "/"))
-
-	var results []datatypes.VideoData
-	for _, video := range videosMap {
-		// Normalize video's folder path
-		videoFolder := filepath.ToSlash(filepath.Dir(video.FilePath))
-		videoFolder = strings.Trim(videoFolder, "/")
-		if videoFolder == "." {
-			videoFolder = ""
-		}
-
-		// Match normalized folder paths
-		if videoFolder == folderPath {
-			results = append(results, video)
-		}
-	}
-
-	return results, nil
-}
 
 // UpdateVideoLocalPath updates the file path of a video by its ID.
 // Returns an error if the video is not found.
@@ -215,7 +183,7 @@ func (s *JsonDB) UpdateVideoLocalPath(videoID, newPath string) error {
 		return fmt.Errorf("video %q not found", videoID)
 	}
 
-	video.FilePath = newPath
+	video.FileName = newPath
 	videos[videoID] = video
 
 	return s.saveVideos(videos)

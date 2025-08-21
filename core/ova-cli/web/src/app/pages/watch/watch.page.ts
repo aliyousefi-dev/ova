@@ -170,7 +170,7 @@ export class WatchPage implements AfterViewInit {
   }
 
   get storyboardVttUrl(): string {
-    return this.videoapi.getStoryboardVttUrl(this.video.videoId);
+    return this.videoapi.getPreviewThumbsUrl(this.video.videoId);
   }
 
   get markerFileUrl(): string {

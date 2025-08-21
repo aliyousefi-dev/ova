@@ -53,8 +53,8 @@ func (s *JsonDB) GetSimilarVideos(videoID string) ([]datatypes.VideoData, error)
 		}
 
 		// Title word overlap (case-insensitive)
-		targetWords := strings.Fields(strings.ToLower(targetVideo.Title))
-		videoWords := strings.Fields(strings.ToLower(video.Title))
+		targetWords := strings.Fields(strings.ToLower(targetVideo.FileName))
+		videoWords := strings.Fields(strings.ToLower(video.FileName))
 		wordMatch := 0
 		for _, w1 := range targetWords {
 			for _, w2 := range videoWords {
@@ -66,7 +66,7 @@ func (s *JsonDB) GetSimilarVideos(videoID string) ([]datatypes.VideoData, error)
 		score += float64(wordMatch)
 
 		// Duration similarity (closer durations are better)
-		diff := float64(abs(targetVideo.DurationSeconds - video.DurationSeconds))
+		diff := float64(abs(targetVideo.Codecs.DurationSec - video.Codecs.DurationSec))
 		if diff < 30 {
 			score += 1.5
 		} else if diff < 60 {
@@ -76,7 +76,7 @@ func (s *JsonDB) GetSimilarVideos(videoID string) ([]datatypes.VideoData, error)
 		}
 
 		// Optional: folder similarity
-		if filepath.Dir(video.FilePath) == filepath.Dir(targetVideo.FilePath) {
+		if filepath.Dir(video.FileName) == filepath.Dir(targetVideo.FileName) {
 			score += 1.0
 		}
 
@@ -143,7 +143,7 @@ func (s *JsonDB) SearchVideos(criteria datatypes.VideoSearchCriteria) ([]datatyp
 
 	// Helper function to apply rating and duration filters
 	filterExtras := func(video datatypes.VideoData) bool {
-		if criteria.MaxDuration > 0 && video.DurationSeconds > criteria.MaxDuration {
+		if criteria.MaxDuration > 0 && video.Codecs.DurationSec > criteria.MaxDuration {
 			return false
 		}
 		return true
@@ -152,7 +152,7 @@ func (s *JsonDB) SearchVideos(criteria datatypes.VideoSearchCriteria) ([]datatyp
 	// Search by query
 	if query != "" {
 		for _, video := range videos {
-			if strings.Contains(strings.ToLower(video.Title), query) ||
+			if strings.Contains(strings.ToLower(video.FileName), query) ||
 				strings.Contains(strings.ToLower(video.Description), query) {
 				if filterExtras(video) {
 					resultsMap[video.VideoID] = video
@@ -235,8 +235,8 @@ func (s *JsonDB) GetSearchSuggestions(query string) ([]string, error) {
 
 	// Iterate over the videos and check if the title contains the query (case-insensitive)
 	for _, video := range videos {
-		if strings.Contains(strings.ToLower(video.Title), strings.ToLower(query)) {
-			suggestions = append(suggestions, video.Title)
+		if strings.Contains(strings.ToLower(video.FileName), strings.ToLower(query)) {
+			suggestions = append(suggestions, video.FileName)
 		}
 	}
 

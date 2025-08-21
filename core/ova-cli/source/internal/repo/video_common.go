@@ -115,12 +115,12 @@ func (r *RepoManager) DeleteAllVideos() error {
 	return r.diskDataStorage.DeleteAllVideos()
 }
 
-// GetIndexedVideosByFolder returns all videos inside specified folder.
-func (r *RepoManager) GetIndexedVideosByFolder(folderPath string) ([]datatypes.VideoData, error) {
+// GetIndxedVideosOnSpace returns all videos inside specified folder.
+func (r *RepoManager) GetIndxedVideosOnSpace(space string) ([]datatypes.VideoData, error) {
 	if !r.IsDataStorageInitialized() {
 		return nil, fmt.Errorf("data storage is not initialized")
 	}
-	return r.diskDataStorage.GetVideosByFolder(folderPath)
+	return r.diskDataStorage.GetVideosBySpace(space)
 }
 
 // UpdateVideoLocalPath updates the file path of a video by its ID.

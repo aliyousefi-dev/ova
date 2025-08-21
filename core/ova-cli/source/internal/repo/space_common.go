@@ -3,6 +3,8 @@ package repo
 import (
 	"fmt"
 	"ova-cli/source/internal/datatypes"
+
+	"github.com/google/uuid"
 )
 
 // CreateUser creates a new user with a hashed password and an optional role.
@@ -10,11 +12,26 @@ func (r *RepoManager) GetAllSpaces() {
 	// return all existing spaces
 }
 
-// CreateUser creates a new user with a hashed password and an optional role.
-func (r *RepoManager) CreateSpace(spaceName string, owner string) {
-	// create a new space
-	r.GetRootPath()
-	r.CreateSpaceDirectory(spaceName)
+// CreateSpace creates a new space with a directory and owner.
+func (r *RepoManager) CreateSpace(spaceName string, owner string) error {
+
+	// Create the space directory
+	if err := r.CreateSpaceDirectory(spaceName); err != nil {
+		return fmt.Errorf("failed to create space directory: %w", err)
+	}
+
+	// Create default space data
+	spaceData := datatypes.CreateDefaultSpaceData(spaceName, owner)
+
+	// Assign a new unique ID to the space
+	spaceData.SpaceId = uuid.NewString()
+
+	// Save space data in disk storage
+	if err := r.diskDataStorage.CreateSpace(&spaceData); err != nil {
+		return fmt.Errorf("failed to save space data: %w", err)
+	}
+
+	return nil
 }
 
 // CreateUser creates a new user with a hashed password and an optional role.
@@ -96,4 +113,20 @@ func (r *RepoManager) TransferSpaceOwnership(space *datatypes.SpaceData, newOwne
 	}
 
 	return nil
+}
+
+func (r *RepoManager) GetVideoCountInSpace(spacePath string) (int, error) {
+	if !r.IsDataStorageInitialized() {
+		return 0, fmt.Errorf("data storage is not initialized")
+	}
+
+	return r.diskDataStorage.GetVideoCountInSpace(spacePath)
+}
+
+func (r *RepoManager) GetVideoIDsBySpaceInRange(spacePath string, start, end int) ([]string, error) {
+	if !r.IsDataStorageInitialized() {
+		return nil, fmt.Errorf("data storage is not initialized")
+	}
+
+	return r.diskDataStorage.GetVideoIDsBySpaceInRange(spacePath, start, end)
 }

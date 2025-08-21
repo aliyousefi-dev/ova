@@ -1,11 +1,15 @@
-<media-player #mediaPlayer view-type="video" stream-type="on-demand" crossorigin playsinline [poster]="posterUrl"
+<media-player #mediaPlayer view-type="video" stream-type="on-demand" crossorigin playsinline [poster]="thumbnailUrl"
   storage="video-player-options">
   <media-provider>
     <media-poster class="vds-poster"></media-poster>
     <source [src]="videoUrl" type="video/mp4" />
-    <track kind="chapters" [src]="vttMarkersUrl ? vttMarkersUrl : null" default />
+    <track kind="chapters" [src]="markerFileUrl ? markerFileUrl : null" default />
   </media-provider>
 
   <media-audio-layout></media-audio-layout>
-  <media-video-layout [thumbnails]="vttUrl || null"></media-video-layout>
+  @if (videoData.isCooked) {
+  <media-video-layout [thumbnails]="previewThumbsUrl || null"></media-video-layout>
+  } @else {
+  <media-video-layout></media-video-layout>
+  }
 </media-player>

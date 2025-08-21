@@ -289,7 +289,7 @@ var videoListCmd = &cobra.Command{
 			for i, v := range videos {
 				videoData[i] = map[string]string{
 					"ID":   v.VideoID,
-					"Path": v.FilePath,
+					"Path": v.FileName,
 				}
 			}
 
@@ -306,7 +306,7 @@ var videoListCmd = &cobra.Command{
 			// If no --json flag is passed, display data in table format
 			fmt.Println("ID\tPath")
 			for _, v := range videos {
-				fmt.Printf("%s\t%s\n", v.VideoID, v.FilePath)
+				fmt.Printf("%s\t%s\n", v.VideoID, v.FileName)
 			}
 		}
 	},
@@ -337,9 +337,9 @@ var videoInfoCmd = &cobra.Command{
 
 		pterm.Info.Println("Video Info:")
 		pterm.DefaultSection.Println("ID:", video.VideoID)
-		pterm.DefaultSection.Println("Title:", video.Title)
-		pterm.DefaultSection.Println("File Path:", video.FilePath)
-		pterm.DefaultSection.Println("Duration (seconds):", fmt.Sprintf("%d", video.DurationSeconds))
+		pterm.DefaultSection.Println("File Name:", video.FileName)
+		pterm.DefaultSection.Println("Primary Space:", video.PrimarySpace)
+		pterm.DefaultSection.Println("Duration (seconds):", fmt.Sprintf("%d", video.Codecs.DurationSec))
 		pterm.DefaultSection.Println("Tags:", fmt.Sprintf("%v", video.Tags))
 		pterm.DefaultSection.Println("Uploaded At:", video.UploadedAt.Format(time.RFC3339))
 	},

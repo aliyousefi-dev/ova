@@ -77,13 +77,14 @@ func (s *OvaServer) initRoutes() {
 	api.RegisterUploadRoutes(v1, s.RepoManager)
 	api.RegisterThumbnailRoutes(v1, s.RepoManager)
 	api.RegisterPreviewRoutes(v1, s.RepoManager)
-	api.RegisterFolderRoutes(v1, s.RepoManager)
+	api.RegisterSpaceRoutes(v1, s.RepoManager)
 	api.RegisterUserWatchedRoutes(v1, s.RepoManager)
 	api.RegisterUserPlaylistContentRoutes(v1, s.RepoManager)
 	api.RegisterStoryboardRoutes(v1, s.RepoManager)
 	api.RegisterMarkerRoutes(v1, s.RepoManager)
 	api.RegisterLatestVideoRoute(v1, s.RepoManager)
 	api.RegisterSearchSuggestionsRoutes(v1, s.RepoManager)
+	api.RegisterSpaceContentRoutes(v1, s.RepoManager)
 	api.RegisterStatusRoute(v1)
 
 	if s.ServeFrontend {

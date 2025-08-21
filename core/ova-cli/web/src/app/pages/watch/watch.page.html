@@ -7,16 +7,15 @@
       <div class="flex flex-col py-3">
         <app-video-action-bar [videoId]="video.videoId" [isSaved]="isSaved" [loadingSavedVideo]="loadingSavedVideo"
           (toggleSaved)="toggleSaved()" [getCurrentTimeFn]="getCurrentTimeFromPlayer"
-          [videoDurationSeconds]="video.durationSeconds" [videoUploadedAt]="video.uploadedAt"
-          [videoResolution]="video.resolution"></app-video-action-bar>
+          [videoDurationSeconds]="video.codecs.durationSec" [videoUploadedAt]="video.uploadedAt"
+          [videoResolution]="video.codecs.resolution"></app-video-action-bar>
       </div>
 
-      <app-video-title-bar class=" break-all" [videoTitle]="video.title"></app-video-title-bar>
+      <app-video-title-bar class=" break-all" [videoTitle]="video.fileName"></app-video-title-bar>
 
       <div>
         <ng-container *ngIf="true; else defaultPlayer">
-          <app-vidstack-player #vidstackPlayer [videoUrl]="videoUrl" [posterUrl]="thumbnailUrl"
-            [vttUrl]="storyboardVttUrl" [vttMarkersUrl]="markerFileUrl"></app-vidstack-player>
+          <app-vidstack-player #vidstackPlayer [videoData]="video"></app-vidstack-player>
         </ng-container>
         <ng-template #defaultPlayer>
           <app-default-video-player [videoUrl]="videoUrl" [posterUrl]="thumbnailUrl"></app-default-video-player>
@@ -31,19 +30,19 @@
             <i class="bx bx-time text-xl"></i>
             <span>{{ video.uploadedAt | date : 'mediumDate' }}</span>
           </span>
-          <span *ngIf="video.resolution" class="inline-flex items-center gap-1 px-3 py-1 font-medium"
-            [title]="video.resolution.width + 'x' + video.resolution.height">
+          <span *ngIf="video.codecs.resolution" class="inline-flex items-center gap-1 px-3 py-1 font-medium"
+            [title]="video.codecs.resolution.width">
             <i class="bx bx-desktop text-xl"></i>
-            <span>{{ video.resolution.width }} x {{ video.resolution.height }}</span>
+            <span>{{ video.codecs.resolution.width }} x {{ video.codecs.resolution.height }}</span>
           </span>
-          <span *ngIf="video.durationSeconds !== undefined" class="inline-flex items-center gap-1 px-3 py-1 font-medium"
-            [title]="formatTime(video.durationSeconds)">
+          <span *ngIf="video.codecs.durationSec !== undefined"
+            class="inline-flex items-center gap-1 px-3 py-1 font-medium" [title]="formatTime(video.codecs.durationSec)">
             <i class="bx bx-time text-xl"></i>
-            <span>{{ formatTime(video.durationSeconds) }}</span>
+            <span>{{ formatTime(video.codecs.durationSec) }}</span>
           </span>
           <span class="inline-flex items-center gap-1 px-3 py-1 font-medium">
             <i class="bx bx-video text-xl"></i>
-            <span>30 fps</span>
+            <span>{{video.codecs.frameRate}} fps</span>
           </span>
         </div>
       </div>

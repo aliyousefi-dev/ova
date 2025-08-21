@@ -46,7 +46,12 @@ type DiskDataStorage interface {
 
 	// Folder management
 	GetFolderList() ([]string, error)
-	GetVideosByFolder(folderPath string) ([]datatypes.VideoData, error)
+
+	// Spaces Management
+	CreateSpace(space *datatypes.SpaceData) error
+	GetVideosBySpace(spacePath string) ([]datatypes.VideoData, error)
+	GetVideoCountInSpace(spacePath string) (int, error)
+	GetVideoIDsBySpaceInRange(spacePath string, start, end int) ([]string, error)
 
 	// New method to get total video count
 	GetTotalVideoCount() (int, error)

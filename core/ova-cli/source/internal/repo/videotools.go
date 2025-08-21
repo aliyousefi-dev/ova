@@ -28,10 +28,18 @@ func (r *RepoManager) GetVideoDuration(videoPath string) (float64, error) {
 // GetVideoDuration returns the duration (in seconds) of the given video file.
 func (r *RepoManager) GetVideoCodect(videoPath string) (datatypes.VideoCodecs, error) {
 
-	codec, err := thirdparty.GetCodecsForFile(videoPath)
+	codec, err := thirdparty.GetVideoDetails(videoPath)
 	if err != nil {
 		return datatypes.VideoCodecs{}, fmt.Errorf("failed to get codecs for file: %w", err)
 	}
 
-	return codec, nil
+	return datatypes.VideoCodecs{
+		DurationSec: int(codec.DurationSec),
+		FrameRate:   codec.FrameRate,
+		Resolution:  datatypes.VideoResolution(codec.Resolution),
+		VideoCodec:  codec.VideoCodec,
+		AudioCodec:  codec.AudioCodec,
+		Format:      codec.Format,
+		IsFragment:  codec.IsFragment,
+	}, nil
 }

@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"math"
 	"os/exec"
+	"path"
 )
 
 // VideoResolution defines the width and height of a video.
@@ -15,25 +17,31 @@ type VideoResolution struct {
 
 // VideoDetails represents the details of a video file.
 type VideoDetails struct {
-	Duration   float64         `json:"duration"`    // Video duration in seconds
-	FPS        float64         `json:"fps"`         // Frames per second
-	Resolution VideoResolution `json:"resolution"`  // Resolution (width x height)
-	VideoCodec string          `json:"video_codec"` // Video codec (e.g., avc1.640032)
-	AudioCodec string          `json:"audio_codec"` // Audio codec (e.g., mp4a.40.2)
-	BitRate    int             `json:"bit_rate"`    // Bit rate in bits per second
+	Format      string          `json:"format"`      // Video File Extension
+	DurationSec int             `json:"durationSec"` // Video duration in seconds
+	FrameRate   float64         `json:"frameRate"`   // Frames per second
+	IsFragment  bool            `json:"isFragment"`  // Check if it's fragmented or not
+	Resolution  VideoResolution `json:"resolution"`  // Resolution (width x height)
+	VideoCodec  string          `json:"videoCodec"`  // Video codec (e.g., avc1.640032)
+	AudioCodec  string          `json:"audioCodec"`  // Audio codec (e.g., mp4a.40.2)
 }
 
-// GetVideoDetails returns a struct containing the duration, FPS, resolution, and bit rate of a video.
+// GetVideoDetails returns a struct containing the duration, FPS, resolution, and codec details of a video.
 func GetVideoDetails(videoPath string) (VideoDetails, error) {
+
+	// Extract file extension (e.g., .mp4)
+	ext := path.Ext(videoPath)
+
 	// Get the full path to the Bento4 mp4info executable
 	mp4infoPath, err := GetBentoMP4InfoPath()
 	if err != nil {
 		return VideoDetails{}, fmt.Errorf("could not resolve mp4info path: %w", err)
 	}
 
-	// Run mp4info to get details in JSON format
+	// Run mp4info with the --fast option to get details in JSON format
 	cmd := exec.Command(
 		mp4infoPath,
+		"--fast",           // Using the fast option for quicker analysis
 		"--format", "json", // Requesting JSON format
 		videoPath,
 	)
@@ -67,20 +75,25 @@ func GetVideoDetails(videoPath string) (VideoDetails, error) {
 	}
 
 	// Parse the details from the video track
-	width := int(videoTrack["display_width"].(float64))
-	height := int(videoTrack["display_height"].(float64))
+	width, widthOk := videoTrack["display_width"].(float64)
+	height, heightOk := videoTrack["display_height"].(float64)
 
-	// Parse FPS (frame_rate)
-	frameRateStr := videoTrack["frame_rate"].(float64)
-	fps := frameRateStr
+	// Ensure width and height exist and are valid numbers
+	if !widthOk || !heightOk {
+		return VideoDetails{}, fmt.Errorf("missing or invalid width/height in video track")
+	}
 
-	// Parse duration (convert to float64)
-	durationStr := result["movie"].(map[string]interface{})["duration_ms"].(float64)
-	duration := durationStr / 1000 // Convert from milliseconds to seconds
-
-	// Parse bit rate (from video track)
-	bitRateStr := videoTrack["media"].(map[string]interface{})["bitrate"].(float64)
-	bitRate := int(bitRateStr * 1000) // Convert from Kbps to bps
+	// Check for 'duration_ms' safely and handle the case where it might be missing or nil
+	var duration float64
+	if movie, ok := result["movie"].(map[string]interface{}); ok {
+		if durationStr, ok := movie["duration_ms"].(float64); ok {
+			duration = durationStr / 1000 // Convert from milliseconds to seconds
+		} else {
+			return VideoDetails{}, fmt.Errorf("'duration_ms' is missing or not a float64")
+		}
+	} else {
+		return VideoDetails{}, fmt.Errorf("'movie' field is missing or not a map")
+	}
 
 	// Parse video codec
 	videoCodec := ""
@@ -99,13 +112,36 @@ func GetVideoDetails(videoPath string) (VideoDetails, error) {
 		}
 	}
 
-	// Return the results in a struct
+	// Get FPS using GetVideoFPS function
+	fps, err := GetVideoFPS(videoPath)
+	if err != nil {
+		return VideoDetails{}, fmt.Errorf("failed to get video FPS: %w", err)
+	}
+
+	// Limit FPS to 2 decimal places
+	fps = math.Round(fps*100) / 100 // This rounds the FPS to 2 decimal places
+
+	// Check if the video is fragmented
+	isFragment := false
+	if movie, ok := result["movie"].(map[string]interface{}); ok {
+		if fragments, ok := movie["fragments"].(bool); ok {
+			isFragment = fragments
+		} else {
+			// If fragments is not found or isn't a bool, assume it's not fragmented
+			isFragment = false
+		}
+	} else {
+		return VideoDetails{}, fmt.Errorf("'movie' field is missing or not a map")
+	}
+
+	// Return the results in a struct with the file extension and other details
 	return VideoDetails{
-		Duration:   duration,
-		FPS:        fps,
-		Resolution: VideoResolution{Width: width, Height: height},
-		BitRate:    bitRate,
-		VideoCodec: videoCodec,
-		AudioCodec: audioCodec,
+		Format:      ext,           // Include the file extension (e.g., ".mp4")
+		DurationSec: int(duration), // Cast duration to int
+		FrameRate:   fps,           // Use the frame rate directly
+		IsFragment:  isFragment,    // Check if the video is fragmented
+		Resolution:  VideoResolution{Width: int(width), Height: int(height)},
+		VideoCodec:  videoCodec,
+		AudioCodec:  audioCodec,
 	}, nil
 }

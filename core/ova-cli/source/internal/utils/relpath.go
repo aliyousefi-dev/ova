@@ -24,3 +24,8 @@ func MakeRelative(rootPath, filePath string) (string, error) {
 
 	return rel, nil
 }
+
+// Function to get the root folder (the first folder in the path)
+func GetFolder(file_path string) string {
+	return filepath.Dir(file_path)
+}

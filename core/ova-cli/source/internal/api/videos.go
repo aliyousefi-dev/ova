@@ -43,7 +43,7 @@ func getVideosByFolder(repoMgr *repo.RepoManager) gin.HandlerFunc {
 		folderQuery := c.Query("folder")
 		requestedPath := filepath.ToSlash(strings.Trim(folderQuery, "/"))
 
-		videosInFolder, err := repoMgr.GetIndexedVideosByFolder(requestedPath)
+		videosInFolder, err := repoMgr.GetIndxedVideosOnSpace(requestedPath)
 		if err != nil {
 			respondError(c, http.StatusInternalServerError, "Failed to load videos")
 			return

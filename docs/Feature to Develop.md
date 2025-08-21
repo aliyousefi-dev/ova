@@ -1,19 +1,17 @@
 
-- (UI/Cli) QR Code Login
-- (UI/Cli) **Smart Playlist:** Create playlists based on tags or other criteria.
-- (UI/Cli) **Timeline Marker:** Very important feature to mark key points in videos.
-- (UI/Cli) **Random Play:** Support playing videos randomly.
-- (UI/Cli) **Support VR Videos:** Native support for VR video playback.
-- (UI/Cli) **Trim Download:** Allow users to download trimmed segments of videos.
-- (UI/Cli) **Top Rated:** Show or filter videos by top ratings.
-- Rule Based Access 
-- (UI/Cli) Team Workspace
-- (UI/Cli) Search Suggestions 
-- Gallery View - no title - Infinite Scrolll
-- Clear Saved Videos
-- Prompt for Logout
-- Most Viewed
-- Most Rated
+- Auth - QR Login
+- Web Components - Smart Playlists
+- Video Player - Timeline Marking
+- API - Random Videos
+- Video Player - VR Support
+- API - Trim Download
+- API - Top Rated Videos
+- API - Role Based Users 
+- API - Team Workspace
+- Web Components - Search Suggestions
+- Web Components - Infinite Fetch
+- User - Clear Watched History
+- API - Most Viewed
 - Remove Duplicates
 - On Everyone Profile be the Uploaded Collections.
 - Enable Cooking by Default.
@@ -23,6 +21,8 @@
 - Showing each folder how many videos contain on Tree View
 - Download Counts
 - Share Playlist
+
+
 
 
 

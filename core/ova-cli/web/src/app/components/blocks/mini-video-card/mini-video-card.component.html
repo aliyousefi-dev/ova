@@ -13,7 +13,8 @@
       <!-- Thumbnail if PreviewPlayback is false -->
       @if (!PreviewPlayback) {
       <div (click)="navigateToWatch()" class="relative w-full h-full">
-        <img [src]="getThumbnailUrl()" [alt]="video.title" class="w-full h-full object-cover absolute top-0 left-0" />
+        <img [src]="getThumbnailUrl()" [alt]="video.fileName"
+          class="w-full h-full object-cover absolute top-0 left-0" />
       </div>
       } @else {
       <!-- Video playback if PreviewPlayback is true -->
@@ -33,7 +34,7 @@
 
       <!-- Video duration -->
       <div class="absolute bottom-2 right-2 bg-black text-white bg-opacity-60 text-xs px-2 py-1 rounded">
-        {{ formatDuration(video.durationSeconds) }}
+        {{ formatDuration(video.codecs.durationSec) }}
       </div>
 
       <!-- Video quality label -->

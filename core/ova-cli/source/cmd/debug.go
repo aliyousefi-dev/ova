@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"ova-cli/source/internal/thirdparty" // Assuming you have the GetVideoDetails function in this package
+	"ova-cli/source/internal/utils"
 
 	"github.com/spf13/cobra"
 	// Assuming the datatypes package contains VideoResolution struct
@@ -35,12 +37,13 @@ var videoDetailsCmd = &cobra.Command{
 
 		// Print the video details
 		fmt.Printf("Video Details:\n")
-		fmt.Printf("Duration: %f seconds\n", videoDetails.Duration)
-		fmt.Printf("FPS: %f\n", videoDetails.FPS)
+		fmt.Printf("Duration: %d seconds\n", videoDetails.DurationSec)
+		fmt.Printf("FPS: %f\n", videoDetails.FrameRate)
+		fmt.Printf("IsFragment: %t\n", videoDetails.IsFragment)
 		fmt.Printf("Resolution: %d x %d\n", videoDetails.Resolution.Width, videoDetails.Resolution.Height)
-		fmt.Printf("BitRate: %d bps\n", videoDetails.BitRate)
 		fmt.Printf("Video Codec: %s\n", videoDetails.VideoCodec) // Print video codec
 		fmt.Printf("Audio Codec: %s\n", videoDetails.AudioCodec) // Print audio codec
+		fmt.Printf("Video Format: %s\n", videoDetails.Format)    // Print audio codec
 	},
 }
 
@@ -65,11 +68,36 @@ var mp4infoCmd = &cobra.Command{
 	},
 }
 
+var pathCmd = &cobra.Command{
+	Use:   "path <path>",
+	Short: "Retrieve MP4 info for the provided video file",
+	Args:  cobra.ExactArgs(1), // Ensures exactly one argument is provided (the video path)
+	Run: func(cmd *cobra.Command, args []string) {
+		// Get the path from the arguments
+		videoPath := args[0]
+
+		// Ensure it's the absolute path and normalize slashes
+		absPath, err := filepath.Abs(videoPath)
+		if err != nil {
+			fmt.Println("Error obtaining absolute path:", err)
+			return
+		}
+
+		// Call GetFolder function to get the folder path
+		path := utils.GetFolder(absPath)
+
+		// Print the cropped path
+		fmt.Printf("Cropped path:\n")
+		fmt.Println(path)
+	},
+}
+
 func InitCommandDebug(rootCmd *cobra.Command) {
 	// Add the root `debug` command
 	rootCmd.AddCommand(debugCmd)
 
 	// Add `videoDetails` as a subcommand of `debug`
 	debugCmd.AddCommand(videoDetailsCmd)
+	debugCmd.AddCommand(pathCmd)
 	debugCmd.AddCommand(mp4infoCmd)
 }

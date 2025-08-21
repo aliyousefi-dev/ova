@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strings"
 )
+
 func (r *RepoManager) AddMarkerToVideo(videoID string, marker datatypes.VideoMarker) error {
 	// Calculate file path for the VTT marker file
 	filePath := r.GetVideoMarkerFilePathByVideoID(videoID)
@@ -125,7 +126,6 @@ func (r *RepoManager) DeleteMarkerFromVideo(videoID string, markerToDelete datat
 	return r.saveMarkersToVTT(videoID, filtered)
 }
 
-
 func (r *RepoManager) DeleteAllMarkersFromVideo(videoID string) error {
 	// Calculate the file path for the VTT marker file
 	filePath := r.GetVideoMarkerFilePathByVideoID(videoID)
@@ -154,8 +154,8 @@ func (r *RepoManager) saveMarkersToVTT(videoID string, markers []datatypes.Video
 	var videoDuration float64 = 600 // fallback default to 10 minutes
 	videoData, err := r.GetVideoByID(videoID)
 	if err == nil && videoData != nil {
-		if videoData.DurationSeconds > 0 {
-			videoDuration = float64(videoData.DurationSeconds)
+		if videoData.Codecs.DurationSec > 0 {
+			videoDuration = float64(videoData.Codecs.DurationSec)
 		}
 	}
 
