@@ -1,19 +1,20 @@
 package repo
 
 import (
-	"errors"
 	"os"
 	"path/filepath"
 )
 
 // CheckRepoExists checks if the .ova-repo folder exists at basePath.
-func (r *RepoManager) IsRepoExists() error {
+func (r *RepoManager) IsRepoExists() bool {
+
 	ovaRepoPath := filepath.Join(r.GetRootPath(), ".ova-repo")
+
 	info, err := os.Stat(ovaRepoPath)
 	if err != nil || !info.IsDir() {
-		return errors.New("repository does not exist")
+		return false
 	}
-	return nil
+	return true
 }
 
 func (r *RepoManager) IsDataStorageInitialized() bool {

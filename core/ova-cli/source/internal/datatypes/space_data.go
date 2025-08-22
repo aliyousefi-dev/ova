@@ -7,17 +7,24 @@ type SpaceSettings struct {
 	IsPrivate    bool   `json:"isPrivate"`
 }
 
+type QualityControl struct {
+	Enabled          bool     `json:"enabled"`
+	DraftVideoIds    []string `json:"draftVideoIds"`
+	AcceptedVideoIds []string `json:"acceptedVideoIds"`
+}
+
 type SpaceGroup struct {
-	GroupName string   `json:"groupName"`
-	VideoIds  []string `json:"videoIds"`
+	GroupName      string         `json:"groupName"`
+	SubGroups      []SpaceGroup   `json:"subGroups"`
+	VideoIds       []string       `json:"videoIds"`
+	QualityControl QualityControl `json:"qualityControl"`
 }
 
 type SpaceData struct {
 	SpaceName     string        `json:"spaceName"`
 	SpaceOwner    string        `json:"spaceOwner"`
-	DiskPath      string        `json:"diskPath"`
 	SpaceId       string        `json:"spaceId"`
-	Groups        []string      `json:"groups"`
+	Groups        []SpaceGroup  `json:"groups"`
 	SpaceSettings SpaceSettings `json:"spaceSettings"`
 	InviteLink    string        `json:"inviteLink"`
 	MemberIds     []string      `json:"membersIds"`
@@ -29,8 +36,15 @@ func CreateDefaultSpaceData(spaceName string, owner string) SpaceData {
 	return SpaceData{
 		SpaceName:  spaceName,
 		SpaceOwner: owner,
-		SpaceId:    "",         // Placeholder for space ID generation logic
-		Groups:     []string{}, // No groups by default
+		SpaceId:    "", // Placeholder for space ID generation logic
+		Groups: []SpaceGroup{{
+			GroupName: "root",
+			VideoIds:  []string{},
+			QualityControl: QualityControl{
+				Enabled:          false,
+				DraftVideoIds:    []string{},
+				AcceptedVideoIds: []string{}},
+		}}, // No groups by default
 		SpaceSettings: SpaceSettings{
 			MaxDiskLimit: "100GB", // Default disk limit
 			IsPrivate:    true,    // Default privacy setting

@@ -12,7 +12,7 @@ import { SearchPage } from './pages/search/search.page';
 import { DashboardPage } from './pages/dashboard/dashboard.page';
 import { ProfilePage } from './pages/profile/profile.page';
 import { HistoryPage } from './pages/history/history.page';
-import { RecentPage } from './pages/recent/recent.page';
+import { GlobalPage } from './pages/global/global.page';
 import { UploadPage } from './pages/upload/upload.page';
 import { CreateSpacePage } from './pages/create-space/create-space.page';
 import { CreateTeamSpacePage } from './pages/create-team-space/create-team-space.page';
@@ -25,8 +25,8 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'recent',
-    component: RecentPage,
+    path: 'global',
+    component: GlobalPage,
     canActivate: [AuthGuard],
   },
   {

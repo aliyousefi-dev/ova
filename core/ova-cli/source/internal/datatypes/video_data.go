@@ -26,8 +26,8 @@ type VideoData struct {
 	VideoID        string      `json:"videoId"`        // Unique identifier for the video
 	FileName       string      `json:"fileName"`       // Title of the video
 	Description    string      `json:"description"`    // Added for richer data
-	PrimarySpace   string      `json:"primarySpace"`   // Primary space for the video
-	VirtualSpaces  []string    `json:"virtualSpaces"`  // Virtual spaces for the video
+	OwnedSpace     string      `json:"ownedSpace"`     // Space where the video is owned
+	OwnedGroup     string      `json:"ownedGroup"`     // Group where the video is owned
 	Tags           []string    `json:"tags"`           // Tags for categorization and search
 	Codecs         VideoCodecs `json:"codecs"`         // Codec information
 	IsCooked       bool        `json:"isCooked"`       // Indicates if the video is processed (cooked)
@@ -42,6 +42,7 @@ func NewVideoData(videoID string) VideoData {
 		VideoID:     videoID,
 		FileName:    "",
 		Description: "",
+		OwnedGroup:  "root",
 		Tags:        []string{},
 		UploadedAt:  time.Now().UTC(),
 		Codecs:      VideoCodecs{}, // zero value

@@ -53,10 +53,36 @@ var createSpaceCmd = &cobra.Command{
 	},
 }
 
+var addAllSpacesCmd = &cobra.Command{
+	Use:   "addall",
+	Short: "scan and index all spaces",
+	Run: func(cmd *cobra.Command, args []string) {
+
+		repoAddress, _ := os.Getwd() // Default to current working directory if no flag is provided
+
+		// Resolve the absolute path of the repository
+		absPath, err := filepath.Abs(repoAddress)
+		if err != nil {
+			fmt.Printf("Error resolving absolute path: %v\n", err)
+			return
+		}
+
+		// Create a new RepoManager instance
+		repository, err := repo.NewRepoManager(absPath)
+		if err != nil {
+			fmt.Println("Failed to initialize repository:", err)
+			return
+		}
+
+		repository.ScanAndAddAllSpaces()
+	},
+}
+
 // InitCommandSpace initializes the space-related commands and adds them to the root command.
 func InitCommandSpace(rootCmd *cobra.Command) {
 	// Add the root `space` command to the root command
 	rootCmd.AddCommand(spaceCmd)
+	spaceCmd.AddCommand(addAllSpacesCmd)
 
 	// Add `create` as a subcommand of `space`
 	spaceCmd.AddCommand(createSpaceCmd)

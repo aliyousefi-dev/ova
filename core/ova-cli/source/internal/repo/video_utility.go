@@ -47,7 +47,7 @@ func (r *RepoManager) GetVideoPathByID(videoID string) (string, error) {
 	video, err := r.GetVideoByID(videoID)
 	if err == nil {
 		// Video exists
-		return video.PrimarySpace, nil
+		return video.OwnedSpace, nil
 	}
 	// Video does not exist
 	return "", err

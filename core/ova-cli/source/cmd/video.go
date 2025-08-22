@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"ova-cli/source/internal/datastorage/jsondb"
@@ -42,80 +43,121 @@ var videoAddAllCmd = &cobra.Command{
 			return
 		}
 
-		// Get all video paths
-		videoPaths, err := repository.GetUnindexedVideos()
+		repository.ScanAndAddAllSpaces()
+
+		// Step 1: Scan the disk for all spaces
+		spaces, err := repository.ScanDiskForSpaces()
 		if err != nil {
-			fmt.Println("Failed to get video paths:", err)
+			fmt.Printf("Error scanning disk at path '%s': %v\n", repoRoot, err)
 			return
 		}
 
-		if len(videoPaths) == 0 {
-			fmt.Println("No videos found on disk to add.")
+		if len(spaces) == 0 {
+			fmt.Println("No spaces found on disk to process.")
 			return
 		}
 
 		// Get the value of the --cook flag
 		cook, _ := cmd.Flags().GetBool("cook")
 
-		// Create channels for indexing and cooking progress, state, and errors
-		stateChan := make(chan string)
-		indexingProgressChan := make(chan int)
-		cookingProgressChan := make(chan int)
-		indexingErrorChan := make(chan error)
-		cookingErrorChan := make(chan error)
+		// Step 2: Loop through each space and add its videos
+		for i, space := range spaces {
+			spaceVideos := repository.GetVideosFromSpaceScan(space)
 
-		// Start goroutine to handle state updates
-		go func() {
-			for state := range stateChan {
-				fmt.Printf("\nState: %s\n", state)
+			if len(spaceVideos) == 0 {
+				fmt.Printf("\nNo videos found in space '%s'. Skipping.\n", space.Space)
+				continue
 			}
-		}()
 
-		// Start goroutine to handle indexing progress updates
-		go func() {
-			for progress := range indexingProgressChan {
-				fmt.Printf("\rIndexing Progress: %d%%", progress)
+			// Print the initial message and "Indexing" state directly from the main loop
+			if i > 0 {
+				fmt.Println()
 			}
-		}()
+			fmt.Printf("Processing videos in space: '%s'...\n", space.Space)
+			fmt.Printf("State: Indexing\n")
 
-		// Start goroutine to handle cooking progress updates
-		go func() {
-			for progress := range cookingProgressChan {
-				fmt.Printf("\rCooking Progress: %d%%", progress)
+			// Create channels for progress, state, and errors for THIS SPACE ONLY
+			stateChan := make(chan string)
+			indexingProgressChan := make(chan int)
+			cookingProgressChan := make(chan int)
+			indexingErrorChan := make(chan error)
+			cookingErrorChan := make(chan error)
+
+			// Create a WaitGroup to ensure all goroutines complete before moving to the next space
+			var wg sync.WaitGroup
+
+			// Start goroutine to handle state updates for this space
+			wg.Add(1)
+			go func() {
+				defer wg.Done() // Signal that this goroutine is done when it exits
+				for state := range stateChan {
+					// The "Completed" and "Cooking" states are the only ones sent to this channel.
+					fmt.Printf("State: %s\n", state)
+				}
+			}()
+
+			// Start goroutine to handle indexing progress updates for this space
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				for progress := range indexingProgressChan {
+					fmt.Printf("\rIndexing Progress: %d%%", progress)
+				}
+				// Print a final newline to separate from the next message
+				fmt.Println()
+			}()
+
+			// Start goroutine to handle cooking progress updates for this space
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				for progress := range cookingProgressChan {
+					fmt.Printf("\rCooking Progress: %d%%", progress)
+				}
+				// Print a final newline to separate from the next message
+				fmt.Println()
+			}()
+
+			// Start goroutine to handle indexing errors for this space
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				for err := range indexingErrorChan {
+					// Ensure a newline is printed after the error message
+					fmt.Printf("Indexing Error: %v\n", err)
+				}
+			}()
+
+			// Start goroutine to handle cooking errors for this space
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				for err := range cookingErrorChan {
+					// Ensure a newline is printed after the error message
+					fmt.Printf("Cooking Error: %v\n", err)
+				}
+			}()
+
+			// Use AddMultiVideos to index and cook all the videos for the current space
+			err = repository.AddMultiVideos(
+				spaceVideos,
+				cook,
+				indexingProgressChan,
+				cookingProgressChan,
+				stateChan,
+				indexingErrorChan,
+				cookingErrorChan,
+			)
+			if err != nil {
+				fmt.Printf("\nFailed to add videos for space '%s': %v\n", space.Space, err)
 			}
-		}()
 
-		// Start goroutine to handle indexing errors
-		go func() {
-			for err := range indexingErrorChan {
-				fmt.Printf("\nIndexing Error: %v\n", err)
-			}
-		}()
-
-		// Start goroutine to handle cooking errors
-		go func() {
-			for err := range cookingErrorChan {
-				fmt.Printf("\nCooking Error: %v\n", err)
-			}
-		}()
-
-		// Use AddMultiVideos to index and cook all the selected videos
-		err = repository.AddMultiVideos(
-			videoPaths,
-			cook,
-			indexingProgressChan,
-			cookingProgressChan,
-			stateChan,
-			indexingErrorChan,
-			cookingErrorChan,
-		)
-		if err != nil {
-			fmt.Println("\nFailed to add videos:", err)
-			return
+			// Wait for all goroutines to complete their channel reads and close
+			wg.Wait()
 		}
 
 		// Final message when all videos are processed
-		fmt.Println("\nAll videos added successfully.")
+		fmt.Println("\nAll videos from all spaces have been added successfully.")
 	},
 }
 
@@ -338,7 +380,7 @@ var videoInfoCmd = &cobra.Command{
 		pterm.Info.Println("Video Info:")
 		pterm.DefaultSection.Println("ID:", video.VideoID)
 		pterm.DefaultSection.Println("File Name:", video.FileName)
-		pterm.DefaultSection.Println("Primary Space:", video.PrimarySpace)
+		pterm.DefaultSection.Println("Owned Space:", video.OwnedSpace)
 		pterm.DefaultSection.Println("Duration (seconds):", fmt.Sprintf("%d", video.Codecs.DurationSec))
 		pterm.DefaultSection.Println("Tags:", fmt.Sprintf("%v", video.Tags))
 		pterm.DefaultSection.Println("Uploaded At:", video.UploadedAt.Format(time.RFC3339))

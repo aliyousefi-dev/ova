@@ -1,7 +1,6 @@
 package repo
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -117,14 +116,14 @@ func (r *RepoManager) GetRepoSize() (int64, error) {
 	ovaRepoPath := filepath.Join(r.GetRootPath(), ".ova-repo")
 
 	// Check if .ova-repo exists
-	err := r.IsRepoExists()
-	if err != nil {
-		return 0, errors.New(".ova-repo not found or is not a directory")
+	exists := r.IsRepoExists()
+	if !exists {
+		return 0, fmt.Errorf(".ova-repo not found or is not a directory")
 	}
 
 	var totalSize int64
 
-	err = filepath.Walk(r.GetRootPath(), func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(r.GetRootPath(), func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return nil // skip unreadable files
 		}
@@ -169,7 +168,7 @@ func (r *RepoManager) GetUnindexedVideos() ([]string, error) {
 	// Create a set of video file paths for easy lookup
 	indexedVideoPaths := make(map[string]struct{})
 	for _, video := range indexedVideos {
-		videoPath := filepath.Join(video.PrimarySpace, video.FileName)
+		videoPath := filepath.Join(video.OwnedSpace, video.FileName)
 		indexedVideoPaths[videoPath] = struct{}{}
 	}
 

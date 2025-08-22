@@ -1,17 +1,15 @@
 {
   "user": {
     "username": "user",
-    "passwordHash": "$2a$10$GUYsOUxCTRYe8bF86uss7.Aq9vYfWqWLrHj6MtHdVaZ175yaALIIi",
+    "passwordHash": "$2a$10$S.x8aaw3udTvbu9Ag.C8VejKHZQ0ROBa/OEJ1afWWy/Kf7MBTYjkS",
     "roles": [
       "user",
       "admin"
     ],
-    "createdAt": "2025-08-15T10:33:07.350203Z",
+    "createdAt": "2025-08-21T16:22:07.4515472Z",
     "lastLoginAt": "0001-01-01T00:00:00Z",
     "favorites": [],
     "playlists": [],
-    "watched": [
-      "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290"
-    ]
+    "watched": []
   }
 }

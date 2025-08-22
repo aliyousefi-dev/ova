@@ -52,34 +52,36 @@ func (r *RepoManager) AddMultiVideos(
 	indexingErrorChan chan error,
 	cookingErrorChan chan error,
 ) error {
+	// Defer closing all channels to ensure they are always closed
+	// even if an error occurs and the function returns early.
+	defer close(indexingProgressChan)
+	defer close(indexingErrorChan)
+	defer close(cookingProgressChan)
+	defer close(cookingErrorChan)
+	defer close(stateChan)
+
 	if !r.IsDataStorageInitialized() {
 		return fmt.Errorf("data storage is not initialized")
 	}
 
-	// Notify the state as "Indexing"
-	stateChan <- "Indexing"
-
 	// Index all videos at once with progress and error tracking
-	_, _ = r.IndexMultiVideos(VideoPaths, indexingProgressChan, indexingErrorChan)
-	close(indexingProgressChan)
-	if indexingErrorChan != nil {
-		close(indexingErrorChan)
+	_, err := r.IndexMultiVideos(VideoPaths, indexingProgressChan, indexingErrorChan)
+	if err != nil {
+		return err // The deferred close statements will handle channel cleanup
 	}
 
 	// Optionally cook videos if enabled with progress and error tracking
 	if cook {
 		// Notify the state as "Cooking"
 		stateChan <- "Cooking"
-		_ = r.CookMultiVideos(VideoPaths, cookingProgressChan, cookingErrorChan)
-		close(cookingProgressChan)
-		if cookingErrorChan != nil {
-			close(cookingErrorChan)
+		err = r.CookMultiVideos(VideoPaths, cookingProgressChan, cookingErrorChan)
+		if err != nil {
+			return err // The deferred close statements will handle channel cleanup
 		}
 	}
 
 	// All videos processed successfully
 	stateChan <- "Completed" // Final state
-	close(stateChan)
 	return nil
 }
 

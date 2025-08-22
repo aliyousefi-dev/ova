@@ -31,7 +31,7 @@ func downloadVideo(rm *repo.RepoManager) gin.HandlerFunc {
 			return
 		}
 
-		videoPath := filepath.Join(video.PrimarySpace, video.FileName)
+		videoPath := filepath.Join(video.OwnedSpace, video.FileName)
 		info, err := os.Stat(videoPath)
 		if os.IsNotExist(err) {
 			respondError(c, http.StatusNotFound, "Video file not found on disk")
@@ -81,7 +81,7 @@ func downloadTrimmedVideo(rm *repo.RepoManager) gin.HandlerFunc {
 			return
 		}
 
-		videoPath := filepath.Join(video.PrimarySpace, video.FileName)
+		videoPath := filepath.Join(video.OwnedSpace, video.FileName)
 		if _, err := os.Stat(videoPath); os.IsNotExist(err) {
 			respondError(c, http.StatusNotFound, "Video file not found on disk")
 			return

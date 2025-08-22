@@ -11,7 +11,7 @@ Cookie: session_id={{session_id}}
 ###
 
 # GET /spaces with a valid space and bucket parameter (page 2)
-GET {{baseUrl}}/api/v1/spaces?space=New&bucket=2
+GET {{baseUrl}}/api/v1/spaces?space=New&bucket=1
 Accept: application/json
 Cookie: session_id={{session_id}}
 

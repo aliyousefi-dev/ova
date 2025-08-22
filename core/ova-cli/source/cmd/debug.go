@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"path/filepath"
 
+	"ova-cli/source/internal/repo"
 	"ova-cli/source/internal/thirdparty" // Assuming you have the GetVideoDetails function in this package
 	"ova-cli/source/internal/utils"
 
@@ -91,10 +93,53 @@ var pathCmd = &cobra.Command{
 		fmt.Println(path)
 	},
 }
+var scanSpaceCmd = &cobra.Command{
+	Use:   "scan <path>",
+	Short: "Scan the specified path for video files and group them by folder structure",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		videoPath := args[0]
+
+		if !filepath.IsAbs(videoPath) {
+			var err error
+			videoPath, err = filepath.Abs(videoPath)
+			if err != nil {
+				fmt.Printf("Error converting to absolute path: %v\n", err)
+				return
+			}
+		}
+
+		repoManager, err := repo.NewRepoManager(videoPath)
+		if err != nil {
+			fmt.Printf("Failed to initialize repository at path '%s': %v\n", videoPath, err)
+			return
+		}
+
+		spaces, err := repoManager.ScanDiskForSpaces()
+		if err != nil {
+			fmt.Printf("Error scanning disk at path '%s': %v\n", videoPath, err)
+			return
+		}
+
+		spaceVideos := repoManager.GetVideosFromSpaceScan(spaces[0])
+
+		// Marshal the spaces into a formatted JSON string
+		jsonOutput, err := json.MarshalIndent(spaceVideos, "", "  ")
+		if err != nil {
+			fmt.Printf("Error marshaling to JSON: %v\n", err)
+			return
+		}
+
+		// Print the JSON output to the console
+		fmt.Println(string(jsonOutput))
+	},
+}
 
 func InitCommandDebug(rootCmd *cobra.Command) {
 	// Add the root `debug` command
 	rootCmd.AddCommand(debugCmd)
+
+	debugCmd.AddCommand(scanSpaceCmd)
 
 	// Add `videoDetails` as a subcommand of `debug`
 	debugCmd.AddCommand(videoDetailsCmd)

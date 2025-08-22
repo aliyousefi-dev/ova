@@ -8,12 +8,12 @@
         </button>
       </div>
 
-      <div *ngIf="isWatched"
+      @if (isWatched) {
+      <div
         class="absolute top-2 right-2 bg-black text-white text-xs font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 z-30 shadow">
         <span>Watched</span>
       </div>
-
-
+      }
 
       <!-- Thumbnail if PreviewPlayback is false -->
       @if (!PreviewPlayback) {
@@ -45,14 +45,18 @@
 
   <div class="flex flex-col gap-2 p-4 mt-2 rounded-lg shadow-sm hover:shadow-md bg-base-100 z-20"
     (click)="$event.stopPropagation()">
-    <div class="flex items-start justify-between">
-      <div class="flex-1">
-        <h2 class="font-semibold break-all text-ellipsis">
-          {{ truncateTitle(video.fileName, 30) }}
-        </h2>
-        <p class="text-xs /60 mt-1">
-          {{ timeSinceAdded }}
-        </p>
+
+    <div class="flex justify-between items-center text-xs mt-1">
+
+      <div class="flex justify-start items-center gap-2">
+        <div class="avatar avatar-placeholder">
+          <div class="bg-neutral text-neutral-content w-4 rounded-full">
+            <span class="text-[8px]">{{ video.ownedSpace | slice:0:1 }}</span>
+          </div>
+        </div>
+        <div class="text-xs">{{ video.ownedSpace }}</div>
+        <div class="text-[10px] font-light opacity-50">{{ timeSinceAdded }}</div> <!-- Make time text thinner -->
+
       </div>
 
       <div class="dropdown dropdown-end" (click)="$event.stopPropagation()">
@@ -71,9 +75,28 @@
       </div>
     </div>
 
-    <div class="flex flex-wrap gap-1 mt-2">
-      <app-tag-link *ngFor="let tag of video.tags" [tag]="tag" class="mr-1"></app-tag-link>
+
+    <div class="flex items-start justify-between">
+
+
+      <div class="flex-1">
+        <h2 class="font-semibold break-all text-ellipsis">
+          {{ truncateTitle(video.fileName, 30) }}
+        </h2>
+
+      </div>
+
+
     </div>
+
+
+    <div class="flex flex-wrap gap-1">
+      @for (tag of video.tags; track $index) {
+      <app-tag-link [tag]="tag" class="mr-1"></app-tag-link>
+      }
+    </div>
+
+
   </div>
 </div>
 

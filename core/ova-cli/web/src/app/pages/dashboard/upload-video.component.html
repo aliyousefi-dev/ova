@@ -4,8 +4,8 @@
   <!-- Folder Selector -->
   <div>
     <label class="label text-sm font-medium mb-1">Select Folder</label>
-    <app-tree-view [currentFolder]="selectedFolder" (folderSelected)="onFolderSelected($event)">
-    </app-tree-view>
+    <app-space-tree-view [currentFolder]="selectedFolder" (folderSelected)="onFolderSelected($event)">
+    </app-space-tree-view>
 
     <!-- ✅ Show currently selected folder -->
     <div class="text-sm text-primary-content opacity-80 mt-1">

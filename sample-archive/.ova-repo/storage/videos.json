@@ -1,65 +1,74 @@
 {
   "087be485e0acad6fb1ba026e75542fed5f52e073496c649bc4a3ce345a63f48f": {
     "videoId": "087be485e0acad6fb1ba026e75542fed5f52e073496c649bc4a3ce345a63f48f",
-    "title": "pexels-sosa-films-5656141",
+    "fileName": "pexels-sosa-films-5656141",
     "description": "",
-    "filePath": "New folder\\pexels-sosa-films-5656141.mp4",
-    "rating": 0,
-    "durationSeconds": 10,
-    "tags": [],
-    "views": 0,
-    "resolution": {
-      "width": 1920,
-      "height": 1080
-    },
-    "uploadedAt": "2025-08-15T10:33:15.9676393Z",
+    "ownedSpace": "New folder",
+    "ownedGroup": "",
+    "tags": [
+      "tag01",
+      "tag02"
+    ],
     "codecs": {
-      "format": "video/mp4",
-      "video": "avc1.64002A",
-      "audio": "mp4a.40.2"
+      "format": ".mp4",
+      "durationSec": 10,
+      "frameRate": 60,
+      "isFragment": false,
+      "resolution": {
+        "width": 1920,
+        "height": 1080
+      },
+      "videoCodec": "avc1.64002A",
+      "audioCodec": "mp4a.40.2"
     },
-    "totalDownloads": 0
+    "isCooked": false,
+    "totalDownloads": 0,
+    "uploadedAt": "2025-08-21T16:22:15.7804841Z"
   },
   "41168d2b2b047e7657a2491cde2e3484aae4c8d20423170f79e4b5278b7a4f37": {
     "videoId": "41168d2b2b047e7657a2491cde2e3484aae4c8d20423170f79e4b5278b7a4f37",
-    "title": "Pexels Videos 1452688",
+    "fileName": "Pexels Videos 1452688",
     "description": "",
-    "filePath": "New folder\\Pexels Videos 1452688.mp4",
-    "rating": 0,
-    "durationSeconds": 9,
+    "ownedSpace": "New folder",
+    "ownedGroup": "",
     "tags": [],
-    "views": 0,
-    "resolution": {
-      "width": 720,
-      "height": 406
-    },
-    "uploadedAt": "2025-08-15T10:33:15.4625726Z",
     "codecs": {
-      "format": "video/mp4",
-      "video": "avc1.64001F",
-      "audio": ""
+      "format": ".mp4",
+      "durationSec": 9,
+      "frameRate": 29.97,
+      "isFragment": false,
+      "resolution": {
+        "width": 720,
+        "height": 406
+      },
+      "videoCodec": "avc1.64001F",
+      "audioCodec": ""
     },
-    "totalDownloads": 0
+    "isCooked": false,
+    "totalDownloads": 0,
+    "uploadedAt": "2025-08-21T16:22:15.2731818Z"
   },
   "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290": {
     "videoId": "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290",
-    "title": "ff",
+    "fileName": "ff",
     "description": "",
-    "filePath": "ff.mp4",
-    "rating": 0,
-    "durationSeconds": 7,
+    "ownedSpace": ".",
+    "ownedGroup": "",
     "tags": [],
-    "views": 0,
-    "resolution": {
-      "width": 1280,
-      "height": 720
-    },
-    "uploadedAt": "2025-08-15T10:33:16.2947584Z",
     "codecs": {
-      "format": "video/mp4",
-      "video": "avc1.640020",
-      "audio": "mp4a.40.29"
+      "format": ".mp4",
+      "durationSec": 7,
+      "frameRate": 60,
+      "isFragment": false,
+      "resolution": {
+        "width": 1280,
+        "height": 720
+      },
+      "videoCodec": "avc1.640020",
+      "audioCodec": "mp4a.40.29"
     },
-    "totalDownloads": 0
+    "isCooked": false,
+    "totalDownloads": 0,
+    "uploadedAt": "2025-08-21T16:22:16.1028017Z"
   }
 }

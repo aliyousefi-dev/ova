@@ -14,7 +14,7 @@ import { PlaylistData } from '../../data-types/playlist-data';
 import { VideoData } from '../../data-types/video-data';
 import { VideoApiService } from '../../services/ova-backend/video-api.service';
 
-import { TreeViewComponent } from '../../components/containers/tree-view/tree-view.component';
+import { TreeViewComponent } from '../../components/containers/space-tree-view/space-tree-view.component';
 import { SearchBarComponent } from '../../components/utility/search-bar/search-bar.component';
 import { GalleryViewComponent } from '../../components/containers/gallery-view/gallery-view.component';
 import { FormsModule } from '@angular/forms';

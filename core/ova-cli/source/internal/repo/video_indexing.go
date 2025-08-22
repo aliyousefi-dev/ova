@@ -32,7 +32,7 @@ func (r *RepoManager) IndexVideo(absolutePath string) (datatypes.VideoData, erro
 		return datatypes.VideoData{}, fmt.Errorf("failed to generate relative path: %w", err)
 	}
 
-	rootFolder := utils.GetFolder(relativePath)
+	pathSegments := utils.GetPathSegments(filepath.Dir(relativePath))
 
 	// 4. Generate unique video ID
 	videoID, err := r.GenerateVideoID(absolutePath)
@@ -65,7 +65,8 @@ func (r *RepoManager) IndexVideo(absolutePath string) (datatypes.VideoData, erro
 	videoData := datatypes.NewVideoData(videoID)
 	videoData.FileName = title
 	videoData.Codecs = codec
-	videoData.PrimarySpace = rootFolder
+	videoData.OwnedSpace = pathSegments.Root
+	videoData.OwnedGroup = pathSegments.Subroot
 
 	// 8. Store metadata
 	if err := r.diskDataStorage.AddVideo(videoData); err != nil {

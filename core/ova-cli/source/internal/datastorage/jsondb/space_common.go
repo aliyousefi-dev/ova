@@ -93,7 +93,7 @@ func (s *JsonDB) GetVideosBySpace(spacePath string) ([]datatypes.VideoData, erro
 	var results []datatypes.VideoData
 	for _, video := range videosMap {
 		// Normalize video's folder path
-		videoFolder := filepath.ToSlash(video.PrimarySpace)
+		videoFolder := filepath.ToSlash(video.OwnedSpace)
 		videoFolder = strings.Trim(videoFolder, "/")
 		if videoFolder == "." {
 			videoFolder = ""
@@ -135,7 +135,7 @@ func (s *JsonDB) GetVideoIDsBySpaceInRange(spacePath string, start, end int) ([]
 	var videoIDs []string
 	for _, video := range videosMap {
 		// Normalize video's space path
-		videoFolder := filepath.ToSlash(video.PrimarySpace)
+		videoFolder := filepath.ToSlash(video.OwnedSpace)
 		videoFolder = strings.Trim(videoFolder, "/")
 		if videoFolder == "." {
 			videoFolder = ""

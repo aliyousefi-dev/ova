@@ -3,8 +3,8 @@
   <!-- Mobile Folder Tree (scrolls with content) -->
   <div class="bg-base-100 border-b border-base-200 lg:hidden">
     <aside class="p-4">
-      <app-tree-view [currentFolder]="currentFolder" (folderSelected)="onFolderSelected($event)"
-        class="w-full"></app-tree-view>
+      <app-space-tree-view [currentFolder]="currentFolder" (folderSelected)="onFolderSelected($event)"
+        class="w-full"></app-space-tree-view>
     </aside>
   </div>
 
@@ -13,8 +13,8 @@
     <!-- Desktop Folder Tree: Fixed and offset beside main sidebar and below top navbar -->
     <div class="hidden lg:block bg-base-100 w-128 sticky  overflow-y-auto z-30  border-base-200">
       <aside class="p-4">
-        <app-tree-view [currentFolder]="currentFolder" (folderSelected)="onFolderSelected($event)"
-          class="w-full"></app-tree-view>
+        <app-space-tree-view [currentFolder]="currentFolder" (folderSelected)="onFolderSelected($event)"
+          class="w-full"></app-space-tree-view>
       </aside>
     </div>
 
@@ -49,8 +49,11 @@
                 <button class="btn btn-xs btn-outline text-primary flex items-center gap-1" (click)="copySpaceId()"
                   [attr.aria-label]="copyButtonLabel">
                   <i class="bx bx-copy"></i>
-                  <span *ngIf="!copied">Copy</span>
-                  <span *ngIf="copied">Copied!</span>
+                  @if (copied) {
+                  <span>Copied!</span>
+                  } @else {
+                  <span>Copy</span>
+                  }
                 </button>
               </div>
 

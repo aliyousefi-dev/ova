@@ -1,8 +1,11 @@
 <app-loading-spinner *ngIf="loading$ | async"></app-loading-spinner>
 
-
-
-<div *ngIf="!isLoginRoute && !isNotFoundRoute" class="flex h-screen">
+<!-- Show content for login route only -->
+@if(isLoginRoute){
+<router-outlet></router-outlet> <!-- Routed content for login page will appear here -->
+}
+@else {
+<div class="flex h-screen">
   <!-- Sidebar on the left, fixed height, full screen (visible only on large screens and up) -->
   <app-desktop-sidebar class="lg:block hidden">
   </app-desktop-sidebar>
@@ -19,18 +22,11 @@
       <router-outlet></router-outlet> <!-- Routed content will appear here -->
     </div>
 
-    <app-mobile-dock class="block sticky z-200" *ngIf="!isLoginRoute && !isNotFoundRoute"></app-mobile-dock>
+    <app-mobile-dock class="block sticky z-200"></app-mobile-dock>
   </div>
 </div>
+}
 
-
-
-<!-- Show content for login route only -->
-<div *ngIf="isLoginRoute">
-  <router-outlet></router-outlet> <!-- Routed content for login page will appear here -->
-</div>
-
-<!-- Show content for NotFoundPage (404) route -->
-<div *ngIf="isNotFoundRoute">
-  <router-outlet></router-outlet> <!-- Routed content for 404 page will appear here -->
-</div>
+@if (isNotFoundRoute) {
+<router-outlet></router-outlet>
+}

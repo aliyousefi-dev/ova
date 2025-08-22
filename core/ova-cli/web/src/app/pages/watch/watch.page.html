@@ -23,27 +23,32 @@
       </div>
 
       <!-- Metadata badges -->
-      <div class="flex flex-col gap-10 p-5">
+      <div class="flex flex-col gap-10 py-5">
         <div class="flex flex-wrap gap-5 w-full text-xs">
-          <span *ngIf="video.uploadedAt" class="inline-flex items-center gap-1 px-3 py-1 font-medium"
+          <span *ngIf="video.uploadedAt" class="inline-flex items-center gap-1 p-3 font-medium bg-base-100 rounded-xl"
             [title]="video.uploadedAt">
-            <i class="bx bx-time text-xl"></i>
+            <i class="bx bx-time bx-xs"></i>
             <span>{{ video.uploadedAt | date : 'mediumDate' }}</span>
           </span>
-          <span *ngIf="video.codecs.resolution" class="inline-flex items-center gap-1 px-3 py-1 font-medium"
+          <span *ngIf="video.codecs.resolution" class="inline-flex items-center gap-1 p-3 bg-base-100 rounded-xl"
             [title]="video.codecs.resolution.width">
-            <i class="bx bx-desktop text-xl"></i>
+            <i class="bx bx-desktop bx-xs"></i>
             <span>{{ video.codecs.resolution.width }} x {{ video.codecs.resolution.height }}</span>
           </span>
           <span *ngIf="video.codecs.durationSec !== undefined"
-            class="inline-flex items-center gap-1 px-3 py-1 font-medium" [title]="formatTime(video.codecs.durationSec)">
-            <i class="bx bx-time text-xl"></i>
+            class="inline-flex items-center gap-1 p-3 bg-base-100 rounded-xl"
+            [title]="formatTime(video.codecs.durationSec)">
+            <i class="bx bx-time bx-xs"></i>
             <span>{{ formatTime(video.codecs.durationSec) }}</span>
           </span>
-          <span class="inline-flex items-center gap-1 px-3 py-1 font-medium">
-            <i class="bx bx-video text-xl"></i>
+          <span class="inline-flex items-center gap-1 p-3 bg-base-100 rounded-xl">
+            <i class="bx bx-video bx-xs"></i>
             <span>{{video.codecs.frameRate}} fps</span>
           </span>
+          <a href="#" class="inline-flex items-center gap-1 p-3 bg-base-100 rounded-xl hover:bg-primary">
+            <i class='bx bx-link bx-xs'></i>
+            <span>{{video.ownedSpace}}</span>
+          </a>
         </div>
       </div>
 

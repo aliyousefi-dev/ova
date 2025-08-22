@@ -21,6 +21,7 @@ Ideal for efficiently hosting online video libraries.`,
 	cmd.InitCommandTools(rootCmd)
 	cmd.InitCommandCook(rootCmd)
 	cmd.InitCommandRepo(rootCmd)
+	cmd.InitCommandPurge(rootCmd)
 
 	cmd.InitCommandSpace(rootCmd)
 

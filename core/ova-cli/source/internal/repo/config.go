@@ -121,9 +121,10 @@ func (r *RepoManager) GetConfigs() *datatypes.Config {
 	return &r.configs
 }
 
-func (r *RepoManager) CreateDefaultConfigFileWithStorageType(storageType string) error {
+func (r *RepoManager) CreateDefaultConfigFileWithStorageType(rootuser string, storageType string) error {
 	defaultCfg := r.GetDefaultConfig()
 	defaultCfg.DataStorageType = storageType
+	defaultCfg.RootUser = rootuser
 	r.configs = *defaultCfg
 
 	if err := r.SaveRepoConfig(defaultCfg); err != nil {
