@@ -15,7 +15,7 @@ type QualityControl struct {
 
 type SpaceGroup struct {
 	GroupName      string         `json:"groupName"`
-	SubGroups      []SpaceGroup   `json:"subGroups"`
+	Groups         []SpaceGroup   `json:"groups"`
 	VideoIds       []string       `json:"videoIds"`
 	QualityControl QualityControl `json:"qualityControl"`
 }

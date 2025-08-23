@@ -78,19 +78,15 @@ var pathCmd = &cobra.Command{
 		// Get the path from the arguments
 		videoPath := args[0]
 
-		// Ensure it's the absolute path and normalize slashes
-		absPath, err := filepath.Abs(videoPath)
-		if err != nil {
-			fmt.Println("Error obtaining absolute path:", err)
-			return
-		}
-
-		// Call GetFolder function to get the folder path
-		path := utils.GetFolder(absPath)
+		segmented := utils.GetPathSegments(videoPath)
 
 		// Print the cropped path
-		fmt.Printf("Cropped path:\n")
-		fmt.Println(path)
+		fmt.Printf("Root path:\n")
+		fmt.Println(segmented.Root)
+
+		// Print the cropped path
+		fmt.Printf("Segment path:\n")
+		fmt.Println(segmented.Subroot)
 	},
 }
 var scanSpaceCmd = &cobra.Command{
@@ -121,10 +117,8 @@ var scanSpaceCmd = &cobra.Command{
 			return
 		}
 
-		spaceVideos := repoManager.GetVideosFromSpaceScan(spaces[0])
-
 		// Marshal the spaces into a formatted JSON string
-		jsonOutput, err := json.MarshalIndent(spaceVideos, "", "  ")
+		jsonOutput, err := json.MarshalIndent(spaces, "", "  ")
 		if err != nil {
 			fmt.Printf("Error marshaling to JSON: %v\n", err)
 			return

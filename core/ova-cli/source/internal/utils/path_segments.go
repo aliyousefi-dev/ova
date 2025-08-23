@@ -1,6 +1,9 @@
 package utils
 
-import "strings"
+import (
+	"path/filepath"
+	"strings"
+)
 
 type PathSegments struct {
 	Root    string `json:"root"`
@@ -8,6 +11,10 @@ type PathSegments struct {
 }
 
 func GetPathSegments(path string) PathSegments {
+	// Use filepath to normalize path (works across platforms)
+	path = filepath.ToSlash(path)
+
+	// Split the path into segments
 	segments := strings.SplitN(path, "/", 2)
 
 	result := PathSegments{}

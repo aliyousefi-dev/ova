@@ -3,8 +3,6 @@ package repo
 import (
 	"fmt"
 	"ova-cli/source/internal/datatypes"
-
-	"github.com/google/uuid"
 )
 
 // CreateUser creates a new user with a hashed password and an optional role.
@@ -13,21 +11,10 @@ func (r *RepoManager) GetAllSpaces() {
 }
 
 // CreateSpace creates a new space with a directory and owner.
-func (r *RepoManager) CreateSpace(spaceName string, owner string) error {
-
-	// Create the space directory
-	if err := r.CreateSpaceDirectory(spaceName); err != nil {
-		return fmt.Errorf("failed to create space directory: %w", err)
-	}
-
-	// Create default space data
-	spaceData := datatypes.CreateDefaultSpaceData(spaceName, owner)
-
-	// Assign a new unique ID to the space
-	spaceData.SpaceId = uuid.NewString()
+func (r *RepoManager) CreateSpace(spacedata datatypes.SpaceData) error {
 
 	// Save space data in disk storage
-	if err := r.diskDataStorage.CreateSpace(&spaceData); err != nil {
+	if err := r.diskDataStorage.CreateSpace(&spacedata); err != nil {
 		return fmt.Errorf("failed to save space data: %w", err)
 	}
 

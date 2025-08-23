@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"ova-cli/source/internal/datatypes"
 	"ova-cli/source/internal/repo"
 	"path/filepath"
 
@@ -46,7 +47,9 @@ var createSpaceCmd = &cobra.Command{
 			return
 		}
 
-		repository.CreateSpace(spaceName, "default")
+		spaceData := datatypes.CreateDefaultSpaceData(spaceName, "testdebuguser")
+
+		repository.CreateSpace(spaceData)
 
 		// Output the space creation confirmation
 		fmt.Printf("Space Created: %s\n", spaceName)

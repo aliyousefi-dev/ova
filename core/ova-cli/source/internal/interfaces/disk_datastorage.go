@@ -52,6 +52,7 @@ type DiskDataStorage interface {
 	GetVideosBySpace(spacePath string) ([]datatypes.VideoData, error)
 	GetVideoCountInSpace(spacePath string) (int, error)
 	GetVideoIDsBySpaceInRange(spacePath string, start, end int) ([]string, error)
+	AddVideoIDToSpace(videoId, filePath string) error
 
 	// New method to get total video count
 	GetTotalVideoCount() (int, error)

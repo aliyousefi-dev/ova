@@ -75,6 +75,122 @@ func (s *JsonDB) GetAllSpaces() (map[string]datatypes.SpaceData, error) {
 	return spaces, nil
 }
 
+func (s *JsonDB) AddVideoIDToSpace(videoId, filePath string) error {
+	fmt.Println("The Video File Path is this: ", filePath)
+
+	// 1. Load all spaces
+	spaces, err := s.loadSpaces()
+	if err != nil {
+		return err
+	}
+
+	// 2. Normalize path separators
+	filePath = filepath.ToSlash(filePath)
+
+	// Determine if the path is a file in the root of a space or a path with groups
+	var spaceName string
+	var groupPath []string
+
+	if strings.Contains(filePath, "/") {
+		// Path with space and groups (e.g., "New/input.mp4")
+		pathParts := strings.Split(filePath, "/")
+		if len(pathParts) < 2 {
+			return fmt.Errorf("invalid file path format: %s", filePath)
+		}
+		spaceName = pathParts[0]
+		groupPath = pathParts[1 : len(pathParts)-1]
+	} else {
+		// Path is just a filename, so it goes to the "root" space
+		spaceName = "root"
+		groupPath = []string{}
+	}
+
+	// 3. Find the target space
+	space, ok := spaces[spaceName]
+	if !ok {
+		return fmt.Errorf("space not found: %s", spaceName)
+	}
+
+	// 4. Find the root group. Every space should have one.
+	var rootGroup *datatypes.SpaceGroup
+	for i := range space.Groups {
+		if space.Groups[i].GroupName == "root" {
+			rootGroup = &space.Groups[i]
+			break
+		}
+	}
+
+	if rootGroup == nil {
+		return fmt.Errorf("root group not found in space: %s", spaceName)
+	}
+
+	// 5. Find the correct group starting from the root group.
+	var targetGroup *datatypes.SpaceGroup
+	if len(groupPath) == 0 {
+		// If there is no group path, add the video directly to the root group.
+		targetGroup = rootGroup
+	} else {
+		// Otherwise, find or create the subgroup path.
+		targetGroup = findOrCreateGroup(&rootGroup.Groups, groupPath)
+	}
+
+	if targetGroup == nil {
+		return fmt.Errorf("group path not found or created: %s", strings.Join(groupPath, "/"))
+	}
+
+	// 6. Add the videoId to the target group
+	for _, id := range targetGroup.VideoIds {
+		if id == videoId {
+			return nil // Video ID already exists, do nothing.
+		}
+	}
+	targetGroup.VideoIds = append(targetGroup.VideoIds, videoId)
+
+	// 7. Update the map and save the data
+	spaces[spaceName] = space
+	return s.saveSpaces(spaces)
+}
+
+func findOrCreateGroup(groups *[]datatypes.SpaceGroup, pathParts []string) *datatypes.SpaceGroup {
+	if len(pathParts) == 0 {
+		return nil
+	}
+
+	for i := range *groups {
+		if (*groups)[i].GroupName == pathParts[0] {
+			if len(pathParts) == 1 {
+				return &(*groups)[i]
+			}
+			// If group found, recurse into its subgroups
+			return findOrCreateGroup(&(*groups)[i].Groups, pathParts[1:])
+		}
+	}
+
+	// If we reach here, the group was not found, so we create it.
+	newGroup := datatypes.SpaceGroup{
+		GroupName: pathParts[0],
+		Groups:    []datatypes.SpaceGroup{},
+		VideoIds:  []string{},
+		QualityControl: datatypes.QualityControl{
+			Enabled:          false,
+			DraftVideoIds:    []string{},
+			AcceptedVideoIds: []string{},
+		},
+	}
+	*groups = append(*groups, newGroup)
+
+	// Get a reference to the newly created group.
+	newlyCreatedGroup := &(*groups)[len(*groups)-1]
+
+	// If there are more parts in the path, recurse into the new group's subgroups.
+	if len(pathParts) > 1 {
+		return findOrCreateGroup(&newlyCreatedGroup.Groups, pathParts[1:])
+	}
+
+	// This is the last part of the path, so return the pointer to the group.
+	return newlyCreatedGroup
+}
+
 // GetVideosBySpace returns all videos located inside the specified folder path.
 // The folderPath is expected to be a relative path with slashes normalized.
 // If folderPath is empty, it returns videos in the root folder.
