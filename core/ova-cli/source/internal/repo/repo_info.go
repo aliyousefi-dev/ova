@@ -8,13 +8,12 @@ type RepoInfo struct {
 	UserCount   int    `json:"user_count"`
 	StorageUsed string `json:"storage_used"`
 	CreatedAt   string `json:"created_at"`
-	Host        string `json:"host"`         // Fake host address
-	Port        int    `json:"port"`         // Fake port number
+	Host        string `json:"host"` // Fake host address
+	Port        int    `json:"port"` // Fake port number
 }
 
 // GetRepoInfo returns repository information as a RepoInfo struct, including video count, user count, storage used, last updated, and server info
 func (r *RepoManager) GetRepoInfo() (RepoInfo, error) {
-
 
 	// Load the repository configuration
 	err := r.LoadRepoConfig()
@@ -23,7 +22,7 @@ func (r *RepoManager) GetRepoInfo() (RepoInfo, error) {
 	}
 
 	// Fetch the video count on disk
-	count, err := r.GetVideoCountOnDisk()
+	count, err := r.GetTotalVideoCountOnRepository()
 	if err != nil {
 		return RepoInfo{}, fmt.Errorf("failed to get video count: %w", err)
 	}
@@ -48,7 +47,7 @@ func (r *RepoManager) GetRepoInfo() (RepoInfo, error) {
 		VideoCount:  count,
 		UserCount:   userCount,
 		StorageUsed: storageUsed,
-		CreatedAt: r.GetConfigs().CreatedAt.Format("2006-01-02 15:04:05"),
+		CreatedAt:   r.GetConfigs().CreatedAt.Format("2006-01-02 15:04:05"),
 		Host:        r.GetConfigs().ServerHost,
 		Port:        r.GetConfigs().ServerPort,
 	}

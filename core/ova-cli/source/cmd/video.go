@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sync"
 	"time"
 
 	"ova-cli/source/internal/datastorage/jsondb"
@@ -23,141 +22,6 @@ var videoCmd = &cobra.Command{
 	Short: "Manage videos",
 	Run: func(cmd *cobra.Command, args []string) {
 		videoLogger.Info("Video command invoked: use a subcommand (add, list, info, purge)")
-	},
-}
-
-// Command to add all videos
-var videoAddAllCmd = &cobra.Command{
-	Use:   "addall",
-	Short: "Add all videos from disk",
-	Run: func(cmd *cobra.Command, args []string) {
-		repoRoot, err := os.Getwd()
-		if err != nil {
-			fmt.Println("Failed to get working directory:", err)
-			return
-		}
-
-		repository, err := repo.NewRepoManager(repoRoot)
-		if err != nil {
-			fmt.Println("Failed to initialize repository:", err)
-			return
-		}
-
-		repository.ScanAndAddAllSpaces()
-
-		// Step 1: Scan the disk for all spaces
-		spaces, err := repository.ScanDiskForSpaces()
-		if err != nil {
-			fmt.Printf("Error scanning disk at path '%s': %v\n", repoRoot, err)
-			return
-		}
-
-		if len(spaces) == 0 {
-			fmt.Println("No spaces found on disk to process.")
-			return
-		}
-
-		// Get the value of the --cook flag
-		cook, _ := cmd.Flags().GetBool("cook")
-
-		// Step 2: Loop through each space and add its videos
-		for i, space := range spaces {
-			spaceVideos := repository.GetVideosFromSpaceScan(space)
-
-			if len(spaceVideos) == 0 {
-				fmt.Printf("\nNo videos found in space '%s'. Skipping.\n", space.Space)
-				continue
-			}
-
-			// Print the initial message and "Indexing" state directly from the main loop
-			if i > 0 {
-				fmt.Println()
-			}
-			fmt.Printf("Processing videos in space: '%s'...\n", space.Space)
-			fmt.Printf("State: Indexing\n")
-
-			// Create channels for progress, state, and errors for THIS SPACE ONLY
-			stateChan := make(chan string)
-			indexingProgressChan := make(chan int)
-			cookingProgressChan := make(chan int)
-			indexingErrorChan := make(chan error)
-			cookingErrorChan := make(chan error)
-
-			// Create a WaitGroup to ensure all goroutines complete before moving to the next space
-			var wg sync.WaitGroup
-
-			// Start goroutine to handle state updates for this space
-			wg.Add(1)
-			go func() {
-				defer wg.Done() // Signal that this goroutine is done when it exits
-				for state := range stateChan {
-					// The "Completed" and "Cooking" states are the only ones sent to this channel.
-					fmt.Printf("State: %s\n", state)
-				}
-			}()
-
-			// Start goroutine to handle indexing progress updates for this space
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
-				for progress := range indexingProgressChan {
-					fmt.Printf("\rIndexing Progress: %d%%", progress)
-				}
-				// Print a final newline to separate from the next message
-				fmt.Println()
-			}()
-
-			// Start goroutine to handle cooking progress updates for this space
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
-				for progress := range cookingProgressChan {
-					fmt.Printf("\rCooking Progress: %d%%", progress)
-				}
-				// Print a final newline to separate from the next message
-				fmt.Println()
-			}()
-
-			// Start goroutine to handle indexing errors for this space
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
-				for err := range indexingErrorChan {
-					// Ensure a newline is printed after the error message
-					fmt.Printf("Indexing Error: %v\n", err)
-				}
-			}()
-
-			// Start goroutine to handle cooking errors for this space
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
-				for err := range cookingErrorChan {
-					// Ensure a newline is printed after the error message
-					fmt.Printf("Cooking Error: %v\n", err)
-				}
-			}()
-
-			// Use AddMultiVideos to index and cook all the videos for the current space
-			err = repository.AddMultiVideos(
-				spaceVideos,
-				cook,
-				indexingProgressChan,
-				cookingProgressChan,
-				stateChan,
-				indexingErrorChan,
-				cookingErrorChan,
-			)
-			if err != nil {
-				fmt.Printf("\nFailed to add videos for space '%s': %v\n", space.Space, err)
-			}
-
-			// Wait for all goroutines to complete their channel reads and close
-			wg.Wait()
-		}
-
-		// Final message when all videos are processed
-		fmt.Println("\nAll videos from all spaces have been added successfully.")
 	},
 }
 
@@ -388,10 +252,9 @@ var videoInfoCmd = &cobra.Command{
 }
 
 func InitCommandVideo(rootCmd *cobra.Command) {
-	videoAddAllCmd.Flags().Bool("cook", false, "Cook videos after adding (default: false)")
+
 	videoAddOneCmd.Flags().Bool("cook", false, "Cook video after adding (default: false)")
 
-	videoCmd.AddCommand(videoAddAllCmd)
 	videoCmd.AddCommand(videoAddOneCmd)
 
 	videoCmd.AddCommand(videoListCmd)

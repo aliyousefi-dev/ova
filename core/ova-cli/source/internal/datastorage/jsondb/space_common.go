@@ -76,7 +76,6 @@ func (s *JsonDB) GetAllSpaces() (map[string]datatypes.SpaceData, error) {
 }
 
 func (s *JsonDB) AddVideoIDToSpace(videoId, filePath string) error {
-	fmt.Println("The Video File Path is this: ", filePath)
 
 	// 1. Load all spaces
 	spaces, err := s.loadSpaces()

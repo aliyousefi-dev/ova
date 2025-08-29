@@ -79,6 +79,14 @@ func (r *RepoManager) IndexVideo(absolutePath string) (datatypes.VideoData, erro
 }
 
 func (r *RepoManager) IndexMultiVideos(absolutePaths []string, progressChan chan int, errorChan chan error) ([]datatypes.VideoData, error) {
+
+	defer close(progressChan)
+	defer close(errorChan)
+
+	if !r.IsDataStorageInitialized() {
+		return []datatypes.VideoData{}, fmt.Errorf("data storage is not initialized")
+	}
+
 	var indexedVideos []datatypes.VideoData
 	totalVideos := len(absolutePaths)
 

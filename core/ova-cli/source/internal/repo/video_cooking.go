@@ -6,6 +6,23 @@ import (
 	"sync"
 )
 
+func (r *RepoManager) GetTotalVideoCooked() int {
+
+	Videoes, err := r.GetAllIndexedVideos()
+	if err != nil {
+		return 0
+	}
+
+	cooked := 0
+	for _, video := range Videoes {
+		if r.IsVideoCooked(video.VideoID) {
+			cooked++
+		}
+	}
+
+	return cooked
+}
+
 // IsVideoCooked checks if a video is already cooked by its ID.
 func (r *RepoManager) IsVideoCooked(VideoID string) bool {
 

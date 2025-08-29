@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 	"ova-cli/source/internal/repo"
 	"strings"
@@ -12,7 +11,6 @@ import (
 func AuthMiddleware(repoMgr *repo.RepoManager, publicPaths map[string]bool, publicPrefixes []string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if repoMgr.AuthEnabled {
-			fmt.Println("[AuthMiddleware] Auth disabled: skipping all auth checks")
 			// Skip all authentication checks
 			c.Next()
 			return
@@ -56,7 +54,7 @@ func AuthMiddleware(repoMgr *repo.RepoManager, publicPaths map[string]bool, publ
 		}
 
 		username, ok := repoMgr.GetUsernameBySession(sessionID)
-		if  ok != nil {
+		if ok != nil {
 			respondError(c, http.StatusUnauthorized, "Invalid session")
 			c.Abort()
 			return

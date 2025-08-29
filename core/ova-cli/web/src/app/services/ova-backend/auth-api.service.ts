@@ -7,6 +7,16 @@ import { environment } from '../../../environments/environment';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
+interface LoginError {
+  code: number;
+  message: string;
+}
+
+interface ErrorResponse {
+  error: LoginError;
+  status: string;
+}
+
 export interface LoginResponse {
   data: {
     sessionId: string;
@@ -54,15 +64,15 @@ export class AuthApiService {
           let errorMessage = 'An error occurred during login.';
 
           if (error.status === 0) {
-            // Network error, server down, or CORS issue
             errorMessage =
               'Cannot connect to the server. Please try again later.';
           } else if (error.status >= 500) {
-            // Server error
             errorMessage = 'Server error occurred. Please try again later.';
-          } else if (error.error?.message) {
-            // Custom backend error message
-            errorMessage = error.error.message;
+          } else {
+            const backendError = error.error as ErrorResponse;
+            if (backendError?.error?.message) {
+              errorMessage = backendError.error.message;
+            }
           }
 
           return throwError(() => new Error(errorMessage));

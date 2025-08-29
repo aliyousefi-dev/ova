@@ -33,6 +33,7 @@ export class PlaylistModalComponent implements OnChanges {
   // Internal state for playlists
   playlists: PlaylistWrapper[] = [];
   originalPlaylists: PlaylistWrapper[] = []; // To track initial state for comparison
+  loading = false; // <-- new flag
 
   @Output() close = new EventEmitter<void>(); // No longer emits data, just signals closure
 
@@ -70,31 +71,24 @@ export class PlaylistModalComponent implements OnChanges {
    * Fetches user playlists and checks if the selected video is in each playlist.
    */
   private loadPlaylists(): void {
-    if (!this.username || !this.selectedVideoId) {
-      console.error(
-        'Username or selectedVideoId is missing for loading playlists.'
-      );
-      // It's good practice to close the modal or show an error to the user if critical data is missing.
-      // For now, we'll just log the error.
-      return;
-    }
+    if (!this.username || !this.selectedVideoId) return;
 
+    this.loading = true; // start loading
     this.playlistapi.getUserPlaylists(this.username).subscribe({
       next: (response) => {
         const pls = response.data.playlists;
-        // Initialize playlists with checked status as false
+
         const checkList: PlaylistWrapper[] = pls.map((p: PlaylistSummary) => ({
           ...p,
           checked: false,
         }));
 
-        // Use Promise.all to wait for all individual playlist checks to complete
         Promise.all(
           checkList.map(
             (playlist) =>
               new Promise<void>((resolve) => {
                 this.playlistContentAPI
-                  .fetchPlaylistContent(this.username as string, playlist.slug) // Cast to string as we've checked for null
+                  .fetchPlaylistContent(this.username as string, playlist.slug)
                   .subscribe({
                     next: (plData) => {
                       playlist.checked = plData.data.videoIds.includes(
@@ -102,30 +96,22 @@ export class PlaylistModalComponent implements OnChanges {
                       );
                       resolve();
                     },
-                    error: (err) => {
-                      console.error(
-                        `Error fetching playlist ${playlist.slug}:`,
-                        err
-                      );
-                      playlist.checked = false; // Default to unchecked on error
-                      resolve(); // Resolve even on error to allow Promise.all to complete
+                    error: () => {
+                      playlist.checked = false;
+                      resolve();
                     },
                   });
               })
           )
-        )
-          .then(() => {
-            this.playlists = checkList;
-            // Create a deep copy to track original state for comparison during save
-            this.originalPlaylists = checkList.map((p) => ({ ...p }));
-            console.log('Playlists loaded:', this.playlists);
-          })
-          .catch((err) => {
-            console.error('Error in Promise.all for playlist checks:', err);
-          });
+        ).then(() => {
+          this.playlists = checkList;
+          this.originalPlaylists = checkList.map((p) => ({ ...p }));
+          this.loading = false; // done loading
+        });
       },
-      error: (err) => {
-        console.error('Error fetching user playlists:', err);
+      error: () => {
+        this.playlists = [];
+        this.loading = false; // done loading even on error
       },
     });
   }

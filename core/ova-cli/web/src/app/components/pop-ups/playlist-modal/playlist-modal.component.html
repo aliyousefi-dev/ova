@@ -10,19 +10,23 @@
       Add to Playlist
     </h3>
 
-    <!-- Display a loading message or spinner if playlists are not yet loaded -->
-    <div *ngIf="playlists.length === 0 && showModal" class="text-center py-4 text-gray-500">
+    <!-- Loading spinner/message -->
+    <div *ngIf="loading && showModal" class="text-center py-4 text-gray-500">
       Loading playlists...
     </div>
 
-    <form (ngSubmit)="save()" class="max-h-48 overflow-y-auto mb-4 px-2">
+    <!-- No playlists available -->
+    <div *ngIf="!loading && playlists.length === 0 && showModal" class="text-center py-4 text-gray-500">
+      No playlists found.
+    </div>
+
+    <!-- Playlists list -->
+    <form *ngIf="!loading && playlists.length > 0" (ngSubmit)="save()" class="max-h-48 overflow-y-auto mb-4 px-2">
       <div class="form-control mb-2" *ngFor="let playlist of playlists; trackBy: trackBySlug">
         <label class="label cursor-pointer flex items-center space-x-3">
           <input type="checkbox" class="checkbox checkbox-sm" [(ngModel)]="playlist.checked"
             name="{{ playlist.slug }}" />
-          <span class="label-text text-base select-none">
-            {{ playlist.title }}
-          </span>
+          <span class="label-text text-base select-none">{{ playlist.title }}</span>
         </label>
       </div>
     </form>

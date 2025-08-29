@@ -23,6 +23,8 @@ Ideal for efficiently hosting online video libraries.`,
 	cmd.InitCommandRepo(rootCmd)
 	cmd.InitCommandPurge(rootCmd)
 	cmd.InitCommandTsConvert(rootCmd)
+	cmd.InitCommandScan(rootCmd)
+	cmd.InitCommandIndex(rootCmd)
 
 	cmd.InitCommandSpace(rootCmd)
 

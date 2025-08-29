@@ -145,7 +145,7 @@ func (r *RepoManager) GetRepoSize() (int64, error) {
 	return totalSize, nil
 }
 
-func (r *RepoManager) GetVideoCountOnDisk() (int, error) {
+func (r *RepoManager) GetTotalVideoCountOnRepository() (int, error) {
 	videoPaths, err := r.ScanDiskForVideos()
 	if err != nil {
 		return 0, err
