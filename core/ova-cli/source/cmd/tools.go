@@ -78,33 +78,12 @@ var toolsInfoCmd = &cobra.Command{
 	},
 }
 
-var toolsConvertCmd = &cobra.Command{
-	Use:   "convert <input-path> <output-path>",
-	Short: "Convert a video to MP4 format using ffmpeg",
-	Args:  cobra.ExactArgs(2),
-	Run: func(cmd *cobra.Command, args []string) {
-		inputPath := args[0]
-		outputPath := args[1]
-
-		err := thirdparty.ConvertToMP4(inputPath, outputPath)
-		if err != nil {
-			toolsLogger.Error("Failed to convert to MP4: %v", err)
-			return
-		}
-
-		toolsLogger.Info("Converted to MP4: %s", outputPath)
-		fmt.Println(outputPath) // For scripting
-	},
-}
-
 // InitCommandTools initializes the tools command and its subcommands
 func InitCommandTools(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(toolsCmd)
 	toolsCmd.AddCommand(toolsThumbnailCmd)
 	toolsCmd.AddCommand(toolsPreviewCmd)
 	toolsCmd.AddCommand(toolsInfoCmd)
-	toolsCmd.AddCommand(toolsConvertCmd)
-
 
 	toolsThumbnailCmd.Flags().Float64("time", 5.0, "Time position (in seconds) for thumbnail")
 
