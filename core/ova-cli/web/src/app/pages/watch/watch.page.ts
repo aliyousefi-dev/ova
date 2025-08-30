@@ -17,7 +17,6 @@ import { SimilarVideosPanelComponent } from './panels/similar-videos-panel.compo
 import { VideoActionBarComponent } from './panels/video-action-bar.component';
 import { VideoTagsPanelComponent } from './panels/video-tags-panel.component';
 import { VideoAdminTabsComponent } from './panels/video-admin-tabs.component';
-import { VideoCommentPanelComponent } from './panels/video-comment-panel.component';
 import { PlaylistContentAPIService } from '../../services/ova-backend/playlist-content-api.service';
 
 import { ViewChild } from '@angular/core';
@@ -37,7 +36,6 @@ import { ViewChild } from '@angular/core';
     VideoTagsPanelComponent,
     VideoActionBarComponent,
     VideoTitleBarComponent,
-    VideoCommentPanelComponent,
   ],
   templateUrl: './watch.page.html',
   styleUrls: ['./watch.page.css'],

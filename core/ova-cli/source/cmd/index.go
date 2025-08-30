@@ -49,7 +49,7 @@ var indexCmd = &cobra.Command{
 				continue
 			}
 
-			fmt.Printf("\nProcessing space: '%s'\n", space.Space)
+			fmt.Printf("\nIndexing Videos on space: '%s'\n", space.Space)
 			fmt.Printf("Found %d videos.\n", len(spaceVideos))
 
 			// Channels for THIS SPACE ONLY

@@ -55,7 +55,7 @@ export class MiniVideoCardComponent implements OnChanges, AfterViewInit {
             }
           });
         },
-        { threshold: 1 }
+        { threshold: 0.9 }
       );
 
       this.observer.observe(video_preview);

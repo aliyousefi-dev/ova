@@ -1,5 +1,14 @@
 <div class="flex flex-col w-full h-full overflow-y-hidden">
-    <div class="p-5 flex w-full justify-between items-center">
+    <div class="pb-3 flex flex-col w-full justify-between items-center gap-2">
+
+        <!-- Page controls component integration -->
+        <div class="flex justify-center items-center gap-3">
+            <span class="text-xs">Pages:</span>
+            <app-page-controls [TotalBuckets]="TotalBuckets" [CurrentBucket]="CurrentBucket"
+                (pageChange)="loadPage($event)">
+            </app-page-controls>
+        </div>
+
         <div class="flex justify-start items-center text-xs gap-5">
             <span class="font-medium">
                 Videos in Range:
@@ -15,13 +24,6 @@
             </span>
         </div>
 
-        <!-- Page controls component integration -->
-        <div class="flex justify-center items-center gap-3">
-            <span>Pages:</span>
-            <app-page-controls [TotalBuckets]="TotalBuckets" [CurrentBucket]="CurrentBucket"
-                (pageChange)="loadPage($event)">
-            </app-page-controls>
-        </div>
     </div>
 
     <div #Container class="h-full overflow-y-auto">
