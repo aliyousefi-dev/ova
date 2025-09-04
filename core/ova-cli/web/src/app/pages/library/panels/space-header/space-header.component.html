@@ -1,0 +1,44 @@
+<div class="relative flex flex-col justify-center px-20 gap-6 h-60 overflow-hidden">
+
+    <!-- Content -->
+    <div class="relative z-10 flex flex-col justify-center gap-6">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-6">
+                <div class="avatar avatar-placeholder">
+                    <div class="bg-neutral text-neutral-content w-24 rounded-full">
+                        <span class="text-3xl">{{ SpaceSelected ? SpaceSelected.charAt(0) : '' }}</span>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-2xl font-semibold text-base-content">{{ SpaceSelected }}</span>
+                    <div class="flex items-center gap-3 text-sm text-base-content/70">
+                        <span id="spaceId" class="truncate max-w-[200px]" title="Space ID">
+                            {{ '#sdkfjs23kdsflkjdsf' }}
+                        </span>
+                        <button class="btn btn-xs btn-outline flex items-center gap-1" (click)="copySpaceId()"
+                            [attr.aria-label]="copyButtonLabel">
+                            <i class="bx bx-copy"></i>
+                            @if (copied) {
+                            <span>Copied!</span>
+                            } @else {
+                            <span>Copy</span>
+                            }
+                        </button>
+                    </div>
+                    <span class="text-sm text-base-content/70">5 members</span>
+                    <span class="text-sm text-base-content/70">10 videos</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col w-full h-full justify-center items-end gap-4">
+                <span class="badge">Private <i class="bx bx-lock"></i></span>
+            </div>
+        </div>
+
+        <p class="text-sm pl-30 text-base-content">
+            Developer focused on debugging, performance optimization, and building scalable
+            applications. Proficient in JavaScript, TypeScript, Angular, and Node.js. Always
+            learning new tools and improving workflows.
+        </p>
+    </div>
+</div>

@@ -17,6 +17,11 @@ import { UploadPage } from './pages/upload/upload.page';
 import { CreateSpacePage } from './pages/create-space/create-space.page';
 import { CreateTeamSpacePage } from './pages/create-team-space/create-team-space.page';
 import { JoinTeamSpacePage } from './pages/join-team-space/join-team-space.page';
+import { SettingsPage } from './pages/settings/settings.page';
+import { GeneralSettingsComponent } from './pages/settings/panels/general-settings/general-settings.component';
+import { AppearanceSettingsComponent } from './pages/settings/panels/appearance-settings/appearance-settings.component';
+import { AddonsSettingsComponent } from './pages/settings/panels/addons-settings/addons-settings.component';
+import { SecuritySettingsComponent } from './pages/settings/panels/security-settings/security-settings.component';
 
 export const routes: Routes = [
   {
@@ -78,6 +83,17 @@ export const routes: Routes = [
     path: 'saved',
     component: SavedPage,
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'settings',
+    component: SettingsPage,
+    children: [
+      { path: 'appearance', component: AppearanceSettingsComponent },
+      { path: 'security', component: SecuritySettingsComponent },
+      { path: 'addons', component: AddonsSettingsComponent },
+      { path: 'profile', component: GeneralSettingsComponent },
+      { path: '', redirectTo: 'profile', pathMatch: 'full' }, // default
+    ],
   },
   {
     path: 'search',

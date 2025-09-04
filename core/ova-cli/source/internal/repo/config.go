@@ -9,17 +9,18 @@ import (
 	"time"
 )
 
-func (r *RepoManager) GetDefaultConfig() *datatypes.Config {
+func (r *RepoManager) GetDefaultConfig() *datatypes.ConfigData {
 	config, err := r.GetDefaultConfigTemplate()
 	if err != nil {
 		// Log the error or handle it internally (you can customize this part)
 		log.Printf("Error getting default config: %v", err)
 		// Return a fallback config in case of error
-		return &datatypes.Config{
+		return &datatypes.ConfigData{
 			Version:              "1.0.0",
 			ServerHost:           "0.0.0.0",
 			ServerPort:           4040,
 			EnableAuthentication: true,
+			MaxBucketSize:        20,
 			DataStorageType:      "jsondb",
 			CreatedAt:            time.Now(),
 		}
@@ -27,13 +28,13 @@ func (r *RepoManager) GetDefaultConfig() *datatypes.Config {
 	return config
 }
 
-func (r *RepoManager) GetDefaultConfigTemplate() (*datatypes.Config, error) {
+func (r *RepoManager) GetDefaultConfigTemplate() (*datatypes.ConfigData, error) {
 	templatepath := r.GetDefaultConfigTemplateFilePath()
 
 	// Check if the file exists
 	if _, err := os.Stat(templatepath); os.IsNotExist(err) {
 		// File doesn't exist, create it with the default config
-		defaultConfig := &datatypes.Config{
+		defaultConfig := &datatypes.ConfigData{
 			Version:              "1.0.0",
 			ServerHost:           "0.0.0.0",
 			ServerPort:           4040,
@@ -66,7 +67,7 @@ func (r *RepoManager) GetDefaultConfigTemplate() (*datatypes.Config, error) {
 	}
 	defer file.Close()
 
-	var config datatypes.Config
+	var config datatypes.ConfigData
 	decoder := json.NewDecoder(file)
 	if err := decoder.Decode(&config); err != nil {
 		return nil, fmt.Errorf("could not read config from file: %v", err)
@@ -91,7 +92,7 @@ func (r *RepoManager) LoadRepoConfig() error {
 		return fmt.Errorf("failed to read config.json: %w", err)
 	}
 
-	var cfg datatypes.Config
+	var cfg datatypes.ConfigData
 	if err := json.Unmarshal(data, &cfg); err != nil {
 		return fmt.Errorf("failed to parse config.json: %w", err)
 	}
@@ -100,7 +101,7 @@ func (r *RepoManager) LoadRepoConfig() error {
 	return nil
 }
 
-func (r *RepoManager) SaveRepoConfig(cfg *datatypes.Config) error {
+func (r *RepoManager) SaveRepoConfig(cfg *datatypes.ConfigData) error {
 	configPath := r.getRepoConfigFilePath()
 	file, err := os.Create(configPath)
 	if err != nil {
@@ -117,7 +118,7 @@ func (r *RepoManager) SaveRepoConfig(cfg *datatypes.Config) error {
 	return nil
 }
 
-func (r *RepoManager) GetConfigs() *datatypes.Config {
+func (r *RepoManager) GetConfigs() *datatypes.ConfigData {
 	return &r.configs
 }
 

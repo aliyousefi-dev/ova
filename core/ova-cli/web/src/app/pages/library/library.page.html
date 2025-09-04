@@ -1,221 +1,39 @@
-<!-- Wrapper: vertical stack on mobile, horizontal split on desktop -->
 <div class="flex flex-col lg:flex-row w-full">
-  <!-- Mobile Folder Tree (scrolls with content) -->
-  <div class="bg-base-100 border-b border-base-200 lg:hidden">
-    <aside class="p-4">
-      <app-space-tree-view [currentFolder]="currentFolder" (folderSelected)="onFolderSelected($event)"
-        class="w-full"></app-space-tree-view>
-    </aside>
-  </div>
 
-  <div class=" flex h-[calc(100vh-56px)] overflow-hidden w-full ">
-
-    <!-- Desktop Folder Tree: Fixed and offset beside main sidebar and below top navbar -->
-    <div class="hidden lg:block bg-base-100 w-128 sticky  overflow-y-auto z-30  border-base-200">
-      <aside class="p-4">
-        <app-space-tree-view [currentFolder]="currentFolder" (folderSelected)="onFolderSelected($event)"
-          class="w-full"></app-space-tree-view>
-      </aside>
-    </div>
-
-
-    <!-- Main Content (with left margin to clear both sidebars) -->
+  <div class="flex h-[calc(100vh-56px)] overflow-hidden w-full">
     <div class="flex flex-col flex-grow w-full h-full overflow-auto">
+      <app-space-header [SpaceSelected]="SpaceSelected" [copySpaceId]="copySpaceId" [copied]="copied"
+        [copyButtonLabel]="copyButtonLabel"></app-space-header>
 
-      <div class="flex flex-col bg-base-200 p-15  gap-6">
-
-        <div class="flex justify-between items-center   ">
-
-          <div class="flex items-center gap-6">
-
-
-            <!-- Avatar Section -->
-            <div class="avatar avatar-placeholder">
-              <div class="bg-neutral text-neutral-content w-24 rounded-full">
-                <span class="text-3xl">{{ SpaceSelected ? SpaceSelected.charAt(0) : '' }}</span>
-              </div>
-            </div>
-
-            <!-- Content Section -->
-            <div class="flex flex-col">
-              <!-- Space Title -->
-              <span class="text-2xl font-semibold text-base-content">{{ SpaceSelected }}</span>
-
-              <!-- Space ID & Copy Button -->
-              <div class="flex items-center gap-3 text-sm text-base-content/70">
-                <span id="spaceId" class="truncate max-w-[200px]" title="Space ID">{{ '#sdkfjs23kdsflkjdsf' }}</span>
-
-                <!-- Copy Button -->
-                <button class="btn btn-xs btn-outline text-primary flex items-center gap-1" (click)="copySpaceId()"
-                  [attr.aria-label]="copyButtonLabel">
-                  <i class="bx bx-copy"></i>
-                  @if (copied) {
-                  <span>Copied!</span>
-                  } @else {
-                  <span>Copy</span>
-                  }
-                </button>
-              </div>
-
-              <!-- Joined Members Info -->
-              <span class="text-sm text-base-content/70">5 members</span>
-
-              <!-- Joined Members Info -->
-              <span class="text-sm text-base-content/70">10 videos</span>
-            </div>
-
-          </div>
-
-          <!-- Bio Section -->
-          <div class="flex flex-col w-full h-full  justify-center items-end gap-4">
-            <span class="badge  badge-primary">Private <i class='bx  bx-lock'></i></span>
-            <span class="badge  badge-secondary">Read only</span>
-          </div>
-
-        </div>
-
-        <p class="text-sm pl-30">
-          Developer focused on debugging, performance optimization, and building scalable applications.
-          Proficient in JavaScript, TypeScript, Angular, and Node.js. Always learning new tools and improving
-          workflows.
-        </p>
-      </div>
-
-      <div class="tabs tabs-border h-full">
+      <div class="tabs tabs-border bg-base-200 h-full">
         <input type="radio" name="my_tabs_2" class="tab" aria-label="Videos" checked="checked" />
-        <div class="tab-content border-base-300 bg-base-100 h-full">
-          <div>
-            <!-- Search Bar -->
-            <app-search-bar [(value)]="searchTerm" (valueChange)="setSearchTerm($event)" placeholder="Local Search ..."
-              class="mb-6"></app-search-bar>
-
-            <!-- Top Pagination -->
-            <div class="flex justify-center mb-5" *ngIf="totalPages > 1 && !loading">
-              <div class="join">
-                <input *ngFor="let page of [].constructor(totalPages); let i = index" class="join-item btn btn-square"
-                  type="radio" name="paginationTop" [attr.aria-label]="i + 1" [checked]="currentPage === i + 1"
-                  (change)="goToPage(i + 1)" />
-              </div>
-            </div>
-
-            <!-- Sort & Count -->
-            <div class="flex justify-between items-center gap-4 mb-6 max-w-7xl mx-auto px-4">
-              <div class="font-medium text-base-content">
-                Total videos: {{ filteredVideosCount }}
-              </div>
-              <div class="flex items-center gap-2">
-                <label for="sort" class="text-sm font-medium">Sort by:</label>
-                <select id="sort" [(ngModel)]="sortOption" (change)="setSortOption(sortOption)"
-                  class="select select-sm select-bordered w-44">
-                  <option value="titleAsc">Title (A–Z)</option>
-                  <option value="titleDesc">Title (Z–A)</option>
-                  <option value="durationAsc">Duration (Short → Long)</option>
-                  <option value="durationDesc">Duration (Long → Short)</option>
-                  <option value="newest">Newest</option>
-                  <option value="oldest">Oldest</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Videos Grid -->
-            <div class="mx-auto px-4 flex-grow w-full">
-              <p *ngIf="loading" class="font-medium text-center">Loading videos...</p>
-              <app-gallery-view *ngIf="!loading" [videos]="videos"></app-gallery-view>
-            </div>
-
-            <!-- Bottom Pagination -->
-            <div class="flex justify-center mt-6" *ngIf="totalPages > 1 && !loading">
-              <div class="join">
-                <input *ngFor="let page of [].constructor(totalPages); let i = index" class="join-item btn btn-square"
-                  type="radio" name="paginationBottom" [attr.aria-label]="i + 1" [checked]="currentPage === i + 1"
-                  (change)="goToPage(i + 1)" />
-              </div>
-            </div>
-          </div>
+        <div class="tab-content  bg-base-300 h-full">
+          <app-video-list [loading]="loading" [videos]="videos" [searchTerm]="searchTerm" [sortOption]="sortOption"
+            [currentPage]="currentPage" [totalPages]="totalPages" [filteredVideosCount]="filteredVideosCount"
+            (searchTermChange)="setSearchTerm($event)" (sortOptionChange)="setSortOption($event)"
+            (pageChange)="goToPage($event)"></app-video-list>
         </div>
-
-
 
         <input type="radio" name="my_tabs_2" class="tab" aria-label="Quality Control" />
-        <div class="tab-content border-base-300 bg-base-100 p-10 h-full">
+        <div class="tab-content  bg-base-300 p-10 h-full">
           Uploads Waits for Confirmations
         </div>
 
         <input type="radio" name="my_tabs_2" class="tab" aria-label="Members" />
-        <div class="tab-content border-base-300 bg-base-100 p-10 h-full">
-
-
-          <ul class="list bg-base-100 rounded-box shadow-md">
-
-            <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Space Members</li>
-
-            <li class="list-row">
-              <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp" /></div>
-              <div>
-                <div>Dio Lupa <span class="badge badge-xs badge-neutral text-xs ml-3">Owner</span></div>
-                <div class="text-xs opacity-60">&#64;dio_lupa</div>
-              </div>
-              <button class="btn btn-error">
-                Kick
-              </button>
-              <button class="btn btn-info">
-                Access
-              </button>
-            </li>
-
-            <li class="list-row">
-              <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/4@94.webp" /></div>
-              <div>
-                <div>Ellie Beilish</div>
-                <div class="text-xs opacity-60">&#64;ellie_beilish</div>
-
-              </div>
-              <button class="btn btn-error">
-                Kick
-              </button>
-              <button class="btn btn-info">
-                Access
-              </button>
-            </li>
-
-            <li class="list-row">
-              <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/3@94.webp" /></div>
-              <div>
-                <div>Sabrino Gardener <span class="badge badge-xs badge-accent text-xs ml-3">Quality Controller</span>
-                </div>
-                <div class="text-xs opacity-60">&#64;sabrino_gardener</div>
-              </div>
-              <button class="btn btn-error">
-                Kick
-              </button>
-              <button class="btn btn-info">
-                Access
-              </button>
-            </li>
-
-          </ul>
+        <div class="tab-content bg-base-300 p-10 h-full">
+          <app-member-list></app-member-list>
         </div>
 
         <input type="radio" name="my_tabs_2" class="tab" aria-label="Space Settings" />
-        <div class="tab-content border-base-300 bg-base-100 p-10 h-full">
-
-          <fieldset class="fieldset bg-base-100 border-base-300 rounded-box w-64 border p-4">
-            <legend class="fieldset-legend">Quality Control</legend>
-            <label class="label">
-              <input type="checkbox" checked="checked" class="toggle" />
-              Enable Qaulity Control
-            </label>
-          </fieldset>
+        <div class="tab-content bg-base-300 p-10 h-full">
+          <app-space-settings></app-space-settings>
         </div>
 
         <input type="radio" name="my_tabs_2" class="tab" aria-label="Upload" />
-        <div class="tab-content border-base-300 bg-base-100 p-10 h-full">
-          Upload
+        <div class="tab-content border-base-300 bg-base-300 p-10 h-full">
+          <app-space-upload></app-space-upload>
         </div>
       </div>
-
-
     </div>
-
   </div>
 </div>

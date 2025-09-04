@@ -1,0 +1,44 @@
+<app-confirm-modal #confirmClearHistoryModal (confirmed)="clearWatchHistory()"></app-confirm-modal>
+
+<div class="flex flex-wrap gap-10">
+
+    <fieldset class="fieldset bg-base-100 rounded-box w-64  p-4">
+        <legend class="fieldset-legend">General Info</legend>
+        <label class="label">First Name</label>
+        <input type="text" class="input" placeholder="Enter your first name" />
+
+        <label class="label">Last Name</label>
+        <input type="text" class="input" placeholder="Enter your last name" />
+
+        <label class="label">Bio</label>
+        <input type="text" class="input" placeholder="Enter your bio" />
+
+        <button class="btn btn-info w-full">Update</button>
+    </fieldset>
+
+    <fieldset class="fieldset bg-base-100  rounded-box w-64 p-4">
+        <legend class="fieldset-legend">Username</legend>
+
+        <label class="label">Username</label>
+        <input type="text" class="input" placeholder="Enter your username" />
+
+        <button class="btn btn-info w-full">Update</button>
+    </fieldset>
+
+    <fieldset class="fieldset bg-base-100  rounded-box w-64 p-4">
+        <legend class="fieldset-legend">History</legend>
+
+        <button class="btn btn-error w-full" (click)="openClearWatchHistoryConfirm()">Clear Watch History</button>
+    </fieldset>
+
+    <fieldset class="fieldset bg-base-100  rounded-box w-64 p-4">
+        <legend class="fieldset-legend">Profile Visibility</legend>
+        <label class="label">
+            <input type="checkbox" checked="checked" class="toggle" />
+            Public
+        </label>
+    </fieldset>
+
+
+
+</div>

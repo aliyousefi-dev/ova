@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// Using SHA-256
 func ComputeFileHash(filePath string) (string, error) {
 	const chunkSize = 5 * 1024 * 1024 // 5MB
 

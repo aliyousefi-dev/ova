@@ -27,7 +27,7 @@ export class LatestVideosService {
     bucket: number = 1
   ): Observable<ApiResponse<LatestVideosResponse>> {
     // Construct the URL with bucket query parameter
-    const url = `${this.baseUrl}/videos/latest?bucket=${bucket}`;
+    const url = `${this.baseUrl}/videos/global?bucket=${bucket}`;
     return this.http.get<ApiResponse<LatestVideosResponse>>(url);
   }
 }

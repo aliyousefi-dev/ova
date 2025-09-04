@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:443/api/v1
-@session_id = e0ecf163-b6d5-4feb-9e12-e43212e12c90
+@session_id = ae37adcc-db9d-495d-b5b1-fd5e4491f42e
 @username = user
 @password = pass
 

@@ -1,5 +1,5 @@
 <!-- Playlist Card -->
-<div class="flex bg-base-100 w-full items-center gap-3">
+<div class="flex bg-base-200 w-full items-center gap-3">
 
   <!-- Thumbnail -->
   <div class="h-26 overflow-hidden">
@@ -26,7 +26,7 @@
   </div>
 
   <!-- Total Videos -->
-  <span class="text-[10px] font-medium bg-base-300 rounded-full px-2 py-0.5 ">
+  <span class="text-[10px] font-medium bg-base-100 rounded-full px-2 py-0.5 ">
     {{ playlist.totalVideos || 0 }} videos
   </span>
 
@@ -38,6 +38,11 @@
       <li>
         <button class="w-full text-left px-3 py-1 text-xs hover:bg-base-300 rounded-t-md" (click)="onEdit();">
           Edit
+        </button>
+      </li>
+      <li>
+        <button class="w-full text-left px-3 py-1 text-xs hover:bg-base-300 rounded-t-md" (click)="onEdit();">
+          Share
         </button>
       </li>
       <li>

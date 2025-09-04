@@ -25,6 +25,7 @@ export class TopNavbarComponent implements OnInit {
   username: string = 'Guest';
   dropdownOpen = false;
   showSettingsModal = false;
+  searchBarVisible = false;
 
   constructor(
     private utilsService: UtilsService,
@@ -96,5 +97,9 @@ export class TopNavbarComponent implements OnInit {
       },
     });
     this.dropdownOpen = false;
+  }
+
+  openSearchBar(): void {
+    this.searchBarVisible = true;
   }
 }

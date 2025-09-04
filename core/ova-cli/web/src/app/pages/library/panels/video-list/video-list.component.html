@@ -1,0 +1,43 @@
+<div>
+    <app-search-bar [value]="searchTerm" (valueChange)="searchTermChange.emit($event)" placeholder="Local Search ..."
+        class="mb-6"></app-search-bar>
+
+    <div class="flex justify-center mb-5" *ngIf="totalPages > 1 && !loading">
+        <div class="join">
+            <input *ngFor="let page of [].constructor(totalPages); let i = index" class="join-item btn btn-square"
+                type="radio" name="paginationTop" [attr.aria-label]="i + 1" [checked]="currentPage === i + 1"
+                (change)="pageChange.emit(i + 1)" />
+        </div>
+    </div>
+
+    <div class="flex justify-between items-center gap-4 mb-6 max-w-7xl mx-auto px-4">
+        <div class="font-medium text-base-content">
+            Total videos: {{ filteredVideosCount }}
+        </div>
+        <div class="flex items-center gap-2">
+            <label for="sort" class="text-sm font-medium">Sort by:</label>
+            <select id="sort" [ngModel]="sortOption" (ngModelChange)="sortOptionChange.emit($event)"
+                class="select select-sm select-bordered w-44">
+                <option value="titleAsc">Title (A–Z)</option>
+                <option value="titleDesc">Title (Z–A)</option>
+                <option value="durationAsc">Duration (Short → Long)</option>
+                <option value="durationDesc">Duration (Long → Short)</option>
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="mx-auto px-4 flex-grow w-full">
+        <p *ngIf="loading" class="font-medium text-center">Loading videos...</p>
+        <app-gallery-view *ngIf="!loading" [videos]="videos"></app-gallery-view>
+    </div>
+
+    <div class="flex justify-center mt-6" *ngIf="totalPages > 1 && !loading">
+        <div class="join">
+            <input *ngFor="let page of [].constructor(totalPages); let i = index" class="join-item btn btn-square"
+                type="radio" name="paginationBottom" [attr.aria-label]="i + 1" [checked]="currentPage === i + 1"
+                (change)="pageChange.emit(i + 1)" />
+        </div>
+    </div>
+</div>

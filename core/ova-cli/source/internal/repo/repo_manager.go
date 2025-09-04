@@ -9,18 +9,18 @@ import (
 
 // RepoManager handles video registration, thumbnails, previews, etc.
 type RepoManager struct {
-	rootDir     string
-	configs     datatypes.Config
-	AuthEnabled bool
-	diskDataStorage interfaces.DiskDataStorage
-	memoryDataStorage interfaces.MemoryDataStorage
+	rootDir            string
+	configs            datatypes.ConfigData
+	AuthEnabled        bool
+	diskDataStorage    interfaces.DiskDataStorage
+	memoryDataStorage  interfaces.MemoryDataStorage
 	sessionDataStorage interfaces.SessionDataStorage
 }
 
 // NewRepoManager creates a new instance of RepoManager and initializes data storage.
 func NewRepoManager(rootDir string) (*RepoManager, error) {
 	r := &RepoManager{
-		rootDir: rootDir,
+		rootDir:     rootDir,
 		AuthEnabled: true,
 	}
 

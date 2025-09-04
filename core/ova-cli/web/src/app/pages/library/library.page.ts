@@ -6,72 +6,51 @@ import {
   ElementRef,
   ViewChild,
   HostListener,
-} from '@angular/core'; // Import HostListener
+} from '@angular/core';
 import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs';
-
-import { PlaylistData } from '../../data-types/playlist-data';
 import { VideoData } from '../../data-types/video-data';
 import { VideoApiService } from '../../services/ova-backend/video-api.service';
-
-import { TreeViewComponent } from '../../components/containers/space-tree-view/space-tree-view.component';
-import { SearchBarComponent } from '../../components/utility/search-bar/search-bar.component';
-import { GalleryViewComponent } from '../../components/containers/gallery-view/gallery-view.component';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+import { SpaceHeaderComponent } from './panels/space-header/space-header.component';
+import { VideoListComponent } from './panels/video-list/video-list.component';
+import { MemberListComponent } from './panels/member-list/member-list.component';
+import { SpaceSettingsComponent } from './panels/space-settings/space-settings.component';
+import { SpaceUploadComponent } from './panels/space-upload/space-upload.component';
 
 @Component({
   selector: 'app-video',
   standalone: true,
   imports: [
-    TreeViewComponent,
-    SearchBarComponent,
-    GalleryViewComponent,
+    SpaceHeaderComponent,
+    VideoListComponent,
+    MemberListComponent,
+    SpaceSettingsComponent,
     FormsModule,
     CommonModule,
+    SpaceUploadComponent,
   ],
   templateUrl: './library.page.html',
 })
 export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
+  // All existing properties and methods remain here
   copied = false;
   copyButtonLabel = 'Copy space ID to clipboard';
   SpaceSelected = 'root';
-  // Clipboard copy for space ID
-  copySpaceId() {
-    const spaceId = '#sdkfjs23kdsflkjdsf'; // Replace with dynamic value if needed
-    if (navigator && navigator.clipboard) {
-      navigator.clipboard.writeText(spaceId).then(() => {
-        this.copied = true;
-        this.copyButtonLabel = 'Copied!';
-        setTimeout(() => {
-          this.copied = false;
-          this.copyButtonLabel = 'Copy space ID to clipboard';
-        }, 1200);
-      });
-    }
-  }
   allVideos: VideoData[] = [];
   videos: VideoData[] = [];
-  folders: string[] = [];
   loading = true;
-
   searchTerm = '';
   currentFolder = '';
   sortOption = 'titleAsc';
-
   currentPage = 1;
   limit = 20;
   totalPages = 1;
 
-  isCollectionsDropdownOpen = false;
-  playlists: PlaylistData[] = [];
-  username: string | null = null;
-
   private routerSubscription: Subscription | undefined;
-
-  // Reference to the main content div for scrolling
   @ViewChild('videoGridContainer') videoGridContainer!: ElementRef;
-
   isMobile = false;
 
   constructor(
@@ -81,30 +60,24 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.loadUsername();
     this.updateIsMobile();
-
     this.route.queryParamMap.subscribe((params) => {
       this.currentPage = +(params.get('page') ?? 1);
       this.searchTerm = params.get('search') ?? '';
       this.sortOption = params.get('sort') ?? 'titleAsc';
       const folderParam = params.get('folder');
-      if (folderParam !== null && folderParam !== undefined) {
-        this.currentFolder = folderParam;
-      }
+      this.currentFolder = folderParam !== null ? folderParam : '';
       this.fetchVideos();
     });
 
     this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
-        // Save the current scroll position when navigating away
         sessionStorage.setItem('videoListScroll', window.scrollY.toString());
       }
     });
   }
 
   ngAfterViewInit() {
-    // Restore scroll position after the view has been initialized and content rendered
     const scrollY = sessionStorage.getItem('videoListScroll');
     if (scrollY) {
       setTimeout(() => {
@@ -123,20 +96,27 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  // Listen to window resize to update isMobile flag
   @HostListener('window:resize')
   updateIsMobile() {
-    this.isMobile = window.innerWidth < 1024; // Adjust breakpoint if needed
+    this.isMobile = window.innerWidth < 1024;
   }
 
-  loadUsername() {
-    const storedUsername = localStorage.getItem('username');
-    this.username = storedUsername ? storedUsername : null;
+  copySpaceId() {
+    const spaceId = '#sdkfjs23kdsflkjdsf';
+    if (navigator && navigator.clipboard) {
+      navigator.clipboard.writeText(spaceId).then(() => {
+        this.copied = true;
+        this.copyButtonLabel = 'Copied!';
+        setTimeout(() => {
+          this.copied = false;
+          this.copyButtonLabel = 'Copy space ID to clipboard';
+        }, 1200);
+      });
+    }
   }
 
   fetchVideos() {
     this.loading = true;
-
     this.videoapi.getVideosByFolder(this.currentFolder).subscribe({
       next: (res) => {
         this.allVideos = res.data.videos || [];
@@ -156,15 +136,11 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
     let filtered = this.allVideos.filter((v) =>
       v.fileName.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
-
     filtered = this.sortVideos(filtered);
-
     this.totalPages = Math.ceil(filtered.length / this.limit);
     if (this.currentPage > this.totalPages) {
       this.currentPage = this.totalPages || 1;
-      this.updateQueryParams();
     }
-
     const start = (this.currentPage - 1) * this.limit;
     const end = start + this.limit;
     this.videos = filtered.slice(start, end);
@@ -175,10 +151,7 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
       this.currentPage = page;
       this.paginateVideos();
       this.updateQueryParams();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
@@ -196,23 +169,11 @@ export class LibraryPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onFolderSelected(folder: string) {
-    if (folder !== null && folder !== undefined) {
-      this.SpaceSelected = folder;
-
-      if (folder == '') {
-        this.SpaceSelected = 'root';
-      }
-
-      this.router.navigate(['/spaces'], {
-        queryParams: { folder, page: 1 },
-        queryParamsHandling: 'merge',
-      });
-    } else {
-      this.router.navigate(['/spaces'], {
-        queryParams: { folder: null, page: 1 },
-        queryParamsHandling: 'merge',
-      });
-    }
+    this.SpaceSelected = folder || 'root';
+    this.router.navigate(['/spaces'], {
+      queryParams: { folder, page: 1 },
+      queryParamsHandling: 'merge',
+    });
   }
 
   setSearchTerm(term: string) {

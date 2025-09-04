@@ -55,7 +55,7 @@ func getUserWatchedVideos(r *repo.RepoManager) gin.HandlerFunc {
 		}
 
 		// Hardcode the bucket size to 20 (or any other appropriate size)
-		bucketContentSize := 20
+		bucketContentSize := r.GetConfigs().MaxBucketSize
 
 		// Get the count of watched videos for the user
 		totalVideos, err := r.GetUserWatchedVideosCount(username)

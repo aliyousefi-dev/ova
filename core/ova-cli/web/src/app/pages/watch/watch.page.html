@@ -3,15 +3,17 @@
   <ng-container *ngIf="video; else loading">
     <!-- Video Area: 70% width on md+ -->
     <div class="w-full md:w-[70%] flex flex-col">
-      <!-- Video action bar, title, player, metadata, panels -->
-      <div class="flex flex-col py-3">
+
+      <div class="flex items-center justify-between">
+
+        <app-video-title-bar class=" break-all" [videoTitle]="video.fileName"></app-video-title-bar>
         <app-video-action-bar [videoId]="video.videoId" [isSaved]="isSaved" [loadingSavedVideo]="loadingSavedVideo"
           (toggleSaved)="toggleSaved()" [getCurrentTimeFn]="getCurrentTimeFromPlayer"
           [videoDurationSeconds]="video.codecs.durationSec" [videoUploadedAt]="video.uploadedAt"
           [videoResolution]="video.codecs.resolution"></app-video-action-bar>
-      </div>
 
-      <app-video-title-bar class=" break-all" [videoTitle]="video.fileName"></app-video-title-bar>
+
+      </div>
 
       <div>
         <ng-container *ngIf="true; else defaultPlayer">
@@ -21,6 +23,11 @@
           <app-default-video-player [videoUrl]="videoUrl" [posterUrl]="thumbnailUrl"></app-default-video-player>
         </ng-template>
       </div>
+
+      <div *ngIf="video.fileName" class="text-xl font-semibold" [title]="video.fileName">
+        {{ video.fileName }}
+      </div>
+
 
       <!-- Metadata badges -->
       <div class="flex flex-wrap py-5 gap-1 w-full text-xs">
@@ -44,11 +51,9 @@
           <i class="bx bx-video bx-xs"></i>
           <span>{{video.codecs.frameRate}} fps</span>
         </span>
-        <a href="#" class="inline-flex items-center gap-1 p-3 bg-base-100 rounded-xl hover:bg-primary">
-          <i class='bx bx-link bx-xs'></i>
-          <span>{{video.ownedSpace}}</span>
-        </a>
+
       </div>
+
 
       <!-- Video Info Panels -->
       <div class="flex flex-col gap-6 p-6 pb-10 bg-base-100 rounded-xl shadow-md">

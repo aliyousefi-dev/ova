@@ -34,7 +34,7 @@ func getUserSaved(repoManager *repo.RepoManager) gin.HandlerFunc {
 		}
 
 		// Hardcode the bucket size to 20
-		bucketContentSize := 20
+		bucketContentSize := repoManager.GetConfigs().MaxBucketSize
 
 		// Call GetUserSavedVideos to get the total count of saved videos for the user
 		totalVideos, err := repoManager.GetUserSavedVideosCount(username)

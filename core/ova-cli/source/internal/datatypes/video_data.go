@@ -43,6 +43,7 @@ func NewVideoData(videoID string) VideoData {
 		FileName:    "",
 		Description: "",
 		OwnedGroup:  "root",
+		IsCooked:    true,
 		Tags:        []string{},
 		UploadedAt:  time.Now().UTC(),
 		Codecs:      VideoCodecs{}, // zero value
