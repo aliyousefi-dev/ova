@@ -13,11 +13,17 @@ import {
 } from 'lucide-angular';
 import { VideoApiService } from '../../../services/ova-backend/video-api.service';
 import { PlaylistModalComponent } from '../../../components/pop-ups/playlist-modal/playlist-modal.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-video-action-bar',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, PlaylistModalComponent], // Add PlaylistModalComponent to imports
+  imports: [
+    CommonModule,
+    LucideAngularModule,
+    PlaylistModalComponent,
+    RouterModule,
+  ], // Add PlaylistModalComponent to imports
   templateUrl: './video-action-bar.component.html',
   styles: [],
 })

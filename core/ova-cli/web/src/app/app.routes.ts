@@ -22,6 +22,7 @@ import { GeneralSettingsComponent } from './pages/settings/panels/general-settin
 import { AppearanceSettingsComponent } from './pages/settings/panels/appearance-settings/appearance-settings.component';
 import { AddonsSettingsComponent } from './pages/settings/panels/addons-settings/addons-settings.component';
 import { SecuritySettingsComponent } from './pages/settings/panels/security-settings/security-settings.component';
+import { MaterialsPage } from './pages/materials/materials.page';
 
 export const routes: Routes = [
   {
@@ -91,7 +92,7 @@ export const routes: Routes = [
       { path: 'appearance', component: AppearanceSettingsComponent },
       { path: 'security', component: SecuritySettingsComponent },
       { path: 'addons', component: AddonsSettingsComponent },
-      { path: 'profile', component: GeneralSettingsComponent },
+      { path: 'general', component: GeneralSettingsComponent },
       { path: '', redirectTo: 'profile', pathMatch: 'full' }, // default
     ],
   },
@@ -103,6 +104,11 @@ export const routes: Routes = [
   {
     path: 'playlists',
     component: PlaylistsPage,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'materials',
+    component: MaterialsPage,
     canActivate: [AuthGuard],
   },
   {

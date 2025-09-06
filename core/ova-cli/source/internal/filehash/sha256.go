@@ -8,7 +8,7 @@ import (
 )
 
 // Using SHA-256
-func ComputeFileHash(filePath string) (string, error) {
+func Sha256FileHash(filePath string) (string, error) {
 	const chunkSize = 5 * 1024 * 1024 // 5MB
 
 	f, err := os.Open(filePath)

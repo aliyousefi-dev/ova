@@ -11,6 +11,7 @@ type ConfigData struct {
 	RootUser             string    `json:"rootUser"`
 	EnableAuthentication bool      `json:"enableAuthentication"`
 	MaxBucketSize        int       `json:"maxBucketSize"`
-	DataStorageType      string    `json:"dataStorageType"` // "jsondb", "boltdb", etc.
+	EnableDocs           bool      `json:"enableDocs"`
+	DataStorageType      string    `json:"dataStorageType"`
 	CreatedAt            time.Time `json:"createdAt"`
 }

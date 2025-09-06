@@ -34,6 +34,13 @@
 
       <li>
         <a routerLink="/search" routerLinkActive="menu-active" [routerLinkActiveOptions]="{ exact: true }">
+          <i class="bx bx-plus bx-xs"></i>
+          <span [class.hidden]="!sidebarOpen">New Space</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/search" routerLinkActive="menu-active" [routerLinkActiveOptions]="{ exact: true }">
           <i class="bx bx-search bx-xs"></i>
           <span [class.hidden]="!sidebarOpen">Search</span>
         </a>
@@ -125,12 +132,18 @@
     </div>
   </div>
 
-  <div class="mb-5 flex flex-col gap-4">
-    <div class="flex flex-col">
-      <button class="btn bg-base-100 ">FAQ & Docs</button>
-      <a routerLink="/settings" class="btn bg-base-100">
+  <div class="mb-8 flex flex-col gap-8">
+    <div class="join join-vertical px-5">
+
+      <button class="btn join-item">
+        <i class="bx bxs-file-doc bx-xs"></i>Docs
+      </button>
+
+      <a routerLink="/settings" class="btn join-item">
+        <i class="bx bxs-cog bx-xs"></i>
         Settings
       </a>
+
     </div>
 
     <div class="text-xs text-center opacity-60">OVA Web UI v1.0.0</div>

@@ -3,11 +3,13 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"path/filepath"
+	"time"
 
+	"ova-cli/source/internal/filehash"
 	"ova-cli/source/internal/repo"
 	"ova-cli/source/internal/thirdparty" // Assuming you have the GetVideoDetails function in this package
-	"ova-cli/source/internal/utils"
 
 	"github.com/spf13/cobra"
 	// Assuming the datatypes package contains VideoResolution struct
@@ -72,21 +74,43 @@ var mp4infoCmd = &cobra.Command{
 
 var pathCmd = &cobra.Command{
 	Use:   "path <path>",
-	Short: "Retrieve MP4 info for the provided video file",
+	Short: "Retrieve hash info for the provided video file",
 	Args:  cobra.ExactArgs(1), // Ensures exactly one argument is provided (the video path)
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get the path from the arguments
 		videoPath := args[0]
 
-		segmented := utils.GetPathSegments(videoPath)
+		// Get the hash algorithm choice from the flag
+		hashAlgorithm, _ := cmd.Flags().GetString("hash")
 
-		// Print the cropped path
-		fmt.Printf("Root path:\n")
-		fmt.Println(segmented.Root)
+		// Record the start time
+		startTime := time.Now()
 
-		// Print the cropped path
-		fmt.Printf("Segment path:\n")
-		fmt.Println(segmented.Subroot)
+		var hash string
+		var err error
+
+		// Choose which hash function to use based on the flag
+		switch hashAlgorithm {
+		case "sha256":
+			// Use SHA-256
+			hash, err = filehash.Sha256FileHash(videoPath)
+		case "blake2b":
+			// Use BLAKE2b
+			hash, err = filehash.Blake2bFileHash(videoPath)
+		default:
+			log.Fatalf("Unknown hash algorithm: %s. Please choose either 'sha256' or 'blake2b'.", hashAlgorithm)
+		}
+
+		if err != nil {
+			log.Fatalf("Error calculating hash: %v", err)
+		}
+
+		// Calculate elapsed time
+		elapsedTime := time.Since(startTime)
+
+		// Output the hash and execution time
+		fmt.Printf("Hash for video file '%s' using %s: %s\n", videoPath, hashAlgorithm, hash)
+		fmt.Printf("Execution time: %s\n", elapsedTime)
 	},
 }
 var scanSpaceCmd = &cobra.Command{
@@ -134,6 +158,9 @@ func InitCommandDebug(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(debugCmd)
 
 	debugCmd.AddCommand(scanSpaceCmd)
+
+	// Add a flag for choosing the hash algorithm (sha256 or blake2b)
+	pathCmd.Flags().StringP("hash", "", "blake2b", "Hash algorithm to use: 'sha256' or 'blake2b'")
 
 	// Add `videoDetails` as a subcommand of `debug`
 	debugCmd.AddCommand(videoDetailsCmd)

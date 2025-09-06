@@ -104,9 +104,23 @@
               "icon": "lucide-file",
               "title": "Feature to Develop"
             }
+          },
+          {
+            "id": "850bd3bae133723d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Data Types - Users.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Data Types - Users"
+            }
           }
         ],
-        "currentTab": 6
+        "currentTab": 7
       }
     ],
     "direction": "vertical"
@@ -251,12 +265,17 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "ac7f701051fc14b6",
+  "active": "850bd3bae133723d",
   "lastOpenFiles": [
+    "API/Batch Videos.md",
+    "API/Authentication.md",
+    "Repository - Initialize.md",
+    "Repository - Attach Sub Repositories.md",
+    "Overview.md",
+    "Feature to Develop.md",
     "Untitled 2.md",
     "Spaces.md",
     "Untitled 1.md",
-    "Overview.md",
     "sdf.md",
     "ovacli - Versioning and Updates.md",
     "ovacli - Server Configs.md",
@@ -271,16 +290,11 @@
     "Untitled.md",
     "Space - Quality Control.md",
     "Space - Members.md",
-    "Repository - Initialize.md",
-    "Repository - Attach Sub Repositories.md",
     "Indexing/Repository - Indexing (addone).md",
     "Indexing/Repository - Indexing (addall).md",
     "Indexing/Default User.md",
     "Indexing/Cooking.md",
     "Indexing",
-    "Features - Virtual Spaces.md",
-    "Features - User Roles.md",
-    "Features - Team Space.md",
     "Untitled 1.base",
     "Index",
     "Components",

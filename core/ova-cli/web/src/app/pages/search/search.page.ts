@@ -250,9 +250,9 @@ export class SearchPage implements OnInit, OnDestroy {
   sortVideos(videos: any[]): any[] {
     switch (this.sortOption) {
       case 'titleAsc':
-        return [...videos].sort((a, b) => a.title.localeCompare(b.title));
+        return [...videos].sort((a, b) => a.fileName.localeCompare(b.title));
       case 'titleDesc':
-        return [...videos].sort((a, b) => b.title.localeCompare(a.title));
+        return [...videos].sort((a, b) => b.fileName.localeCompare(a.title));
       case 'durationAsc':
         return [...videos].sort(
           (a, b) => a.durationSeconds - b.durationSeconds

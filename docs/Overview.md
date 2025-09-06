@@ -1,5 +1,5 @@
 Ova is a new archiving solutions for videos.
-it make the archiving easier and more manageable on a local server.
+it make the archiving easier and more manageable on a local server. and also give you this ability to scale that.
 
 its multi OS and support both Windows and Linux.
 
