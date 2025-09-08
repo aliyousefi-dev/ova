@@ -1,0 +1,16 @@
+<dialog #modal [ngClass]="{'modal-open': visible}" class="modal">
+  <div class="modal-box p-10">
+    <div class="flex justify-center items-center gap-3 mb-10">
+      <app-ova-logo></app-ova-logo>
+      <h2 class="text-xl font-semibold"> Ova Information</h2>
+    </div>
+    <div class="flex flex-col gap-2">
+      <p>Version: 1.0.0</p>
+      <p>Build Date: 2023-01-01</p>
+      <p>Additional Info: Some additional information about the app.</p>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button (click)="close()">close</button>
+  </form>
+</dialog>

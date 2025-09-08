@@ -2,18 +2,12 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { VideoData } from '../../../../data-types/video-data';
-import { SearchBarComponent } from '../../../../components/utility/search-bar/search-bar.component';
 import { GalleryViewComponent } from '../../../../components/containers/gallery-view/gallery-view.component';
 
 @Component({
   selector: 'app-video-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    SearchBarComponent,
-    GalleryViewComponent,
-  ],
+  imports: [CommonModule, FormsModule, GalleryViewComponent],
   templateUrl: './video-list.component.html',
 })
 export class VideoListComponent {

@@ -6,6 +6,7 @@ import { Location } from '@angular/common';
 import { SettingsModalComponent } from '../../pop-ups/setting-modal/settings-modal.component';
 import { UtilsService } from '../../../services/utils.service';
 import { AuthApiService } from '../../../services/ova-backend/auth-api.service';
+import { SearchBarComponent } from '../../utility/search-bar/search-bar.component';
 
 import { MobileDrawerComponent } from '../mobile-drawer/mobile-drawer.component';
 
@@ -17,6 +18,7 @@ import { MobileDrawerComponent } from '../mobile-drawer/mobile-drawer.component'
     RouterModule,
     SettingsModalComponent,
     MobileDrawerComponent,
+    SearchBarComponent,
   ],
   templateUrl: './top-navbar.component.html',
 })

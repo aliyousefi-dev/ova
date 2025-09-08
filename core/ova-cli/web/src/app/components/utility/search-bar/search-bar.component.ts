@@ -6,13 +6,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   standalone: true,
 })
 export class SearchBarComponent {
-  @Input() placeholder: string = 'Search...';
-  @Input() value: string = '';
+  onSearchSubmitted() {
+    console.log('Search submitted');
+  }
 
-  @Output() valueChange = new EventEmitter<string>();
-
-  onInputChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.valueChange.emit(input.value);
+  onSuggestionSubmitted(): void {
+    console.log('Suggestion submitted in DiscoverPage');
   }
 }

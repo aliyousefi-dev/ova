@@ -1,31 +1,78 @@
-<div class="p-10 h-full bg-cover bg-center relative">
+<div class="bg-base-200 rounded-box p-6 max-w-2xl">
+  <div class="flex flex-col sm:flex-row gap-6">
+    <!-- Cookie icon -->
+    <i class="fa-solid fa-cookie-bite text-secondary text-7xl"></i>
 
+    <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-2">
+        <!-- Cookie title -->
+        <h1 class="text-xl font-bold">We are using cookies to improve your experience!</h1>
 
-  <div class="flex w-full justify-center relative z-10 ">
-    <div class="stats stats-vertical lg:stats-horizontal shadow glass">
-      <div class="stat">
-        <div class="stat-title">My Uploads</div>
-        <div class="stat-value">510</div>
-        <div class="stat-desc">21% more than last month</div>
+        <!-- Cookie text -->
+        <span>
+          By clicking "Allow all", you agree to use all cookies. Visit our
+          <a class="link link-accent">Cookies Policy</a> to learn more.
+        </span>
       </div>
-      <div class="stat">
-        <div class="stat-title">Drafts</div>
-        <div class="stat-value">10</div>
-        <div class="stat-desc">21% more than last month</div>
-      </div>
-      <div class="stat">
-        <div class="stat-title">Installed Spaces</div>
-        <div class="stat-value">05</div>
-        <div class="stat-desc">21% more than last month</div>
-      </div>
-      <div class="stat">
-        <div class="stat-title">Current Rule</div>
-        <div class="stat-value">Server Owner</div>
-        <div class="stat-desc">21% more than last month</div>
+
+      <!-- Buttons -->
+      <div class="flex gap-2">
+        <button class="btn btn-primary btn-sm">Allow all</button>
+        <button class="btn btn-ghost btn-sm">Manage cookies</button>
       </div>
     </div>
   </div>
+</div>
 
-  <app-graph-view></app-graph-view>
+<div class="p-10 h-full">
+
+  <!-- Main Container -->
+  <div class="flex flex-col justify-center items-center gap-8">
+
+    <!-- Header Section -->
+    <div class="text-center">
+      <div class="text-3xl font-semibold text-primary">
+        Welcome Back, the dashboard is Ready for you!
+      </div>
+      <div class="text-sm text-base-content mt-2">
+        Here's an overview of everything you're thinking about.
+      </div>
+    </div>
+
+    <!-- Dashboard Options Container -->
+    <div class="bg-base-100 rounded-lg shadow-lg w-full max-w-4xl p-6 space-y-6">
+
+      <!-- Section: Getting Started -->
+      <div class="flex justify-between items-center py-4">
+        <div class="text-lg font-medium">Getting Started</div>
+        <div class="text-sm text-accent">New</div>
+      </div>
+
+      <!-- Create New Space Section -->
+      <div class="flex justify-between items-center py-4 border-t border-base-300">
+        <div class="text-lg">Create New Space</div>
+        <button class="btn btn-primary">New</button>
+      </div>
+
+      <!-- Create New Playlist Section -->
+      <div class="flex justify-between items-center py-4 border-t border-base-300">
+        <div class="text-lg">Create New Playlist</div>
+        <button class="btn btn-primary">New</button>
+      </div>
+
+      <!-- Create New Album Section -->
+      <div class="flex justify-between items-center py-4 border-t border-base-300">
+        <div class="text-lg">Create New Album</div>
+        <button class="btn btn-primary">New</button>
+      </div>
+
+      <!-- Join a Space Section -->
+      <div class="flex justify-between items-center py-4 border-t border-base-300">
+        <div class="text-lg">Join a Space</div>
+        <button class="btn btn-primary">New</button>
+      </div>
+
+    </div>
+  </div>
 
 </div>

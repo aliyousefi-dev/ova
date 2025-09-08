@@ -1,6 +1,5 @@
 <div>
-    <app-search-bar [value]="searchTerm" (valueChange)="searchTermChange.emit($event)" placeholder="Local Search ..."
-        class="mb-6"></app-search-bar>
+
 
     <div class="flex justify-center mb-5" *ngIf="totalPages > 1 && !loading">
         <div class="join">

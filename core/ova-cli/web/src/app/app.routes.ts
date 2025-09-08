@@ -23,6 +23,7 @@ import { AppearanceSettingsComponent } from './pages/settings/panels/appearance-
 import { AddonsSettingsComponent } from './pages/settings/panels/addons-settings/addons-settings.component';
 import { SecuritySettingsComponent } from './pages/settings/panels/security-settings/security-settings.component';
 import { MaterialsPage } from './pages/materials/materials.page';
+import { VersionHistoryPage } from './pages/version-history/version-history.page';
 
 export const routes: Routes = [
   {
@@ -109,6 +110,11 @@ export const routes: Routes = [
   {
     path: 'materials',
     component: MaterialsPage,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'version-history/:videoId',
+    component: VersionHistoryPage,
     canActivate: [AuthGuard],
   },
   {

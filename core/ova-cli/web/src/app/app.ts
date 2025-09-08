@@ -10,11 +10,9 @@ import {
 import { LoadingService } from './services/loading.service';
 import { LoadingSpinnerComponent } from './components/utility/spinner-loading/spinner-loading.component';
 import { CommonModule } from '@angular/common';
-import { DesktopSidebarComponent } from './components/navigation/desktop-sidebar/desktop-sidebar.component';
-import { TopNavbarComponent } from './components/navigation/top-navbar/top-navbar.component';
-import { MobileDockComponent } from './components/navigation/mobile-dock/mobile-dock.component';
-
-import { Location } from '@angular/common';
+import { DesktopSidebarComponent } from './components/panels/desktop-sidebar/desktop-sidebar.component';
+import { TopNavbarComponent } from './components/panels/top-navbar/top-navbar.component';
+import { MobileDockComponent } from './components/panels/mobile-dock/mobile-dock.component';
 
 @Component({
   selector: 'app-root',
