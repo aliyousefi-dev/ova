@@ -8,42 +8,13 @@
       {{ pageTitle || "Home" }}
     </div>
     <div>
-      <app-search-bar> </app-search-bar>
+
     </div>
   </div>
 
 
 
   <div class="flex items-center gap-5 flex-shrink-0">
-
-    <!-- Username and Dropdown Icon -->
-    <div class="dropdown dropdown-bottom dropdown-end">
-      <div tabindex="0" role="button" class="btn btn-circle mb-1">
-        <i class='bx  bx-help-circle bx-xs'></i>
-      </div>
-
-      <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-200 rounded-box w-52">
-
-        <li>
-          <a routerLink="/settings">
-            <i class="fa-solid fa-gear fa-fw"></i>
-            Documents
-          </a>
-        </li>
-        <li>
-          <a>
-            <i class="fa-solid fa-laptop fa-fw"></i>
-            FAQ
-          </a>
-        </li>
-        <li>
-          <a>
-            <i class="fa-solid fa-laptop fa-fw"></i>
-            APIs
-          </a>
-        </li>
-      </ul>
-    </div>
 
     <div>
       <!-- Wrapper for the entire clickable area -->
@@ -52,7 +23,7 @@
 
         <!-- Username and Dropdown Icon -->
         <div class="dropdown dropdown-bottom dropdown-end">
-          <div tabindex="0" role="button" class="btn mb-1">
+          <div tabindex="0" role="button" class="btn rounded-box btn-ghost">
             <!-- Avatar (DaisyUI) -->
             <div class="avatar">
               <div class="w-10 rounded-full">
@@ -72,6 +43,13 @@
                   <h3 class="font-bold">{{ username }} </h3>
                   <span class="text-xs text-accent">&#64;{{ username }}</span>
                 </div>
+              </a>
+            </li>
+            <div class="divider my-0"></div>
+            <li>
+              <a routerLink="/settings">
+                <i class="fa-solid fa-gear fa-fw"></i>
+                Inbox
               </a>
             </li>
             <div class="divider my-0"></div>

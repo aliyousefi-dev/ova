@@ -20,12 +20,12 @@ export interface PlaylistWrapper extends PlaylistSummary {
 }
 
 @Component({
-  selector: 'app-playlist-modal',
+  selector: 'app-sendto-modal',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './playlist-modal.component.html',
+  templateUrl: './sendto-modal.component.html',
 })
-export class PlaylistModalComponent implements OnChanges {
+export class SendtoModalComponent implements OnChanges {
   @Input() showModal = false;
   @Input() selectedVideoId!: string; // Input for the video ID
   // @Input() username!: string; // Removed: username will now be fetched via UtilsService

@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PlaylistAPIService } from '../../../services/ova-backend/playlist-api.service';
 import { UtilsService } from '../../../services/utils.service';
+import { ViewChild } from '@angular/core';
+import { AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-playlist-creator-modal',
@@ -10,7 +12,8 @@ import { UtilsService } from '../../../services/utils.service';
   imports: [CommonModule, FormsModule],
   templateUrl: './playlist-creator-modal.component.html',
 })
-export class PlaylistCreatorModalComponent {
+export class PlaylistCreatorModalComponent implements AfterViewInit {
+  @ViewChild('playlistInput') playlistInput!: HTMLInputElement;
   isVisible = false;
   playlistName = '';
   creationError: string | null = null;
@@ -22,6 +25,12 @@ export class PlaylistCreatorModalComponent {
     private playlistApi: PlaylistAPIService,
     private utils: UtilsService
   ) {}
+
+  ngAfterViewInit(): void {
+    if (this.isVisible) {
+      this.playlistInput?.focus();
+    }
+  }
 
   submit(): void {
     const trimmed = this.playlistName.trim();

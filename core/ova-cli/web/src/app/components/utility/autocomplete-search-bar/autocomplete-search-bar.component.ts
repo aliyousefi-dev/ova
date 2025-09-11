@@ -20,6 +20,7 @@ import {
 } from 'rxjs';
 
 import { SearchApiService } from '../../../services/ova-backend/search-api.service';
+import { SuggestionApiService } from '../../../services/ova-backend/suggestion-api.service';
 
 @Component({
   selector: 'app-autocomplete-search-bar',
@@ -45,7 +46,10 @@ export class AutoCompleteSearchBarComponent implements OnInit, OnDestroy {
   private suggestionTermStream = new Subject<string>(); // Stream for suggestions (debounced)
   private suggestionSubscription!: Subscription;
 
-  constructor(private searchApiService: SearchApiService) {}
+  constructor(
+    private searchApiService: SearchApiService,
+    private suggestionApiService: SuggestionApiService
+  ) {}
 
   ngOnInit() {
     this.currentValue = this.initialValue;
@@ -65,7 +69,7 @@ export class AutoCompleteSearchBarComponent implements OnInit, OnDestroy {
           this.loading = true;
           this.activeSuggestionIndex = -1;
 
-          return this.searchApiService.getSearchSuggestions(term).pipe(
+          return this.suggestionApiService.getSearchSuggestions(term).pipe(
             map((response) => response.data.suggestions || []),
             catchError((error) => {
               console.error('Error fetching search suggestions:', error);

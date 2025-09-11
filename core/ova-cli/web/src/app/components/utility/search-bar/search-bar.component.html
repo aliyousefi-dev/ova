@@ -1,51 +1,86 @@
-<div class="join m-5 my-10">
+<div class="join m-5 my-10 w-full">
+
+  <!-- Black overlay to close suggestions -->
+  <div *ngIf="showSuggestions" class="absolute bg-black w-screen h-screen left-0 top-0 opacity-50"
+    (click)="closeSuggestions()"></div>
+
   <!-- Search Input -->
-  <label class="join-item input flex items-center gap-2 w-full">
+  <label class="join-item input flex items-center gap-2 w-full relative">
     <i class='bx bx-search bx-xs'></i>
-    <input type="text" class="join-item grow h-10 pt-0 pb-0 px-4 text-left" placeholder="Search..."
-      (input)="onSuggestionSubmitted()" (keydown.enter)="onSearchSubmitted()" />
+    <input type="text" class="join-item grow h-10 px-4 text-left" placeholder="Search..." [(ngModel)]="searchTerm"
+      (input)="onInputChange($event)" (keydown.enter)="onSearchSubmitted()" />
+
+    @if (searchSuggestions && searchSuggestions.length > 0 && showSuggestions) {
+    <!-- Suggestions Dropdown -->
+
+
+
+    <ul
+      class="list menu menu-sm block w-full bg-base-100 z-10 p-5 shadow-sm absolute left-1/2 -translate-x-1/2 top-full mt-1  max-h-200  overflow-y-auto">
+
+      <li class="pb-2 text-xs opacity-60 tracking-wide">Tags</li>
+      <li class="p-2">
+        <a href=""><i class='bx bx-hash'></i>Tag1</a>
+      </li>
+      <li class="p-2">
+        <a href=""><i class='bx bx-hash'></i>Tag2</a>
+      </li>
+
+      <li class="pb-2 pt-10 text-xs opacity-60 tracking-wide">Videos results {{searchSuggestions.length }}</li>
+      <!-- Loop through searchSuggestions -->
+      <li *ngFor="let suggestion of searchSuggestions; let i = index" class="p-2">
+        <a (click)="onSuggestionSubmitted(suggestion)"><i class='bx bx-video'></i>{{ suggestion }}</a>
+      </li>
+    </ul>
+    }
+
+
   </label>
 
+
+
+
+
   <!-- Filter Dropdown -->
-  <div class="join-item dropdown dropdown-bottom">
+  <div class="join-item dropdown  dropdown-center dropdown-bottom">
     <!-- Dropdown Button -->
     <div tabindex="0" role="button" class="btn px-4 py-2 flex items-center join-item">
       <i class='bx bx-filter-alt bx-xs'></i>
     </div>
 
     <!-- Dropdown Content -->
-    <ul tabindex="0" class="dropdown-content bg-base-100 w-200 p-5 shadow-lg flex flex-col gap-5">
+    <ul tabindex="0" class="dropdown-content bg-base-100 p-5 shadow-lg flex flex-col gap-5">
       <div class="flex items-center justify-start gap-5">
         <span class="text-sm">Duration</span>
         <div class="filter">
-          <input class="btn btn-sm filter-reset" type="radio" name="metaframeworks" aria-label="All" />
-          <input class="btn btn-sm" type="radio" name="metaframeworks" aria-label="≤ 5 min" />
-          <input class="btn btn-sm" type="radio" name="metaframeworks" aria-label="5 – 15 min" />
-          <input class="btn btn-sm" type="radio" name="metaframeworks" aria-label="15 – 30 min" />
-          <input class="btn btn-sm" type="radio" name="metaframeworks" aria-label="> 60 min" />
+          <input class="btn btn-sm filter-reset" type="radio" name="duration_filters" aria-label="All" />
+          <input class="btn btn-sm" type="radio" name="duration_filters" aria-label="≤ 5 min" />
+          <input class="btn btn-sm" type="radio" name="duration_filters" aria-label="5 – 15 min" />
+          <input class="btn btn-sm" type="radio" name="duration_filters" aria-label="15 – 30 min" />
+          <input class="btn btn-sm" type="radio" name="duration_filters" aria-label="> 60 min" />
         </div>
       </div>
 
       <div class="flex items-center justify-start gap-5">
         <span class="text-sm">Quality</span>
         <div class="filter">
-          <input class="btn btn-sm filter-reset" type="radio" name="metaframeworks" aria-label="All" />
-          <input class="btn btn-sm" type="radio" name="metaframeworks" aria-label="720" />
-          <input class="btn btn-sm" type="radio" name="metaframeworks" aria-label="1080p" />
-          <input class="btn btn-sm" type="radio" name="metaframeworks" aria-label="4k" />
+          <input class="btn btn-sm filter-reset" type="radio" name="quality_filters" aria-label="All" />
+          <input class="btn btn-sm" type="radio" name="quality_filters" aria-label="720" />
+          <input class="btn btn-sm" type="radio" name="quality_filters" aria-label="1080p" />
+          <input class="btn btn-sm" type="radio" name="quality_filters" aria-label="4k" />
         </div>
       </div>
 
       <div class="flex items-center justify-start gap-5">
         <span class="text-sm">Sort By</span>
         <div class="filter">
-          <input class="btn btn-sm filter-reset" type="radio" name="metaframeworks" aria-label="All" />
-          <input class="btn btn-sm" type="radio" name="metaframeworks" aria-label="Title (A–Z)" />
-          <input class="btn btn-sm" type="radio" name="metaframeworks" aria-label="Title (Z–A)" />
-          <input class="btn btn-sm" type="radio" name="metaframeworks" aria-label="Duration (Short → Long)" />
-          <input class="btn btn-sm" type="radio" name="metaframeworks" aria-label="Duration (Long → Short)" />
-          <input class="btn btn-sm" type="radio" name="metaframeworks" aria-label="Newest" />
-          <input class="btn btn-sm" type="radio" name="metaframeworks" aria-label="Oldest" />
+          <input class="btn btn-sm filter-reset" type="radio" name="sortby_filters" aria-label="All" />
+          <input class="btn btn-sm" type="radio" name="sortby_filters" aria-label="A–Z" />
+          <input class="btn btn-sm" type="radio" name="sortby_filters" aria-label="Z–A" />
+          <input class="btn btn-sm" type="radio" name="sortby_filters" aria-label="Shortest" />
+          <input class="btn btn-sm" type="radio" name="sortby_filters" aria-label="Longest" />
+          <input class="btn btn-sm" type="radio" name="sortby_filters" aria-label="Newest" />
+          <input class="btn btn-sm" type="radio" name="sortby_filters" aria-label="Oldest" />
         </div>
       </div>
 

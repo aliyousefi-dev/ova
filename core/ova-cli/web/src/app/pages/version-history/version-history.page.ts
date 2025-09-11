@@ -24,6 +24,7 @@ export class VersionHistoryPage implements OnInit {
   ngOnInit(): void {
     // Access the videoId from the route parameter
     this.videoId = this.route.snapshot.paramMap.get('videoId');
+    console.log(this.videoId);
     if (this.videoId) {
       this.fetchVideo(this.videoId);
     }

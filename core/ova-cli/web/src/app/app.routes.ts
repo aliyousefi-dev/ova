@@ -35,6 +35,7 @@ export const routes: Routes = [
     path: 'global',
     component: GlobalPage,
     canActivate: [AuthGuard],
+    data: { reuse: true },
   },
   {
     path: 'history',

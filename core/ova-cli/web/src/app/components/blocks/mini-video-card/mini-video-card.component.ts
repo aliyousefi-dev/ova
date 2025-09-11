@@ -12,7 +12,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { PlaylistModalComponent } from '../../pop-ups/playlist-modal/playlist-modal.component';
+import { SendtoModalComponent } from '../../pop-ups/sendto-modal/sendto-modal.component';
 
 import { VideoApiService } from '../../../services/ova-backend/video-api.service';
 import { SavedApiService } from '../../../services/ova-backend/saved-api.service';
@@ -27,7 +27,7 @@ import { UtilsService } from '../../../services/utils.service';
   fill: #fff !important;
   stroke: none !important; /* or set stroke color if you want */
 }`,
-  imports: [CommonModule, RouterModule, FormsModule, PlaylistModalComponent],
+  imports: [CommonModule, RouterModule, FormsModule, SendtoModalComponent],
 })
 export class MiniVideoCardComponent implements OnChanges, AfterViewInit {
   @Input() video!: VideoData;

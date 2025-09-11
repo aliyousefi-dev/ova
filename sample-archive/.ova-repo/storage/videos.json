@@ -4,11 +4,8 @@
     "fileName": "pexels-sosa-films-5656141",
     "description": "",
     "ownedSpace": "New folder",
-    "ownedGroup": "",
-    "tags": [
-      "tag01",
-      "tag02"
-    ],
+    "ownedGroup": "root",
+    "tags": [],
     "codecs": {
       "format": ".mp4",
       "durationSec": 10,
@@ -21,16 +18,16 @@
       "videoCodec": "avc1.64002A",
       "audioCodec": "mp4a.40.2"
     },
-    "isCooked": false,
+    "isCooked": true,
     "totalDownloads": 0,
-    "uploadedAt": "2025-08-21T16:22:15.7804841Z"
+    "uploadedAt": "2025-09-10T13:30:06.0041274Z"
   },
   "41168d2b2b047e7657a2491cde2e3484aae4c8d20423170f79e4b5278b7a4f37": {
     "videoId": "41168d2b2b047e7657a2491cde2e3484aae4c8d20423170f79e4b5278b7a4f37",
     "fileName": "Pexels Videos 1452688",
     "description": "",
-    "ownedSpace": "New folder",
-    "ownedGroup": "",
+    "ownedSpace": ".",
+    "ownedGroup": "root",
     "tags": [],
     "codecs": {
       "format": ".mp4",
@@ -44,16 +41,16 @@
       "videoCodec": "avc1.64001F",
       "audioCodec": ""
     },
-    "isCooked": false,
+    "isCooked": true,
     "totalDownloads": 0,
-    "uploadedAt": "2025-08-21T16:22:15.2731818Z"
+    "uploadedAt": "2025-09-10T13:30:05.1824379Z"
   },
   "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290": {
     "videoId": "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290",
     "fileName": "ff",
     "description": "",
     "ownedSpace": ".",
-    "ownedGroup": "",
+    "ownedGroup": "root",
     "tags": [],
     "codecs": {
       "format": ".mp4",
@@ -67,8 +64,8 @@
       "videoCodec": "avc1.640020",
       "audioCodec": "mp4a.40.29"
     },
-    "isCooked": false,
+    "isCooked": true,
     "totalDownloads": 0,
-    "uploadedAt": "2025-08-21T16:22:16.1028017Z"
+    "uploadedAt": "2025-09-10T13:30:05.4998903Z"
   }
 }

@@ -12,7 +12,7 @@ import {
   Film,
 } from 'lucide-angular';
 import { VideoApiService } from '../../../services/ova-backend/video-api.service';
-import { PlaylistModalComponent } from '../../../components/pop-ups/playlist-modal/playlist-modal.component';
+import { SendtoModalComponent } from '../../../components/pop-ups/sendto-modal/sendto-modal.component';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -21,7 +21,7 @@ import { RouterModule } from '@angular/router';
   imports: [
     CommonModule,
     LucideAngularModule,
-    PlaylistModalComponent,
+    SendtoModalComponent,
     RouterModule,
   ], // Add PlaylistModalComponent to imports
   templateUrl: './video-action-bar.component.html',

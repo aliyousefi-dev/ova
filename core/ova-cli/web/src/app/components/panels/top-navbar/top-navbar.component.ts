@@ -1,7 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { Location } from '@angular/common';
+import { Inject } from '@angular/core';
 
 import { SettingsModalComponent } from '../../pop-ups/setting-modal/settings-modal.component';
 import { UtilsService } from '../../../services/utils.service';
@@ -29,12 +30,10 @@ export class TopNavbarComponent implements OnInit {
   showSettingsModal = false;
   searchBarVisible = false;
 
-  constructor(
-    private utilsService: UtilsService,
-    private authapi: AuthApiService,
-    private router: Router,
-    private location: Location
-  ) {}
+  private utilsService: UtilsService = inject(UtilsService);
+  private authapi: AuthApiService = inject(AuthApiService);
+
+  constructor(private router: Router, private location: Location) {}
 
   ngOnInit(): void {
     this.username = this.utilsService.getUsername() || 'Guest';

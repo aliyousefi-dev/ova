@@ -11,7 +11,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { PlaylistModalComponent } from '../../pop-ups/playlist-modal/playlist-modal.component';
+import { SendtoModalComponent } from '../../pop-ups/sendto-modal/sendto-modal.component';
 
 import { VideoApiService } from '../../../services/ova-backend/video-api.service';
 import { SavedApiService } from '../../../services/ova-backend/saved-api.service';
@@ -31,7 +31,7 @@ import { UtilsService } from '../../../services/utils.service';
     CommonModule,
     RouterModule,
     FormsModule,
-    PlaylistModalComponent,
+    SendtoModalComponent,
     TagLinkComponent,
   ],
 })

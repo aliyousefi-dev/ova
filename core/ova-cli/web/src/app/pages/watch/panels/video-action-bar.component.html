@@ -5,12 +5,12 @@
     <!-- Materials -->
     <a class="btn" routerLink="/materials">
       <i class='bx bxs-folder bx-xs'></i>
-      <span class="hidden sm:inline">Materials</span>
+      <span class="hidden sm:inline">Attachments</span>
     </a>
 
     <!-- Version History -->
-    <a class="btn" routerLink="/version-history">
-      <i class='bx bxs-history bx-xs'></i>
+    <a class="btn" [routerLink]="['/version-history', videoId]">
+      <i class='bx bx-git-branch bx-xs'></i>
       <span class="hidden sm:inline">Version History</span>
     </a>
 
@@ -49,5 +49,5 @@
 </div>
 
 <!-- Playlist Modal -->
-<app-playlist-modal [showModal]="playlistModalVisible" [selectedVideoId]="videoId!"
-  (close)="closePlaylistModal()"></app-playlist-modal>
+<app-sendto-modal [showModal]="playlistModalVisible" [selectedVideoId]="videoId!"
+  (close)="closePlaylistModal()"></app-sendto-modal>

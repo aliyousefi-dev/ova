@@ -2,7 +2,9 @@
   "version": "1.0.0",
   "serverHost": "0.0.0.0",
   "serverPort": 443,
+  "rootUser": "user",
   "enableAuthentication": true,
+  "maxBucketSize": 0,
   "dataStorageType": "jsondb",
   "createdAt": "2025-08-12T19:49:16.9240393+03:30"
 }

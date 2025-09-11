@@ -1,35 +1,76 @@
-<h1>Version History</h1>
+<div class="flex flex-col justify-center items-center  bg-base-100">
+    <div>
+        <button class="btn btn-error btn-ghost">Clear History</button>
+        <button class="btn btn-primary">Publish New</button>
+        <button class="btn btn-circle"><i class='bx  bx-sort bx-xs'></i></button>
 
+    </div>
 
-<div class="w-full flex justify-center items-center">
-    <ul class="steps steps-vertical">
-        <li class="step step-primary" data-content="v4">
-            <div class="w-150 flex justify-center items-center gap-10">
-                <div class="p-5">
+    <ul class="timeline  timeline-vertical w-200">
+
+        <li style="grid-template-columns: none;">
+            <div class="timeline-start ">
+                <div class="text-center text-sm">V03</div>
+            </div>
+            <div class="timeline-middle ">
+                <i class='bx bxs-check-circle bx-sm'></i>
+            </div>
+            <div class="timeline-end timeline-box m-5 ">
+
+                <div>
+                    @if (videodata) {
                     <app-vidstack-player #vidstackPlayer [videoData]="videodata"></app-vidstack-player>
+                    }
+                </div>
+                <div class="flex flex-col justify-start items-center w-full">
+                    <span>{{videodata.fileName}}</span>
+                    <span>Description</span>
                 </div>
             </div>
+            <hr />
         </li>
-        <li class="step step-primary" data-content="v3">
-            <div class="w-150 flex justify-center items-center gap-10">
-                <div class="p-5">
+
+        <li style="grid-template-columns: none;">
+            <hr />
+            <div class="timeline-start ">
+                <div class="text-center text-sm">V02</div>
+            </div>
+            <div class="timeline-middle ">
+                <i class='bx bxs-check-circle bx-sm'></i>
+            </div>
+            <div class="timeline-end timeline-box m-5 ">
+                <div>
+                    @if (videodata) {
                     <app-vidstack-player #vidstackPlayer [videoData]="videodata"></app-vidstack-player>
+                    }
+                </div>
+                <div class="flex flex-col justify-start items-center w-full">
+                    <span>{{videodata.fileName}}</span>
+                    <span>Description</span>
                 </div>
             </div>
+            <hr />
         </li>
-        <li class="step step-primary" data-content="v2">
-            <div class="w-150 flex justify-center items-center gap-10">
-                <div class="p-5">
+        <li style="grid-template-columns: none;">
+            <hr />
+            <div class="timeline-start ">
+                <div class="text-center text-sm">V01</div>
+            </div>
+            <div class="timeline-middle ">
+                <i class='bx bxs-check-circle bx-sm'></i>
+            </div>
+            <div class="timeline-end timeline-box m-5 ">
+                <div>
+                    @if (videodata) {
                     <app-vidstack-player #vidstackPlayer [videoData]="videodata"></app-vidstack-player>
+                    }
+                </div>
+                <div class="flex flex-col justify-start items-center w-full">
+                    <span>{{videodata.fileName}}</span>
+                    <span>Description</span>
                 </div>
             </div>
-        </li>
-        <li class="step step-primary" data-content="v1">
-            <div class="w-150 flex justify-center items-center gap-10">
-                <div class="p-5">
-                    <app-vidstack-player #vidstackPlayer [videoData]="videodata"></app-vidstack-player>
-                </div>
-            </div>
+
         </li>
     </ul>
 </div>
