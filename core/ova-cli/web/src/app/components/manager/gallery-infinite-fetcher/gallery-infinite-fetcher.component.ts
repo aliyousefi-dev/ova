@@ -4,6 +4,9 @@ import { RouterModule } from '@angular/router';
 import { GalleryViewComponent } from '../../containers/gallery-view/gallery-view.component';
 import { VideoData } from '../../../data-types/video-data';
 import { CentralFetchService } from '../../../services/ova-backend/central-fetch';
+import { Router } from '@angular/router';
+import { NavigationStart, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/internal/operators/filter';
 
 @Component({
   selector: 'app-gallery-infinite-fetcher',
@@ -23,15 +26,42 @@ export class GalleryInfiniteFetcher implements OnInit {
   TotalVideos: number = 0;
   loading: boolean = false;
   noVideos: boolean = false; // Track if there are no videos
+  lastPosition: number = 0;
+  lastRoute: string = '';
 
   @ViewChild('scrollContainer') scrollContainer: any;
 
   constructor(
-    private centralFetchService: CentralFetchService // Inject CentralFetchService
+    private centralFetchService: CentralFetchService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.initialLoad();
+    this.FollowScroll();
+  }
+
+  FollowScroll() {
+    this.router.events
+      .pipe(
+        filter(
+          (events) =>
+            events instanceof NavigationStart || events instanceof NavigationEnd
+        )
+      )
+      .subscribe((event) => {
+        if (event instanceof NavigationStart && event.url !== this.lastRoute) {
+          this.lastRoute = this.router.url;
+          this.lastPosition = this.scrollContainer.nativeElement.scrollTop; // get the scrollTop property
+          // this.lastPosition = this.grid.nativeElement.scrollTop
+        } else if (
+          event instanceof NavigationEnd &&
+          event.url === this.lastRoute
+        ) {
+          this.scrollContainer.nativeElement.scrollTop = this.lastPosition; // set scrollTop to last position
+          // this.grid.nativeElement.firstChild.scrollTop  = this.lastPosition
+        }
+      });
   }
 
   initialLoad() {

@@ -3,16 +3,23 @@
     No videos found.
   </div>
 
-  <div *ngIf="ViewMode === 'full'"
-    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full">
-    <app-video-card *ngFor="let video of videos" [video]="video" [PreviewPlayback]="PreviewPlayback"
-      [isSaved]="isSaved(video.videoId)" [username]="username!" [isWatched]="isWatched(video.videoId)"></app-video-card>
+  @if (ViewMode === 'full') {
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full">
+    @for (video of videos; track $index) {
+    <app-video-card [video]="video" [PreviewPlayback]="PreviewPlayback" [isSaved]="isSaved(video.videoId)"
+      [username]="username!" [isWatched]="isWatched(video.videoId)"></app-video-card>
+    }
   </div>
+  }
 
-  <div *ngIf="ViewMode === 'mini'"
-    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-1 w-full">
-    <app-mini-video-card *ngFor="let video of videos" [video]="video" [PreviewPlayback]="PreviewPlayback"
-      [isSaved]="isSaved(video.videoId)" [username]="username!"
-      [isWatched]="isWatched(video.videoId)"></app-mini-video-card>
+  @if (ViewMode === 'mini') {
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-1 w-full">
+    @for (video of videos; track $index) {
+    <app-mini-video-card [video]="video" [PreviewPlayback]="PreviewPlayback" [isSaved]="isSaved(video.videoId)"
+      [username]="username!" [isWatched]="isWatched(video.videoId)"></app-mini-video-card>
+    }
   </div>
+  }
+
+
 </div>

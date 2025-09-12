@@ -15,6 +15,15 @@ import { ErrorInterceptor } from './services/error.interceptor';
 import { withViewTransitions } from '@angular/router';
 import { RouteReuseStrategy } from '@angular/router';
 import { CustomRouteReuseStrategy } from './reuse-strategy';
+import { ExtraOptions } from '@angular/router';
+
+const routerOptions: ExtraOptions = {
+  enableTracing: false, // Disable router event tracing
+  useHash: false, // Use regular routing (no hash in the URL)
+  scrollPositionRestoration: 'enabled', // Automatically restore scroll position
+  scrollOffset: [0, 64], // Add an offset for scroll restoration (e.g., for a sticky header)
+  anchorScrolling: 'enabled', // Enable anchor scrolling behavior (scroll to elements with a #id in the URL)
+};
 
 export const appConfig: ApplicationConfig = {
   providers: [
