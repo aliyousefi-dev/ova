@@ -5,17 +5,22 @@ import { NotFoundPage } from './pages/404/404.page';
 import { LoginPage } from './pages/login/login.page';
 import { AuthGuard } from './services/auth.guard';
 
-import { DocsRoutes } from './docs.routes';
-import { MainRoutes } from './main.routes';
+import { DocsRoutes } from './routes/docs.routes';
+import { MainDocPage } from './docs/main-doc/main-doc.page';
+
+import { MainRoutes } from './routes/main.routes';
+import { MainApp } from './main-app/main-app';
 
 export const routes: Routes = [
   {
     path: '',
+    component: MainApp,
     children: [...MainRoutes],
     canActivate: [AuthGuard],
   },
   {
     path: 'docs',
+    component: MainDocPage,
     children: [...DocsRoutes],
   },
 

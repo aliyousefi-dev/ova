@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
   Router,
   RouterOutlet,
@@ -7,24 +8,16 @@ import {
   NavigationCancel,
   NavigationError,
 } from '@angular/router';
+
+import { OnInit, inject } from '@angular/core';
 import { LoadingService } from './services/loading.service';
+
 import { LoadingSpinnerComponent } from './components/utility/spinner-loading/spinner-loading.component';
-import { CommonModule } from '@angular/common';
-import { DesktopSidebarComponent } from './components/panels/desktop-sidebar/desktop-sidebar.component';
-import { TopNavbarComponent } from './components/panels/top-navbar/top-navbar.component';
-import { MobileDockComponent } from './components/panels/mobile-dock/mobile-dock.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    LoadingSpinnerComponent,
-    CommonModule,
-    DesktopSidebarComponent,
-    TopNavbarComponent,
-    MobileDockComponent,
-  ],
+  imports: [RouterOutlet, CommonModule, LoadingSpinnerComponent],
   templateUrl: './app.html',
 })
 export class App implements OnInit {

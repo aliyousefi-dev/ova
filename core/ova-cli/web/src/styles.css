@@ -7,6 +7,7 @@
 @import "vidstack/player/styles/default/layouts/video.css";
 
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* Load all default DaisyUI themes */
 @plugin "daisyui" {
