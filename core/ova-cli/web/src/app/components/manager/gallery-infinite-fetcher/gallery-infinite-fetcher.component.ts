@@ -35,7 +35,7 @@ export class GalleryInfiniteFetcher implements OnInit {
     private centralFetchService: CentralFetchService,
     private router: Router
   ) {}
-
+  
   ngOnInit(): void {
     this.initialLoad();
     this.FollowScroll();
