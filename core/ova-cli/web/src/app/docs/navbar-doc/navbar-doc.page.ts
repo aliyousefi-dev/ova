@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-doc-navbar',
+  selector: 'app-navbar-doc',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
-  templateUrl: './doc-navbar.page.html',
+  templateUrl: './navbar-doc.page.html',
 })
-export class DocNavbarComponent {}
+export class NavbarDocComponent {}

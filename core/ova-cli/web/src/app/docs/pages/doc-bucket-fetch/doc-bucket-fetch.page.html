@@ -1,0 +1,54 @@
+<div class="prose max-w-none">
+    <h1>Bucket Fetch</h1>
+    <p>This feature on the api lets you to fetch a bucket of data. with this feature you can get a list of videos from a
+        specific bucket. It enables you to implement pagination or infinite scrolling.
+    </p>
+
+    <hr>
+
+    <h2>Data Structure</h2>
+    <p>It makes your videos available online and you can access them on your LAN. </p>
+
+    <!-- Use ngNonBindable to prevent Angular from interpreting the content -->
+
+    <div class="relative">
+
+        <pre><code >{{ '{
+                "data": {
+                    "bucketContentSize": 15,
+                    "currentBucket": 1,
+                    "totalBuckets": 41,
+                    "totalVideos": 610,
+                    "videoIds": [
+                        "e9a82f95729c2c4d244dafb67c7964d390878ce4ff7388092741e9774b2bac5a",
+                        "203a10679631262015943ebaf75884b3246fce23eb121cf7a08b90031bef7e69",
+                        "687876308038f1430ded74940530cb1c7ed35e88a23a7e92f64314e4a62092e7",
+                        "330469429ae64b6898e5f94aedc5106be5d788f2a87a7de52d7c8986d3f5593a",
+                        "a03fc0b9e84fc72544af299430b29868054f53e1c70d2c7deeae2ba8a1f06e83",
+                        "81cbb9f81ad7d64420934ca5bd837c9ffe0c312973fa20e87176349e430872d6",
+                        "9575f778c1aaf3a9837c8ca88e7d2066c85825a130daec0acc4699039989cfe5",
+                        "194e237709135beee2576f7677395174b75b15ab9e2edb29f99cc01d8a9e290b",
+                        "e6d439b63f6363f3f93ca9b45dac6b6268a1a49d88f560aebe541eee96404994",
+                        "bb0bca7ec6cc0153bb2610c97ad4a02be40a31bca6a282dc016f8f229776ac42",
+                        "6b962898a321aa67cf4da0d0d9b228c187914054fb220e1f8b61e171b6a1ae0a",
+                        "a045c372e35c1e6d3c2446aa59ca903dbaba23969c185c71333591b667adb6f5",
+                        "272f33741fb2e137046700a31e2d930a83068d7c76e7f6ceb88a0e8baa0cb107",
+                        "558ffa0f80c150b1da32da7443beb5534b579e5b4da31aa1a4918eb6d7c500cc",
+                        "ac08d8e8975019dbe0545c2eceabbc9a55218295c09f85e58131ffac9d122171"
+                    ]
+                },
+                "message": "Latest videos retrieved successfully",
+                "status": "success" 
+            } '}}
+              </code></pre>
+
+        <div class="absolute top-5 right-5 btn">
+            <span>Copy to clipboard</span>
+            <span class="hidden">Copied!</span>
+        </div>
+    </div>
+
+
+
+
+</div>

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Router, RouterModule } from '@angular/router';
-import { DocNavbarComponent } from '../doc-navbar/doc-navbar.page';
+import { NavbarDocComponent } from '../navbar-doc/navbar-doc.page';
 
 @Component({
   selector: 'app-main-doc-page',
@@ -14,7 +14,7 @@ import { DocNavbarComponent } from '../doc-navbar/doc-navbar.page';
     FormsModule,
     RouterOutlet,
     RouterModule,
-    DocNavbarComponent,
+    NavbarDocComponent,
   ],
   templateUrl: './main-doc.page.html',
 })
