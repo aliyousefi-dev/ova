@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-doc-bucket-fetch-page',
+  selector: 'doc-installation',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './doc-bucket-fetch.page.html',
+  templateUrl: './installation.page.html',
 })
-export class DocBucketFetchPage {}
+export class DocInstallation {}

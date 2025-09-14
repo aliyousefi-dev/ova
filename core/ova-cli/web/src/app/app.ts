@@ -12,12 +12,12 @@ import {
 import { OnInit, inject } from '@angular/core';
 import { LoadingService } from './services/loading.service';
 
-import { LoadingSpinnerComponent } from './components/utility/spinner-loading/spinner-loading.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, LoadingSpinnerComponent],
+  imports: [RouterOutlet, CommonModule, MatProgressBarModule],
   templateUrl: './app.html',
 })
 export class App implements OnInit {

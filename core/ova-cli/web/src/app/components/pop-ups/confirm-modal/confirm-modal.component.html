@@ -1,4 +1,5 @@
-<div *ngIf="visible" class="modal modal-open" (click)="onCancel()">
+@if (visible) {
+<div class="modal modal-open" (click)="onCancel()">
   <div class="modal-box" (click)="$event.stopPropagation()">
     <p class="py-4">{{ message }}</p>
     <div class="modal-action">
@@ -7,3 +8,4 @@
     </div>
   </div>
 </div>
+}
