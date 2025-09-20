@@ -10,7 +10,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TagManagementPanelComponent } from './tag-management-panel.component';
 import { MarkerEditPanelComponent } from './marker-edit-panel.component';
-import { LucideAngularModule, CircleUserRound } from 'lucide-angular';
 
 @Component({
   selector: 'app-video-admin-tabs',
@@ -20,7 +19,6 @@ import { LucideAngularModule, CircleUserRound } from 'lucide-angular';
     FormsModule,
     TagManagementPanelComponent,
     MarkerEditPanelComponent,
-    LucideAngularModule,
   ],
   templateUrl: './video-admin-tabs.component.html',
 })
@@ -30,8 +28,6 @@ export class VideoAdminTabsComponent implements OnInit {
   @Output() tagsUpdated = new EventEmitter<string[]>();
   @Output() addMarkerClicked = new EventEmitter<void>();
   @ViewChild(MarkerEditPanelComponent) markerPanel!: MarkerEditPanelComponent;
-
-  readonly AdminIcon = CircleUserRound;
 
   selectedTab: 'tag' | 'marker' = 'tag';
 

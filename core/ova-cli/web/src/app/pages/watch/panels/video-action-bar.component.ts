@@ -1,16 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  LucideAngularModule,
-  Download,
-  PlusSquare,
-  Bookmark,
-  BookmarkPlus,
-  Clock,
-  CalendarArrowDown,
-  FileVideo,
-  Film,
-} from 'lucide-angular';
+
 import { VideoApiService } from '../../../services/ova-backend/video-api.service';
 import { SendtoModalComponent } from '../../../components/pop-ups/sendto-modal/sendto-modal.component';
 import { RouterModule } from '@angular/router';
@@ -18,12 +8,7 @@ import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-video-action-bar',
   standalone: true,
-  imports: [
-    CommonModule,
-    LucideAngularModule,
-    SendtoModalComponent,
-    RouterModule,
-  ], // Add PlaylistModalComponent to imports
+  imports: [CommonModule, SendtoModalComponent, RouterModule], // Add PlaylistModalComponent to imports
   templateUrl: './video-action-bar.component.html',
   styles: [],
 })
@@ -40,16 +25,6 @@ export class VideoActionBarComponent {
 
   @Output() toggleSaved = new EventEmitter<void>();
   // @Output() addToPlaylist = new EventEmitter<MouseEvent>(); // Removed: now handled internally
-
-  readonly DownloadIcon = Download;
-  readonly PlusSquare = PlusSquare;
-  readonly Bookmark = Bookmark;
-  readonly BookmarkPlus = BookmarkPlus;
-
-  readonly VideoDurationIcon = Clock;
-  readonly UploadTimeIcon = CalendarArrowDown;
-  readonly ResolutionIcon = FileVideo;
-  readonly FPSIcon = Film;
 
   trimMode = false;
   trimStart: number | null = null;

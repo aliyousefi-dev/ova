@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { NavbarDocComponent } from '../navbar-doc/navbar-doc.page';
+import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs';
 
 @Component({
   selector: 'app-main-doc-page',
@@ -15,9 +15,8 @@ import { NavbarDocComponent } from '../navbar-doc/navbar-doc.page';
     RouterOutlet,
     RouterModule,
     NavbarDocComponent,
+    BreadcrumbsComponent,
   ],
   templateUrl: './main-doc.page.html',
 })
-export class MainDocPage {
-  private router = inject(Router);
-}
+export class MainDocPage {}

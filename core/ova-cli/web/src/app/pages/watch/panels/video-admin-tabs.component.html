@@ -1,45 +1,25 @@
 <!-- Admin Panel -->
 <div class="flex flex-col gap-4 w-full">
   <div class="font-semibold flex items-center gap-2">
-    <i-lucide [img]="AdminIcon" class="w-4 h-4"></i-lucide>
+
     <span>Admin</span>
   </div>
 
   <!-- Tabs -->
   <div class="tabs w-full">
     <!-- Tag Editor Tab -->
-    <input
-      type="radio"
-      name="watch_tabs"
-      class="tab"
-      aria-label="Tag Editor"
-      [(ngModel)]="selectedTab"
-      [value]="'tag'"
-      (change)="persistTab('tag')"
-    />
+    <input type="radio" name="watch_tabs" class="tab" aria-label="Tag Editor" [(ngModel)]="selectedTab" [value]="'tag'"
+      (change)="persistTab('tag')" />
     <div class="tab-content bg-base-100 p-6" *ngIf="selectedTab === 'tag'">
-      <app-tag-management-panel
-        [videoId]="videoId"
-        [currentTags]="currentTags"
-        (tagsUpdated)="tagsUpdated.emit($event)"
-      ></app-tag-management-panel>
+      <app-tag-management-panel [videoId]="videoId" [currentTags]="currentTags"
+        (tagsUpdated)="tagsUpdated.emit($event)"></app-tag-management-panel>
     </div>
 
     <!-- Marker Editor Tab -->
-    <input
-      type="radio"
-      name="watch_tabs"
-      class="tab"
-      aria-label="Marker Editor"
-      [(ngModel)]="selectedTab"
-      [value]="'marker'"
-      (change)="persistTab('marker')"
-    />
+    <input type="radio" name="watch_tabs" class="tab" aria-label="Marker Editor" [(ngModel)]="selectedTab"
+      [value]="'marker'" (change)="persistTab('marker')" />
     <div class="tab-content bg-base-100 p-6" *ngIf="selectedTab === 'marker'">
-      <app-marker-edit-panel
-        [videoId]="videoId"
-        (addMarkerClicked)="addMarkerClicked.emit()"
-      ></app-marker-edit-panel>
+      <app-marker-edit-panel [videoId]="videoId" (addMarkerClicked)="addMarkerClicked.emit()"></app-marker-edit-panel>
     </div>
   </div>
 </div>

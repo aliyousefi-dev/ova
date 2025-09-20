@@ -111,12 +111,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "ovacli - Commands.md",
+                "file": "Feature to Develop.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "ovacli - Commands"
+              "title": "Feature to Develop"
             }
           }
         ],
@@ -267,6 +267,7 @@
   },
   "active": "850bd3bae133723d",
   "lastOpenFiles": [
+    "ovacli - Commands.md",
     "Features - Team Space.md",
     "Repository - Attach Sub Repositories.md",
     "Overview.md",
@@ -284,7 +285,6 @@
     "ovacli - Server Configs.md",
     "ovacli - SSL.md",
     "ovacli - Docs.md",
-    "ovacli - Commands.md",
     "ovacli - API Endpoints.md",
     "Web Components/Web Components - Space Gallery.md",
     "Web Components/Web Components - List all.md",

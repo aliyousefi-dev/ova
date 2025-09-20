@@ -1,27 +1,15 @@
 <!-- Top Buttons -->
 <div class="flex justify-between items-center space-x-4 mb-6">
-  <button
-    type="button"
-    class="btn btn-outline btn-primary btn-sm sm:btn-md"
-    (click)="addMarker()"
-  >
+  <button type="button" class="btn btn-outline btn-primary btn-sm sm:btn-md" (click)="addMarker()">
     + Add Marker
   </button>
   <div class="flex space-x-3">
-    <button
-      type="button"
-      class="btn btn-neutral btn-sm sm:btn-md"
-      (click)="confirmAndDeleteAllMarkers()"
-      [disabled]="loading || saving"
-    >
+    <button type="button" class="btn btn-neutral btn-sm sm:btn-md" (click)="confirmAndDeleteAllMarkers()"
+      [disabled]="loading || saving">
       Delete All Markers
     </button>
-    <button
-      type="button"
-      class="btn btn-primary btn-sm sm:btn-md"
-      (click)="saveMarkers()"
-      [disabled]="saving || hasMarkerErrors()"
-    >
+    <button type="button" class="btn btn-primary btn-sm sm:btn-md" (click)="saveMarkers()"
+      [disabled]="saving || hasMarkerErrors()">
       <span *ngIf="saving" class="loading loading-spinner"></span>
       {{ saving ? "Saving..." : "Save" }}
     </button>
@@ -30,80 +18,39 @@
 
 <!-- Scrollable Marker List -->
 <div class="overflow-y-auto max-h-[400px]">
-  <div
-    *ngFor="let marker of markers; let i = index"
-    class="flex flex-col gap-1 mb-3 p-3 border border-base-200 rounded-md"
-  >
+  <div *ngFor="let marker of markers; let i = index"
+    class="flex flex-col gap-1 mb-3 p-3 border border-base-200 rounded-md">
     <div class="flex items-center gap-3">
-      <input
-        type="number"
-        [(ngModel)]="marker.hour"
-        (input)="onTimeInput(i)"
-        class="input input-sm w-16 text-center font-mono"
-        [ngClass]="{ 'input-error': markerErrors[i].hour }"
-        placeholder="HH"
-        min="0"
-        max="99"
-      />
+      <input type="number" [(ngModel)]="marker.hour" (input)="onTimeInput(i)"
+        class="input input-sm w-16 text-center font-mono" [ngClass]="{ 'input-error': markerErrors[i].hour }"
+        placeholder="HH" min="0" max="99" />
       <span>:</span>
-      <input
-        type="number"
-        [(ngModel)]="marker.minute"
-        (input)="onTimeInput(i)"
-        class="input input-sm w-16 text-center font-mono"
-        [ngClass]="{ 'input-error': markerErrors[i].minute }"
-        placeholder="MM"
-        min="0"
-        max="59"
-      />
+      <input type="number" [(ngModel)]="marker.minute" (input)="onTimeInput(i)"
+        class="input input-sm w-16 text-center font-mono" [ngClass]="{ 'input-error': markerErrors[i].minute }"
+        placeholder="MM" min="0" max="59" />
       <span>:</span>
-      <input
-        type="number"
-        [(ngModel)]="marker.second"
-        (input)="onTimeInput(i)"
-        class="input input-sm w-16 text-center font-mono"
-        [ngClass]="{ 'input-error': markerErrors[i].second }"
-        placeholder="SS"
-        min="0"
-        max="59"
-      />
+      <input type="number" [(ngModel)]="marker.second" (input)="onTimeInput(i)"
+        class="input input-sm w-16 text-center font-mono" [ngClass]="{ 'input-error': markerErrors[i].second }"
+        placeholder="SS" min="0" max="59" />
 
-      <input
-        type="text"
-        [(ngModel)]="marker.title"
-        (input)="onTitleInput($event, i)"
-        placeholder="Marker title"
-        class="input input-sm flex-grow"
-        [ngClass]="{ 'input-error': markerErrors[i].title }"
-      />
+      <input type="text" [(ngModel)]="marker.title" (input)="onTitleInput($event, i)" placeholder="Marker title"
+        class="input input-sm flex-grow" [ngClass]="{ 'input-error': markerErrors[i].title }" />
 
       <!-- Delete icon: only removes locally -->
-      <button
-        type="button"
-        class="btn btn-error btn-sm btn-square"
-        (click)="removeMarker(i)"
-      >
-        <i-lucide [img]="RemoveIcon" class="w-4 h-4"></i-lucide>
+      <button type="button" class="btn btn-error btn-sm btn-square" (click)="removeMarker(i)">
+
       </button>
 
       <!-- Reset button: shows only if marker modified -->
-      <button
-        *ngIf="isMarkerModified(i)"
-        type="button"
-        class="btn btn-warning btn-sm ml-2"
-        (click)="resetMarker(i)"
-      >
+      <button *ngIf="isMarkerModified(i)" type="button" class="btn btn-warning btn-sm ml-2" (click)="resetMarker(i)">
         Reset
       </button>
     </div>
 
     <!-- Validation errors for time -->
-    <div
-      *ngIf="
+    <div *ngIf="
         markerErrors[i].hour || markerErrors[i].minute || markerErrors[i].second
-      "
-      class="text-error text-xs ml-2 mt-1"
-    >
+      " class="text-error text-xs ml-2 mt-1">
       <span *ngIf="markerErrors[i].hour">{{ markerErrors[i].hour }} </span>
       <span *ngIf="markerErrors[i].minute">{{ markerErrors[i].minute }}</span>
       <span *ngIf="markerErrors[i].second">{{ markerErrors[i].second }}</span>
@@ -115,10 +62,7 @@
     </div>
   </div>
 
-  <div
-    *ngIf="markers.length === 0 && !loading"
-    class="text-center text-gray-500 py-4"
-  >
+  <div *ngIf="markers.length === 0 && !loading" class="text-center text-gray-500 py-4">
     No markers added yet. Click "Add Marker" to get started!
   </div>
 </div>

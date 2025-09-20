@@ -1,14 +1,14 @@
 <div class="prose">
     <h1>Quick Start Guide</h1>
     <p>To get started, select a folder and run the following command:</p>
-    <pre data-prefix="$"><code>> ovacli init .</code></pre>
+    <code-preview [codeContent]="initCommand"></code-preview>
 
     <p>Next, to index the videos, use the command below:</p>
-    <pre data-prefix="$"><code>> ovacli index</code></pre>
+    <code-preview [codeContent]="indexCommand"></code-preview>
     <p>This command will scan all available videos in the selected folder and attempt to index them in the database.</p>
 
     <h2>Optional Step</h2>
     <p>If you want to optimize the videos for better performance and user experience, you can use the following command:
     </p>
-    <pre data-prefix="$"><code>> ovacli cook</code></pre>
+    <code-preview [codeContent]="cookCommand"></code-preview>
 </div>

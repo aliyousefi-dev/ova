@@ -26,7 +26,6 @@
     "boxicons": "^2.1.4",
     "cowsay": "^1.6.0",
     "daisyui": "^5.1.6",
-    "lucide-angular": "^0.523.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "videojs-thumbnails": "^1.0.3",

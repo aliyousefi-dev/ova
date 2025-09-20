@@ -4,8 +4,8 @@
     <div class="absolute top-5 right-5">
         <div class="tooltip tooltip-left tooltip-accent m-2 self-start [justify-self:right]"
             [attr.data-tip]="tooltipText">
-            <button (click)="copyToClipboard()" class="btn btn-square btn-sm btn-neutral"
-                aria-label="Copy to clipboard">
+            <button [cdkCopyToClipboard]="codeContent" (click)="copyToClipboard()"
+                class="btn btn-square btn-sm btn-neutral" aria-label="Copy to clipboard">
                 <i class="bx bx-clipboard bx-xs"></i>
             </button>
         </div>

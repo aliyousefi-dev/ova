@@ -11,15 +11,25 @@ import { CodePreviewComponent } from '../../code-preview/code-preview';
 })
 export class DocCommands {
   ovaCommands = `
+#commong
 - ovacli init [path]
 - ovacli index
 - ovacli cook
 - ovacli purge
-- ovacli configs
 - ovacli serve <repo-path>
-- ovacli tsconverter <path> 
+- ovacli version
+
+#configs
+- ovacli configs
+- ovacli configs default
+- ovacli configs reset
+
+#tools
+- ovacli tsconverter <path>
+
+#ssl
 - ovacli ssl generate-ca
 - ovacli ssl generate-cert
-- ovacli version
+
   `;
 }

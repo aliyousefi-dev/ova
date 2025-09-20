@@ -1,19 +1,12 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
-import {
-  LucideAngularModule,
-  Clock,
-  CalendarArrowDown,
-  FileVideo,
-  Film,
-  Download,
-} from 'lucide-angular';
+import { CommonModule } from '@angular/common';
+
 import { VideoApiService } from '../../../services/ova-backend/video-api.service';
 
 @Component({
   selector: 'app-video-metadata-panel',
   standalone: true,
-  imports: [CommonModule, DatePipe, LucideAngularModule],
+  imports: [CommonModule],
   templateUrl: './video-metadata-panel.component.html',
   styles: [],
 })
@@ -22,12 +15,6 @@ export class VideoMetadataPanelComponent {
   @Input() videoDurationSeconds?: number;
   @Input() videoUploadedAt?: string;
   @Input() videoResolution?: { width: number; height: number };
-
-  readonly VideoDurationIcon = Clock;
-  readonly UploadTimeIcon = CalendarArrowDown;
-  readonly ResolutionIcon = FileVideo;
-  readonly FPSIcon = Film;
-  readonly DownloadIcon = Download;
 
   constructor(private videoApi: VideoApiService) {}
 

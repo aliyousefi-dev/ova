@@ -8,6 +8,17 @@ import { DocBucketFetchPage } from './pages/bucket-fetch/doc-bucket-fetch.page';
 import { DocBBatchAPIPage } from './pages/batch-api/doc-batch-api.page';
 import { DocInstallation } from './pages/installation/installation.page';
 import { DocCommands } from './pages/commands/commands.page';
+import { DocChangelogPage } from './pages/changelog/changelog.page';
+import { DocRoadmapPage } from './pages/roadmap/roadmap.page';
+import { DocAuthenticationPage } from './pages/authentication/authentication.page';
+import { DocTsConvertorPage } from './pages/tsconvertor/tsconvertor.page';
+import { DocVideoCardPage } from './pages/video-card/video-card.page';
+import { DocConfigsPage } from './pages/configs/configs.page';
+import { DocVideoInfoPage } from './pages/video-info/video-info.page';
+import { DocStreamAPIPage } from './pages/stream-api/doc-stream-api.page';
+import { DocFeatsToDevPage } from './pages/feat-to-dev/feat-to-dev.page';
+import { DocConfigHttpsPage } from './pages/config-https/config-https.page';
+import { DocTrimServerPage } from './pages/trim-server/trim-server.page';
 
 export const DocsRoutes: Routes = [
   {
@@ -18,6 +29,46 @@ export const DocsRoutes: Routes = [
   {
     path: 'overview',
     component: DocOverviewPage,
+  },
+  {
+    path: 'changelog',
+    component: DocChangelogPage,
+  },
+  {
+    path: 'trim-server',
+    component: DocTrimServerPage,
+  },
+  {
+    path: 'feats-to-dev',
+    component: DocFeatsToDevPage,
+  },
+  {
+    path: 'roadmap',
+    component: DocRoadmapPage,
+  },
+  {
+    path: 'config-https',
+    component: DocConfigHttpsPage,
+  },
+  {
+    path: 'tools/video-info',
+    component: DocVideoInfoPage,
+  },
+  {
+    path: 'configs',
+    component: DocConfigsPage,
+  },
+  {
+    path: 'components/video-card',
+    component: DocVideoCardPage,
+  },
+  {
+    path: 'tools/tsconvertor',
+    component: DocTsConvertorPage,
+  },
+  {
+    path: 'authentication',
+    component: DocAuthenticationPage,
   },
   {
     path: 'bucket-fetch',
@@ -34,6 +85,10 @@ export const DocsRoutes: Routes = [
   {
     path: 'batch-api',
     component: DocBBatchAPIPage,
+  },
+  {
+    path: 'stream-api',
+    component: DocStreamAPIPage,
   },
   {
     path: 'repository',

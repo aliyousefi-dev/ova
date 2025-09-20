@@ -62,7 +62,7 @@ var toolsPreviewCmd = &cobra.Command{
 
 // GetMP4Info runs mp4info on the provided video path and returns the output as string.
 var toolsInfoCmd = &cobra.Command{
-	Use:   "info <video-path>",
+	Use:   "videoinfo <video-path>",
 	Short: "Print technical metadata of an MP4 file using mp4info",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {

@@ -6,12 +6,11 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { LucideAngularModule, X } from 'lucide-angular';
 
 @Component({
   selector: 'app-marker-edit-panel',
   standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './marker-edit-panel.component.html',
 })
 export class MarkerEditPanelComponent implements OnInit {
@@ -28,7 +27,6 @@ export class MarkerEditPanelComponent implements OnInit {
     number,
     Partial<Record<'hour' | 'minute' | 'second' | 'title', string>>
   > = {};
-  readonly RemoveIcon = X;
 
   constructor(private markerApi: MarkerApiService) {}
 

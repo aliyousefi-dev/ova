@@ -43,11 +43,28 @@ media-google-cast-button {
 media-pip-button {
   display: none;
 }
-html,
-body {
-  height: 100%;
+
+.fade-top-bottom-enter,
+.fade-top-bottom-leave {
+  transition: transform 500ms ease-out, opacity 500ms ease-out;
 }
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+
+.fade-top-bottom-enter {
+  transform: translateY(-20px);
+  opacity: 0;
+}
+
+.fade-top-bottom-enter-active {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.fade-top-bottom-leave {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.fade-top-bottom-leave-active {
+  transform: translateY(20px);
+  opacity: 0;
 }

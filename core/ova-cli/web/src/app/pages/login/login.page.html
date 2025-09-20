@@ -1,46 +1,22 @@
-<div class="flex h-screen">
-  <!-- Image on the Right -->
-  <div class="flex-1 hidden md:block relative">
-    <img src="background.jpg" alt="Image" class="object-cover w-full h-full opacity-20">
-
-    <!-- First Title (Centered, Two Lines) -->
-    <div class="absolute top-1/2 left-0 right-0 text-center transform -translate-y-1/2">
-      <h1 class="text-4xl font-bold">
-        Welcome Back!
-      </h1>
+<div class="hero bg-base-200 min-h-screen">
+  <div class="hero-content flex-col lg:flex-row-reverse ">
+    <div class="text-center lg:text-left prose m-5">
+      <h1>Login now!</h1>
+      <p>
+        Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
+        quasi. In deleniti eaque aut repudiandae et a id nisi.
+      </p>
     </div>
-
-    <!-- Second Title (Bottom) -->
-    <div class="absolute bottom-15 left-0 right-0 text-center">
-      <h1 class="text-xl">ONLINE VIDEO ARCHIVE</h1>
-    </div>
-  </div>
-
-
-  <!-- Login Form on the Left -->
-  <div class="flex-1 flex flex-col items-center justify-center bg-base-300 px-4">
-
-
-
-    <div class="w-full max-w-sm flex flex-col justify-center items-center ">
-
-
-
-      <form (ngSubmit)="onSubmit()">
-        <h1 class="text-4xl font-bold mb-10">Login</h1>
-
-        <fieldset class="fieldset w-xs ">
-
-          <div>
-            <label class="label">Your Username</label>
+    <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
+      <div class="card-body">
+        <form (ngSubmit)="onSubmit()">
+          <fieldset class="fieldset">
+            <label class="label">Username</label>
             <label class="input w-full">
               <i class='bx bx-user'></i>
               <input type="text" placeholder="Enter username" [(ngModel)]="username" name="username" required
                 autocomplete="username" />
             </label>
-          </div>
-
-          <div>
             <label class="label">Password</label>
             <label class="input w-full">
               <i class='bx bx-key'></i>
@@ -49,22 +25,12 @@
                 title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
                 autocomplete="current-password" />
             </label>
-          </div>
-
-          <div *ngIf="error" class="text-red-500 text-sm font-medium">{{ error }}</div>
-
-          <button type="submit" class="btn btn-lg w-full mt-6">
-            Login
-          </button>
-        </fieldset>
-
-      </form>
+            <div *ngIf="error" class="text-red-500 text-sm font-medium">{{ error }}</div>
+            <div><a class="link link-hover">Forgot password?</a></div>
+            <button type="submit" class="btn btn-neutral mt-4">Login</button>
+          </fieldset>
+        </form>
+      </div>
     </div>
-
   </div>
-
-
-
-
-
 </div>
