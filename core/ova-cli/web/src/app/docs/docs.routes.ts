@@ -19,6 +19,8 @@ import { DocStreamAPIPage } from './pages/stream-api/doc-stream-api.page';
 import { DocFeatsToDevPage } from './pages/feat-to-dev/feat-to-dev.page';
 import { DocConfigHttpsPage } from './pages/config-https/config-https.page';
 import { DocTrimServerPage } from './pages/trim-server/trim-server.page';
+import { DocDownloadServerPage } from './pages/download-server/download-server.page';
+import { DocPlatformsPage } from './pages/platforms/platforms.page';
 
 export const DocsRoutes: Routes = [
   {
@@ -35,8 +37,16 @@ export const DocsRoutes: Routes = [
     component: DocChangelogPage,
   },
   {
+    path: 'platforms',
+    component: DocPlatformsPage,
+  },
+  {
     path: 'trim-server',
     component: DocTrimServerPage,
+  },
+  {
+    path: 'download-server',
+    component: DocDownloadServerPage,
   },
   {
     path: 'feats-to-dev',

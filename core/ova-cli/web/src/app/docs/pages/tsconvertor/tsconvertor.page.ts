@@ -10,10 +10,5 @@ import { CodePreviewComponent } from '../../code-preview/code-preview';
   templateUrl: './tsconvertor.page.html',
 })
 export class DocTsConvertorPage {
-  cliCommand = `
-  ovacli tsconverter <file-path> --recursive
-
-  flags:
-  --recursive it search on the folder and find all the videos and try to convert them
-  `;
+  cliCommand = `ovacli tsconverter <file-path> --recursive`;
 }

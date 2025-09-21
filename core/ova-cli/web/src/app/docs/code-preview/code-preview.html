@@ -1,11 +1,10 @@
 <div class="relative">
-    <pre><code>{{ codeContent }}</code></pre>
+    <div [innerHTML]="highlightedCode | safeHtml"></div>
 
-    <div class="absolute top-5 right-5">
-        <div class="tooltip tooltip-left tooltip-accent m-2 self-start [justify-self:right]"
-            [attr.data-tip]="tooltipText">
-            <button [cdkCopyToClipboard]="codeContent" (click)="copyToClipboard()"
-                class="btn btn-square btn-sm btn-neutral" aria-label="Copy to clipboard">
+    <div class="absolute top-2 right-2 flex items-center justify-end h-full">
+        <div class="tooltip tooltip-left tooltip-accent self-start" [attr.data-tip]="tooltipText">
+            <button [cdkCopyToClipboard]="codeContent" (click)="copyToClipboard()" class="btn btn-circle btn-sm"
+                aria-label="Copy to clipboard">
                 <i class="bx bx-clipboard bx-xs"></i>
             </button>
         </div>

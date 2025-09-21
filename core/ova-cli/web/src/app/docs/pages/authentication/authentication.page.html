@@ -1,7 +1,7 @@
 <div class="prose">
     <h1>Authentication</h1>
     <p>
-        for security and protect the data ova using the session authentication.
+        for authentication and authorization, OVA uses session-based authentication.
     </p>
 
     <hr>
@@ -17,5 +17,17 @@
     <code-preview [codeContent]="SessionId"></code-preview>
 
     by default it generated with the UUIDs
+
+    <h2>In Memory DB</h2>
+    <p>
+        ova uses an in-memory database to store session information temporarily.
+        it load them at runtime and keeps them in memory for quick access.
+        also it save them again when stopped.
+    </p>
+
+    <p>
+        This approach allows for fast access to session data, making it ideal for applications with high performance
+        requirements.
+    </p>
 
 </div>

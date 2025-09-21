@@ -1,34 +1,40 @@
-<div class="drawer max-w-[200rem] sm:drawer-open">
-    <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
-    <div class="drawer-content flex flex-col items-start justify-start p-5 ">
-        <!-- Page content here -->
-        <label for="my-drawer-2" class="btn btn-primary drawer-button sm:hidden">
-            Open drawer
-        </label>
+<div class="">
+    <div class="drawer sm:drawer-open">
+        <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+        <div class="drawer-content overflow-y-auto h-screen">
+            <!-- Page content here -->
 
-        <div class="flex justify-between items-center w-full">
-            <label class="input">
-                <i class='bx  bx-search bx-xs'></i>
-                <input type="search" class="grow" placeholder="Search" />
-                <kbd class="kbd kbd-sm">⌘</kbd>
-                <kbd class="kbd kbd-sm">K</kbd>
-            </label>
+            <div class="navbar sticky top-0 backdrop-blur flex flex-col z-30 bg-base-100/90">
 
-            <a class="btn btn-outline" routerLink="/">Home <i class='bx  bx-home-alt bx-xs '></i></a>
+                <div class="w-full">
+
+
+                    <div class="flex justify-between items-center w-full">
+                        <label for="my-drawer-2" class="btn btn-ghost drawer-button sm:hidden">
+                            <i class='bx  bx-menu bx-sm'></i>
+                        </label>
+
+                        <doc-search-bar></doc-search-bar>
+
+                        <a class="btn btn-outline" routerLink="/">Home <i class='bx  bx-home-alt bx-xs '></i></a>
+                    </div>
+                </div>
+
+                <div class="flex justify-start w-full">
+                    <doc-breadcrumbs></doc-breadcrumbs>
+                </div>
+            </div>
+
+            <div class="p-10">
+
+                <router-outlet></router-outlet>
+            </div>
         </div>
 
-
-        <doc-breadcrumbs></doc-breadcrumbs>
-
-
-        <div class="p-10">
-
-            <router-outlet></router-outlet>
+        <div class="drawer-side  z-60">
+            <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
+            <app-navbar-doc></app-navbar-doc>
         </div>
     </div>
 
-    <div class="drawer-side">
-        <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
-        <app-navbar-doc></app-navbar-doc>
-    </div>
 </div>

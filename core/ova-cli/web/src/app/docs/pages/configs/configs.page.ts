@@ -10,8 +10,7 @@ import { CodePreviewComponent } from '../../code-preview/code-preview';
   templateUrl: './configs.page.html',
 })
 export class DocConfigsPage {
-  ovaCommands = `
-{
+  ovaCommands = `{
 	"version": "1.0.0",
 	"serverHost": "0.0.0.0",
 	"serverPort": 443,
@@ -21,10 +20,7 @@ export class DocConfigsPage {
 	"maxBucketSize": 15,
 	"dataStorageType": "jsondb",
 	"createdAt": "2025-08-12T19:49:16.9240393+03:30"
-}
-  `;
+}`;
 
-  resetConfigCommand = `
-  ovacli configs reset
-  `;
+  resetConfigCommand = `ovacli configs reset`;
 }

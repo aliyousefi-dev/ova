@@ -1,132 +1,138 @@
-<div data-sveltekit-preload-data=""
-    class="bg-base-100/90 navbar sticky top-0 z-20 hidden items-center gap-2 px-4 py-0 backdrop-blur lg:flex ">
-    <a href="/" aria-current="page" aria-label="daisyUI" class="flex ">
-        <span class="w-full h-auto">OVA</span>
-    </a>
-    <div class="dropdown">
-        <div tabindex="0" role="button" class="flex link link-hover text-base-content/60 font-mono text-xs">
-            <app-ova-version></app-ova-version>
-            <i class="bx bx-chevron-down bx-xs"></i>
+<div class="bg-base-100 h-screen">
+    <div class="bg-base-100/90 navbar sticky top-0 z-20 items-center gap-2 px-4 py-0 backdrop-blur lg:flex ">
+        <a href="/" aria-current="page" aria-label="daisyUI" class="flex ">
+            <span class="w-full h-auto">OVA</span>
+        </a>
+        <div class="dropdown">
+            <div tabindex="0" role="button" class="flex link link-hover text-base-content/60 font-mono text-xs">
+                <app-ova-version></app-ova-version>
+                <i class="bx bx-chevron-down bx-xs"></i>
+            </div>
+            <ul tabindex="0" class="dropdown-content menu menu-sm bg-base-200 rounded-box w-36 p-2 shadow-2xl">
+                <li>
+                    <a href="/docs/changelog/">
+                        <i class='bx  bx-time bx-xs'></i>
+                        <span>Changelog</span>
+                    </a>
+                </li>
+                <li></li>
+                <li><a href="/docs/v5/">v5 release notes</a></li>
+                <li></li>
+                <li><a>Version 4.x</a></li>
+                <li><a>Version 3.x</a></li>
+                <li><a>Version 2.x</a></li>
+                <li><a>Version 1.x</a></li>
+                <li></li>
+                <li>
+                    <a href="/docs/roadmap/">
+                        <i class='bx  bx-map-alt bx-xs'></i>
+                        <span>Roadmap</span>
+                    </a>
+                </li>
+            </ul>
         </div>
-        <ul tabindex="0" class="dropdown-content menu menu-sm bg-base-200 rounded-box w-36 p-2 shadow-2xl">
-            <li>
-                <a href="/docs/changelog/">
-                    <i class='bx  bx-time bx-xs'></i>
-                    <span>Changelog</span>
-                </a>
-            </li>
-            <li></li>
-            <li><a href="/docs/v5/">v5 release notes</a></li>
-            <li></li>
-            <li><a>Version 4.x</a></li>
-            <li><a>Version 3.x</a></li>
-            <li><a>Version 2.x</a></li>
-            <li><a>Version 1.x</a></li>
-            <li></li>
-            <li>
-                <a href="/docs/roadmap/">
-                    <i class='bx  bx-map-alt bx-xs'></i>
-                    <span>Roadmap</span>
-                </a>
-            </li>
-        </ul>
     </div>
+
+    <ul class="menu border-r-1 border-r-base-300 text-base-content w-80 p-4">
+
+        <li><a routerLink="overview" routerLinkActive="menu-active">Overview</a></li>
+        <li><a routerLink="changelog" routerLinkActive="menu-active">Changelog</a></li>
+        <li><a routerLink="feats-to-dev" routerLinkActive="menu-active">Features to Develop</a></li>
+        <li><a routerLink="platforms" routerLinkActive="menu-active">Platforms</a></li>
+
+        <li>
+            <details open>
+                <summary>Docs</summary>
+                <ul class=" menu w-full">
+
+                    <li><a routerLink="installation" routerLinkActive="menu-active">Installation</a></li>
+                    <li><a routerLink="quickstart" routerLinkActive="menu-active">Quick Start</a></li>
+                    <li><a routerLink="repository" routerLinkActive="menu-active">Repository</a></li>
+                    <li><a routerLink="commands" routerLinkActive="menu-active">Commands</a></li>
+                    <li><a routerLink="trim-server" routerLinkActive="menu-active">Trim Server <span
+                                class="badge badge-neutral">Beta</span></a></li>
+                    <li><a routerLink="download-server" routerLinkActive="menu-active">Download Server</a></li>
+                    <li><a routerLink="configs" routerLinkActive="menu-active">Configuration</a></li>
+                    <li><a routerLink="authentication" routerLinkActive="menu-active">Authentication</a></li>
+                    <li>
+                        <details>
+                            <summary>SSL</summary>
+                            <ul class="menu w-full">
+                                <li><a routerLink="config-https" routerLinkActive="menu-active">Configuring HTTPS
+                                        server</a>
+                                </li>
+                                <li><a routerLink="self-certs" routerLinkActive="menu-active">Create Self Certs</a></li>
+                            </ul>
+                        </details>
+                    </li>
+                    <li>
+                        <details>
+                            <summary>Tools</summary>
+                            <ul class="menu w-full">
+                                <li><a routerLink="tools/tsconvertor" routerLinkActive="menu-active">TSConverter</a>
+                                </li>
+                                <li><a routerLink="tools/video-info" routerLinkActive="menu-active">Video Info</a></li>
+                            </ul>
+                        </details>
+                    </li>
+
+                </ul>
+            </details>
+        </li>
+
+        <li>
+            <details>
+                <summary>Components</summary>
+                <ul class="menu w-full">
+                    <li><a>Gallery Fetcher</a></li>
+                    <li><a>Gallery View</a></li>
+                    <li><a>Infinite Fetcher</a></li>
+                    <li><a>Page Fetcher</a></li>
+                    <li><a>Mini Video Card</a></li>
+                    <li><a routerLink="components/video-card" routerLinkActive="menu-active"> Video Card</a></li>
+                    <li><a> Playlist Card</a></li>
+                    <li><a> VidStack Player</a></li>
+                </ul>
+            </details>
+        </li>
+
+        <li>
+            <details>
+                <summary>Backend APIs</summary>
+                <ul class="menu w-full">
+                    <li><a>Auth</a></li>
+                    <li><a routerLink="batch-api" routerLinkActive="menu-active">Batch API</a></li>
+                    <li><a routerLink="stream-api" routerLinkActive="menu-active">Stream</a></li>
+                    <li><a routerLink="playlists-api" routerLinkActive="menu-active">Playlists</a></li>
+                    <li><a routerLink="users-api" routerLinkActive="menu-active">Users</a></li>
+                    <li><a routerLink="spaces-api" routerLinkActive="menu-active">Spaces</a></li>
+                    <li>
+                        <details open>
+                            <summary>Types</summary>
+                            <ul class="menu w-full">
+                                <li><a>API Response</a></li>
+                                <li><a>Video Data</a></li>
+                                <li><a>Playlist Data</a></li>
+                                <li><a>User Data</a></li>
+                                <li><a routerLink="bucket-fetch" routerLinkActive="menu-active">Bucket Fetch</a></li>
+                            </ul>
+                        </details>
+                    </li>
+
+                </ul>
+            </details>
+        </li>
+
+        <li>
+            <details open>
+                <summary>Development</summary>
+                <ul class="menu w-full">
+                    <li><a>Custom UI</a></li>
+                    <li><a>Custom Theme</a></li>
+                    <li><a>Plugins</a></li>
+                    <li><a>Build from Source</a></li>
+                </ul>
+            </details>
+        </li>
+    </ul>
 </div>
-
-<ul class="menu border-r-1 border-r-base-300 text-base-content min-h-full w-80 p-4">
-
-    <li><a routerLink="changelog" routerLinkActive="menu-active">Changelog</a></li>
-    <li><a routerLink="feats-to-dev" routerLinkActive="menu-active">Features to Develop</a></li>
-
-    <li>
-        <details open>
-            <summary>Docs</summary>
-            <ul class=" menu w-full">
-                <li><a routerLink="overview" routerLinkActive="menu-active">Overview</a></li>
-                <li><a routerLink="installation" routerLinkActive="menu-active">Installation</a></li>
-                <li><a routerLink="quickstart" routerLinkActive="menu-active">Quick Start</a></li>
-                <li><a routerLink="repository" routerLinkActive="menu-active">Repository</a></li>
-                <li><a routerLink="commands" routerLinkActive="menu-active">Commands</a></li>
-                <li><a routerLink="trim-server" routerLinkActive="menu-active">Trim Server <span
-                            class="badge badge-neutral">Beta</span></a></li>
-                <li><a routerLink="configs" routerLinkActive="menu-active">Configuration</a></li>
-                <li><a routerLink="authentication" routerLinkActive="menu-active">Authentication</a></li>
-                <li>
-                    <details>
-                        <summary>SSL</summary>
-                        <ul class="menu w-full">
-                            <li><a routerLink="config-https" routerLinkActive="menu-active">Configuring HTTPS server</a>
-                            </li>
-                            <li><a routerLink="self-certs" routerLinkActive="menu-active">Create Self Certs</a></li>
-                        </ul>
-                    </details>
-                </li>
-                <li>
-                    <details>
-                        <summary>Tools</summary>
-                        <ul class="menu w-full">
-                            <li><a routerLink="tools/tsconvertor" routerLinkActive="menu-active">TSConverter</a></li>
-                            <li><a routerLink="tools/video-info" routerLinkActive="menu-active">Video Info</a></li>
-                        </ul>
-                    </details>
-                </li>
-
-            </ul>
-        </details>
-    </li>
-
-    <li>
-        <details>
-            <summary>Components</summary>
-            <ul class="menu w-full">
-                <li><a>Gallery Fetcher</a></li>
-                <li><a>Gallery View</a></li>
-                <li><a>Infinite Fetcher</a></li>
-                <li><a>Page Fetcher</a></li>
-                <li><a>Mini Video Card</a></li>
-                <li><a routerLink="components/video-card" routerLinkActive="menu-active"> Video Card</a></li>
-                <li><a> Playlist Card</a></li>
-                <li><a> VidStack Player</a></li>
-            </ul>
-        </details>
-    </li>
-
-    <li>
-        <details>
-            <summary>Backend APIs</summary>
-            <ul class="menu w-full">
-                <li><a>Auth</a></li>
-                <li><a routerLink="batch-api" routerLinkActive="menu-active">Batch API</a></li>
-                <li><a routerLink="stream-api" routerLinkActive="menu-active">Stream</a></li>
-                <li><a routerLink="playlists-api" routerLinkActive="menu-active">Playlists</a></li>
-                <li><a routerLink="users-api" routerLinkActive="menu-active">Users</a></li>
-                <li><a routerLink="spaces-api" routerLinkActive="menu-active">Spaces</a></li>
-                <li>
-                    <details open>
-                        <summary>Types</summary>
-                        <ul class="menu w-full">
-                            <li><a>API Response</a></li>
-                            <li><a>Video Data</a></li>
-                            <li><a>Playlist Data</a></li>
-                            <li><a>User Data</a></li>
-                            <li><a routerLink="bucket-fetch" routerLinkActive="menu-active">Bucket Fetch</a></li>
-                        </ul>
-                    </details>
-                </li>
-
-            </ul>
-        </details>
-    </li>
-
-    <li>
-        <details open>
-            <summary>Development</summary>
-            <ul class="menu w-full">
-                <li><a>Custom UI</a></li>
-                <li><a>Custom Theme</a></li>
-                <li><a>Plugins</a></li>
-                <li><a>Build from Source</a></li>
-            </ul>
-        </details>
-    </li>
-</ul>

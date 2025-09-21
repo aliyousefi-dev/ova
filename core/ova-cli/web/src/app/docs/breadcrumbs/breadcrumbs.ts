@@ -1,21 +1,29 @@
-import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { BreadcrumbsService } from '../breadcrumbs-service/breadcrumbs-service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'doc-breadcrumbs',
   templateUrl: './breadcrumbs.html',
-  imports: [],
+  imports: [CommonModule, RouterModule],
 })
-export class BreadcrumbsComponent {
-  private router = inject(Router);
-  private activatedRoute = inject(ActivatedRoute);
-  private routeParamsSub?: Subscription;
+export class BreadcrumbsComponent implements OnInit, OnDestroy {
+  private breadcrumbsService = inject(BreadcrumbsService);
+  private breadcrumbsSub?: Subscription;
+  breadcrumbs: string[] = [];
 
   ngOnInit() {
-    this.routeParamsSub = this.activatedRoute.url.subscribe((url) => {
-      console.log('Product ID:', url);
-    });
+    this.breadcrumbsSub = this.breadcrumbsService
+      .getBreadcrumbs()
+      .subscribe((breadcrumbs) => {
+        this.breadcrumbs = breadcrumbs;
+        console.log('Breadcrumbs:', breadcrumbs);
+      });
+  }
+
+  ngOnDestroy() {
+    this.breadcrumbsSub?.unsubscribe();
   }
 }

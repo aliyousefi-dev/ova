@@ -10,8 +10,7 @@ import { CodePreviewComponent } from '../../code-preview/code-preview';
   templateUrl: './commands.page.html',
 })
 export class DocCommands {
-  ovaCommands = `
-#commong
+  ovaCommands = `#commong
 - ovacli init [path]
 - ovacli index
 - ovacli cook
@@ -29,7 +28,5 @@ export class DocCommands {
 
 #ssl
 - ovacli ssl generate-ca
-- ovacli ssl generate-cert
-
-  `;
+- ovacli ssl generate-cert`;
 }

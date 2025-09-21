@@ -10,7 +10,5 @@ import { CodePreviewComponent } from '../../code-preview/code-preview';
   templateUrl: './authentication.page.html',
 })
 export class DocAuthenticationPage {
-  SessionId = `
-    "59ef43f5-e0b6-44dc-bfee-3922b3f610fc": "user",
-  `;
+  SessionId = `"59ef43f5-e0b6-44dc-bfee-3922b3f610fc": "user"`;
 }

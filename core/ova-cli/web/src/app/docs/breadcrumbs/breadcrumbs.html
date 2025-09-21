@@ -1,9 +1,14 @@
 <div class="p-5">
     <div class="breadcrumbs text-sm">
         <ul>
-            <li><a routerLink="/docs">Docs</a></li>
-            <li>Introduction</li>
-            <li>Commands</li>
+            <li *ngFor="let crumb of breadcrumbs; let i = index">
+                <ng-container *ngIf="i === 0">
+                    <a routerLink="/docs">{{ crumb }}</a>
+                </ng-container>
+                <ng-container *ngIf="i !== 0">
+                    {{ crumb }}
+                </ng-container>
+            </li>
         </ul>
     </div>
 </div>

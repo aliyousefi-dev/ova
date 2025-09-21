@@ -5,6 +5,7 @@ import { RouterOutlet } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { NavbarDocComponent } from '../navbar-doc/navbar-doc.page';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs';
+import { DocSearchBarComponent } from '../search-bar/search-bar';
 
 @Component({
   selector: 'app-main-doc-page',
@@ -16,6 +17,7 @@ import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs';
     RouterModule,
     NavbarDocComponent,
     BreadcrumbsComponent,
+    DocSearchBarComponent,
   ],
   templateUrl: './main-doc.page.html',
 })

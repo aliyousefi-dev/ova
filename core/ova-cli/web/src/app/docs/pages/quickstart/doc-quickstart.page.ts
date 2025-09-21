@@ -10,15 +10,9 @@ import { CodePreviewComponent } from '../../code-preview/code-preview';
   templateUrl: './doc-quickstart.page.html',
 })
 export class DocQuickStartPage {
-  initCommand = `
-  ovacli init .
-  `;
+  initCommand = `ovacli init .`;
 
-  indexCommand = `
-  ovacli index
-  `;
+  indexCommand = `ovacli index`;
 
-  cookCommand = `
-  ovacli cook
-  `;
+  cookCommand = `ovacli cook`;
 }
