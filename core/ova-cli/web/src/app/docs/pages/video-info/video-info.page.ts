@@ -10,7 +10,5 @@ import { CodePreviewComponent } from '../../code-preview/code-preview';
   templateUrl: './video-info.page.html',
 })
 export class DocVideoInfoPage {
-  VideoinfoCli = `
-  ovacli tools videoinfo <video-path>
-  `;
+  VideoinfoCli = `ovacli tools videoinfo <video-path>`;
 }
