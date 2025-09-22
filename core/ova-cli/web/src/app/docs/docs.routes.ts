@@ -21,6 +21,9 @@ import { DocConfigHttpsPage } from './pages/config-https/config-https.page';
 import { DocTrimServerPage } from './pages/trim-server/trim-server.page';
 import { DocDownloadServerPage } from './pages/download-server/download-server.page';
 import { DocPlatformsPage } from './pages/platforms/platforms.page';
+import { DocSimilarVideosPage } from './pages/similar-videos/similar-videos.page';
+import { DocVideoTagsPage } from './pages/video-tags/video-tags.page';
+import { DocAIRecomendationPage } from './pages/ai-recomendation/ai-recomendation.page';
 
 export const DocsRoutes: Routes = [
   {
@@ -31,6 +34,18 @@ export const DocsRoutes: Routes = [
   {
     path: 'overview',
     component: DocOverviewPage,
+  },
+  {
+    path: 'ai-recomendation',
+    component: DocAIRecomendationPage,
+  },
+  {
+    path: 'video-tags',
+    component: DocVideoTagsPage,
+  },
+  {
+    path: 'similar-videos',
+    component: DocSimilarVideosPage,
   },
   {
     path: 'changelog',

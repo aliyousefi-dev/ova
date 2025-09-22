@@ -3,24 +3,18 @@ import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { SettingsModalComponent } from '../../pop-ups/setting-modal/settings-modal.component';
 import { UtilsService } from '../../../services/utils.service';
 import { AuthApiService } from '../../../services/ova-backend/auth-api.service';
-
-import { MobileDrawerComponent } from '../mobile-drawer/mobile-drawer.component';
+import { SearchBarComponent } from '../../utility/search-bar/search-bar.component';
 
 @Component({
   selector: 'app-top-navbar',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    SettingsModalComponent,
-    MobileDrawerComponent,
-  ],
+  imports: [CommonModule, RouterModule, SearchBarComponent],
   templateUrl: './top-navbar.component.html',
 })
 export class TopNavbarComponent implements OnInit {
+  @Input() drawer: any;
   pageTitle: string = 'Home';
   username: string = 'Guest';
   dropdownOpen = false;

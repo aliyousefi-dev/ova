@@ -4,6 +4,7 @@ import { SuggestionApiService } from '../../../services/ova-backend/suggestion-a
 import { ApiResponse } from '../../../services/ova-backend/response-type';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ViewChild, ElementRef, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-search-bar',
@@ -11,6 +12,8 @@ import { CommonModule } from '@angular/common';
   imports: [FormsModule, CommonModule],
 })
 export class SearchBarComponent {
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+
   searchSuggestions: string[] = [];
   searchTerm: string = '';
   showSuggestions: boolean = false; // This will control the visibility of the suggestions dropdown and the overlay
@@ -19,6 +22,21 @@ export class SearchBarComponent {
     private suggestionApiService: SuggestionApiService,
     private router: Router
   ) {}
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent) {
+    // Ctrl+K (or Cmd+K on Mac)
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      this.focusSearch();
+    }
+  }
+
+  focusSearch() {
+    if (this.searchInput) {
+      this.searchInput.nativeElement.focus();
+    }
+  }
 
   // Method to handle search term input changes and fetch suggestions
   onInputChange(event: Event): void {

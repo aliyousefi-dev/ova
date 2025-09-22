@@ -10,23 +10,19 @@ import { CodePreviewComponent } from '../../code-preview/code-preview';
   templateUrl: './commands.page.html',
 })
 export class DocCommands {
-  ovaCommands = `#commong
-- ovacli init [path]
-- ovacli index
-- ovacli cook
-- ovacli purge
-- ovacli serve <repo-path>
-- ovacli version
+  initCommand = 'ovacli init <path>';
+  indexCommand = 'ovacli index';
+  cookCommand = 'ovacli cook';
+  purgeCommand = 'ovacli purge';
+  serveCommand = 'ovacli serve <repo-path>';
+  versionCommand = 'ovacli version';
 
-#configs
-- ovacli configs
-- ovacli configs default
-- ovacli configs reset
+  configsCommand = 'ovacli configs';
+  configsDefaultCommand = 'ovacli configs default';
+  configsResetCommand = 'ovacli configs reset';
 
-#tools
-- ovacli tsconverter <path>
+  tsconverterCommand = 'ovacli tsconverter <path>';
 
-#ssl
-- ovacli ssl generate-ca
-- ovacli ssl generate-cert`;
+  sslGenerateCaCommand = 'ovacli ssl generate-ca';
+  sslGenerateCertCommand = 'ovacli ssl generate-cert';
 }

@@ -1,32 +1,9 @@
 <app-ova-about-modal #aboutModal></app-ova-about-modal>
 
-<div class="flex flex-col h-full  overflow-hidden transition-all duration-200 border-r-1 border-r-base-300"
-  [class.w-64]="sidebarOpen" [class.w-14]="!sidebarOpen">
+<div class="flex flex-col h-full bg-base-100 overflow-hidden border-r-1 border-r-base-300">
 
-  <div class="flex items-center  p-5" [class.justify-between]="sidebarOpen" [class.justify-center]="!sidebarOpen">
-
-    <div class="dropdown dropdown-start" (click)="$event.stopPropagation();">
-      <div tabindex="0" role=" button" class="btn btn-xs btn-ghost">
-        <div class="flex items-center ">
-          <app-ova-logo></app-ova-logo>
-        </div>
-      </div>
-      <ul tabindex="0" class="dropdown-content menu bg-base-100 w-52 " (click)="openOvaAbout()">
-        <li>
-          <button class=" text-xs">
-            About Ova
-          </button>
-        </li>
-      </ul>
-    </div>
-
-
-
-    <div class="text-md" [class.hidden]="!sidebarOpen">BlockLab</div>
-
-    <a class="btn btn-ghost" title="Toggle Sidebar" (click)="toggleSidebar()">
-      <i class="bx bx-dock-left"></i>
-    </a>
+  <div class="flex items-center p-5">
+    <div class="text-md">Online Video Archive</div>
   </div>
 
 
@@ -37,14 +14,14 @@
       <li>
         <a routerLink="/new-space" routerLinkActive="menu-active" [routerLinkActiveOptions]="{ exact: true }">
           <i class="bx bx-plus bx-xs"></i>
-          <span [class.hidden]="!sidebarOpen">New Space</span>
+          <span>New Space</span>
         </a>
       </li>
 
       <li>
         <a routerLink="/global" routerLinkActive="menu-active">
           <i class="bx bx-play-circle bx-xs"></i>
-          <span [class.hidden]="!sidebarOpen" [class.hidden]="!sidebarOpen">Global</span>
+          <span>Global</span>
         </a>
       </li>
 
@@ -53,70 +30,68 @@
       <li>
         <a routerLink="/" routerLinkActive="menu-active" [routerLinkActiveOptions]="{ exact: true }">
           <i class="bx bx-home bx-xs"></i>
-          <span [class.hidden]="!sidebarOpen">Home</span>
+          <span>Home</span>
         </a>
       </li>
 
       <li>
         <a routerLink="/spaces" routerLinkActive="menu-active" [routerLinkActiveOptions]="{ exact: true }">
           <i class="bx bx-folder bx-xs"></i>
-          <span [class.hidden]="!sidebarOpen">Spaces</span>
+          <span>Spaces</span>
         </a>
       </li>
 
 
-      <li class="pt-2" [class.hidden]="!sidebarOpen">
+      <li class="pt-2">
         <details open>
           <summary>
-            <span [class.hidden]="!sidebarOpen">Private</span>
-            <span [class.hidden]="sidebarOpen">P</span>
+            <span>Private</span>
           </summary>
           <ul>
 
             <li> <a routerLink="/saved" routerLinkActive="menu-active">
                 <i class="bx bx-bookmark bx-xs"></i>
-                <span [class.hidden]="!sidebarOpen">Saved</span>
+                <span>Saved</span>
               </a>
             </li>
             <li><a routerLink="/history" routerLinkActive="menu-active">
                 <i class="bx bx-history bx-xs"></i>
-                <span [class.hidden]="!sidebarOpen">History</span>
+                <span>History</span>
               </a>
             </li>
             <li><a routerLink="/playlists" routerLinkActive="menu-active">
                 <i class="bx bx-list-ul bx-xs"></i>
-                <span [class.hidden]="!sidebarOpen">Playlists</span>
+                <span>Playlists</span>
               </a>
             </li>
           </ul>
         </details>
       </li>
 
-      <li class="pt-2" [class.hidden]="!sidebarOpen">
+      <li class="pt-2">
         <details open>
           <summary>
-            <span [class.hidden]="!sidebarOpen">Spaces</span>
-            <span [class.hidden]="sidebarOpen">S</span>
+            <span>Spaces</span>
           </summary>
           <ul>
             <li><a routerLink="/create-space" routerLinkActive="menu-active">
                 <i class="bx bx-plus bx-xs"></i>
-                <span [class.hidden]="!sidebarOpen">Create Space</span>
+                <span>Create Space</span>
               </a>
             </li>
             <li> <a routerLink="/create-team-space" routerLinkActive="menu-active">
                 <i class='bx bx-group bx-xs'></i>
-                <span [class.hidden]="!sidebarOpen">New Team Space</span>
+                <span>New Team Space</span>
               </a>
             </li>
             <li> <a routerLink="/join-team-space" routerLinkActive="menu-active">
                 <i class='bx  bx-link bx-xs'></i>
-                <span [class.hidden]="!sidebarOpen">Join Team Space</span>
+                <span>Join Team Space</span>
               </a>
             </li>
             <li><a routerLink="/my-spaces" routerLinkActive="menu-active">
                 <i class="bx bx-box bx-xs"></i>
-                <span [class.hidden]="!sidebarOpen">My Spaces</span>
+                <span>My Spaces</span>
               </a>
             </li>
 
@@ -133,7 +108,8 @@
       <ul class="menu w-full">
         <li>
           <a routerLink="/docs">
-            <i class="bx bxs-file-doc bx-xs"></i>Docs
+            <i class="bx bxs-file-doc bx-xs"></i>
+            Docs
           </a>
         </li>
 

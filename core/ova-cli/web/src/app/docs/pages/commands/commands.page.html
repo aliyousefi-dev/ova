@@ -1,11 +1,58 @@
 <div class="prose">
-
-    <h1>Commands</h1>
-
+    <h1>All Commands</h1>
     <p>
-        Here you can a list of all available commands on the ova.
+        Here you can find a list of all available commands for the ova CLI. Each command is described below, along with
+        its usage and a code example. Use these commands to initialize, manage, process, and serve your video
+        repositories efficiently. For more details on each command, refer to the corresponding section and code preview.
+        If you need further assistance, consult the official documentation or use the <code>--help</code> flag with any
+        command.
     </p>
 
-    <code-preview [codeContent]="ovaCommands"></code-preview>
+    <h2>Initialization Command</h2>
+    <p>Initializes the ova CLI in the specified path.</p>
+    <code-preview [codeContent]="initCommand"></code-preview>
 
+    <h2>Index Command</h2>
+    <p>Indexes the video files.</p>
+    <code-preview [codeContent]="indexCommand"></code-preview>
+
+    <h2>Cook Command</h2>
+    <p>Processes and prepares the video files.</p>
+    <code-preview [codeContent]="cookCommand"></code-preview>
+
+    <h2>Purge Command</h2>
+    <p>Removes all indexed and cooked data.</p>
+    <code-preview [codeContent]="purgeCommand"></code-preview>
+
+    <h2>Serve Command</h2>
+    <p>Serves the repository at the specified path.</p>
+    <code-preview [codeContent]="serveCommand"></code-preview>
+
+    <h2>Version Command</h2>
+    <p>Displays the current version of ova CLI.</p>
+    <code-preview [codeContent]="versionCommand"></code-preview>
+
+    <h2>Configs Command</h2>
+    <p>Shows the current configuration.</p>
+    <code-preview [codeContent]="configsCommand"></code-preview>
+
+    <h2>Configs Default Command</h2>
+    <p>Resets configuration to default values.</p>
+    <code-preview [codeContent]="configsDefaultCommand"></code-preview>
+
+    <h2>Configs Reset Command</h2>
+    <p>Resets all configuration.</p>
+    <code-preview [codeContent]="configsResetCommand"></code-preview>
+
+    <h2>TS Converter Command</h2>
+    <p>Converts files using the tsconverter tool.</p>
+    <code-preview [codeContent]="tsconverterCommand"></code-preview>
+
+    <h2>SSL Generate CA Command</h2>
+    <p>Generates a Certificate Authority for SSL.</p>
+    <code-preview [codeContent]="sslGenerateCaCommand"></code-preview>
+
+    <h2>SSL Generate Cert Command</h2>
+    <p>Generates an SSL certificate.</p>
+    <code-preview [codeContent]="sslGenerateCertCommand"></code-preview>
 </div>

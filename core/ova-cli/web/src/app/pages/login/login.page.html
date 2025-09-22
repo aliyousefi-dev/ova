@@ -9,6 +9,7 @@
     </div>
     <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
       <div class="card-body">
+
         <form (ngSubmit)="onSubmit()">
           <fieldset class="fieldset">
             <label class="label">Username</label>
@@ -17,6 +18,9 @@
               <input type="text" placeholder="Enter username" [(ngModel)]="username" name="username" required
                 autocomplete="username" />
             </label>
+
+
+
             <label class="label">Password</label>
             <label class="input w-full">
               <i class='bx bx-key'></i>

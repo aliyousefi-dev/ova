@@ -26,6 +26,17 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatPaginatorModule,
   ],
   templateUrl: './main-doc.page.html',
+  styles: [
+    `
+      .example-container {
+        background: var(--b1);
+      }
+
+      .example-sidenav {
+        background: var(--b1);
+      }
+    `,
+  ],
 })
 export class MainDocPage {
   showFiller = false;

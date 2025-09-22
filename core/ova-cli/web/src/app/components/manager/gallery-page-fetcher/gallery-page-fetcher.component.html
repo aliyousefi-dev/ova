@@ -1,32 +1,9 @@
 <div class="flex flex-col w-full h-full overflow-y-hidden">
-    <div class="pb-3 flex flex-wrap justify-between p-1 w-full gap-2  bg-base-100">
-
-        <div class=" z-50 text-xs flex items-center justify-center p-1 gap-5">
-            <span class="font-medium">
-                Videos in Range:
-                <span class="font-semibold">
-                    {{ ((CurrentBucket - 1) * BucketContentSize) + 1 }} -
-                    {{ (CurrentBucket * BucketContentSize) > TotalVideos ? TotalVideos : CurrentBucket *
-                    BucketContentSize }}
-                </span>
-            </span>
-
-            <span class="font-medium">
-                Total Videos: <span class="font-semibold">{{ TotalVideos }}</span>
-            </span>
-        </div>
-
-        <!-- Page controls component integration -->
-        <div class="flex justify-center items-center gap-3 ">
-            <span class="text-xs">Pages:</span>
-            <app-page-controls [TotalBuckets]="TotalBuckets" [CurrentBucket]="CurrentBucket"
-                (pageChange)="loadPage($event)">
-            </app-page-controls>
-        </div>
 
 
-
-    </div>
+    <mat-paginator [length]=" TotalVideos" [pageSize]="BucketContentSize" [pageIndex]="CurrentBucket - 1"
+        showFirstLastButtons="true" (page)="loadPage($event.pageIndex + 1)">
+    </mat-paginator>
 
     <div #Container class="h-full overflow-y-auto py-3 px-2">
         <app-gallery-view [ViewMode]="isMiniView ? 'mini' : 'full'" [PreviewPlayback]="PreviewPlayback"
