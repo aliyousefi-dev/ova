@@ -1,0 +1,43 @@
+<div class="prose ">
+    <h1>DataStorage</h1>
+    <p>
+        ova use internal database by default it use the json based database.
+        and for more production environment it use the Boltdb.
+    </p>
+
+    <h2>Data Structures</h2>
+    <p>it separte the data into multiple collections</p>
+
+    <h3>User Data Type</h3>
+    <p>This collection hold the user data type the type is this.</p>
+    <code-preview [codeContent]="UserType" codeLang="json"></code-preview>
+
+    <h3>Video Data Type</h3>
+    <p>Here is a simple Sample of Video Data</p>
+    <code-preview [codeContent]="VideoType" codeLang="json"></code-preview>
+
+    <h3>Session Data Type</h3>
+    <p>All Session hold like this format its a simple key value <code>sessionID/UserID</code></p>
+    <code-preview [codeContent]="SessionType" codeLang="json"></code-preview>
+
+    <h2>Top Operation for Database</h2>
+
+    <ul>
+        <li>Query</li>
+        <li>Get</li>
+    </ul>
+
+
+    <h2>Storage Saving Types</h2>
+    <p>ova supports two type for saving the data.</p>
+
+    <h3>JsonDB</h3>
+    <p>its an readable format and very good for debugging and finding the issue
+
+
+    <h3>BoltDB</h3>
+    <p>this format is best for productin and large database.</p>
+
+
+
+</div>

@@ -2,7 +2,7 @@
 
 
     <mat-paginator [length]=" TotalVideos" [pageSize]="BucketContentSize" [pageIndex]="CurrentBucket - 1"
-        showFirstLastButtons="true" (page)="loadPage($event.pageIndex + 1)">
+        showFirstLastButtons="true" (page)="loadPage($event.pageIndex + 1)" hidePageSize="true">
     </mat-paginator>
 
     <div #Container class="h-full overflow-y-auto py-3 px-2">

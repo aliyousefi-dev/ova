@@ -24,6 +24,9 @@ import { DocPlatformsPage } from './pages/platforms/platforms.page';
 import { DocSimilarVideosPage } from './pages/similar-videos/similar-videos.page';
 import { DocVideoTagsPage } from './pages/video-tags/video-tags.page';
 import { DocAIRecomendationPage } from './pages/ai-recomendation/ai-recomendation.page';
+import { DocDataStoragePage } from './pages/datastorage/datastorage.page';
+import { DocCustomThemePage } from './pages/custom-theme/custom-theme.page';
+import { DocChecksumPage } from './pages/checksum/checksum.page';
 
 export const DocsRoutes: Routes = [
   {
@@ -34,6 +37,18 @@ export const DocsRoutes: Routes = [
   {
     path: 'overview',
     component: DocOverviewPage,
+  },
+  {
+    path: 'datastorage',
+    component: DocDataStoragePage,
+  },
+  {
+    path: 'checksum',
+    component: DocChecksumPage,
+  },
+  {
+    path: 'custom-theme',
+    component: DocCustomThemePage,
   },
   {
     path: 'ai-recomendation',

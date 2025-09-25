@@ -1,14 +1,7 @@
-<div class="flex flex-col overflow-visible">
+<div class="flex flex-col overflow-visible aspect-video">
   <div class="block w-full overflow-hidden">
-    <figure class="relative w-full h-40 overflow-hidden">
+    <figure class="relative w-full aspect-video overflow-hidden">
 
-      <!-- Save button -->
-      <div *ngIf="isSaved" class="absolute bottom-2 left-2 z-30">
-        <button class="btn btn-xs btn-circle bg-black/60 hover:bg-black text-yellow-500 border-none"
-          title="Add to Saved" (click)="$event.preventDefault(); $event.stopPropagation()">
-          <i class="bx bxs-star text-sm"></i>
-        </button>
-      </div>
 
       <!-- Thumbnail if PreviewPlayback is false -->
       @if (!PreviewPlayback) {
@@ -19,12 +12,18 @@
       } @else {
       <!-- Video playback if PreviewPlayback is true -->
       <div (click)="navigateToWatch()" class="relative w-full h-full">
-        <video #preview *ngIf="PreviewPlayback" [src]="getPreviewUrl()" muted loop playsinline
+        <video #preview [src]="getPreviewUrl()" muted loop playsinline
           class="w-full h-full object-cover absolute top-0 left-0"></video>
       </div>
       }
 
-
+      <!-- Save button -->
+      <div *ngIf="isSaved" class="absolute bottom-2 left-2 z-30">
+        <button class="btn btn-xs btn-circle bg-black/60 hover:bg-black text-yellow-500 border-none"
+          title="Add to Saved" (click)="$event.preventDefault(); $event.stopPropagation()">
+          <i class="bx bxs-star text-sm"></i>
+        </button>
+      </div>
 
       <!-- Watched label -->
       <div *ngIf="isWatched"

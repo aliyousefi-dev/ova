@@ -37,7 +37,9 @@ export class BreadcrumbsService {
       if (segments.length > 0) {
         for (const seg of segments) {
           url += `/${seg}`;
-          breadcrumbs.push(seg);
+          // Capitalize the segment before adding
+          const capitalized = seg.charAt(0).toUpperCase() + seg.slice(1);
+          breadcrumbs.push(capitalized);
         }
       }
       return this.buildBreadcrumbs(child, url, breadcrumbs);

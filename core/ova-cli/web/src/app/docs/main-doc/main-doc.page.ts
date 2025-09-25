@@ -34,6 +34,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 
       .example-sidenav {
         background: var(--b1);
+        border-radius: 0px;
       }
     `,
   ],

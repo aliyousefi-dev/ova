@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { VideoData } from '../../../data-types/video-data';
 import { GalleryViewComponent } from '../../containers/gallery-view/gallery-view.component';
-import { PageControlsComponent } from '../../utility/page-controls/page-controls.component';
 import { CentralFetchService } from '../../../services/ova-backend/central-fetch';
 import { MatPaginatorModule } from '@angular/material/paginator';
 
@@ -14,7 +13,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     CommonModule,
     RouterModule,
     GalleryViewComponent,
-    PageControlsComponent,
     MatPaginatorModule,
   ],
   templateUrl: './gallery-page-fetcher.component.html',

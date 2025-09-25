@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'doc-ai-recomendation',
+  selector: 'doc-custom-theme',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './ai-recomendation.page.html',
+  templateUrl: './custom-theme.page.html',
 })
-export class DocAIRecomendationPage {
+export class DocCustomThemePage {
   SessionId = `"59ef43f5-e0b6-44dc-bfee-3922b3f610fc": "user"`;
 }

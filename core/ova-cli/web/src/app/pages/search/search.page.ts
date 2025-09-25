@@ -8,23 +8,16 @@ import {
   Subscription,
   of,
   map,
-  filter,
 } from 'rxjs';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 
-import { AutoCompleteSearchBarComponent } from '../../components/utility/autocomplete-search-bar/autocomplete-search-bar.component';
 import { GalleryViewComponent } from '../../components/containers/gallery-view/gallery-view.component';
 import { SearchApiService } from '../../services/ova-backend/search-api.service';
 
 @Component({
   selector: 'app-explore',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    AutoCompleteSearchBarComponent,
-    GalleryViewComponent,
-  ],
+  imports: [CommonModule, FormsModule, GalleryViewComponent],
   templateUrl: './search.page.html',
 })
 export class SearchPage implements OnInit, OnDestroy {

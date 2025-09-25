@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CodePreviewComponent } from '../../code-preview/code-preview';
 
 @Component({
   selector: 'doc-changelog',
   standalone: true,
-  imports: [CommonModule, FormsModule, CodePreviewComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './similar-videos.page.html',
 })
 export class DocSimilarVideosPage {

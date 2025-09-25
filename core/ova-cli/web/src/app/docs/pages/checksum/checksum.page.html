@@ -1,0 +1,22 @@
+<div class="prose ">
+
+    <h1>Checksum</h1>
+
+    <p>
+        it create from each video a checksum and use this id to identify the videos.
+        the algorithm is used is <code>Custom SHA-256</code> .
+        its custom because for optimization purposes, instead hashing the hole video it grab the first and end data of
+        the file and create a checksum.
+    </p>
+
+    <hr>
+
+    <h2>Debug</h2>
+
+    <p>
+        The following command can be used to generate a checksum for a video file:
+    </p>
+
+    <code-preview [codeContent]="debugChecksum"></code-preview>
+
+</div>

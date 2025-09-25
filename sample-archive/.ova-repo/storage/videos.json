@@ -3,9 +3,11 @@
     "videoId": "087be485e0acad6fb1ba026e75542fed5f52e073496c649bc4a3ce345a63f48f",
     "fileName": "pexels-sosa-films-5656141",
     "description": "",
-    "ownedSpace": "New folder",
+    "ownedSpace": ".",
     "ownedGroup": "root",
-    "tags": [],
+    "tags": [
+      "newtag"
+    ],
     "codecs": {
       "format": ".mp4",
       "durationSec": 10,
@@ -20,7 +22,7 @@
     },
     "isCooked": true,
     "totalDownloads": 0,
-    "uploadedAt": "2025-09-10T13:30:06.0041274Z"
+    "uploadedAt": "2025-09-22T16:13:34.4160911Z"
   },
   "41168d2b2b047e7657a2491cde2e3484aae4c8d20423170f79e4b5278b7a4f37": {
     "videoId": "41168d2b2b047e7657a2491cde2e3484aae4c8d20423170f79e4b5278b7a4f37",
@@ -43,7 +45,7 @@
     },
     "isCooked": true,
     "totalDownloads": 0,
-    "uploadedAt": "2025-09-10T13:30:05.1824379Z"
+    "uploadedAt": "2025-09-22T16:13:33.6153512Z"
   },
   "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290": {
     "videoId": "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290",
@@ -66,6 +68,6 @@
     },
     "isCooked": true,
     "totalDownloads": 0,
-    "uploadedAt": "2025-09-10T13:30:05.4998903Z"
+    "uploadedAt": "2025-09-22T16:13:33.9281708Z"
   }
 }

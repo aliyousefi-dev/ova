@@ -10,7 +10,7 @@
     </div>
 
     <!-- scrollable content -->
-    <div #scrollContainer class="h-full overflow-y-auto py-3 px-2" (scroll)="onScroll($event)">
+    <div #scrollContainer class="h-full overflow-y-auto py-3" (scroll)="onScroll($event)">
         <app-gallery-view [ViewMode]="isMiniView ? 'mini' : 'full'" [videos]="this.videos"
             [PreviewPlayback]="PreviewPlayback">
         </app-gallery-view>

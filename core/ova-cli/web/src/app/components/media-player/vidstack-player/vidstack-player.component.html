@@ -1,5 +1,5 @@
 <media-player #mediaPlayer view-type="video" stream-type="on-demand" crossorigin playsinline [poster]="thumbnailUrl"
-  storage="video-player-options">
+  storage="video-player-options" class="z-100">
   <media-provider>
     <media-poster class="vds-poster"></media-poster>
     <source [src]="videoUrl" type="video/mp4" />
@@ -13,3 +13,4 @@
   <media-video-layout></media-video-layout>
   }
 </media-player>
+<div *ngIf="isFullscreenOverlay" class="fullscreen-block-overlay"></div>

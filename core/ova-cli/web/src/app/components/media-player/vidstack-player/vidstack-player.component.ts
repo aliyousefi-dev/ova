@@ -24,15 +24,26 @@ import { MarkerApiService } from '../../../services/ova-backend/marker-api.servi
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [CommonModule],
 })
-export class VidstackPlayerComponent {
+export class VidstackPlayerComponent implements AfterViewInit {
   @Input() videoData!: VideoData;
 
   @ViewChild('mediaPlayer', { static: false }) mediaPlayerRef!: ElementRef;
+
+  isFullscreenOverlay = false;
 
   constructor(
     public videoapi: VideoApiService,
     private markerapi: MarkerApiService
   ) {}
+
+  ngAfterViewInit(): void {
+    const updateOverlay = () => {
+      const isFullscreen = !!document.fullscreenElement;
+      this.isFullscreenOverlay = isFullscreen;
+    };
+    document.addEventListener('fullscreenchange', updateOverlay);
+    window.addEventListener('orientationchange', updateOverlay);
+  }
 
   // Get current playback time of the media player
   getCurrentTime(): number {

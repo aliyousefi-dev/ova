@@ -11,20 +11,25 @@
 
 
 
-    <h2>Initializing</h2>
+    <h2>How it Find and Index Videos</h2>
     <p>when initilize a repository it make this tree steps on that folder.</p>
 
     <h3>Disk Scaning</h3>
     <p>the default database for that is a simple json file but in production you can switch to the boltdb for better
         performance and reliability.</p>
 
-    <h3>Indexing</h3>
-    <p>the default database for that is a simple json file but in production you can switch to the boltdb for better
-        performance and reliability.</p>
+    <h3>Indexing algorithm</h3>
+    <p>it use the Bucket Indexing algorithm. in this algorithm it bucket each video that are in same folder and bundle
+        them and send them for indexing.</p>
 
-    <h3>Cooking</h3>
-    <p>the default database for that is a simple json file but in production you can switch to the boltdb for better
-        performance and reliability.</p>
+    <p>also when indexing it make a checksum from each video file and use that as id. here is more detail <a
+            routerLink="/docs/checksum">Checksume algorithm</a></p>
+
+    <h3>Cooking algorithm</h3>
+    <p>cooking is after indexing . and it rely on the indexing. it check for indexed videos and then check is that
+        cooked or not.
+        if not cooked it try to cook that.
+    </p>
 
     <h2>Url Anatomy</h2>
     <p>the default database for that is a simple json file but in production you can switch to the boltdb for better

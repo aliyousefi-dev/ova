@@ -7,7 +7,35 @@
       {
         "groupName": "root",
         "groups": null,
+        "videoIds": [],
+        "qualityControl": {
+          "enabled": false,
+          "draftVideoIds": [],
+          "acceptedVideoIds": []
+        }
+      }
+    ],
+    "spaceSettings": {
+      "maxDiskLimit": "100GB",
+      "isPrivate": true
+    },
+    "inviteLink": "",
+    "membersIds": [
+      "user"
+    ],
+    "createdAt": "2025-09-22T16:13:32.0056426Z"
+  },
+  "root": {
+    "spaceName": "root",
+    "spaceOwner": "user",
+    "spaceId": "",
+    "groups": [
+      {
+        "groupName": "root",
+        "groups": null,
         "videoIds": [
+          "41168d2b2b047e7657a2491cde2e3484aae4c8d20423170f79e4b5278b7a4f37",
+          "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290",
           "087be485e0acad6fb1ba026e75542fed5f52e073496c649bc4a3ce345a63f48f"
         ],
         "qualityControl": {
@@ -25,35 +53,6 @@
     "membersIds": [
       "user"
     ],
-    "createdAt": "2025-09-10T13:30:04.4004549Z"
-  },
-  "root": {
-    "spaceName": "root",
-    "spaceOwner": "user",
-    "spaceId": "",
-    "groups": [
-      {
-        "groupName": "root",
-        "groups": null,
-        "videoIds": [
-          "41168d2b2b047e7657a2491cde2e3484aae4c8d20423170f79e4b5278b7a4f37",
-          "905806190b7569192c42f58dfd280cbb1266963585ecf6451f6013760181f290"
-        ],
-        "qualityControl": {
-          "enabled": false,
-          "draftVideoIds": [],
-          "acceptedVideoIds": []
-        }
-      }
-    ],
-    "spaceSettings": {
-      "maxDiskLimit": "100GB",
-      "isPrivate": true
-    },
-    "inviteLink": "",
-    "membersIds": [
-      "user"
-    ],
-    "createdAt": "2025-09-10T13:30:04.3999481Z"
+    "createdAt": "2025-09-22T16:13:32.0056426Z"
   }
 }

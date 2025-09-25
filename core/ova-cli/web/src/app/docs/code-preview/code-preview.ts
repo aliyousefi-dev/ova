@@ -20,18 +20,19 @@ export class SafeHtmlPipe implements PipeTransform {
 })
 export class CodePreviewComponent implements OnInit {
   @Input() codeContent: string = '';
+  @Input() codeLang: string = 'bash';
   tooltipText: string = 'Copy';
   highlightedCode: string = ''; // Holds the highlighted HTML code
 
   async ngOnInit() {
     const highlighter = await createHighlighter({
       themes: ['slack-dark'],
-      langs: ['bash'],
+      langs: [this.codeLang],
     });
 
     // Use codeContent instead of hardcoded string
     this.highlightedCode = highlighter.codeToHtml(this.codeContent, {
-      lang: 'bash',
+      lang: this.codeLang,
       theme: 'slack-dark',
     });
   }
